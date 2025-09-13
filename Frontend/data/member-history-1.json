@@ -1,0 +1,43 @@
+{
+    "name": "Engineering",
+    "rank": 1,
+    "total_points": 324,
+    "history": [
+      {
+        "event_title": "on-site course",
+        "action_name": "course completion",
+        "points": 12,
+        "event_date": "January 15, 2024"
+      },
+      {
+        "event_title": "on-site course",
+        "action_name": "course completion",
+        "points": 12,
+        "event_date": "January 20, 2024"
+      },
+      {
+        "event_title": "Team Building Workshop",
+        "action_name": "participation",
+        "points": 8,
+        "event_date": "January 25, 2024"
+      },
+      {
+        "event_title": "Code Review Session",
+        "action_name": "mentor feedback",
+        "points": 15,
+        "event_date": "February 1, 2024"
+      },
+      {
+        "event_title": "Innovation Challenge",
+        "action_name": "project submission",
+        "points": 25,
+        "event_date": "February 5, 2024"
+      },
+      {
+        "event_title": "Technical Presentation",
+        "action_name": "knowledge sharing",
+        "points": 18,
+        "event_date": "February 10, 2024"
+      }
+    ]
+  }

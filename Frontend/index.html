@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-white to-emerald-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="text-2xl">🏆</div>
+                    <span class="text-xl font-semibold text-gray-900">Leaderboard</span>
+                </div>
+                
+                <nav class="flex items-center space-x-1">
+                    <button id="nav-dashboard" class="nav-btn px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg flex items-center space-x-2">
+                        <span>🏠</span>
+                        <span>Dashboard</span>
+                    </button>
+                    <button id="nav-members" class="nav-btn px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg flex items-center space-x-2">
+                        <span>👥</span>
+                        <span>Members</span>
+                    </button>
+                    <button id="nav-departments" class="nav-btn px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg flex items-center space-x-2">
+                        <span>🏢</span>
+                        <span>Departments</span>
+                    </button>
+                    <button id="nav-managers" class="nav-btn px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg flex items-center space-x-2">
+                        <span>👔</span>
+                        <span>Managers</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="container mx-auto px-4 py-8">
+        <!-- Content will be dynamically loaded here -->
+    </main>
+
+    <!-- Loading State -->
+    <div id="loading" class="hidden">
+        <div class="flex justify-center items-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        </div>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
