@@ -1,15 +1,8 @@
 export class ApiService {
-    constructor() {
-        this.baseDelay = 500; // Simulate network delay
-    }
-
-    async delay(ms = this.baseDelay) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
 
     async getMembers() {
-        await this.delay();
-        const response = await fetch('./data/members.json');
+        // const response = await fetch('./data/members.json'); // USE THIS TO TEST
+        const response = await fetch('http://localhost:8000/members');
         if (!response.ok) {
             throw new Error('Failed to fetch members');
         }
@@ -17,8 +10,9 @@ export class ApiService {
     }
 
     async getDepartments() {
-        await this.delay();
-        const response = await fetch('./data/departments.json');
+        // const response = await fetch('./data/departments.json');
+        const response = await fetch('http://localhost:8000/departments');
+        
         if (!response.ok) {
             throw new Error('Failed to fetch departments');
         }
@@ -26,7 +20,6 @@ export class ApiService {
     }
 
     async getManagers() {
-        await this.delay();
         const response = await fetch('./data/managers.json');
         if (!response.ok) {
             throw new Error('Failed to fetch managers');
@@ -35,7 +28,6 @@ export class ApiService {
     }
 
     async getMemberHistory(id) {
-        await this.delay();
         const response = await fetch(`./data/member-history-${id}.json`);
         if (!response.ok) {
             // Fallback to default history if specific member history doesn't exist
