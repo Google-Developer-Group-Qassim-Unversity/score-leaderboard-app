@@ -44,7 +44,7 @@ class App {
     updateNavigation(activePage) {
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.classList.remove('active');
-            btn.classList.add('text-gray-600', 'hover:text-gray-900');
+            btn.classList.add('text-gray-900', 'hover:text-gray-600');
             btn.classList.remove('text-white', 'bg-gray-900');
         });
 

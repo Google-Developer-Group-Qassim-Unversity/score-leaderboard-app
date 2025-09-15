@@ -95,15 +95,17 @@ export class ComponentRenderer {
         return `
             <div class="space-y-6">
                 <!-- Header -->
-                <div class="bg-primary-50 rounded-lg p-6">
+                <div class="rounded-lg p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <button data-back="dashboard" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4">
-                                <span>←</span>
-                                <span>Back to Dashboard</span>
-                            </button>
+                            <a href="/">
+                                <button data-back="dashboard" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4">
+                                    <span>←</span>
+                                    <span>Back to Dashboard</span>
+                                </button>
+                            </a>
                             <div class="flex items-center space-x-3">
-                                <span class="text-3xl">🏢</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2 h-8 w-8 text-green-600"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path><path d="M10 6h4"></path><path d="M10 10h4"></path><path d="M10 14h4"></path><path d="M10 18h4"></path></svg>
                                 <div>
                                     <h1 class="text-3xl font-bold text-gray-900">Departments Leaderboard</h1>
                                     <p class="text-gray-600">${departments.length} departments ranked by total points</p>
@@ -123,7 +125,7 @@ export class ComponentRenderer {
                             class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         >
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="text-gray-400">🔍</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
                         </div>
                     </div>
                 </div>
@@ -131,7 +133,7 @@ export class ComponentRenderer {
                 <!-- Department Rankings -->
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex items-center space-x-2 mb-6">
-                        <span class="text-xl">🏆</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trophy h-5 w-5 text-amber-500"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
                         <h2 class="text-xl font-semibold text-gray-900">Department Rankings</h2>
                     </div>
                     <p class="text-gray-600 mb-6">Team performance rankings across all departments</p>
@@ -147,7 +149,6 @@ export class ComponentRenderer {
                                         <span class="text-2xl">${this.getDepartmentIcon(dept.name)}</span>
                                         <div>
                                             <h3 class="font-semibold text-gray-900">${dept.name}</h3>
-                                            <p class="text-sm text-gray-600">👥 15 members</p>
                                         </div>
                                     </div>
                                 </div>
@@ -156,8 +157,9 @@ export class ComponentRenderer {
                                         <p class="text-2xl font-bold text-primary-600">${dept.points}</p>
                                         <p class="text-sm text-gray-500">points</p>
                                     </div>
-                                    <button data-department-detail="${dept.id}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50">
-                                        👁️ View Details
+                                    <button data-department-detail="${dept.id}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4 mr-1"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                    View Details
                                     </button>
                                 </div>
                             </div>
@@ -263,7 +265,7 @@ export class ComponentRenderer {
         return `
             <div class="space-y-6">
                 <!-- Header -->
-                <div class="bg-blue-50 rounded-lg p-6">
+                <div class="rounded-lg p-6">
                     <div class="flex items-center justify-between">
                         <div>
                             <button data-back="dashboard" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4">
@@ -271,7 +273,7 @@ export class ComponentRenderer {
                                 <span>Back to Dashboard</span>
                             </button>
                             <div class="flex items-center space-x-3">
-                                <span class="text-3xl">👥</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-8 w-8 text-blue-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                                 <div>
                                     <h1 class="text-3xl font-bold text-gray-900">Members Leaderboard</h1>
                                     <p class="text-gray-600">${members.length} members ranked by total points</p>
@@ -291,7 +293,7 @@ export class ComponentRenderer {
                             class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="text-gray-400">🔍</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
                         </div>
                     </div>
                 </div>
@@ -299,7 +301,7 @@ export class ComponentRenderer {
                 <!-- Members List -->
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex items-center space-x-2 mb-6">
-                        <span class="text-xl">🏆</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trophy h-5 w-5 text-amber-500"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
                         <h2 class="text-xl font-semibold text-gray-900">Member Rankings</h2>
                     </div>
                     
@@ -327,73 +329,6 @@ export class ComponentRenderer {
         `;
     }
 
-    renderManagersPage(managers) {
-        return `
-            <div class="space-y-6">
-                <!-- Header -->
-                <div class="bg-purple-50 rounded-lg p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <button data-back="dashboard" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4">
-                                <span>←</span>
-                                <span>Back to Dashboard</span>
-                            </button>
-                            <div class="flex items-center space-x-3">
-                                <span class="text-3xl">👔</span>
-                                <div>
-                                    <h1 class="text-3xl font-bold text-gray-900">Managers Leaderboard</h1>
-                                    <p class="text-gray-600">${managers.length} managers ranked by total points</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Search -->
-                <div class="bg-white rounded-lg shadow-md p-4">
-                    <div class="relative">
-                        <input 
-                            type="text" 
-                            data-search
-                            placeholder="Search managers by name..."
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        >
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="text-gray-400">🔍</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Managers List -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <div class="flex items-center space-x-2 mb-6">
-                        <span class="text-xl">🏆</span>
-                        <h2 class="text-xl font-semibold text-gray-900">Manager Rankings</h2>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        ${managers.map((manager, index) => `
-                            <div data-searchable class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                                <div class="flex items-center space-x-4">
-                                    <div class="w-10 h-10 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold">
-                                        ${index + 1}
-                                    </div>
-                                    <div>
-                                        <h3 class="font-semibold text-gray-900">${manager.name}</h3>
-                                        <p class="text-sm text-gray-600">Manager</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-2xl font-bold text-purple-600">${manager.points}</p>
-                                    <p class="text-sm text-gray-500">points</p>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
 
     getDepartmentIcon(name) {
         const icons = {
