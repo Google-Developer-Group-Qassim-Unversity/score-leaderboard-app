@@ -11,9 +11,9 @@ class App {
         this.init();
     }
     init() {
-        this.setupEventListeners();
-        this.router.init();
         this.loadPage('dashboard');
+        this.router.init();
+        this.setupEventListeners();
     }
 
     setupEventListeners() {
@@ -21,18 +21,24 @@ class App {
         document.getElementById('nav-dashboard').addEventListener('click', () => {
             this.loadPage('dashboard');
         });
+        document.getElementById('mini-nav-dashboard').addEventListener('click', () => {
+            this.loadPage('dashboard');
+        });
 
         document.getElementById('nav-members').addEventListener('click', () => {
+            this.loadPage('members');
+        });
+        document.getElementById('mini-nav-members').addEventListener('click', () => {
             this.loadPage('members');
         });
 
         document.getElementById('nav-departments').addEventListener('click', () => {
             this.loadPage('departments');
         });
-
-        document.getElementById('nav-managers').addEventListener('click', () => {
-            this.loadPage('managers');
+        document.getElementById('mini-nav-departments').addEventListener('click', () => {
+            this.loadPage('departments');
         });
+
     }
 
     updateNavigation(activePage) {
@@ -78,9 +84,6 @@ class App {
                 case 'departments':
                     content = await this.loadDepartmentsPage();
                     break;
-                case 'managers':
-                    content = await this.loadManagersPage();
-                    break;
                 case 'department-detail':
                     content = await this.loadDepartmentDetail(params.id);
                     break;
@@ -104,20 +107,17 @@ class App {
     }
 
     async loadDashboard() {
-        const [members, departments, managers] = await Promise.all([
+        const [members, departments] = await Promise.all([
             this.apiService.getMembers(),
             this.apiService.getDepartments(),
-            this.apiService.getManagers()
         ]);
 
         return this.renderer.renderDashboard({
             members: members,
             departments: departments,
-            managers: managers,
             stats: {
                 totalMembers: 120,
                 totalDepartments: 8,
-                totalManagers: 10
             }
         });
     }
@@ -132,10 +132,6 @@ class App {
         return this.renderer.renderDepartmentsPage(departments);
     }
 
-    async loadManagersPage() {
-        const managers = await this.apiService.getManagers();
-        return this.renderer.renderManagersPage(managers);
-    }
 
     async loadDepartmentDetail(id) {
         const history = await this.apiService.getMemberHistory(id);

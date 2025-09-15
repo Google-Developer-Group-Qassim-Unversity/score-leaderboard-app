@@ -19,14 +19,6 @@ export class ApiService {
         return response.json();
     }
 
-    async getManagers() {
-        const response = await fetch('./data/managers.json');
-        if (!response.ok) {
-            throw new Error('Failed to fetch managers');
-        }
-        return response.json();
-    }
-
     async getMemberHistory(id) {
         const response = await fetch(`./data/member-history-${id}.json`);
         if (!response.ok) {

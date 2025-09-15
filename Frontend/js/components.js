@@ -4,8 +4,8 @@ export class ComponentRenderer {
             <div class="space-y-8">
                 <!-- Header -->
                 <div class="text-center">
-                    <div class="flex justify-center items-center flex-col space-x-2 mb-4">
-                    <div class="text-4xl">🏆</div>
+                    <div class="flex justify-center items-center flex-col space-x-2 mb-4 sm:flex-row">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trophy h-10 w-10 text-amber-500"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
                     <h1 class="text-4xl font-bold text-gray-900">Leaderboard Dashboard</h1>
                     </div>
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -14,54 +14,18 @@ export class ComponentRenderer {
                 </div>
 
                 <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white rounded-lg shadow-md p-6 border border-gray-100">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">Total Members</p>
-                                <p class="text-2xl font-bold text-gray-900">${data.stats.totalMembers}</p>
-                                <p class="text-sm text-gray-500">Active participants</p>
-                            </div>
-                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <span class="text-2xl">👥</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-lg shadow-md p-6 border border-gray-100">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">Departments</p>
-                                <p class="text-2xl font-bold text-gray-900">${data.stats.totalDepartments}</p>
-                                <p class="text-sm text-gray-500">Competing teams</p>
-                            </div>
-                            <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-                                <span class="text-2xl">🏢</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-lg shadow-md p-6 border border-gray-100">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">Managers</p>
-                                <p class="text-2xl font-bold text-gray-900">${data.stats.totalManagers}</p>
-                                <p class="text-sm text-gray-500">Leadership team</p>
-                            </div>
-                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                                <span class="text-2xl">👔</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div data-slot="card" class="text-card-foreground flex flex-col gap-6 rounded-xl py-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg"><div data-slot="card-header" class="@container/card-header auto-rows-min grid-rows-[auto_auto] gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 flex flex-row items-center justify-between space-y-0 pb-2"><div data-slot="card-title" class="text-sm font-medium text-gray-600">Total Members</div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-4 w-4 text-blue-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div><div data-slot="card-content" class="px-6"><div class="text-2xl font-bold text-gray-900">120</div><p class="text-xs text-gray-500 mt-1">Active participants</p></div></div> 
+                    <div data-slot="card" class="text-card-foreground flex flex-col gap-6 rounded-xl py-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg"><div data-slot="card-header" class="@container/card-header auto-rows-min grid-rows-[auto_auto] gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 flex flex-row items-center justify-between space-y-0 pb-2"><div data-slot="card-title" class="text-sm font-medium text-gray-600">Departments</div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2 h-4 w-4 text-green-600"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path><path d="M10 6h4"></path><path d="M10 10h4"></path><path d="M10 14h4"></path><path d="M10 18h4"></path></svg></div><div data-slot="card-content" class="px-6"><div class="text-2xl font-bold text-gray-900">8</div><p class="text-xs text-gray-500 mt-1">Competing teams</p></div></div>
                 </div>
 
                 <!-- Leaderboards -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Top Members -->
                     <div class="bg-white rounded-lg shadow-md p-6 border border-gray-100">
                         <div class="flex items-center justify-between mb-6">
                             <div class="flex items-center space-x-2">
-                                <span class="text-xl">🏆</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trophy h-5 w-5 text-amber-500"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
                                 <h3 class="text-lg font-semibold text-gray-900">Top Members</h3>
                             </div>
                             <button data-view-all="members" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
@@ -94,7 +58,7 @@ export class ComponentRenderer {
                     <div class="bg-white rounded-lg shadow-md p-6 border border-gray-100">
                         <div class="flex items-center justify-between mb-6">
                             <div class="flex items-center space-x-2">
-                                <span class="text-xl">🏢</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2 h-5 w-5 text-green-500"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path><path d="M10 6h4"></path><path d="M10 10h4"></path><path d="M10 14h4"></path><path d="M10 18h4"></path></svg>
                                 <h3 class="text-lg font-semibold text-gray-900">Top Departments</h3>
                             </div>
                             <button data-view-all="departments" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
@@ -116,39 +80,6 @@ export class ComponentRenderer {
                                     </div>
                                     <div class="text-right">
                                         <p class="font-bold text-emerald-600">${dept.points}</p>
-                                        <p class="text-xs text-gray-500">points</p>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <!-- Top Managers -->
-                    <div class="bg-white rounded-lg shadow-md p-6 border border-gray-100">
-                        <div class="flex items-center justify-between mb-6">
-                            <div class="flex items-center space-x-2">
-                                <span class="text-xl">👔</span>
-                                <h3 class="text-lg font-semibold text-gray-900">Top Managers</h3>
-                            </div>
-                            <button data-view-all="managers" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                                View All
-                            </button>
-                        </div>
-                        <p class="text-sm text-gray-600 mb-4">Leadership excellence</p>
-                        <div class="space-y-3">
-                            ${data.managers.map((manager, index) => `
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                                            ${index + 1}
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-900">${manager.name}</p>
-                                            <p class="text-sm text-gray-600">Manager</p>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="font-bold text-purple-600">${manager.points}</p>
                                         <p class="text-xs text-gray-500">points</p>
                                     </div>
                                 </div>
