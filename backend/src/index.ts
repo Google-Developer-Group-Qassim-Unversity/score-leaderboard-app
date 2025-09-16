@@ -4,7 +4,7 @@ import type { Response, Request } from "express"
 import cors from "cors";
 import { logErrorsMiddleware } from "./middlewares.js";
 import { handleMembers, handleMembersCount, handleMembersById } from "./members.js";
-import { handleDepartments, handleDepartmentsCount } from "./departments.js";
+import { handleDepartments, handleDepartmentsCount, handleDepartmentsById } from "./departments.js";
 
 const app = express();
 const PORT = 8000;
@@ -17,6 +17,14 @@ app.all("/", handleRoot);
 app.get("/departments", async (req, res, next) => {
     try {
         await handleDepartments(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get("/departments/:id", async (req, res, next) => {
+    try {
+        await handleDepartmentsById(req, res);
     } catch (error) {
         next(error);
     }

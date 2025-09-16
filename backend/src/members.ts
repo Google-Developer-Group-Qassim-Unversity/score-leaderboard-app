@@ -34,13 +34,29 @@ export async function handleMembers(req: Request, res: Response) {
 
 export async function handleMembersById(req: Request, res: Response) {
     const memberId = req.params.id;
+    const member = await prisma.members.findFirst({
+        where: {id: parseInt(memberId)}
+    })
     const history = await prisma.members_history.findMany({
         where: {
             id: parseInt(memberId)
+        },
+        omit : {
+            id: true,
+            name: true,
         }
     })
 
-    res.status(200).json(history);
+    // this could be problematic since I am not getting my numbers from the DB and instead are making assumtions.
+    let totalPoints = 0;
+    for (const event of history) {
+        totalPoints += event.action_points
+    }
+    return res.json({
+        ...member,
+        points: totalPoints,
+        events: history
+    })
 }
 
 export async function handleMembersCount(req: Request, res: Response) {

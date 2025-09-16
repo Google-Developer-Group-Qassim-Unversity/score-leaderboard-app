@@ -4,9 +4,11 @@ import fs from 'fs';
 export function logErrorsMiddleware(err: Error, req: Request, res: Response, next: NextFunction) {
     const MAX_LINES = 10000;
     const FILE_NAME = 'errors.log';
-
     // this is an event listener that logs the error when the response gets sent.
     res.on("finish", () => {
+        if (!fs.existsSync(FILE_NAME)) {
+            fs.writeFileSync(FILE_NAME, ''); // Create empty file
+        }
         resetTooLong(FILE_NAME, MAX_LINES);
         const message = `Error: responded to request from '${req.hostname}' with status ${res.statusCode} and got error\n---${err.stack || err}\n---\n`;
         console.log(message);
