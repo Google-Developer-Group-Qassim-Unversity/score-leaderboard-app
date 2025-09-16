@@ -19,7 +19,7 @@ jobs:
 
       - name: Copy backend files to VPS
         run: |
-          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" Backend/ root@178.128.205.239:/root/score-leaderboard-app
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" backend/ root@178.128.205.239:/root/score-leaderboard-app
 
       - name: Install dependencies and restart backend
         run: |
