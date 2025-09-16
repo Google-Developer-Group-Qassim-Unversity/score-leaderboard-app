@@ -24,8 +24,8 @@ jobs:
       - name: Install dependencies and restart backend
         run: |
           ssh -o StrictHostKeyChecking=no root@178.128.205.239 << 'EOF'
-            cd /root/score-leaderboard-backend
+            cd /root/score-leaderboard-app
             npm install
             npm run build
-            pm2 restart all || pm2 start dist/index.js --name score-leaderboard-app-backend
+            pm2 restart score-leaderboard-app-backend || pm2 start dist/index.js --name score-leaderboard-app-backend
           EOF
