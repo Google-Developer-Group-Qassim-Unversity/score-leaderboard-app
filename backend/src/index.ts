@@ -2,71 +2,57 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 import type { Response, Request } from "express"
 import cors from "cors";
+import { logErrorsMiddleware } from "./middlewares.js";
+import { handleMembers, handleMembersCount } from "./members.js";
+import { handleDepartments, handleDepartmentsCount } from "./departments.js";
+
 const app = express();
 const PORT = 8000;
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 app.use(cors());
 
 app.all("/", handleRoot);
-app.get("/departments", handleDepartments);
-app.get("/members", handleMembers);
+
+app.get("/departments", async (req, res, next) => {
+    try {
+        await handleDepartments(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get("/departments/count", async (req, res, next) => {
+    try {
+        await handleDepartmentsCount(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get("/members", async (req, res, next) => {
+    try {
+        await handleMembers(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get("/members/count", async (req, res, next) => {
+    try {
+        await handleMembersCount(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
 
 
 async function handleRoot(req: Request, res: Response) {
-    res.status(200).send("<h1>Ready</h1>").end()
+    res.status(200).send("<h1>Score Leaderboard API is Ready ✅</h1>").end()
 }
 
-async function handleDepartments(req: Request, res: Response) {
-  const grouped = await prisma.departments_points.groupBy({
-    by: ['id', 'department_name'],
-    _sum: {
-      points: true,
-    },
-    orderBy: {
-      _sum: {
-        points: 'desc',
-      },
-    },
-  });
 
-  const result = grouped.map(row => ({
-    id: row.id,
-    name: row.department_name,
-    points: row._sum?.points ?? 0,
-  }));
-    res.json(result).status(200).end();
-}
-
-export type MemberPoints = {
-    id: number;
-    name: string;
-    points: number;
-};
-
-async function handleMembers(req: Request, res: Response) {
-    const grouped = await prisma.members_points.groupBy({
-        by: ['id', 'member_name'],
-        _sum: {
-            points: true,
-        },
-        orderBy: {
-            _sum: {
-                points: 'desc',
-            },
-        },
-    });
-
-    // Map Prisma groupBy result to JSON
-    const result = grouped.map(row => ({
-        id: row.id,
-        name: row.member_name,
-        points: row._sum?.points ?? 0,
-    }));
-
-    console.log(result);
-    res.json(result).status(200).end();
-}
+app.use(logErrorsMiddleware);
 
 app.listen(PORT, () => {
     console.log(`\t🚀 Server is running at \x1b[34mhttp://localhost:${PORT}\x1b[0m`);
