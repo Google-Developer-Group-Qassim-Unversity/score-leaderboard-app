@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "npx tsc && node dist/index.js",
-    "prisma": "npx tsc && node dist/prismaTest.js"
+    "prisma": "npx tsc && node dist/prismaTest.js",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",
