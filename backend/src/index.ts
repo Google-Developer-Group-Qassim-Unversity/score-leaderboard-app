@@ -22,17 +22,17 @@ app.get("/departments", async (req, res, next) => {
     }
 });
 
-app.get("/departments/:id", async (req, res, next) => {
+app.get("/departments/count", async (req, res, next) => {
     try {
-        await handleDepartmentsById(req, res);
+        await handleDepartmentsCount(req, res);
     } catch (error) {
         next(error);
     }
 });
 
-app.get("/departments/count", async (req, res, next) => {
+app.get("/departments/:id", async (req, res, next) => {
     try {
-        await handleDepartmentsCount(req, res);
+        await handleDepartmentsById(req, res);
     } catch (error) {
         next(error);
     }
@@ -46,6 +46,14 @@ app.get("/members", async (req, res, next) => {
     }
 });
 
+app.get("/members/count", async (req, res, next) => {
+    try {
+        await handleMembersCount(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
 app.get("/members/:id", async (req, res, next) => {
     try {
         await handleMembersById(req, res);
@@ -54,13 +62,6 @@ app.get("/members/:id", async (req, res, next) => {
     }
 });
 
-app.get("/members/count", async (req, res, next) => {
-    try {
-        await handleMembersCount(req, res);
-    } catch (error) {
-        next(error);
-    }
-});
 
 
 async function handleRoot(req: Request, res: Response) {

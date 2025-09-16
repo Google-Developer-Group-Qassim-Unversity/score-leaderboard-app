@@ -53,9 +53,9 @@ export async function handleDepartmentsById(req: Request, res: Response) {
 }
 
 export async function handleDepartmentsCount(req: Request, res: Response) {
-    const departmntsCount = await prisma.departments.count();
+    const departmentCount = await prisma.departments.count();
 
     res.status(200).json({
-        members_count: departmntsCount
+        departments_count: departmentCount
     })
 }

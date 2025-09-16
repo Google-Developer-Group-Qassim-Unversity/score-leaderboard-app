@@ -53,7 +53,8 @@ export async function handleMembersById(req: Request, res: Response) {
         totalPoints += event.action_points
     }
     return res.json({
-        ...member,
+        id: member?.id,
+        name: member?.name,
         points: totalPoints,
         events: history
     })
