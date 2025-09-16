@@ -1,6 +1,6 @@
 // API utility functions for fetching data from localhost:8000
 
-const API_BASE_URL = "http://localhost:8000"
+const API_BASE_URL = "https://scoreapp.albrrak773.com"
 
 export interface ApiMember {
   id: number
@@ -134,6 +134,7 @@ export async function fetchDepartmentsCount(): Promise<number> {
 
     const data: CountResponse = await response.json()
     console.log("[v0] Successfully fetched departments count from API:", data.departments_count)
+    console.log('[DBG] raw data:', JSON.stringify(data, null, 2));
     return data.departments_count || 0
   } catch (error) {
     console.log("[v0] API fetch failed, falling back to mock data:", error)
