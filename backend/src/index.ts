@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import type { Response, Request } from "express"
 import cors from "cors";
 import { logErrorsMiddleware } from "./middlewares.js";
-import { handleMembers, handleMembersCount } from "./members.js";
+import { handleMembers, handleMembersCount, handleMembersById } from "./members.js";
 import { handleDepartments, handleDepartmentsCount } from "./departments.js";
 
 const app = express();
@@ -33,6 +33,14 @@ app.get("/departments/count", async (req, res, next) => {
 app.get("/members", async (req, res, next) => {
     try {
         await handleMembers(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get("/members/:id", async (req, res, next) => {
+    try {
+        await handleMembersById(req, res);
     } catch (error) {
         next(error);
     }

@@ -29,8 +29,18 @@ export async function handleMembers(req: Request, res: Response) {
         points: row._sum?.points ?? 0,
     }));
 
-    console.log(result);
     res.status(200).json(result).end();
+}
+
+export async function handleMembersById(req: Request, res: Response) {
+    const memberId = req.params.id;
+    const history = await prisma.members_history.findMany({
+        where: {
+            id: parseInt(memberId)
+        }
+    })
+
+    res.status(200).json(history);
 }
 
 export async function handleMembersCount(req: Request, res: Response) {
