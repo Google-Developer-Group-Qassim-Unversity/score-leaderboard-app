@@ -42,6 +42,34 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
         />
       </div>
 
+      {/* Stats Section */}
+      <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+          <CardContent className="pt-6 text-center">
+            <div className="text-2xl font-bold text-blue-600">{membersCount}</div>
+            <p className="text-sm text-gray-500">Total Members</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+          <CardContent className="pt-6 text-center">
+            <div className="text-2xl font-bold text-green-600">
+              {allMembers.length > 0
+                ? Math.round(allMembers.reduce((sum, m) => sum + m.totalPoints, 0) / allMembers.length)
+                : 0}
+            </div>
+            <p className="text-sm text-gray-500">Average Points</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+          <CardContent className="pt-6 text-center">
+            <div className="text-2xl font-bold text-purple-600">
+              {allMembers.length > 0 ? Math.max(...allMembers.map((m) => m.totalPoints)) : 0}
+            </div>
+            <p className="text-sm text-gray-500">Highest Score</p>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Results count */}
       {searchTerm && (
         <p className="text-gray-600 dark:text-gray-300 mb-4">
