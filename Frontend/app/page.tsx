@@ -35,8 +35,8 @@ export default async function Dashboard() {
     .sort((a, b) => b.points - a.points)
     .map((dept, index) => transformApiDepartment(dept, index + 1))
 
-  const topMembers = members.slice(0, 5)
-  const topDepartments = departments.slice(0, 3)
+  const topMembers = members.slice(0, 10)
+  const topDepartments = departments.slice(0, 8)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
@@ -177,28 +177,6 @@ export default async function Dashboard() {
           </Card>
         </div>
 
-        {/* Quick Actions */}
-        <div className="mt-12 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Quick Access</h2>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/members">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-                <Users className="mr-2 h-4 w-4" />
-                View All Members
-              </Button>
-            </Link>
-            <Link href="/departments">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-green-600 text-green-600 hover:bg-green-50 bg-transparent"
-              >
-                <Building2 className="mr-2 h-4 w-4" />
-                View Departments
-              </Button>
-            </Link>
-          </div>
-        </div>
       </div>
     </div>
   )
