@@ -79,64 +79,61 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
       )}
 
       {/* Leaderboard */}
-      <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-amber-500" />
-            Rankings
-            {searchTerm && (
-              <span className="text-sm font-normal text-gray-500">
-                - "{searchTerm}"
-              </span>
-            )}
-          </CardTitle>
-          <CardDescription>Individual member performance rankings</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {filteredMembers.map((member) => (
+      <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+        <div className="bg-gradient-to-br from-blue-50/50 to-white p-1">
+          <CardHeader className="pb-6">
+            <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center shadow-md">
+                <Trophy className="h-4 w-4 text-white" />
+              </div>
+              Rankings
+              {searchTerm && (
+                <span className="text-sm font-normal text-gray-500">
+                  - "{searchTerm}"
+                </span>
+              )}
+            </CardTitle>
+            <CardDescription className="text-slate-600 font-medium mt-1">Individual member performance rankings</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {filteredMembers.map((member, index) => (
               <div
                 key={member.id}
-                className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 gap-4 ${
-                  member.rank <= 3
-                    ? "bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20"
-                    : "bg-gray-50/50 dark:bg-gray-800/50"
-                }`}
+                className="group flex items-center justify-between p-5 rounded-2xl bg-gradient-to-r from-white to-slate-50/50 border border-slate-150 hover:border-slate-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
               >
-                <div className="flex items-center gap-4">
-                  <Badge
-                    variant={member.rank === 1 ? "default" : member.rank <= 3 ? "secondary" : "outline"}
-                    className="w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0"
-                  >
-                    {member.rank}
-                  </Badge>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold text-gray-900 dark:text-white truncate">{member.name}</p>
+                <div className="flex items-center gap-5">
+                  <div className="relative">
+                    <Badge
+                      variant="secondary"
+                      className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-slate-700 bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-300 shadow-sm group-hover:shadow-md transition-shadow duration-300"
+                    >
+                      {member.rank}
+                    </Badge>
+                    {member.rank <= 3 && (
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-amber-400 to-amber-500 rounded-full flex items-center justify-center shadow-sm">
+                        <span className="text-xs text-white font-bold">★</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                    <Users className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-slate-900 group-hover:text-slate-800 transition-colors duration-200">{member.name}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <p className="text-sm text-slate-500 font-medium">Member</p>
                     </div>
-                    <p className="text-sm text-gray-500">Member</p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between sm:justify-end gap-4">
-                  <div className="text-left sm:text-right">
-                    <p
-                      className={`font-bold text-lg ${
-                        member.rank === 1
-                          ? "text-amber-600"
-                          : member.rank === 2
-                            ? "text-gray-600"
-                            : member.rank === 3
-                              ? "text-amber-700"
-                              : "text-blue-600"
-                      }`}
-                    >
-                      {member.totalPoints}
-                    </p>
-                    <p className="text-xs text-gray-500">points</p>
+                  <div className="text-right">
+                    <p className="font-bold text-xl text-slate-900">{member.totalPoints}</p>
+                    <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Points Earned</p>
                   </div>
                   <Link href={`/member/${member.id}`} className="flex-shrink-0">
-                    <Button variant="outline" size="sm" className="whitespace-nowrap bg-transparent">
+                    <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
                       <Eye className="h-4 w-4 mr-1" />
                       <span className="hidden xs:inline">View Details</span>
                       <span className="xs:hidden">Details</span>
@@ -145,29 +142,29 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
                 </div>
               </div>
             ))}
-          </div>
 
-          {filteredMembers.length === 0 && searchTerm && (
-            <div className="text-center py-12">
-              <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500 mb-2">No members found matching "{searchTerm}"</p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setSearchTerm("")}
-              >
-                Clear search
-              </Button>
-            </div>
-          )}
+            {filteredMembers.length === 0 && searchTerm && (
+              <div className="text-center py-12">
+                <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 mb-2">No members found matching "{searchTerm}"</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSearchTerm("")}
+                >
+                  Clear search
+                </Button>
+              </div>
+            )}
 
-          {allMembers.length === 0 && (
-            <div className="text-center py-12">
-              <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">No members found.</p>
-            </div>
-          )}
-        </CardContent>
+            {allMembers.length === 0 && (
+              <div className="text-center py-12">
+                <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500">No members found.</p>
+              </div>
+            )}
+          </CardContent>
+        </div>
       </Card>
     </>
   )
