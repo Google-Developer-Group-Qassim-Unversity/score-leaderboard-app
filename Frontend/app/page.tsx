@@ -87,12 +87,12 @@ export default async function Dashboard() {
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                     <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
+                      <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
                     </svg>
                   </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{topMembers[0]?.totalPoints || 0}</div>
+                  <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">15</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Top Score</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Total Events</p>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center gap-2 mb-2">
