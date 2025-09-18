@@ -48,10 +48,8 @@ const PointsSystemPage = () => {
               <p className="text-sm text-slate-500 font-medium">
                 Google Developer Student Clubs
               </p>
-              <p className="text-xs text-slate-400 mt-1">
-                Qassim University
-              </p>
-              <div className="mt-2 px-3 py-1 bg-gradient-to-r from-blue-100 to-green-100 rounded-full">
+              
+              <div className="mt-2 px-3 py-1 bg-gradient-to-r from-blue-100 to-green-100 rounded-full flex items-center justify-center">
                 <span className="text-xs font-semibold text-slate-700">نظام النقاط 2025</span>
               </div>
             </div>
