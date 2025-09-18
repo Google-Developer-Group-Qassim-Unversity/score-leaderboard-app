@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Trophy, Users, Building2, Home, BadgeHelpIcon} from "lucide-react"
+import { Trophy, Users, Building2, Home, BadgeHelpIcon, Network} from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navigationItems = [
@@ -21,6 +21,11 @@ const navigationItems = [
     name: "Departments",
     href: "/departments",
     icon: Building2,
+  },
+  {
+    name: "Club Structure",
+    href: "/club-structure",
+    icon: Network,
   },
   {
     name: "How it works",
