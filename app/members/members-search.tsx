@@ -119,7 +119,7 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
                     <Users className="h-6 w-6 text-blue-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-slate-900 group-hover:text-slate-800 transition-colors duration-200">{member.name}</p>
+                    <p className="font-bold text-slate-900 text-base group-hover:text-slate-800 transition-colors duration-200">{member.name}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                       <p className="text-sm text-slate-500 font-medium">Member</p>

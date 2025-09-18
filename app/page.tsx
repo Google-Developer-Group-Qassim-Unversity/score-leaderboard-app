@@ -236,11 +236,8 @@ export default async function Dashboard() {
                           </div>
                         )}
                       </div>
-                      <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                        <Users className="h-6 w-6 text-blue-600" />
-                      </div>
                       <div className="flex-1">
-                        <p className="text-xl font-bold text-gray-900 dark:text-white font-semibold group-hover:text-slate-800 transition-colors duration-200">{member.name}</p>
+                        <p className="font-bold text-slate-900 text-base group-hover:text-slate-800 transition-colors duration-200">{member.name}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                           <p className="text-sm text-slate-500 font-medium">Member</p>
@@ -299,11 +296,8 @@ export default async function Dashboard() {
                           </div>
                         )}
                       </div>
-                      <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                        <Building2 className="h-6 w-6 text-green-600" />
-                      </div>
                       <div className="flex-1">
-                        <p className="text-xl font-bold text-gray-900 dark:text-white font-semibold group-hover:text-slate-800 transition-colors duration-200">{department.name}</p>
+                        <p className="font-bold text-slate-900 text-lg group-hover:text-slate-800 transition-colors duration-200">{department.name}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                           <p className="text-sm text-slate-500 font-medium">Department</p>
