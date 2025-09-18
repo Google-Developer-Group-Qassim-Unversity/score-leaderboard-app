@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Trophy, Users, Building2, Home, BadgeHelpIcon, Network} from "lucide-react"
@@ -43,8 +44,14 @@ export function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <Trophy className="h-8 w-8 text-amber-500" />
-            <span className="text-xl font-bold text-gray-900 dark:text-white">Leaderboard</span>
+            <Image 
+              src="/favicon.png" 
+              alt="Logo" 
+              width={32} 
+              height={32} 
+              className="h-8 w-8"
+            />
+            <span className="text-xl font-bold text-gray-900 dark:text-white">GDG Leaderboard</span>
           </Link>
 
           {/* Navigation Links */}
