@@ -315,51 +315,6 @@ export default async function Dashboard() {
           </Card>
         </div>
       </div>
-
-      {/* Enhanced Floating Action Menu */}
-      <div className="fixed bottom-8 right-8 z-20">
-        <div className="relative group">
-          {/* Quick Action Buttons */}
-          <div className="absolute bottom-16 right-0 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 space-y-3">
-            <Link href="/members">
-              <button className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group/btn">
-                <Users className="w-5 h-5" />
-                <div className="absolute right-14 px-3 py-1 bg-slate-900 text-white text-xs rounded-lg opacity-0 group-hover/btn:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                  View Members
-                </div>
-              </button>
-            </Link>
-            <Link href="/departments">
-              <button className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group/btn">
-                <Building2 className="w-5 h-5" />
-                <div className="absolute right-14 px-3 py-1 bg-slate-900 text-white text-xs rounded-lg opacity-0 group-hover/btn:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                  View Departments
-                </div>
-              </button>
-            </Link>
-            <Link href="/how">
-              <button className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group/btn">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <div className="absolute right-14 px-3 py-1 bg-slate-900 text-white text-xs rounded-lg opacity-0 group-hover/btn:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                  How it Works
-                </div>
-              </button>
-            </Link>
-          </div>
-          
-          {/* Main FAB */}
-          <button className="w-14 h-14 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group-hover:rotate-45">
-            <svg className="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-            </svg>
-          </button>
-          <div className="absolute bottom-full right-0 mb-2 px-3 py-1 bg-slate-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-            Quick Actions
-          </div>
-        </div>
-      </div>
     </div>
     </div>
   )
