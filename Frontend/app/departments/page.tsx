@@ -131,69 +131,96 @@ export default async function DepartmentsLeaderboard() {
           </CardHeader>
           <CardContent className="p-8">
             <div className="space-y-4">
-              {departments.map((department, index) => (
-                <div
-                  key={department.id}
-                  className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-6 rounded-2xl transition-all duration-300 hover:bg-slate-50 hover:shadow-lg hover:scale-[1.02] gap-4 ${
-                    department.rank <= 3
-                      ? "bg-gradient-to-r from-green-50 via-emerald-50 to-blue-50 border-2 border-green-200 shadow-md"
-                      : "bg-slate-50/70 border border-slate-200 hover:border-slate-300"
-                  }`}
-                >
-                  <div className="flex items-center gap-4">
-                    <Badge
-                      variant={department.rank === 1 ? "default" : department.rank <= 3 ? "secondary" : "outline"}
-                      className={`w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg flex-shrink-0 shadow-lg ${
-                        department.rank === 1 
-                          ? "bg-gradient-to-br from-amber-500 to-amber-600 text-white border-0" 
-                          : department.rank === 2
-                            ? "bg-gradient-to-br from-slate-400 to-slate-500 text-white border-0"
-                            : department.rank === 3
-                              ? "bg-gradient-to-br from-orange-400 to-orange-500 text-white border-0"
-                              : "bg-gradient-to-br from-slate-200 to-slate-300 text-slate-700 border-0"
-                      }`}
-                    >
-                      {department.rank}
-                    </Badge>
-                    <div className="flex items-center gap-4 min-w-0">
-                      <div className="text-3xl flex-shrink-0 p-2 bg-white rounded-xl shadow-sm">{getDepartmentIcon(department.name)}</div>
-                      <div className="min-w-0">
-                        <p className="font-bold text-xl text-slate-800 truncate">{department.name}</p>
-                        <div className="flex items-center gap-2 text-sm text-slate-500">
-                          <Building2 className="h-4 w-4 flex-shrink-0" />
-                          <span>Department Team</span>
+              {departments.map((department, index) => {
+                // Google-themed podium colors for top 3
+                const getPodiumStyles = (rank: number) => {
+                  switch (rank) {
+                    case 1: // Gold - Google Yellow/Amber inspired
+                      return {
+                        container: "bg-gradient-to-br from-amber-100/90 via-yellow-50 to-amber-200/60 border-2 border-amber-300/70 hover:border-amber-400 shadow-xl shadow-amber-500/20 hover:shadow-amber-500/30",
+                        badge: "bg-gradient-to-br from-amber-400 to-amber-500 text-white border-0 shadow-lg shadow-amber-500/30",
+                        medalBadge: "bg-gradient-to-r from-amber-400 to-amber-500",
+                        points: "text-amber-600",
+                        icon: "🥇"
+                      }
+                    case 2: // Silver - Google Blue inspired  
+                      return {
+                        container: "bg-gradient-to-br from-blue-100/90 via-slate-100 to-blue-200/60 border-2 border-blue-400/70 hover:border-blue-500 shadow-xl shadow-blue-500/20 hover:shadow-blue-500/30",
+                        badge: "bg-gradient-to-br from-blue-400 to-blue-500 text-white border-0 shadow-lg shadow-blue-500/30",
+                        medalBadge: "bg-gradient-to-r from-blue-400 to-blue-500",
+                        points: "text-blue-600",
+                        icon: "🥈"
+                      }
+                    case 3: // Copper - Google Red-Orange inspired
+                      return {
+                        container: "bg-gradient-to-br from-orange-100/90 via-red-50 to-orange-200/60 border-2 border-orange-400/70 hover:border-orange-500 shadow-xl shadow-orange-500/20 hover:shadow-orange-500/30",
+                        badge: "bg-gradient-to-br from-orange-400 to-orange-500 text-white border-0 shadow-lg shadow-orange-500/30",
+                        medalBadge: "bg-gradient-to-r from-orange-400 to-orange-500",
+                        points: "text-orange-600",
+                        icon: "🥉"
+                      }
+                    default:
+                      return {
+                        container: "bg-slate-50/70 border border-slate-200 hover:border-slate-300",
+                        badge: "bg-gradient-to-br from-slate-200 to-slate-300 text-slate-700 border-0",
+                        medalBadge: "bg-gradient-to-r from-slate-400 to-slate-500",
+                        points: "text-green-600",
+                        icon: ""
+                      }
+                  }
+                }
+                
+                const podiumStyles = getPodiumStyles(department.rank)
+                
+                return (
+                  <div
+                    key={department.id}
+                    className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-6 rounded-2xl transition-all duration-300 hover:bg-slate-50 hover:shadow-lg hover:scale-[1.02] gap-4 ${podiumStyles.container}`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="relative">
+                        <Badge
+                          variant={department.rank === 1 ? "default" : department.rank <= 3 ? "secondary" : "outline"}
+                          className={`w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg flex-shrink-0 shadow-lg ${podiumStyles.badge}`}
+                        >
+                          {department.rank}
+                        </Badge>
+                        {department.rank <= 3 && (
+                          <div className={`absolute -top-1 -right-1 w-6 h-6 ${podiumStyles.medalBadge} rounded-full flex items-center justify-center shadow-sm`}>
+                            <span className="text-xs text-white font-bold">{podiumStyles.icon}</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-4 min-w-0">
+                        <div className="text-3xl flex-shrink-0 p-2 bg-white rounded-xl shadow-sm">{getDepartmentIcon(department.name)}</div>
+                        <div className="min-w-0">
+                          <p className="font-bold text-xl text-slate-800 truncate">{department.name}</p>
+                          <div className="flex items-center gap-2 text-sm text-slate-500">
+                            <Building2 className="h-4 w-4 flex-shrink-0" />
+                            <span>Department Team</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-6">
-                    <div className="text-left sm:text-right">
-                      <p
-                        className={`font-extrabold text-3xl ${
-                          department.rank === 1
-                            ? "text-amber-600"
-                            : department.rank === 2
-                              ? "text-slate-600"
-                              : department.rank === 3
-                                ? "text-orange-600"
-                                : "text-green-600"
-                        }`}
-                      >
-                        {department.totalPoints}
-                      </p>
-                      <p className="text-sm text-slate-500 font-medium">points</p>
+                    <div className="flex items-center justify-between sm:justify-end gap-6">
+                      <div className="text-left sm:text-right">
+                        <p className={`font-extrabold text-3xl ${podiumStyles.points}`}>
+                          {department.totalPoints}
+                        </p>
+                        <p className="text-sm text-slate-500 font-medium">points</p>
+                      </div>
+                      <Link href={`/department/${department.id}`} className="flex-shrink-0">
+                        <Button variant="outline" size="lg" className="whitespace-nowrap bg-white/90 hover:bg-white border-2 border-slate-200 hover:border-blue-300 shadow-md hover:shadow-lg transition-all duration-200">
+                          <Eye className="h-5 w-5 mr-2" />
+                          <span className="hidden sm:inline">View Details</span>
+                          <span className="sm:hidden">Details</span>
+                        </Button>
+                      </Link>
                     </div>
-                    <Link href={`/department/${department.id}`} className="flex-shrink-0">
-                      <Button variant="outline" size="lg" className="whitespace-nowrap bg-white/90 hover:bg-white border-2 border-slate-200 hover:border-blue-300 shadow-md hover:shadow-lg transition-all duration-200">
-                        <Eye className="h-5 w-5 mr-2" />
-                        <span className="hidden sm:inline">View Details</span>
-                        <span className="sm:hidden">Details</span>
-                      </Button>
-                    </Link>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
 
             {departments.length === 0 && (
