@@ -154,16 +154,16 @@ export default function Dashboard() {
                 <Trophy className="h-8 w-8 text-white" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
+            <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight arabic-title">
               {getText('dashboard.title', 'Leaderboard Dashboard')}
             </h1>
           </div>
-          <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium">
+          <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium arabic-content">
             {getText('dashboard.subtitle', 'Track performance across members and departments with comprehensive points tracking')}
           </p>
 
           {apiStatus === "fallback" && (
-            <div className="mt-6 inline-flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-amber-100 to-amber-200 text-amber-800 rounded-full text-sm font-medium shadow-md">
+            <div className="mt-6 inline-flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-amber-100 to-amber-200 text-amber-800 rounded-full text-sm font-medium shadow-md arabic-text">
               <AlertCircle className="h-4 w-4" />
               {getText('dashboard.fallbackMessage', 'Using demo data - API server not available')}
             </div>
@@ -183,7 +183,7 @@ export default function Dashboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">15</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">{getText('dashboard.totalEvents', 'Total Events')}</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium arabic-text">{getText('dashboard.totalEvents', 'Total Events')}</p>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -194,7 +194,7 @@ export default function Dashboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{topDepartments[0]?.totalPoints || 0}</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">{getText('dashboard.bestDept', 'Best Dept')}</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium arabic-text">{getText('dashboard.bestDept', 'Best Dept')}</p>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -205,7 +205,7 @@ export default function Dashboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-amber-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{members.reduce((sum, m) => sum + m.totalPoints, 0)}</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">{getText('dashboard.totalPoints', 'Total Points')}</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium arabic-text">{getText('dashboard.totalPoints', 'Total Points')}</p>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -216,7 +216,7 @@ export default function Dashboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{Math.round(members.reduce((sum, m) => sum + m.totalPoints, 0) / members.length) || 0}</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">{getText('dashboard.avgScore', 'Avg Score')}</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium arabic-text">{getText('dashboard.avgScore', 'Avg Score')}</p>
               </div>
             </div>
             
@@ -228,7 +228,7 @@ export default function Dashboard() {
           <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
             <div className="bg-gradient-to-br from-blue-50/50 to-white p-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                <CardTitle className="text-sm font-semibold text-slate-600 uppercase tracking-wider">{getText('dashboard.totalMembers', 'Total Members')}</CardTitle>
+                <CardTitle className="text-sm font-semibold text-slate-600 uppercase tracking-wider arabic-text">{getText('dashboard.totalMembers', 'Total Members')}</CardTitle>
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
                   <Users className="h-5 w-5 text-white" />
                 </div>
@@ -243,7 +243,7 @@ export default function Dashboard() {
           <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
             <div className="bg-gradient-to-br from-green-50/50 to-white p-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                <CardTitle className="text-sm font-semibold text-slate-600 uppercase tracking-wider">{getText('dashboard.departments', 'Departments')}</CardTitle>
+                <CardTitle className="text-sm font-semibold text-slate-600 uppercase tracking-wider arabic-text">{getText('dashboard.departments', 'Departments')}</CardTitle>
                 <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-md">
                   <Building2 className="h-5 w-5 text-white" />
                 </div>
@@ -275,7 +275,7 @@ export default function Dashboard() {
                 <path d="M5 12L5.74 14.09L8 15L5.74 15.91L5 18L4.26 15.91L2 15L4.26 14.09L5 12Z"/>
               </svg>
             </div>
-            <h2 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent arabic-title">
               {getText('dashboard.currentRankings', 'Current Rankings')}
             </h2>
           </div>
@@ -292,13 +292,13 @@ export default function Dashboard() {
               <CardHeader className="pb-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3">
+                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3 arabic-heading">
                       <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center shadow-md">
                         <Trophy className="h-4 w-4 text-white" />
                       </div>
                       {getText('dashboard.topMembers', 'Top Members')}
                     </CardTitle>
-                    <CardDescription className="text-slate-600 font-medium mt-1">{getText('dashboard.leadingIndividual', 'Leading individual performers')}</CardDescription>
+                    <CardDescription className="text-slate-600 font-medium mt-1 arabic-content">{getText('dashboard.leadingIndividual', 'Leading individual performers')}</CardDescription>
                   </div>
                   <Link href="/members">
                     <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
@@ -352,13 +352,13 @@ export default function Dashboard() {
               <CardHeader className="pb-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3">
+                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3 arabic-heading">
                       <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-md">
                         <Users className="h-4 w-4 text-white" />
                       </div>
                       {getText('dashboard.topDepartments', 'Top Departments')}
                     </CardTitle>
-                    <CardDescription className="text-slate-600 font-medium mt-1">{getText('dashboard.leadingTeam', 'Leading team performers')}</CardDescription>
+                    <CardDescription className="text-slate-600 font-medium mt-1 arabic-content">{getText('dashboard.leadingTeam', 'Leading team performers')}</CardDescription>
                   </div>
                   <Link href="/departments">
                     <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">

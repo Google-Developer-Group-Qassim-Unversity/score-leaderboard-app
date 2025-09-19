@@ -122,11 +122,11 @@ export default function DepartmentsLeaderboard() {
                   <Building2 className="h-8 w-8 text-white" />
                 </div>
               </div>
-              <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
+              <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight arabic-title">
                 {getText('departments.title', 'Departments Leaderboard')}
               </h1>
             </div>
-            <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium">
+            <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium arabic-content">
               {getText('departments.subtitle', `${departmentsCount} departments ranked by total points earned through team collaboration and achievements`)}
             </p>
           </div>

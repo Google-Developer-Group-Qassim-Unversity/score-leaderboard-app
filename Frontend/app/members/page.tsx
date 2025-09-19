@@ -112,12 +112,12 @@ export default function MembersLeaderboard() {
                   <Users className="h-8 w-8 text-white" />
                 </div>
               </div>
-              <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
+              <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight arabic-title">
                 {getText('members.title', 'Members Leaderboard')}
               </h1>
               
             </div>
-            <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium">
+            <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium arabic-content">
               {getText('members.subtitle', `${membersCount} members ranked by total points earned through various activities and achievements`)}
             </p>
           </div>

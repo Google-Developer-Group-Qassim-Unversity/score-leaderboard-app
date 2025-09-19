@@ -206,7 +206,7 @@ export default function ClubStructurePage() {
             </div>
             
             <div className="space-y-6">
-              <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-white via-blue-100 to-green-100 bg-clip-text text-transparent leading-tight tracking-tight">
+              <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-white via-blue-100 to-green-100 bg-clip-text text-transparent leading-tight tracking-tight arabic-title">
                 {getText('clubStructure.title', 'هيكلة النادي')}
               </h1>
               <div className="flex items-center justify-center gap-4 mb-6">
@@ -220,7 +220,7 @@ export default function ClubStructurePage() {
               
             </div>
             
-            <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto font-medium leading-relaxed drop-shadow-sm">
+            <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto font-medium leading-relaxed drop-shadow-sm arabic-content">
               {getText('clubStructure.subtitle', 'تعرف على الهيكل التنظيمي لنادي مطوري جوجل والأقسام المختلفة')}
             </p>
           </div>

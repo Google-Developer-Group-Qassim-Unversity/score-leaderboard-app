@@ -70,10 +70,10 @@ const PointsSystemPage = () => {
                 ))}
               </div>
               <div className="text-right">
-                <h1 className="text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
+                <h1 className="text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight arabic-title">
                   {getText('how.title', 'نظام التقييم والمتابعة للنقاط')}
                 </h1>
-                <p className="text-slate-600 mt-2 text-base md:text-lg font-medium">
+                <p className="text-slate-600 mt-2 text-base md:text-lg font-medium arabic-content">
                   {getText('how.subtitle', 'للنادي الطلابي ممثلة بمجموعة قوقل للطلبة المطورين')}
                 </p>
                 <div className="flex items-center gap-2 mt-2 justify-end">

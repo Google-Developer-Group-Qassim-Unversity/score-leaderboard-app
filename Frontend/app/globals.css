@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -121,4 +122,85 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Arabic Font Configuration */
+.arabic-font {
+  font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-feature-settings: "liga" 1, "kern" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Apply Arabic font when HTML has dir="rtl" */
+html[dir="rtl"] {
+  font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-feature-settings: "liga" 1, "kern" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Specific styling for Arabic text elements */
+.arabic-text {
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 400;
+  line-height: 1.8;
+  letter-spacing: 0.5px;
+  padding-top: 0.15em;
+  padding-bottom: 0.15em;
+}
+
+.arabic-heading {
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: 0.3px;
+  padding-top: 0.1em;
+  padding-bottom: 0.2em;
+}
+
+.arabic-title {
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+  padding-top: 0.1em;
+  padding-bottom: 0.25em;
+  overflow: visible;
+}
+
+/* Enhanced typography for Arabic content */
+.arabic-content {
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 300;
+  line-height: 1.9;
+  letter-spacing: 0.4px;
+  padding-top: 0.1em;
+  padding-bottom: 0.15em;
+}
+
+/* Soft edge styling */
+.soft-text {
+  filter: contrast(0.9) brightness(1.05);
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Fix for Arabic text clipping issues */
+html[dir="rtl"] * {
+  overflow: visible;
+}
+
+/* Ensure proper spacing for Arabic headings */
+html[dir="rtl"] h1,
+html[dir="rtl"] h2,
+html[dir="rtl"] h3,
+html[dir="rtl"] h4,
+html[dir="rtl"] h5,
+html[dir="rtl"] h6 {
+  line-height: 1.6;
+  padding-top: 0.1em;
+  padding-bottom: 0.2em;
+  overflow: visible;
 }
