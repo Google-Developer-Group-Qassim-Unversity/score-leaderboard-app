@@ -1,10 +1,38 @@
 "use client"
 
+import { useTranslation } from "react-i18next"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Users, Crown, Shield, Cog, Palette, Bot, Calendar, Megaphone, Lightbulb, Trophy } from "lucide-react"
 
 export default function ClubStructurePage() {
+  const { t } = useTranslation()
+
+  // Safe text function - use language-appropriate fallbacks
+  const getText = (key: string, fallback: string) => {
+    // Get stored language to show appropriate fallback
+    const storedLang = typeof window !== 'undefined' ? localStorage.getItem('i18nextLng') || 'ar' : 'ar';
+    
+    if (storedLang === 'en') {
+      // English fallbacks
+      const englishDefaults: Record<string, string> = {
+        'clubStructure.organizationStructure': 'Organization Structure',
+        'clubStructure.title': 'Club Structure',
+        'clubStructure.gdgTitle': 'Google Developer Groups',
+        'clubStructure.subtitle': 'Learn about the organizational structure of Google Developer Groups and its different departments'
+      }
+      return t(key) || englishDefaults[key] || fallback;
+    } else {
+      // Arabic fallbacks - match exactly with translation file
+      const arabicDefaults: Record<string, string> = {
+        'clubStructure.organizationStructure': 'الهيكل التنظيمي',
+        'clubStructure.title': 'هيكلة النادي',
+        'clubStructure.gdgTitle': 'مجموعة مطوري جوجل',
+        'clubStructure.subtitle': 'تعرف على الهيكل التنظيمي لنادي مطوري جوجل والأقسام المختلفة'
+      }
+      return t(key) || arabicDefaults[key] || fallback;
+    }
+  }
   const clubData = {
     president: {
       title: "رؤساء النادي",
@@ -174,12 +202,12 @@ export default function ClubStructurePage() {
           <div className="text-center space-y-8">
             <div className="inline-flex items-center gap-3 bg-white/15 backdrop-blur-sm rounded-full px-8 py-4 border border-white/25 shadow-xl hover:bg-white/20 transition-all duration-300 hover:scale-105">
               <Users className="h-6 w-6 text-white animate-pulse" />
-              <span className="text-white text-base font-semibold">Organization Structure</span>
+              <span className="text-white text-base font-semibold">{getText('clubStructure.organizationStructure', 'الهيكل التنظيمي')}</span>
             </div>
             
             <div className="space-y-6">
               <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-white via-blue-100 to-green-100 bg-clip-text text-transparent leading-tight tracking-tight">
-                هيكلة النادي
+                {getText('clubStructure.title', 'هيكلة النادي')}
               </h1>
               <div className="flex items-center justify-center gap-4 mb-6">
                 <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-500 group border-4 border-white/20">
@@ -187,13 +215,13 @@ export default function ClubStructurePage() {
                     <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                   </svg>
                 </div>
-                <span className="text-2xl font-bold text-white drop-shadow-lg">Google Developer Groups</span>
+                <span className="text-2xl font-bold text-white drop-shadow-lg">{getText('clubStructure.gdgTitle', 'مجموعة مطوري جوجل')}</span>
               </div>
               
             </div>
             
             <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto font-medium leading-relaxed drop-shadow-sm">
-              تعرف على الهيكل التنظيمي لنادي مطوري جوجل والأقسام المختلفة
+              {getText('clubStructure.subtitle', 'تعرف على الهيكل التنظيمي لنادي مطوري جوجل والأقسام المختلفة')}
             </p>
           </div>
         </div>

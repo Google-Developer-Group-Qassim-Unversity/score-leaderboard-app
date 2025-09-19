@@ -1,3 +1,7 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -6,13 +10,74 @@ import { Trophy, Users, ArrowLeft, Eye, Search } from "lucide-react"
 import { fetchMembers, fetchMembersCount, transformApiMember } from "@/lib/api"
 import { MembersSearch } from "./members-search"
 
-export default async function MembersLeaderboard() {
-  const [apiMembers, membersCount] = await Promise.all([fetchMembers(), fetchMembersCount()])
+export default function MembersLeaderboard() {
+  const { t } = useTranslation()
+  const [members, setMembers] = useState<any[]>([])
+  const [membersCount, setMembersCount] = useState(0)
+  const [isLoaded, setIsLoaded] = useState(false)
 
-  // Transform and sort API data
-  const members = apiMembers
-    .sort((a, b) => b.points - a.points)
-    .map((member, index) => transformApiMember(member, index + 1))
+  // Safe text function for hydration - use language-appropriate fallbacks
+  const getText = (key: string, fallback: string) => {
+    if (!isLoaded) {
+      // Get stored language to show appropriate fallback
+      const storedLang = typeof window !== 'undefined' ? localStorage.getItem('i18nextLng') || 'ar' : 'ar';
+      
+      if (storedLang === 'en') {
+        // English fallbacks
+        const englishDefaults: Record<string, string> = {
+          'members.title': 'Members Leaderboard',
+          'members.subtitle': 'Members ranked by total points earned through individual achievements and contributions',
+          'members.totalMembers': 'Total Members',
+          'members.pointsEarned': 'Points Earned',
+          'members.searchPlaceholder': 'Search for members...',
+          'members.noMembersFound': 'No members found',
+          'members.rankings': 'Member Rankings',
+          'members.rankingsSubtitle': 'Individual performance rankings across all members',
+          'members.member': 'Member',
+          'members.viewDetails': 'View Details'
+        }
+        return englishDefaults[key] || fallback;
+      } else {
+        // Arabic fallbacks - match exactly with translation file
+        const arabicDefaults: Record<string, string> = {
+          'members.title': 'متصدري الأعضاء',
+          'members.subtitle': 'عضو مرتب حسب إجمالي النقاط المكتسبة من خلال الإنجازات والمساهمات الفردية',
+          'members.totalMembers': 'إجمالي الأعضاء',
+          'members.pointsEarned': 'النقاط المكتسبة',
+          'members.searchPlaceholder': 'البحث عن أعضاء...',
+          'members.noMembersFound': 'لم يتم العثور على أعضاء',
+          'members.rankings': 'تصنيفات الأعضاء',
+          'members.rankingsSubtitle': 'تصنيفات الأداء الفردي عبر جميع الأعضاء',
+          'members.member': 'عضو',
+          'members.viewDetails': 'عرض التفاصيل'
+        }
+        return arabicDefaults[key] || fallback;
+      }
+    }
+    return t(key) || fallback
+  }
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [apiMembers, count] = await Promise.all([fetchMembers(), fetchMembersCount()])
+        
+        // Transform and sort API data
+        const transformedMembers = apiMembers
+          .sort((a, b) => b.points - a.points)
+          .map((member, index) => transformApiMember(member, index + 1))
+
+        setMembers(transformedMembers)
+        setMembersCount(count)
+      } catch (error) {
+        console.error('Failed to load members data:', error)
+      } finally {
+        setIsLoaded(true)
+      }
+    }
+
+    loadData()
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 relative overflow-x-hidden">
@@ -36,7 +101,7 @@ export default async function MembersLeaderboard() {
           <Link href="/" className="inline-block mb-6">
             <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
+              {getText('members.backToDashboard', 'Back to Dashboard')}
             </Button>
           </Link>
           
@@ -48,12 +113,12 @@ export default async function MembersLeaderboard() {
                 </div>
               </div>
               <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
-                Members Leaderboard
+                {getText('members.title', 'Members Leaderboard')}
               </h1>
               
             </div>
             <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium">
-              {membersCount} members ranked by total points earned through various activities and achievements
+              {getText('members.subtitle', `${membersCount} members ranked by total points earned through various activities and achievements`)}
             </p>
           </div>
         </div>
@@ -69,7 +134,7 @@ export default async function MembersLeaderboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-amber-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{members[0]?.totalPoints || 0}</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Top Score</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">{getText('members.topScore', 'Top Score')}</p>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -78,7 +143,7 @@ export default async function MembersLeaderboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{membersCount}</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Total Members</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">{getText('members.totalMembers', 'Total Members')}</p>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -89,7 +154,7 @@ export default async function MembersLeaderboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{Math.round(members.reduce((sum, m) => sum + m.totalPoints, 0) / members.length) || 0}</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Avg Score</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">{getText('members.avgScore', 'Avg Score')}</p>
               </div>
             </div>
             

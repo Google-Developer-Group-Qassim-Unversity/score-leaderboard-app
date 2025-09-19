@@ -1,6 +1,46 @@
+"use client"
+
 import React from 'react';
+import { useTranslation } from "react-i18next"
 
 const PointsSystemPage = () => {
+  const { t } = useTranslation()
+
+  // Safe text function - use language-appropriate fallbacks
+  const getText = (key: string, fallback: string) => {
+    // Get stored language to show appropriate fallback
+    const storedLang = typeof window !== 'undefined' ? localStorage.getItem('i18nextLng') || 'ar' : 'ar';
+    
+    if (storedLang === 'en') {
+      // English fallbacks - use the English translation content
+      const englishDefaults: Record<string, string> = {
+        'how.title': 'Points Evaluation and Tracking System',
+        'how.subtitle': 'For the student club represented by Google Developer Student Clubs',
+        'how.gdsc': 'Google Developer Student Clubs',
+        'how.pointsSystem': 'Points System 2025',
+        'how.generalIdea': 'General Idea',
+        'how.departmentActivities': 'Activity Types and Basic Points (for Department)',
+        'how.memberPointsSection': 'Member Points (Attendance/Participation/Organization)',
+        'how.byGoogleDevs': 'By Google Devs, For You',
+        'how.footer': 'Enhancing students\' skills in technology and programming through interactive activities and events'
+      }
+      return t(key) || englishDefaults[key] || fallback;
+    } else {
+      // Arabic fallbacks
+      const arabicDefaults: Record<string, string> = {
+        'how.title': 'نظام تقييم ومتابعة النقاط',
+        'how.subtitle': 'للنادي الطلابي المتمثل في Google Developer Student Clubs',
+        'how.gdsc': 'Google Developer Student Clubs',
+        'how.pointsSystem': 'نظام النقاط 2025',
+        'how.generalIdea': 'الفكرة العامة',
+        'how.departmentActivities': 'أنواع الأنشطة والنقاط الأساسية (للقسم)',
+        'how.memberPointsSection': 'نقاط الأعضاء (الحضور/المشاركة/التنظيم)',
+        'how.byGoogleDevs': 'By Google Devs, For You',
+        'how.footer': 'تعزيز مهارات الطلاب في التكنولوجيا والبرمجة من خلال الأنشطة والفعاليات التفاعلية'
+      }
+      return t(key) || arabicDefaults[key] || fallback;
+    }
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 relative overflow-x-hidden" dir="rtl">
       {/* Background Decoration */}
@@ -31,10 +71,10 @@ const PointsSystemPage = () => {
               </div>
               <div className="text-right">
                 <h1 className="text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
-                  نظام التقييم والمتابعة للنقاط
+                  {getText('how.title', 'نظام التقييم والمتابعة للنقاط')}
                 </h1>
                 <p className="text-slate-600 mt-2 text-base md:text-lg font-medium">
-                  للنادي الطلابي ممثلة بمجموعة قوقل للطلبة المطورين
+                  {getText('how.subtitle', 'للنادي الطلابي ممثلة بمجموعة قوقل للطلبة المطورين')}
                 </p>
                 <div className="flex items-center gap-2 mt-2 justify-end">
                   <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
@@ -46,11 +86,11 @@ const PointsSystemPage = () => {
             </div>
             <div className="text-center md:text-right">
               <p className="text-sm text-slate-500 font-medium">
-                Google Developer Student Clubs
+                {getText('how.gdsc', 'نوادي طلاب مطوري جوجل')}
               </p>
               
               <div className="mt-2 px-3 py-1 bg-gradient-to-r from-blue-100 to-green-100 rounded-full flex items-center justify-center">
-                <span className="text-xs font-semibold text-slate-700">نظام النقاط 2025</span>
+                <span className="text-xs font-semibold text-slate-700">{getText('how.pointsSystem', 'نظام النقاط 2025')}</span>
               </div>
             </div>
           </div>
@@ -69,7 +109,7 @@ const PointsSystemPage = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
               </svg>
               <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
-                الفكرة العامة
+                {getText('how.generalIdea', 'الفكرة العامة')}
               </h2>
             </div>
           </div>
@@ -82,7 +122,7 @@ const PointsSystemPage = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
                     </svg>
                   </div>
-                  <span className="leading-relaxed">كل نشاط له نقاط أساسية + مضاعفات (حسب الحضور والجودة والتزام الوقت… إلخ).</span>
+                  <span className="leading-relaxed">{getText('how.generalIdea1', 'كل نشاط له نقاط أساسية + مضاعفات (حسب الحضور والجودة والوقت المستغرق...الخ).')}</span>
                 </li>
                 <li className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mt-1 shadow-md hover:shadow-lg transition-shadow duration-200">
@@ -90,7 +130,7 @@ const PointsSystemPage = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
                     </svg>
                   </div>
-                  <span className="leading-relaxed">فيه نقاط للأقسام (نقاط قسم) وفيه نقاط للأعضاء (نقاط عضو).</span>
+                  <span className="leading-relaxed">{getText('how.generalIdea2', 'هناك نقاط للأقسام (نقاط قسم) ونقاط للأعضاء (نقاط عضو).')}</span>
                 </li>
                 <li className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mt-1 shadow-md hover:shadow-lg transition-shadow duration-200">
@@ -98,7 +138,7 @@ const PointsSystemPage = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
                     </svg>
                   </div>
-                  <span className="leading-relaxed">قسم التقارير هو المسؤول عن التحقق، التسجيل، والحسبة، ونشر لوحات النتائج بشكل دوري.</span>
+                  <span className="leading-relaxed">{getText('how.generalIdea3', 'قسم التقارير مسؤول عن التدقيق والتسجيل والحساب ونشر لوحات النتائج بشكل دوري.')}</span>
                 </li>
               </ul>
               
@@ -127,7 +167,7 @@ const PointsSystemPage = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
               </svg>
               <h2 className="text-2xl md:text-3xl font-bold text-yellow-600">
-                أنواع الأنشطة والنقاط الأساسية (للقسم)
+                {getText('how.departmentActivities', 'أنواع الأنشطة والنقاط الأساسية (للقسم)')}
               </h2>
             </div>
           </div>
@@ -136,22 +176,22 @@ const PointsSystemPage = () => {
               <table className="min-w-full text-right">
               <thead className="bg-gradient-to-r from-slate-100 to-slate-200">
                 <tr>
-                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 uppercase tracking-wider">النوع</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 uppercase tracking-wider">التعريف المختصر</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700 uppercase tracking-wider">النقاط الأساسية</th>
+                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 uppercase tracking-wider">{getText('how.activityType', 'النوع')}</th>
+                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 uppercase tracking-wider">{getText('how.shortDefinition', 'التعريف المختصر')}</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700 uppercase tracking-wider">{getText('how.basicPoints', 'النقاط الأساسية')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">دورة حضورية (≥ 2 ساعات)</td><td className="px-6 py-4 text-slate-600">تدريب وجاهي داخل الكلية/الجامعة</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">15</span></td></tr>
-                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">دورة أونلاين (≥ 1.5 ساعة)</td><td className="px-6 py-4 text-slate-600">تدريب عن بُعد</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">9</span></td></tr>
-                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">معسكر تدريبي</td><td className="px-6 py-4 text-slate-600">لكل يوم فعلي تدريبي (6 ساعات فأكثر)</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-16 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">20/يوم</span></td></tr>
-                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">لقاء تقني/جلسة شهرية</td><td className="px-6 py-4 text-slate-600">جلسة تبادل معرفة/نقاش</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
-                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">مسابقة داخلية (تنظيم)</td><td className="px-6 py-4 text-slate-600">مسابقة ينظمها القسم</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">12</span></td></tr>
-                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">مشاركة بمسابقة خارجية</td><td className="px-6 py-4 text-slate-600">يُحتسب للقسم مرة واحدة لكل فريق ممثل</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
-                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">مشروع عملي/منتج</td><td className="px-6 py-4 text-slate-600">تسليم مشروع مع مستودع عام + عرض</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">20</span></td></tr>
-                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">فعالية تعريفية/جناح</td><td className="px-6 py-4 text-slate-600">ركن/تعريف بالنادي داخل الجامعة</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">8</span></td></tr>
-                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">شراكة/رعاية</td><td className="px-6 py-4 text-slate-600">اتفاق يدعم نشاط/جوائز/مكان</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-16 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">15-30</span></td></tr>
-                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">محتوى تعليمي منشور</td><td className="px-6 py-4 text-slate-600">مقال/فيديو تحت هوية النادي</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
+                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">{getText('how.inPersonCourse', 'دورة حضورية (≥ 2 ساعات)')}</td><td className="px-6 py-4 text-slate-600">{getText('how.inPersonCourseDesc', 'تدريب وجهاً لوجه داخل الكلية/الجامعة')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">15</span></td></tr>
+                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">{getText('how.onlineCourse', 'دورة أونلاين (≥ 1.5 ساعة)')}</td><td className="px-6 py-4 text-slate-600">{getText('how.onlineCourseDesc', 'تدريب عن بُعد')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">9</span></td></tr>
+                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">{getText('how.trainingCamp', 'معسكر تدريبي')}</td><td className="px-6 py-4 text-slate-600">{getText('how.trainingCampDesc', 'لكل يوم تدريب فعلي (6+ ساعات)')}{getText('how.perDay', '/يوم')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-16 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">20{getText('how.perDay', '/يوم')}</span></td></tr>
+                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">{getText('how.techMeeting', 'لقاء تقني/جلسة شهرية')}</td><td className="px-6 py-4 text-slate-600">{getText('how.techMeetingDesc', 'جلسة تبادل معرفة/نقاش')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
+                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">{getText('how.internalCompetition', 'مسابقة داخلية (تنظيم)')}</td><td className="px-6 py-4 text-slate-600">{getText('how.internalCompetitionDesc', 'مسابقة ينظمها القسم')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">12</span></td></tr>
+                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">{getText('how.externalCompetition', 'مشاركة بمسابقة خارجية')}</td><td className="px-6 py-4 text-slate-600">{getText('how.externalCompetitionDesc', 'تُحسب مرة واحدة لكل فريق ممثل')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
+                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">{getText('how.practicalProject', 'مشروع عملي/منتج')}</td><td className="px-6 py-4 text-slate-600">{getText('how.practicalProjectDesc', 'تسليم مشروع مع مستودع عام + عرض تقديمي')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">20</span></td></tr>
+                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">{getText('how.introEvent', 'فعالية تعريفية/ركن')}</td><td className="px-6 py-4 text-slate-600">{getText('how.introEventDesc', 'ركن/تعريف بالنادي داخل الجامعة')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">8</span></td></tr>
+                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">{getText('how.partnership', 'شراكة/رعاية')}</td><td className="px-6 py-4 text-slate-600">{getText('how.partnershipDesc', 'اتفاقية تدعم النشاط/الجوائز/المكان')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-16 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">15-30</span></td></tr>
+                <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">{getText('how.educationalContent', 'محتوى تعليمي منشور')}</td><td className="px-6 py-4 text-slate-600">{getText('how.educationalContentDesc', 'مقال/فيديو تحت هوية النادي')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
               </tbody>
               </table>
             </div>
@@ -178,7 +218,7 @@ const PointsSystemPage = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
               </svg>
               <h2 className="text-2xl md:text-3xl font-bold text-green-700">
-                نقاط الأعضاء (حضور/مشاركة/تنظيم)
+                {getText('how.memberPointsSection', 'نقاط الأعضاء (حضور/مشاركة/تنظيم)')}
               </h2>
             </div>
           </div>
@@ -187,24 +227,24 @@ const PointsSystemPage = () => {
               <table className="min-w-full text-right">
               <thead className="bg-gradient-to-r from-slate-100 to-slate-200">
                 <tr>
-                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 uppercase tracking-wider">الفعل</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700 uppercase tracking-wider">نقاط العضو</th>
+                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 uppercase tracking-wider">{getText('how.action', 'الفعل')}</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700 uppercase tracking-wider">{getText('how.memberPoints', 'نقاط العضو')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">حضور دورة حضورية</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">حضور دورة أونلاين</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">4</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">حضور معسكر (لكل يوم)</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">حضور لقاء تقني/جلسة</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">3</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">المشاركة في مسابقة خارجية</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">التأهل/المراكز المتقدمة في مسابقة</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">12</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">الفوز/المركز الأول خارجياً</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">18</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">تقديم جلسة قصيرة (≤ 20 دقيقة)</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">8</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">تقديم دورة كاملة</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">20</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">تنظيم/تطوع في حدث (شِفت)</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-16 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-sm rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">5/شفت</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">المساهمة في تصميم معتمد</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">كتابة مقال/فيديو تعليمي معتمد</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">المشاركة في مشروع عملي مُعلن</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.attendInPerson', 'حضور دورة حضورية')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.attendOnline', 'حضور دورة أونلاين')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">4</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.attendCamp', 'حضور معسكر (لكل يوم)')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.attendTechMeeting', 'حضور لقاء تقني/جلسة')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">3</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.participateExternal', 'المشاركة في مسابقة خارجية')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.qualifyCompetition', 'التأهل/المراكز المتقدمة في مسابقة')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">12</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.winFirst', 'الفوز/المركز الأول خارجياً')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">18</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.shortPresentation', 'تقديم عرض مختصر (≤ 20 دقيقة)')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">8</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.fullCourse', 'تقديم دورة كاملة')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">20</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.organizeEvent', 'تنظيم/تطوع في فعالية')}{getText('how.perShift', '/شيفت')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-16 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-sm rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">5{getText('how.perShift', '/شيفت')}</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.contributeDesign', 'المساهمة في تصميم معتمد')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.writeContent', 'كتابة مقال/فيديو تعليمي معتمد')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">{getText('how.participateProject', 'المشاركة في مشروع عملي معلن')}</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
               </tbody>
               </table>
             </div>
@@ -236,12 +276,12 @@ const PointsSystemPage = () => {
                 </div>
                 
                 <h3 className="text-xl font-bold bg-gradient-to-r from-slate-700 to-slate-500 bg-clip-text text-transparent">
-                  By Google Devs, For You
+                  {getText('how.byGoogleDevs', 'بواسطة مطوري جوجل، من أجلكم')}
                 </h3>
               </div>
               
               <p className="text-slate-600 mb-4 max-w-2xl mx-auto">
-                تعزيز مهارات الطلاب في التكنولوجيا والبرمجة من خلال الأنشطة والفعاليات التفاعلية
+                {getText('how.footer', 'تعزيز مهارات الطلاب في التكنولوجيا والبرمجة من خلال الأنشطة والفعاليات التفاعلية')}
               </p>
               
               <div className="flex justify-center items-center gap-6 mb-6">
@@ -250,7 +290,7 @@ const PointsSystemPage = () => {
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
                   </svg>
-                  <span className="text-sm">نظام النقاط 2025</span>
+                  <span className="text-sm">{getText('how.pointsSystem', 'نظام النقاط 2025')}</span>
                 </div>
               </div>
               

@@ -1,3 +1,7 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -5,13 +9,70 @@ import { Button } from "@/components/ui/button"
 import { Trophy, Building2, ArrowLeft, Eye } from "lucide-react"
 import { fetchDepartments, fetchDepartmentsCount, transformApiDepartment } from "@/lib/api"
 
-export default async function DepartmentsLeaderboard() {
-  const [apiDepartments, departmentsCount] = await Promise.all([fetchDepartments(), fetchDepartmentsCount()])
+export default function DepartmentsLeaderboard() {
+  const { t } = useTranslation()
+  const [departments, setDepartments] = useState<any[]>([])
+  const [departmentsCount, setDepartmentsCount] = useState(0)
+  const [isLoaded, setIsLoaded] = useState(false)
 
-  // Transform and sort API data
-  const departments = apiDepartments
-    .sort((a, b) => b.points - a.points)
-    .map((dept, index) => transformApiDepartment(dept, index + 1))
+  // Safe text function for hydration - use language-appropriate fallbacks
+  const getText = (key: string, fallback: string) => {
+    if (!isLoaded) {
+      // Get stored language to show appropriate fallback
+      const storedLang = typeof window !== 'undefined' ? localStorage.getItem('i18nextLng') || 'ar' : 'ar';
+      
+      if (storedLang === 'en') {
+        // English fallbacks
+        const englishDefaults: Record<string, string> = {
+          'departments.title': 'Departments Leaderboard',
+          'departments.subtitle': 'Departments ranked by total points earned through team collaboration and achievements',
+          'departments.totalDepartments': 'Total Departments',
+          'departments.points': 'points',
+          'departments.rankings': 'Department Rankings',
+          'departments.rankingsSubtitle': 'Team performance rankings across all departments',
+          'departments.departmentTeam': 'Department Team',
+          'departments.viewDetails': 'View Details'
+        }
+        return englishDefaults[key] || fallback;
+      } else {
+        // Arabic fallbacks - match exactly with translation file
+        const arabicDefaults: Record<string, string> = {
+          'departments.title': 'متصدري الأقسام',
+          'departments.subtitle': 'قسم مرتب حسب إجمالي النقاط المكتسبة من خلال التعاون الجماعي والإنجازات',
+          'departments.totalDepartments': 'إجمالي الأقسام',
+          'departments.points': 'نقاط',
+          'departments.rankings': 'تصنيفات الأقسام',
+          'departments.rankingsSubtitle': 'تصنيفات أداء الفرق عبر جميع الأقسام',
+          'departments.departmentTeam': 'فريق القسم',
+          'departments.viewDetails': 'عرض التفاصيل'
+        }
+        return arabicDefaults[key] || fallback;
+      }
+    }
+    return t(key) || fallback
+  }
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [apiDepartments, count] = await Promise.all([fetchDepartments(), fetchDepartmentsCount()])
+        
+        // Transform and sort API data
+        const transformedDepartments = apiDepartments
+          .sort((a, b) => b.points - a.points)
+          .map((dept, index) => transformApiDepartment(dept, index + 1))
+
+        setDepartments(transformedDepartments)
+        setDepartmentsCount(count)
+      } catch (error) {
+        console.error('Failed to load departments data:', error)
+      } finally {
+        setIsLoaded(true)
+      }
+    }
+
+    loadData()
+  }, [])
 
   const getDepartmentIcon = (name: string) => {
     const icons: Record<string, string> = {
@@ -50,7 +111,7 @@ export default async function DepartmentsLeaderboard() {
           <Link href="/" className="inline-block mb-6">
             <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
+              {getText('departments.backToDashboard', 'Back to Dashboard')}
             </Button>
           </Link>
           
@@ -62,11 +123,11 @@ export default async function DepartmentsLeaderboard() {
                 </div>
               </div>
               <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
-                Departments Leaderboard
+                {getText('departments.title', 'Departments Leaderboard')}
               </h1>
             </div>
             <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium">
-              {departmentsCount} departments ranked by total points earned through team collaboration and achievements
+              {getText('departments.subtitle', `${departmentsCount} departments ranked by total points earned through team collaboration and achievements`)}
             </p>
           </div>
         </div>
@@ -82,7 +143,7 @@ export default async function DepartmentsLeaderboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-amber-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{departments[0]?.totalPoints || 0}</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Top Score</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">{getText('departments.topScore', 'Top Score')}</p>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -91,7 +152,7 @@ export default async function DepartmentsLeaderboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{departmentsCount}</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Total Departments</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">{getText('departments.totalDepartments', 'Total Departments')}</p>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -102,7 +163,7 @@ export default async function DepartmentsLeaderboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{departments.length > 0 ? Math.round(departments.reduce((sum, d) => sum + d.totalPoints, 0) / departments.length) : 0}</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Avg Score</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">{getText('departments.avgScore', 'Avg Score')}</p>
               </div>
             </div>
             
@@ -125,9 +186,9 @@ export default async function DepartmentsLeaderboard() {
               <div className="p-2 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg">
                 <Trophy className="h-6 w-6 text-white" />
               </div>
-              Department Rankings
+              {getText('departments.rankings', 'Department Rankings')}
             </CardTitle>
-            <CardDescription className="text-base text-slate-600 font-medium">Team performance rankings across all departments</CardDescription>
+            <CardDescription className="text-base text-slate-600 font-medium">{getText('departments.rankingsSubtitle', 'Team performance rankings across all departments')}</CardDescription>
           </CardHeader>
           <CardContent className="p-8">
             <div className="space-y-4">
@@ -197,7 +258,7 @@ export default async function DepartmentsLeaderboard() {
                           <p className="font-bold text-xl text-slate-800 truncate">{department.name}</p>
                           <div className="flex items-center gap-2 text-sm text-slate-500">
                             <Building2 className="h-4 w-4 flex-shrink-0" />
-                            <span>Department Team</span>
+                            <span>{getText('departments.departmentTeam', 'Department Team')}</span>
                           </div>
                         </div>
                       </div>
@@ -208,13 +269,13 @@ export default async function DepartmentsLeaderboard() {
                         <p className={`font-extrabold text-3xl ${podiumStyles.points}`}>
                           {department.totalPoints}
                         </p>
-                        <p className="text-sm text-slate-500 font-medium">points</p>
+                        <p className="text-sm text-slate-500 font-medium">{getText('departments.points', 'points')}</p>
                       </div>
                       <Link href={`/department/${department.id}`} className="flex-shrink-0">
                         <Button variant="outline" size="lg" className="whitespace-nowrap bg-white/90 hover:bg-white border-2 border-slate-200 hover:border-blue-300 shadow-md hover:shadow-lg transition-all duration-200">
                           <Eye className="h-5 w-5 mr-2" />
-                          <span className="hidden sm:inline">View Details</span>
-                          <span className="sm:hidden">Details</span>
+                          <span className="hidden sm:inline">{getText('departments.viewDetails', 'View Details')}</span>
+                          <span className="sm:hidden">{getText('departments.details', 'Details')}</span>
                         </Button>
                       </Link>
                     </div>
@@ -228,8 +289,8 @@ export default async function DepartmentsLeaderboard() {
                 <div className="p-6 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center">
                   <Building2 className="h-12 w-12 text-slate-400" />
                 </div>
-                <p className="text-xl text-slate-500 font-medium mb-2">No departments found</p>
-                <p className="text-slate-400">Check back later for department rankings</p>
+                <p className="text-xl text-slate-500 font-medium mb-2">{getText('departments.noDepartmentsFound', 'No departments found')}</p>
+                <p className="text-slate-400">{getText('departments.checkBackLater', 'Check back later for department rankings')}</p>
               </div>
             )}
           </CardContent>
