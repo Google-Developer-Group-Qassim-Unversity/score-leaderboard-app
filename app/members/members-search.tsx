@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -21,6 +22,7 @@ interface MembersSearchProps {
 }
 
 export function MembersSearch({ members: allMembers, membersCount }: MembersSearchProps) {
+  const { t } = useTranslation()
   const [searchTerm, setSearchTerm] = useState("")
 
   // Filter members based on search term
@@ -37,7 +39,7 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
             <Search className="h-6 w-6 text-white" />
           </div>
           <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            Find Members
+            {t('members.findMembers') || 'Find Members'}
           </h2>
         </div>
         
@@ -47,7 +49,7 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
           </div>
           <Input
             type="text"
-            placeholder="Search members by name..."
+            placeholder={t('members.searchPlaceholder') || 'Search members by name...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-12 pr-4 py-4 w-full bg-white/95 backdrop-blur-sm border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 shadow-xl hover:shadow-2xl rounded-2xl text-base placeholder:text-slate-400 transition-all duration-300 font-medium"
@@ -73,7 +75,7 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
         <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium shadow-sm">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-            <span>{filteredMembers.length} of {membersCount} members found</span>
+            <span>{filteredMembers.length} {t('members.ofMembers') || 'of'} {membersCount} {t('members.membersFound') || 'members found'}</span>
           </div>
         </div>
       )}
@@ -86,14 +88,14 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
               <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center shadow-md">
                 <Trophy className="h-4 w-4 text-white" />
               </div>
-              Rankings
+              {t('members.rankings') || 'Rankings'}
               {searchTerm && (
                 <span className="text-sm font-normal text-gray-500">
                   - "{searchTerm}"
                 </span>
               )}
             </CardTitle>
-            <CardDescription className="text-slate-600 font-medium mt-1">Individual member performance rankings</CardDescription>
+            <CardDescription className="text-slate-600 font-medium mt-1">{t('members.rankingsSubtitle') || 'Individual member performance rankings'}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {filteredMembers.map((member, index) => {
@@ -167,7 +169,7 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
                       <p className={`font-bold text-base group-hover:text-slate-800 transition-colors duration-200 ${podiumStyles.name}`}>{member.name}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                        <p className="text-sm text-slate-500 font-medium">Member</p>
+                        <p className="text-sm text-slate-500 font-medium">{t('members.member') || 'Member'}</p>
                       </div>
                     </div>
                   </div>
@@ -175,13 +177,13 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
                   <div className="flex items-center justify-between sm:justify-end gap-4">
                     <div className="text-right">
                       <p className={`font-bold text-xl ${podiumStyles.points}`}>{member.totalPoints}</p>
-                      <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Points Earned</p>
+                      <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">{t('members.pointsEarned') || 'Points Earned'}</p>
                     </div>
                     <Link href={`/member/${member.id}`} className="flex-shrink-0">
                       <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
                         <Eye className="h-4 w-4 mr-1" />
-                        <span className="hidden xs:inline">View Details</span>
-                        <span className="xs:hidden">Details</span>
+                        <span className="hidden xs:inline">{t('members.viewDetails') || 'View Details'}</span>
+                        <span className="xs:hidden">{t('members.details') || 'Details'}</span>
                       </Button>
                     </Link>
                   </div>
@@ -192,13 +194,13 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
             {filteredMembers.length === 0 && searchTerm && (
               <div className="text-center py-12">
                 <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500 mb-2">No members found matching "{searchTerm}"</p>
+                <p className="text-gray-500 mb-2">{t('members.noMembersFound') || 'No members found matching'} "{searchTerm}"</p>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setSearchTerm("")}
                 >
-                  Clear search
+                  {t('members.clearSearch') || 'Clear search'}
                 </Button>
               </div>
             )}
@@ -206,7 +208,7 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
             {allMembers.length === 0 && (
               <div className="text-center py-12">
                 <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No members found.</p>
+                <p className="text-gray-500">{t('members.checkBackLater') || 'Check back later for member rankings'}</p>
               </div>
             )}
           </CardContent>
