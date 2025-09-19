@@ -85,7 +85,7 @@ export default function ClubStructurePage() {
         icon: Palette,
         head: "أمل عبدالله الرحيمي",
         members: [
-          "يارا ماجد الفوزان",
+          "لمار ماجد الفوزان",
           "جنى إبراهيم الضبيبان",
           "أسماء حامد الطريفي"
         ]
