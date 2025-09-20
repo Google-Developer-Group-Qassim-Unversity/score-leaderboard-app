@@ -1,6 +1,6 @@
 // API utility functions for fetching data from localhost:8000
 
-const API_BASE_URL = "http://localhost:8000"
+const API_BASE_URL = "https://scoreapp.albrrak773.com"
 
 export interface ApiMember {
   id: number
