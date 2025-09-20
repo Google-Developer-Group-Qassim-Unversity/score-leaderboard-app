@@ -57,7 +57,7 @@ export default async function Dashboard() {
         <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-4 mb-6">
+          <div className="flex items-center justify-center flex-col md:flex-row gap-4 mb-6">
             <div className="relative">
               <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/30 transform hover:scale-105 transition-transform duration-200">
                 <Trophy className="h-8 w-8 text-white" />
@@ -79,7 +79,7 @@ export default async function Dashboard() {
           )}
         </div>
 
-        {/* Quick Stats Bar */}
+        {/* Quick Stats Bar
         <div className="mb-8">
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -131,6 +131,7 @@ export default async function Dashboard() {
             
           </div>
         </div>
+        */}
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">

@@ -41,7 +41,7 @@ export default async function MembersLeaderboard() {
           </Link>
           
           <div className="text-center">
-            <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="flex items-center justify-center flex-col md:flex-row gap-4 mb-6">
               <div className="relative">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 transform hover:scale-105 transition-transform duration-200">
                   <Users className="h-8 w-8 text-white" />
@@ -58,7 +58,7 @@ export default async function MembersLeaderboard() {
           </div>
         </div>
 
-        {/* Quick Stats */}
+        {/* Quick Stats
         <div className="mb-8">
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -95,6 +95,7 @@ export default async function MembersLeaderboard() {
             
           </div>
         </div>
+        */}
 
         {/* Section Divider */}
         <div className="flex items-center justify-center mb-8">
