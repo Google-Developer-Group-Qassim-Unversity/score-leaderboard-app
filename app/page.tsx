@@ -1,12 +1,8 @@
-"use client"
-
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Trophy, Users, Building2, AlertCircle } from "lucide-react"
-import { useTranslation } from 'react-i18next'
-import { useEffect, useState } from 'react'
 import {
   fetchMembers,
   fetchDepartments,
@@ -16,118 +12,31 @@ import {
   transformApiDepartment,
 } from "@/lib/api"
 
-export default function Dashboard() {
-  const { t } = useTranslation()
-  const [isMounted, setIsMounted] = useState(false)
-  const [apiStatus, setApiStatus] = useState("connected")
-  const [members, setMembers] = useState<any[]>([])
-  const [departments, setDepartments] = useState<any[]>([])
-  const [membersCount, setMembersCount] = useState(0)
-  const [departmentsCount, setDepartmentsCount] = useState(0)
-  const [topMembers, setTopMembers] = useState<any[]>([])
-  const [topDepartments, setTopDepartments] = useState<any[]>([])
+export default async function Dashboard() {
+  let apiStatus = "connected" // 'connected' | 'fallback'
 
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
+  const [apiMembers, apiDepartments, membersCount, departmentsCount] = await Promise.all([
+    fetchMembers(),
+    fetchDepartments(),
+    fetchMembersCount(),
+    fetchDepartmentsCount(),
+  ])
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const [apiMembers, apiDepartments, membersCountData, departmentsCountData] = await Promise.all([
-          fetchMembers(),
-          fetchDepartments(),
-          fetchMembersCount(),
-          fetchDepartmentsCount(),
-        ])
-
-        if (apiMembers.length > 0 && apiMembers[0].id > 1000) {
-          setApiStatus("fallback")
-        }
-
-        // Transform and sort API data
-        const transformedMembers = apiMembers
-          .sort((a, b) => b.points - a.points)
-          .map((member, index) => transformApiMember(member, index + 1))
-
-        const transformedDepartments = apiDepartments
-          .sort((a, b) => b.points - a.points)
-          .map((dept, index) => transformApiDepartment(dept, index + 1))
-
-        setMembers(transformedMembers)
-        setDepartments(transformedDepartments)
-        setMembersCount(membersCountData)
-        setDepartmentsCount(departmentsCountData)
-        setTopMembers(transformedMembers.slice(0, 10))
-        setTopDepartments(transformedDepartments.slice(0, 8))
-      } catch (error) {
-        console.error('Error loading data:', error)
-      }
-    }
-
-    loadData()
-  }, [])
-
-  // Safe translation function to prevent hydration mismatch - use language-appropriate fallbacks
-  const getText = (key: string, fallback: string) => {
-    if (!isMounted) {
-      // Get stored language to show appropriate fallback
-      const storedLang = typeof window !== 'undefined' ? localStorage.getItem('i18nextLng') || 'ar' : 'ar';
-      
-      if (storedLang === 'en') {
-        // English fallbacks
-        const englishDefaults: Record<string, string> = {
-          'dashboard.title': 'Leaderboard Dashboard',
-          'dashboard.subtitle': 'Track performance across members and departments with comprehensive points tracking',
-          'dashboard.fallbackMessage': 'Using demo data - API server not available',
-          'dashboard.totalEvents': 'Total Events',
-          'dashboard.bestDept': 'Best Dept',
-          'dashboard.totalPoints': 'Total Points',
-          'dashboard.avgScore': 'Avg Score',
-          'dashboard.totalMembers': 'Total Members',
-          'dashboard.activeParticipants': 'Active participants',
-          'dashboard.departments': 'Departments',
-          'dashboard.competingTeams': 'Competing teams',
-          'dashboard.currentRankings': 'Current Rankings',
-          'dashboard.realTimeLeaderboard': 'Real-time leaderboard showing top performers across all categories',
-          'dashboard.topMembers': 'Top Members',
-          'dashboard.leadingIndividual': 'Leading individual performers',
-          'dashboard.viewAll': 'View All',
-          'dashboard.member': 'Member',
-          'dashboard.pointsEarned': 'Points Earned',
-          'dashboard.topDepartments': 'Top Departments',
-          'dashboard.leadingTeam': 'Leading team performers'
-        }
-        return englishDefaults[key] || fallback;
-      } else {
-        // Arabic fallbacks - match exactly with translation file
-        const arabicDefaults: Record<string, string> = {
-          'dashboard.title': 'لوحة قيادة المتصدرين',
-          'dashboard.subtitle': 'تتبع الأداء عبر الأعضاء والأقسام مع تتبع شامل للنقاط',
-          'dashboard.fallbackMessage': 'استخدام بيانات تجريبية - خادم API غير متاح',
-          'dashboard.totalEvents': 'إجمالي الفعاليات',
-          'dashboard.bestDept': 'أفضل قسم',
-          'dashboard.totalPoints': 'إجمالي النقاط',
-          'dashboard.avgScore': 'المعدل',
-          'dashboard.totalMembers': 'إجمالي الأعضاء',
-          'dashboard.activeParticipants': 'المشاركون النشطون',
-          'dashboard.departments': 'الأقسام',
-          'dashboard.competingTeams': 'الفرق المتنافسة',
-          'dashboard.currentRankings': 'التصنيفات الحالية',
-          'dashboard.realTimeLeaderboard': 'لوحة المتصدرين في الوقت الفعلي تعرض أفضل الأداءات في جميع الفئات',
-          'dashboard.topMembers': 'أفضل الأعضاء',
-          'dashboard.leadingIndividual': 'الأداءات الفردية الرائدة',
-          'dashboard.viewAll': 'عرض الكل',
-          'dashboard.member': 'عضو',
-          'dashboard.pointsEarned': 'النقاط المكتسبة',
-          'dashboard.topDepartments': 'أفضل الأقسام',
-          'dashboard.leadingTeam': 'الأداءات الجماعية الرائدة'
-        }
-        return arabicDefaults[key] || fallback;
-      }
-    }
-    return t(key)
+  if (apiMembers.length > 0 && apiMembers[0].id > 1000) {
+    apiStatus = "fallback"
   }
+
+  // Transform and sort API data
+  const members = apiMembers
+    .sort((a, b) => b.points - a.points)
+    .map((member, index) => transformApiMember(member, index + 1))
+
+  const departments = apiDepartments
+    .sort((a, b) => b.points - a.points)
+    .map((dept, index) => transformApiDepartment(dept, index + 1))
+
+  const topMembers = members.slice(0, 10)
+  const topDepartments = departments.slice(0, 8)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 relative overflow-x-hidden">
@@ -154,18 +63,18 @@ export default function Dashboard() {
                 <Trophy className="h-8 w-8 text-white" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight arabic-title">
-              {getText('dashboard.title', 'Leaderboard Dashboard')}
+            <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
+              Leaderboard Dashboard
             </h1>
           </div>
-          <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium arabic-content">
-            {getText('dashboard.subtitle', 'Track performance across members and departments with comprehensive points tracking')}
+          <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium">
+            Track performance across members and departments with comprehensive points tracking
           </p>
 
           {apiStatus === "fallback" && (
-            <div className="mt-6 inline-flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-amber-100 to-amber-200 text-amber-800 rounded-full text-sm font-medium shadow-md arabic-text">
+            <div className="mt-6 inline-flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-amber-100 to-amber-200 text-amber-800 rounded-full text-sm font-medium shadow-md">
               <AlertCircle className="h-4 w-4" />
-              {getText('dashboard.fallbackMessage', 'Using demo data - API server not available')}
+              Using demo data - API server not available
             </div>
           )}
         </div>
@@ -183,7 +92,7 @@ export default function Dashboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">15</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium arabic-text">{getText('dashboard.totalEvents', 'Total Events')}</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Total Events</p>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -194,7 +103,7 @@ export default function Dashboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{topDepartments[0]?.totalPoints || 0}</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium arabic-text">{getText('dashboard.bestDept', 'Best Dept')}</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Best Dept</p>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -205,7 +114,7 @@ export default function Dashboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-amber-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{members.reduce((sum, m) => sum + m.totalPoints, 0)}</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium arabic-text">{getText('dashboard.totalPoints', 'Total Points')}</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Total Points</p>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -216,7 +125,7 @@ export default function Dashboard() {
                   </div>
                   <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{Math.round(members.reduce((sum, m) => sum + m.totalPoints, 0) / members.length) || 0}</div>
                 </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium arabic-text">{getText('dashboard.avgScore', 'Avg Score')}</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Avg Score</p>
               </div>
             </div>
             
@@ -228,14 +137,14 @@ export default function Dashboard() {
           <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
             <div className="bg-gradient-to-br from-blue-50/50 to-white p-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                <CardTitle className="text-sm font-semibold text-slate-600 uppercase tracking-wider arabic-text">{getText('dashboard.totalMembers', 'Total Members')}</CardTitle>
+                <CardTitle className="text-sm font-semibold text-slate-600 uppercase tracking-wider">Total Members</CardTitle>
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
                   <Users className="h-5 w-5 text-white" />
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">{membersCount}</div>
-                <p className="text-sm text-slate-500 mt-2 font-medium">{getText('dashboard.activeParticipants', 'Active participants')}</p>
+                <p className="text-sm text-slate-500 mt-2 font-medium">Active participants</p>
               </CardContent>
             </div>
           </Card>
@@ -243,14 +152,14 @@ export default function Dashboard() {
           <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
             <div className="bg-gradient-to-br from-green-50/50 to-white p-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                <CardTitle className="text-sm font-semibold text-slate-600 uppercase tracking-wider arabic-text">{getText('dashboard.departments', 'Departments')}</CardTitle>
+                <CardTitle className="text-sm font-semibold text-slate-600 uppercase tracking-wider">Departments</CardTitle>
                 <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-md">
                   <Building2 className="h-5 w-5 text-white" />
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">{departmentsCount}</div>
-                <p className="text-sm text-slate-500 mt-2 font-medium">{getText('dashboard.competingTeams', 'Competing teams')}</p>
+                <p className="text-sm text-slate-500 mt-2 font-medium">Competing teams</p>
               </CardContent>
             </div>
           </Card>
@@ -275,12 +184,12 @@ export default function Dashboard() {
                 <path d="M5 12L5.74 14.09L8 15L5.74 15.91L5 18L4.26 15.91L2 15L4.26 14.09L5 12Z"/>
               </svg>
             </div>
-            <h2 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent arabic-title">
-              {getText('dashboard.currentRankings', 'Current Rankings')}
+            <h2 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+              Current Rankings
             </h2>
           </div>
           <p className="text-slate-600 text-lg font-medium max-w-2xl mx-auto">
-            {getText('dashboard.realTimeLeaderboard', 'Real-time leaderboard showing top performers across all categories')}
+            Real-time leaderboard showing top performers across all categories
           </p>
         </div>
 
@@ -292,17 +201,17 @@ export default function Dashboard() {
               <CardHeader className="pb-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3 arabic-heading">
+                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center shadow-md">
                         <Trophy className="h-4 w-4 text-white" />
                       </div>
-                      {getText('dashboard.topMembers', 'Top Members')}
+                      Top Members
                     </CardTitle>
-                    <CardDescription className="text-slate-600 font-medium mt-1 arabic-content">{getText('dashboard.leadingIndividual', 'Leading individual performers')}</CardDescription>
+                    <CardDescription className="text-slate-600 font-medium mt-1">Leading individual performers</CardDescription>
                   </div>
                   <Link href="/members">
                     <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
-                      {getText('dashboard.viewAll', 'View All')}
+                      View All
                     </Button>
                   </Link>
                 </div>
@@ -331,13 +240,13 @@ export default function Dashboard() {
                         <p className="font-bold text-slate-900 text-base group-hover:text-slate-800 transition-colors duration-200">{member.name}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          <p className="text-sm text-slate-500 font-medium">{getText('dashboard.member', 'Member')}</p>
+                          <p className="text-sm text-slate-500 font-medium">Member</p>
                         </div>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-xl text-slate-900">{member.totalPoints}</p>
-                      <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">{getText('dashboard.pointsEarned', 'Points Earned')}</p>
+                      <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Points Earned</p>
                     </div>
                   </div>
                 ))}
@@ -352,17 +261,17 @@ export default function Dashboard() {
               <CardHeader className="pb-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3 arabic-heading">
+                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-md">
                         <Users className="h-4 w-4 text-white" />
                       </div>
-                      {getText('dashboard.topDepartments', 'Top Departments')}
+                      Top Departments
                     </CardTitle>
-                    <CardDescription className="text-slate-600 font-medium mt-1 arabic-content">{getText('dashboard.leadingTeam', 'Leading team performers')}</CardDescription>
+                    <CardDescription className="text-slate-600 font-medium mt-1">Leading team performers</CardDescription>
                   </div>
                   <Link href="/departments">
                     <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
-                      {getText('dashboard.viewAll', 'View All')}
+                      View All
                     </Button>
                   </Link>
                 </div>
@@ -391,13 +300,13 @@ export default function Dashboard() {
                         <p className="font-bold text-slate-900 text-lg group-hover:text-slate-800 transition-colors duration-200">{department.name}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <p className="text-sm text-slate-500 font-medium">{getText('dashboard.department', 'Department')}</p>
+                          <p className="text-sm text-slate-500 font-medium">Department</p>
                         </div>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-xl text-slate-900">{department.totalPoints}</p>
-                      <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">{getText('dashboard.teamScore', 'Team Score')}</p>
+                      <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Team Score</p>
                     </div>
                   </div>
                 ))}

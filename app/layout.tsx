@@ -4,8 +4,6 @@ import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
 import { Suspense } from "react"
-import I18nProvider from "@/components/I18nProvider"
-import LanguageHandler from "@/components/LanguageHandler"
 
 export const metadata: Metadata = {
   title: "Leaderboard",
@@ -22,13 +20,10 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.png" type="image/png"/>
       </head>
       <body className="font-sans">
-        <I18nProvider>
-          <LanguageHandler />
-          <Suspense fallback={<div>Loading...</div>}>
-            <Navigation />
-            {children}
-          </Suspense>
-        </I18nProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Navigation />
+          {children}
+        </Suspense>
         <Analytics />
       </body>
     </html>
