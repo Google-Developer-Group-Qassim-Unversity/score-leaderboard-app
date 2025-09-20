@@ -1,6 +1,4 @@
 import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Trophy, Users, ArrowLeft, Eye, Search } from "lucide-react"
 import { fetchMembers, fetchMembersCount, transformApiMember } from "@/lib/api"
