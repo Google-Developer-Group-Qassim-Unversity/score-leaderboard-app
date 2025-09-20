@@ -51,7 +51,7 @@ export function Navigation() {
               height={32} 
               className="h-8 w-8"
             />
-            <span className="text-xl font-bold text-gray-900 dark:text-white">GDG Leaderboard</span>
+            <span className="text-sm md:text-xl font-bold text-gray-900 dark:text-white">GDG Leaderboard</span>
           </Link>
 
           {/* Navigation Links */}

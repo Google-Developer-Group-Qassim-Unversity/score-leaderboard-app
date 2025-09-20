@@ -144,46 +144,48 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
               return (
                 <div
                   key={member.id}
-                  className={`group flex items-center justify-between p-5 rounded-2xl ${podiumStyles.container} hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5`}
+                  className={`group p-4 sm:p-5 rounded-2xl ${podiumStyles.container} hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5`}
                 >
-                  <div className="flex items-center gap-5">
-                    <div className="relative">
-                      <Badge
-                        variant="secondary"
-                        className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${podiumStyles.badge} group-hover:shadow-md transition-shadow duration-300`}
-                      >
-                        {member.rank}
-                      </Badge>
-                      {member.rank <= 3 && (
-                        <div className={`absolute -top-1 -right-1 w-5 h-5 ${podiumStyles.star} rounded-full flex items-center justify-center shadow-sm`}>
-                          <span className="text-xs text-white font-bold">{podiumStyles.icon}</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="relative flex-shrink-0">
+                        <Badge
+                          variant="secondary"
+                          className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${podiumStyles.badge} group-hover:shadow-md transition-shadow duration-300`}
+                        >
+                          {member.rank}
+                        </Badge>
+                        {member.rank <= 3 && (
+                          <div className={`absolute -top-1 -right-1 w-5 h-5 ${podiumStyles.star} rounded-full flex items-center justify-center shadow-sm`}>
+                            <span className="text-xs text-white font-bold">{podiumStyles.icon}</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                        <Users className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className={`font-bold text-base group-hover:text-slate-800 transition-colors duration-200 truncate ${podiumStyles.name}`}>{member.name}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                          <p className="text-sm text-slate-500 font-medium">Member</p>
                         </div>
-                      )}
-                    </div>
-                    <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                      <Users className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className={`font-bold text-base group-hover:text-slate-800 transition-colors duration-200 ${podiumStyles.name}`}>{member.name}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                        <p className="text-sm text-slate-500 font-medium">Member</p>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-4">
-                    <div className="text-right">
-                      <p className={`font-bold text-xl ${podiumStyles.points}`}>{member.totalPoints}</p>
-                      <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Points Earned</p>
+                    <div className="flex items-center justify-between sm:justify-end gap-4 mt-3 sm:mt-0 sm:ml-auto">
+                      <div className="text-left sm:text-right">
+                        <p className={`font-bold text-xl ${podiumStyles.points}`}>{member.totalPoints}</p>
+                        <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Points Earned</p>
+                      </div>
+                      <Link href={`/member/${member.id}`} className="flex-shrink-0">
+                        <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
+                          <Eye className="h-4 w-4 mr-1" />
+                          <span className="hidden xs:inline">View Details</span>
+                          <span className="xs:hidden">Details</span>
+                        </Button>
+                      </Link>
                     </div>
-                    <Link href={`/member/${member.id}`} className="flex-shrink-0">
-                      <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
-                        <Eye className="h-4 w-4 mr-1" />
-                        <span className="hidden xs:inline">View Details</span>
-                        <span className="xs:hidden">Details</span>
-                      </Button>
-                    </Link>
                   </div>
                 </div>
               )
