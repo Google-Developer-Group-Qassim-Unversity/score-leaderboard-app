@@ -9,8 +9,8 @@ export default function ClubStructurePage() {
     president: {
       title: "رؤساء النادي",
       members: [
-        "جود سعود الفرم",
-        "عزام خالد الخضيري"
+        "عزام خالد الخضيري",
+        "جود سعود الفرم"
       ]
     },
     vicePresident: {
