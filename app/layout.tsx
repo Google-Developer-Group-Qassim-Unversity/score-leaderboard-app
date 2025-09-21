@@ -6,7 +6,7 @@ import { Navigation } from "@/components/navigation"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
-  title: "Leaderboard",
+  title: "GDG",
 }
 
 export default function RootLayout({
@@ -18,6 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.png" type="image/png"/>
+        <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="font-sans">
         <Suspense fallback={<div>Loading...</div>}>
