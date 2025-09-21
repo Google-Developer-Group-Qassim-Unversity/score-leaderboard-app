@@ -179,7 +179,7 @@ export default function ClubStructurePage() {
             
             <div className="space-y-6">
               <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-white via-blue-100 to-green-100 bg-clip-text text-transparent leading-tight tracking-tight">
-                هيكلة النادي
+                هيكلة المجموعة
               </h1>
               <div className="flex items-center justify-center gap-4 mb-6">
                 <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-500 group border-4 border-white/20">
