@@ -29,7 +29,7 @@ const navigationItems = [
     icon: Network,
   },
   {
-    name: "How it works",
+    name: "Points System",
     href: "/how",
     icon: BadgeHelpIcon
   }

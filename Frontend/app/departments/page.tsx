@@ -193,13 +193,8 @@ export default async function DepartmentsLeaderboard() {
                         )}
                       </div>
                       <div className="flex items-center gap-4 min-w-0">
-                        <div className="text-3xl flex-shrink-0 p-2 bg-white rounded-xl shadow-sm">{getDepartmentIcon(department.name)}</div>
                         <div className="min-w-0">
                           <p className="font-bold text-xl text-slate-800 truncate">{department.name}</p>
-                          <div className="flex items-center gap-2 text-sm text-slate-500">
-                            <Building2 className="h-4 w-4 flex-shrink-0" />
-                            <span>Department Team</span>
-                          </div>
                         </div>
                       </div>
                     </div>

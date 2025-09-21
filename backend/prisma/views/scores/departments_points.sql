@@ -4,7 +4,8 @@ SELECT
   `scores`.`departments_logs`.`id` AS `department_log_id`,
   `scores`.`logs`.`id` AS `log_id`,
   `scores`.`events`.`name` AS `event_name`,
-  `scores`.`actions`.`points` AS `points_per_action`
+  `scores`.`actions`.`points` AS `points_per_action`,
+  `scores`.`actions`.`action_name` AS `action_name`
 FROM
   (
     (
