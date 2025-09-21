@@ -27,9 +27,8 @@ model departments {
 model departments_logs {
   id                Int         @id @default(autoincrement()) @db.UnsignedInt
   department_id     Int         @db.UnsignedInt
-  mf                Int         @default(1)
-  attendants_number Int?        @db.UnsignedInt
   log_id            Int         @db.UnsignedInt
+  attendants_number Int?        @default(0) @db.UnsignedInt
   departments       departments @relation(fields: [department_id], references: [id], onDelete: Cascade, map: "departments_logs_ibfk_1")
   logs              logs        @relation(fields: [log_id], references: [id], onDelete: Cascade, map: "departments_logs_ibfk_2")
 
@@ -56,8 +55,8 @@ model logs {
 model members {
   id           Int            @id @default(autoincrement()) @db.UnsignedInt
   name         String         @db.VarChar(50)
-  email        String?        @unique(map: "email") @db.VarChar(100)
-  phone_number String?        @unique(map: "phone_number") @db.VarChar(20)
+  email        String?        @db.VarChar(100)
+  phone_number String?        @db.VarChar(20)
   uni_id       String         @unique(map: "uni_id") @db.VarChar(50)
   gender       members_gender
   members_logs members_logs[]
@@ -89,6 +88,8 @@ model events {
   id   Int    @id @default(autoincrement()) @db.UnsignedInt
   name String @unique(map: "events_unique") @db.VarChar(150)
   logs logs[]
+
+  @@index([name], map: "event_name")
 }
 
 model absence {
@@ -113,13 +114,14 @@ view members_points {
 }
 
 view departments_points {
-  department_id     Int    @default(0) @db.UnsignedInt
-  department_name   String @db.VarChar(50)
-  department_log_id Int    @default(0) @db.UnsignedInt
-  log_id            Int    @default(0) @db.UnsignedInt
-  event_name        String @db.VarChar(150)
-  points_per_action Int    @db.UnsignedInt
-  action_name       String @db.VarChar(60)
+  department_id     Int      @default(0) @db.UnsignedInt
+  department_name   String   @db.VarChar(50)
+  department_log_id Int      @default(0) @db.UnsignedInt
+  log_id            Int      @default(0) @db.UnsignedInt
+  start_date        DateTime @db.Date
+  event_name        String   @db.VarChar(150)
+  action_points     Int      @db.UnsignedInt
+  action_name       String   @db.VarChar(60)
 }
 
 enum modifications_type {
