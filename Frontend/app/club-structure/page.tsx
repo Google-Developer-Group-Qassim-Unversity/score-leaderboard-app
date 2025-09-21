@@ -52,7 +52,7 @@ export default function ClubStructurePage() {
           "ريما صالح الحربي",
           "ابتهال مهدي العمري",
           "مزنة صافي الدين عبدالقادر",
-          "رغد عبدالله العبيد"
+          "رغد عيدالله العبيد"
         ]
       },
       {
@@ -115,6 +115,7 @@ export default function ClubStructurePage() {
           "أميرة عيد المطيري"
         ]
       },
+      //
       {
         title: "التقارير والإعلام",
         color: "blue",
