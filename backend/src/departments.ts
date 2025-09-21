@@ -5,6 +5,8 @@ const prisma = new PrismaClient();
 
 
 export async function handleDepartments(req: Request, res: Response) {
+    const allDepartments = await prisma.departments.findMany();
+
     const grouped = await prisma.departments_points.groupBy({
         by: ['department_id', 'department_name'],
         _sum: {
@@ -23,6 +25,15 @@ export async function handleDepartments(req: Request, res: Response) {
         name: row.department_name,
         points: row._sum?.action_points ?? 0,
     }));
+    for (const dept of allDepartments) {
+        if (!result.find(r => r.id === dept.id)) {
+            result.push({
+                id: dept.id,
+                name: dept.name,
+                points: 0,
+            });
+        }
+    }
 
     res.status(200).json(result).end();
 }
