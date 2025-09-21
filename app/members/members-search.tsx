@@ -161,9 +161,6 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
                           </div>
                         )}
                       </div>
-                      <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                        <Users className="h-6 w-6 text-blue-600" />
-                      </div>
                       <div className="min-w-0">
                         <p className={`font-bold text-base group-hover:text-slate-800 transition-colors duration-200 truncate ${podiumStyles.name}`}>{member.name}</p>
                         <div className="flex items-center gap-2 mt-1">
