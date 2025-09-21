@@ -119,6 +119,7 @@ view departments_points {
   department_log_id Int      @default(0) @db.UnsignedInt
   log_id            Int      @default(0) @db.UnsignedInt
   start_date        DateTime @db.Date
+  end_date          DateTime @db.Date
   event_name        String   @db.VarChar(150)
   action_points     Int      @db.UnsignedInt
   action_name       String   @db.VarChar(60)
