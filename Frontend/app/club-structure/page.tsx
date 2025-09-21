@@ -112,7 +112,7 @@ export default function ClubStructurePage() {
           "ياسمين حمود التويجري",
           "عبدالله غازي المطيري",
           "خولة سعود البشري",
-          "أميرة عبد المطيري"
+          "أميرة عيد المطيري"
         ]
       },
       {
@@ -193,7 +193,7 @@ export default function ClubStructurePage() {
             </div>
             
             <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto font-medium leading-relaxed drop-shadow-sm">
-              تعرف على الهيكل التنظيمي لنادي مطوري جوجل والأقسام المختلفة
+              تعرف على الهيكل التنظيمي لنادي مطوري قوقل والأقسام المختلفة
             </p>
           </div>
         </div>
