@@ -12,6 +12,7 @@ export default function ClubStructurePage() {
         "عزام خالد الخضيري",
         "جود سعود الفرم"
       ]
+      //
     },
     vicePresident: {
       title: "نائب الرئيس",
