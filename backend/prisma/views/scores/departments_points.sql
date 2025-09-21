@@ -3,8 +3,9 @@ SELECT
   `scores`.`departments`.`name` AS `department_name`,
   `scores`.`departments_logs`.`id` AS `department_log_id`,
   `scores`.`logs`.`id` AS `log_id`,
+  `scores`.`logs`.`start_date` AS `start_date`,
   `scores`.`events`.`name` AS `event_name`,
-  `scores`.`actions`.`points` AS `points_per_action`,
+  `scores`.`actions`.`points` AS `action_points`,
   `scores`.`actions`.`action_name` AS `action_name`
 FROM
   (

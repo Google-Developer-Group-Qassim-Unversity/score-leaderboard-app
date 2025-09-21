@@ -5,14 +5,16 @@ const prisma = new PrismaClient();
 
 
 export async function handleDepartments(req: Request, res: Response) {
+    const allDepartments = await prisma.departments.findMany();
+
     const grouped = await prisma.departments_points.groupBy({
         by: ['department_id', 'department_name'],
         _sum: {
-            points_per_action: true,
+            action_points: true,
         },
         orderBy: {
             _sum: {
-                points_per_action: 'desc',
+                action_points: 'desc',
             },
         },
     });
@@ -21,37 +23,45 @@ export async function handleDepartments(req: Request, res: Response) {
     const result = grouped.map(row => ({
         id: row.department_id,
         name: row.department_name,
-        points: row._sum?.points_per_action ?? 0,
+        points: row._sum?.action_points ?? 0,
     }));
+    for (const dept of allDepartments) {
+        if (!result.find(r => r.id === dept.id)) {
+            result.push({
+                id: dept.id,
+                name: dept.name,
+                points: 0,
+            });
+        }
+    }
 
     res.status(200).json(result).end();
 }
 
 export async function handleDepartmentsById(req: Request, res: Response) {
-    // const departmentId = req.params.id;
-    // const department = await prisma.departments.findFirst({
-    //     where: {id: parseInt(departmentId)}
-    // })
-    // const history = await prisma.departments_history.findMany({
-    //     where: {
-    //         id: parseInt(departmentId)
-    //     },
-    //     omit : {
-    //         id: true,
-    //         name: true,
-    //     }
-    // })
+    const departmentId = req.params.id;
+    const department = await prisma.departments.findFirst({
+        where: {id: parseInt(departmentId)}
+    })
+    const history = await prisma.departments_points.findMany({
+        where: {
+            department_id: parseInt(departmentId)
+        },
+        omit : {
+            log_id: true,
+        }
+    })
 
-    // // this could be problematic since I am not getting my numbers from the DB and instead are making assumtions.
-    // let totalPoints = 0;
-    // for (const event of history) {
-    //     totalPoints += event.action_points
-    // }
-    // return res.json({
-    //     ...department,
-    //     points: totalPoints,
-    //     events: history
-    // })
+    // this could be problematic since I am not getting my numbers from the DB and instead are making assumtions.
+    let totalPoints = 0;
+    for (const event of history) {
+        totalPoints += event.action_points
+    }
+    return res.json({
+        ...department,
+        points: totalPoints,
+        events: history
+    })
 }
 
 export async function handleDepartmentsCount(req: Request, res: Response) {
