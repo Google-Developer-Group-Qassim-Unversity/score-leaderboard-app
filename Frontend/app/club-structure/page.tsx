@@ -12,6 +12,7 @@ export default function ClubStructurePage() {
         "عزام خالد الخضيري",
         "جود سعود الفرم"
       ]
+      //
     },
     vicePresident: {
       title: "نائب الرئيس",
@@ -52,7 +53,7 @@ export default function ClubStructurePage() {
           "ريما صالح الحربي",
           "ابتهال مهدي العمري",
           "مزنة صافي الدين عبدالقادر",
-          "رغد عبدالله العبيد"
+          "رغد عيدالله العبيد"
         ]
       },
       {
@@ -112,9 +113,10 @@ export default function ClubStructurePage() {
           "ياسمين حمود التويجري",
           "عبدالله غازي المطيري",
           "خولة سعود البشري",
-          "أميرة عبد المطيري"
+          "أميرة عيد المطيري"
         ]
       },
+      //
       {
         title: "التقارير والإعلام",
         color: "blue",
@@ -193,7 +195,7 @@ export default function ClubStructurePage() {
             </div>
             
             <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto font-medium leading-relaxed drop-shadow-sm">
-              تعرف على الهيكل التنظيمي لنادي مطوري جوجل والأقسام المختلفة
+              تعرف على الهيكل التنظيمي لنادي مطوري قوقل والأقسام المختلفة
             </p>
           </div>
         </div>
