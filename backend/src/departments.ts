@@ -4,36 +4,48 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 
-export async function handleDepartments(req: Request, res: Response) {
-    const allDepartments = await prisma.departments.findMany();
 
-    const grouped = await prisma.departments_points.groupBy({
-        by: ['department_id', 'department_name'],
-        _sum: {
-            action_points: true,
-        },
-        orderBy: {
-            _sum: {
-                action_points: 'desc',
-            },
-        },
+export async function handleDepartments(req: Request, res: Response) {
+    console.log("Fetching departments with points...");
+    
+    // 1. Get all departments_points records
+    const departmentsPoints = await prisma.departments_points.findMany();
+    
+    // 2. Process each record to calculate points
+    // No absences to account for!
+    const processedPoints = departmentsPoints.map((record) => {
+        // Number of event days (inclusive)
+        const startDate = new Date(record.start_date);
+        const endDate = new Date(record.end_date); // These need to exist on your view!
+        const diffTime = endDate.getTime() - startDate.getTime();
+        const eventDays =
+            Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 for inclusive
+        
+        // Points for this log record
+        const points = record.action_points * eventDays;
+
+        return {
+            department_id: record.department_id,
+            department_name: record.department_name,
+            points,
+        };
     });
 
-    // Map Prisma groupBy result to JSON
-    const result = grouped.map(row => ({
-        id: row.department_id,
-        name: row.department_name,
-        points: row._sum?.action_points ?? 0,
-    }));
-    for (const dept of allDepartments) {
-        if (!result.find(r => r.id === dept.id)) {
-            result.push({
-                id: dept.id,
-                name: dept.name,
-                points: 0,
-            });
+    // 3. Group by department and sum points
+    const deptPointsMap = new Map<number, { name: string; points: number }>();
+
+    processedPoints.forEach(({ department_id, department_name, points }) => {
+        if (deptPointsMap.has(department_id)) {
+            deptPointsMap.get(department_id)!.points += points;
+        } else {
+            deptPointsMap.set(department_id, { name: department_name, points });
         }
-    }
+    });
+
+    // 4. Convert to array and sort descending
+    const result = Array.from(deptPointsMap.entries())
+        .map(([id, { name, points }]) => ({ id, name, points }))
+        .sort((a, b) => b.points - a.points);
 
     res.status(200).json(result).end();
 }
