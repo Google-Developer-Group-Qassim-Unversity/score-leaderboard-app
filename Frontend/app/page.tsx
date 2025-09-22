@@ -142,8 +142,8 @@ export default async function Dashboard() {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
-            <div className="bg-gradient-to-br from-blue-50/50 to-white p-1">
+          <Card className="bg-gradient-to-br from-blue-50/50 to-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+            <div className="p-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                 <CardTitle className="text-sm font-semibold text-slate-600 uppercase tracking-wider">Total Members</CardTitle>
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
@@ -157,8 +157,8 @@ export default async function Dashboard() {
             </div>
           </Card>
 
-          <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
-            <div className="bg-gradient-to-br from-green-50/50 to-white p-1">
+          <Card className="bg-gradient-to-br from-green-50/50 to-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+            <div className="p-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                 <CardTitle className="text-sm font-semibold text-slate-600 uppercase tracking-wider">Departments</CardTitle>
                 <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-md">
@@ -204,8 +204,8 @@ export default async function Dashboard() {
         {/* Leaderboard Previews */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Top Members Preview */}
-          <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
-            <div className="bg-gradient-to-br from-blue-50/50 to-white p-1">
+          <Card className="bg-gradient-to-br from-blue-50/50 to-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+            <div className="p-1">
               <CardHeader className="pb-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -245,7 +245,7 @@ export default async function Dashboard() {
                         )}
                       </div>
                       <div className="flex-1">
-                        <p className="font-bold text-slate-900 text-base group-hover:text-slate-800 transition-colors duration-200">{member.name}</p>
+                        <p className="font-bold  text-slate-900 text-sm sm:text-base group-hover:text-slate-800 transition-colors duration-200">{member.name}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                           <p className="text-sm text-slate-500 font-medium">Member</p>
@@ -264,8 +264,8 @@ export default async function Dashboard() {
 
           {/* Top Departments Preview */}
                     {/* Top Departments Preview */}
-          <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
-            <div className="bg-gradient-to-br from-green-50/50 to-white p-1">
+          <Card className="bg-gradient-to-br from-green-50/50 to-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+            <div className="p-1">
               <CardHeader className="pb-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -360,7 +360,7 @@ export default async function Dashboard() {
                       </Badge>
                     </div>
                     <div className="flex-1">
-                      <p className="font-bold text-slate-900 text-2xl group-hover:text-cyan-800 transition-colors duration-200">
+                      <p className="font-bold text-slate-900 sm:text-2xl group-hover:text-cyan-800 transition-colors duration-200">
                         Software Development
                       </p>
                       <div className="flex items-center gap-2 mt-2">

@@ -1,6 +1,7 @@
 // API utility functions for fetching data from localhost:8000
 
-const API_BASE_URL = "https://scoreapp.albrrak773.com"
+const API_BASE_URL = "http://178.128.205.239:8000"
+// const API_BASE_URL = "https://scoreapp.albrrak773.com"
 // const API_BASE_URL = "http://localhost:8000";
 export interface ApiMember {
   id: number
@@ -154,7 +155,7 @@ export async function fetchMemberById(id: string): Promise<ApiMemberDetail | und
     })
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      throw new Error(`[HTTP] ${response.status}: ${response.statusText}`)
     }
 
     const data = await response.json()
