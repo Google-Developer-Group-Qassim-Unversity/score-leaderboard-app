@@ -1,7 +1,6 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Users, Crown, Shield, Cog, Palette, Bot, Calendar, Megaphone, Lightbulb, Trophy } from "lucide-react"
 
 export default function ClubStructurePage() {
@@ -19,7 +18,7 @@ export default function ClubStructurePage() {
     },
     departmentsSpecialized: [
       {
-        title: "التقنية",
+        title: "التطوير",
         color: "blue",
         icon: Cog,
         head: "عبدالاله عبدالعزيز البراك",
@@ -179,10 +178,10 @@ export default function ClubStructurePage() {
             </div>
             
             <div className="space-y-6">
-              <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-white via-blue-100 to-green-100 bg-clip-text text-transparent leading-tight tracking-tight">
+              <h1 className="text-5xl md:text-7xl font-medium bg-gradient-to-r from-white via-blue-100 to-green-100 bg-clip-text text-transparent leading-tight tracking-tight">
                 هيكلة المجموعة
               </h1>
-              <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="flex items-center justify-center flex-col md:flex-row gap-4 mb-6">
                 <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-500 group border-4 border-white/20">
                   <svg viewBox="0 0 24 24" className="w-8 h-8 text-blue-600 group-hover:rotate-12 transition-transform duration-300">
                     <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
