@@ -21,14 +21,14 @@ export default async function MemberDetailPage({ params }: PageProps) {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-8">
           <Link href="/members">
             <Button variant="outline" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Members
             </Button>
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3">
             <Users className="h-8 w-8 text-blue-600" />
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white font-semibold">{memberData.name}</h1>

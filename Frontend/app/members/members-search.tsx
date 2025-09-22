@@ -104,14 +104,14 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
                     return {
                       container: "bg-gradient-to-br from-amber-100/90 via-yellow-50 to-amber-200/60 border-2 border-amber-300/70 hover:border-amber-400 shadow-xl shadow-amber-500/20 hover:shadow-amber-500/30",
                       badge: "bg-gradient-to-br from-amber-400 to-amber-500 text-white shadow-lg shadow-amber-500/30",
-                      name: "text-amber-900 font-extrabold",
-                      points: "text-amber-800 font-black",
+                      name: "text-amber-900 font-bold",
+                      points: "text-amber-800 font-bold",
                       star: "bg-gradient-to-r from-amber-500 to-yellow-500",
                       icon: "🥇"
                     }
                   case 2: // Silver - Google Blue-Gray inspired  
                     return {
-                      container: "bg-gradient-to-br from-blue-100/90 via-slate-100 to-blue-200/60 border-2 border-blue-400/70 hover:border-blue-500 shadow-xl shadow-blue-500/20 hover:shadow-blue-500/30", 
+                      container: "bg-gradient-to-br from-gray-100/90 via-slate-50 to-gray-200/60 border-2 border-gray-400/70 hover:border-gray-500 shadow-xl shadow-gray-500/20 hover:shadow-gray-500/30", 
                       badge: "bg-gradient-to-br from-slate-400 to-slate-500 text-white shadow-lg shadow-slate-500/30",
                       name: "text-blue-900 font-bold",
                       points: "text-blue-800 font-bold",
@@ -162,7 +162,7 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
                         )}
                       </div>
                       <div className="min-w-0">
-                        <p className={`font-bold text-base group-hover:text-slate-800 transition-colors duration-200 truncate ${podiumStyles.name}`}>{member.name}</p>
+                        <p className={`font-bold text-sm sm:text-base group-hover:text-slate-800 transition-colors duration-200 truncate`}>{member.name}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
                           <p className="text-sm text-slate-500 font-medium">Member</p>
@@ -172,7 +172,7 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
 
                     <div className="flex items-center justify-between sm:justify-end gap-4 mt-3 sm:mt-0 sm:ml-auto">
                       <div className="text-left sm:text-right">
-                        <p className={`font-bold text-xl ${podiumStyles.points}`}>{member.totalPoints}</p>
+                        <p className={`font-bold text-xl`}>{member.totalPoints}</p>
                         <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Points Earned</p>
                       </div>
                       <Link href={`/member/${member.id}`} className="flex-shrink-0">

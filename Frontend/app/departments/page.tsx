@@ -121,7 +121,7 @@ export default async function DepartmentsLeaderboard() {
 
         {/* Leaderboard */}
         <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl rounded-3xl overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-slate-200">
+          <CardHeader className="border-b border-slate-200">
             <CardTitle className="text-2xl font-bold text-slate-800 flex items-center gap-3">
               <div className="p-2 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg">
                 <Trophy className="h-6 w-6 text-white" />

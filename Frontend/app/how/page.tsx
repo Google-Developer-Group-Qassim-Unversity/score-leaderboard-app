@@ -16,7 +16,7 @@ const PointsSystemPage = () => {
       <header className="bg-white shadow-lg sticky top-0 z-10 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center flex-col sm:flex-row gap-6">
               {/* Enhanced Google Developer Groups Logo Pattern */}
               <div className="flex gap-2">
                 {[1, 2, 3].map((i) => (
@@ -34,9 +34,9 @@ const PointsSystemPage = () => {
                   نظام التقييم والمتابعة للنقاط
                 </h1>
                 <p className="text-slate-600 mt-2 text-base md:text-lg font-medium">
-                  للنادي الطلابي ممثلة بمجموعة قوقل للطلبة المطورين
+                  لمجموعة قوقل للطلبة المطورين
                 </p>
-                <div className="flex items-center gap-2 mt-2 justify-end">
+                <div className="flex items-center gap-2 mt-2 justify-center sm:justify-start">
                   <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                   <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse delay-100"></div>
                   <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse delay-200"></div>
@@ -45,10 +45,6 @@ const PointsSystemPage = () => {
               </div>
             </div>
             <div className="text-center md:text-right">
-              <p className="text-sm text-slate-500 font-medium">
-                Google Developer Student Clubs
-              </p>
-              
               <div className="mt-2 px-3 py-1 bg-gradient-to-r from-blue-100 to-green-100 rounded-full flex items-center justify-center">
                 <span className="text-xs font-semibold text-slate-700">نظام النقاط 2025</span>
               </div>
@@ -61,9 +57,6 @@ const PointsSystemPage = () => {
         {/* General Idea Section */}
         <section className="mb-16">
           <div className="flex items-center gap-4 mb-8">
-            <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/30 transform hover:scale-105 transition-transform duration-200">
-              1
-            </div>
             <div className="flex items-center gap-3">
               <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
@@ -75,6 +68,67 @@ const PointsSystemPage = () => {
           </div>
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-slate-200 hover:shadow-xl transition-shadow duration-300">
             <div className="p-8 bg-gradient-to-br from-blue-50/50 to-white">
+              {/* Points System Introduction */}
+              <div className="mb-10 space-y-6">
+                <div className="text-right max-w-2xl">
+                  <p className="text-slate-600 text-base leading-relaxed">
+                    نقاط قوقل تعكس مساهمات الأعضاء والأقسام، حيث يتم تقدير كل جهد وإنجاز بشكل واضح وملموس. مشاركتك معنا تصنع الفرق، وكل عضو له دور فريد وبصمة خاصة.
+                  </p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6 mt-8">
+                  {/* Monthly Recognition */}
+                  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-slate-200">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold text-indigo-900">شهريا</h3>
+                    </div>
+                    <div className="space-y-3 text-slate-700">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                        <p>ثلاث اعضاء الشهر المميزين </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                        <p> قسم الشهر المبدع</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Term Recognition */}
+                  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-slate-200">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center shadow-md">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold text-amber-900">نهاية الفصل</h3>
+                    </div>
+                    <div className="space-y-3 text-slate-700">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                        <p>تكريم أفضل 5 أعضاء (قابلة للزيادة إلى 10 حسب مستوى التفاعل)</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                        <p>تكريم القسم التخصصي المتميز</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                        <p>تكريم القسم الإداري المتميز</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent my-8"></div>
+
               <ul className="space-y-6 text-slate-700 text-lg">
                 <li className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mt-1 shadow-md hover:shadow-lg transition-shadow duration-200">
@@ -92,17 +146,7 @@ const PointsSystemPage = () => {
                   </div>
                   <span className="leading-relaxed">فيه نقاط للأقسام (نقاط قسم) وفيه نقاط للأعضاء (نقاط عضو).</span>
                 </li>
-                <li className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mt-1 shadow-md hover:shadow-lg transition-shadow duration-200">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                  </div>
-                  <span className="leading-relaxed">قسم التقارير هو المسؤول عن التحقق، التسجيل، والحسبة، ونشر لوحات النتائج بشكل دوري.</span>
-                </li>
               </ul>
-              
-             
             </div>
           </div>
         </section>
@@ -116,12 +160,60 @@ const PointsSystemPage = () => {
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
         </div>
 
+        {/* Members Points Section */}
+        <section className="mb-16">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="flex items-center gap-3">
+              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+              <h2 className="text-2xl md:text-3xl font-bold flex flex-col text-green-700">
+                نقاط الأعضاء 
+                <span>(حضور/مشاركة/تنظيم)</span>
+              </h2>
+            </div>
+          </div>
+          <div className="overflow-x-auto bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-gradient-to-r from-green-50/50 to-white p-1">
+              <table className="min-w-full text-right">
+              <thead className="bg-gradient-to-r from-slate-100 to-slate-200">
+                <tr>
+                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 uppercase tracking-wider">الفعل</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700 uppercase tracking-wider">نقاط العضو</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200">
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">حضور دورة حضورية</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">حضور دورة أونلاين</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">4</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">حضور معسكر (لكل يوم)</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">حضور لقاء تقني/جلسة</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">3</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">المشاركة في مسابقة خارجية</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">التأهل/المراكز المتقدمة في مسابقة</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">12</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">الفوز/المركز الأول خارجياً</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">18</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">تقديم جلسة قصيرة (≤ 20 دقيقة)</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">8</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">تقديم دورة كاملة</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">20</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">تنظيم/تطوع في حدث (شِفت)</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-16 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-sm rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">5/شفت</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">المساهمة في تصميم معتمد</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">كتابة مقال/فيديو تعليمي معتمد</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
+                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">المشاركة في مشروع عملي مُعلن</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
+              </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        {/* Section Divider */}
+        <div className="flex items-center justify-center mb-16">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
+          <div className="px-6">
+            <div className="w-3 h-3 bg-gradient-to-r from-yellow-500 to-green-500 rounded-full shadow-md"></div>
+          </div>
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
+        </div>
+
         {/* Department Activities Section */}
         <section className="mb-16">
           <div className="flex items-center gap-4 mb-8">
-            <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-yellow-500/30 transform hover:scale-105 transition-transform duration-200">
-              2
-            </div>
             <div className="flex items-center gap-3">
               <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
@@ -152,59 +244,6 @@ const PointsSystemPage = () => {
                 <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">فعالية تعريفية/جناح</td><td className="px-6 py-4 text-slate-600">ركن/تعريف بالنادي داخل الجامعة</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">8</span></td></tr>
                 <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">شراكة/رعاية</td><td className="px-6 py-4 text-slate-600">اتفاق يدعم نشاط/جوائز/مكان</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-16 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">15-30</span></td></tr>
                 <tr className="hover:bg-yellow-50 transition-colors duration-200"><td className="px-6 py-4 whitespace-nowrap font-medium">محتوى تعليمي منشور</td><td className="px-6 py-4 text-slate-600">مقال/فيديو تحت هوية النادي</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
-              </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        {/* Section Divider */}
-        <div className="flex items-center justify-center mb-16">
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
-          <div className="px-6">
-            <div className="w-3 h-3 bg-gradient-to-r from-yellow-500 to-green-500 rounded-full shadow-md"></div>
-          </div>
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
-        </div>
-
-        {/* Members Points Section */}
-        <section className="mb-16">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-green-500/30 transform hover:scale-105 transition-transform duration-200">
-              3
-            </div>
-            <div className="flex items-center gap-3">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-              </svg>
-              <h2 className="text-2xl md:text-3xl font-bold text-green-700">
-                نقاط الأعضاء (حضور/مشاركة/تنظيم)
-              </h2>
-            </div>
-          </div>
-          <div className="overflow-x-auto bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300">
-            <div className="bg-gradient-to-r from-green-50/50 to-white p-1">
-              <table className="min-w-full text-right">
-              <thead className="bg-gradient-to-r from-slate-100 to-slate-200">
-                <tr>
-                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 uppercase tracking-wider">الفعل</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700 uppercase tracking-wider">نقاط العضو</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">حضور دورة حضورية</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">حضور دورة أونلاين</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">4</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">حضور معسكر (لكل يوم)</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">حضور لقاء تقني/جلسة</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">3</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">المشاركة في مسابقة خارجية</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">التأهل/المراكز المتقدمة في مسابقة</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">12</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">الفوز/المركز الأول خارجياً</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">18</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">تقديم جلسة قصيرة (≤ 20 دقيقة)</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">8</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">تقديم دورة كاملة</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">20</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">تنظيم/تطوع في حدث (شِفت)</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-16 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-sm rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">5/شفت</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">المساهمة في تصميم معتمد</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">6</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">كتابة مقال/فيديو تعليمي معتمد</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
-                <tr className="hover:bg-green-50 transition-colors duration-200"><td className="px-6 py-4 font-medium">المشاركة في مشروع عملي مُعلن</td><td className="px-6 py-4 text-center"><span className="inline-flex items-center justify-center w-12 h-8 bg-gradient-to-r from-green-100 to-green-200 text-green-800 font-bold text-lg rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">10</span></td></tr>
               </tbody>
               </table>
             </div>

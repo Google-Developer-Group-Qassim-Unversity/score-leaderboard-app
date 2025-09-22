@@ -12,26 +12,12 @@ export default function ClubStructurePage() {
         "عزام خالد الخضيري",
         "جود سعود الفرم"
       ]
-      //
     },
     vicePresident: {
       title: "نائب الرئيس",
       members: ["أحمد الحربي"]
     },
-    departments: [
-      {
-        title: "الأمن السيبراني",
-        color: "green",
-        icon: Shield,
-        head: "حاتم محمد الحسيني",
-        members: [
-          "رغد صالح الحسين",
-          "عاصم أحمد العقيل",
-          "دانه عبدالعزيز الغريب",
-          "أثير سالم الحربي",
-          "جود ممدوح العنزي"
-        ]
-      },
+    departmentsSpecialized: [
       {
         title: "التقنية",
         color: "blue",
@@ -81,6 +67,21 @@ export default function ClubStructurePage() {
         ]
       },
       {
+        title: "الأمن السيبراني",
+        color: "green",
+        icon: Shield,
+        head: "حاتم محمد الحسيني",
+        members: [
+          "رغد صالح الحسين",
+          "عاصم أحمد العقيل",
+          "دانه عبدالعزيز الغريب",
+          "أثير سالم الحربي",
+          "جود ممدوح العنزي"
+        ]
+      }
+    ],
+    departmentsAdministrative: [
+      {
         title: "التصميم",
         color: "green",
         icon: Palette,
@@ -91,7 +92,6 @@ export default function ClubStructurePage() {
           "أسماء حامد الطريفي"
         ]
       },
-      
       {
         title: "إدارة البرامج والفعاليات",
         color: "orange",
@@ -116,7 +116,6 @@ export default function ClubStructurePage() {
           "أميرة عيد المطيري"
         ]
       },
-      //
       {
         title: "التقارير والإعلام",
         color: "blue",
@@ -314,55 +313,121 @@ export default function ClubStructurePage() {
             </Card>
           </div>
 
-          {/* Departments Grid */}
+          {/* Section Divider */}
+        <div className="flex items-center justify-center mb-16">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
+          <div className="px-6">
+            <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-yellow-500 rounded-full shadow-md"></div>
+          </div>
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
+        </div>
+
+          {/* Departments Grid Split */}
+          {/* Specialized Departments Section */}
+          <div className="relative mb-16">
+            {/* Background decoration for departments grid */}
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 via-blue-50/30 to-red-50/30 rounded-3xl blur-2xl opacity-40"></div>
+            <div className="absolute top-10 left-10 w-40 h-40 bg-gradient-to-br from-blue-500/8 to-purple-500/8 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-10 right-10 w-32 h-32 bg-gradient-to-br from-red-500/8 to-pink-500/8 rounded-full blur-2xl"></div>
+            {/* Section Title */}
+            <div className="relative z-10 mb-10 text-center">
+              <h2 className="text-3xl font-bold text-blue-700 bg-white/40 rounded-xl inline-block px-8 py-4 shadow-lg border border-blue-200">الاقسام التخصصية</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 relative z-10">
+              {clubData.departmentsSpecialized.map((dept, index) => (
+                <Card key={index} className={`
+                  group overflow-hidden border-0 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-3 hover:scale-105 relative
+                  ${dept.color === 'green' ? 'bg-gradient-to-br from-green-500 via-green-600 to-emerald-700' :
+                    dept.color === 'blue' ? 'bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700' :
+                    dept.color === 'yellow' ? 'bg-gradient-to-br from-yellow-500 via-amber-500 to-orange-600' :
+                    dept.color === 'orange' ? 'bg-gradient-to-br from-orange-500 via-red-500 to-red-600' :
+                    'bg-gradient-to-br from-red-500 via-red-600 to-pink-600'}
+                  hover:rotate-2 rounded-3xl
+                `}>
+                  {/* Enhanced floating orbs with Google colors */}
+                  <div className="absolute top-6 right-6 w-16 h-16 bg-white/15 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute bottom-6 left-6 w-12 h-12 bg-yellow-300/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  <div className="absolute top-1/2 left-1/2 w-8 h-8 bg-blue-300/15 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                  <CardHeader className="pb-6 relative z-10 pt-8">
+                    <CardTitle className="text-white flex items-center gap-4 text-xl font-bold group-hover:scale-105 transition-transform duration-300">
+                      <dept.icon className="h-7 w-7 bg-white/20 p-1 rounded-lg" />
+                      {dept.title}
+                    </CardTitle>
+                    <div className="bg-white/25 backdrop-blur-sm rounded-2xl px-4 py-3 mt-4 hover:bg-white/35 transition-all duration-300 transform hover:scale-105 border border-white/20 shadow-lg">
+                      <p className="text-white/90 font-semibold text-sm">رئيس القسم:</p>
+                      <p className="text-white font-bold text-lg mt-1">{dept.head}</p>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3 relative z-10 pb-8">
+                    <p className="text-white/95 font-bold text-base mb-4 flex items-center gap-3 bg-white/15 rounded-xl px-4 py-2">
+                      <Users className="h-5 w-5" />
+                      أعضاء القسم:
+                    </p>
+                    {dept.members.map((member, memberIndex) => (
+                      <div key={memberIndex} className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-3 hover:bg-white/30 transition-all duration-300 transform hover:scale-105 hover:translate-x-2 border border-white/10 shadow-md">
+                        <div className="text-white font-semibold text-base flex items-center gap-3">
+                          <div className="w-3 h-3 bg-white rounded-full shadow-sm"></div>
+                          {member}
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Administrative Departments Section */}
           <div className="relative">
             {/* Background decoration for departments grid */}
             <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 via-blue-50/30 to-red-50/30 rounded-3xl blur-2xl opacity-40"></div>
             <div className="absolute top-10 left-10 w-40 h-40 bg-gradient-to-br from-blue-500/8 to-purple-500/8 rounded-full blur-2xl"></div>
             <div className="absolute bottom-10 right-10 w-32 h-32 bg-gradient-to-br from-red-500/8 to-pink-500/8 rounded-full blur-2xl"></div>
-            
+            {/* Section Title */}
+            <div className="relative z-10 mb-10 text-center">
+              <h2 className="text-3xl font-bold text-red-700 bg-white/40 rounded-xl inline-block px-8 py-4 shadow-lg border border-red-200">الاقسام الإدارية</h2>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 relative z-10">
-            {clubData.departments.map((dept, index) => (
-              <Card key={index} className={`
-                group overflow-hidden border-0 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-3 hover:scale-105 relative
-                ${dept.color === 'green' ? 'bg-gradient-to-br from-green-500 via-green-600 to-emerald-700' :
-                  dept.color === 'blue' ? 'bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700' :
-                  dept.color === 'yellow' ? 'bg-gradient-to-br from-yellow-500 via-amber-500 to-orange-600' :
-                  dept.color === 'orange' ? 'bg-gradient-to-br from-orange-500 via-red-500 to-red-600' :
-                  'bg-gradient-to-br from-red-500 via-red-600 to-pink-600'}
-                hover:rotate-2 rounded-3xl
-              `}>
-                {/* Enhanced floating orbs with Google colors */}
-                <div className="absolute top-6 right-6 w-16 h-16 bg-white/15 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="absolute bottom-6 left-6 w-12 h-12 bg-yellow-300/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                <div className="absolute top-1/2 left-1/2 w-8 h-8 bg-blue-300/15 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
-                
-                <CardHeader className="pb-6 relative z-10 pt-8">
-                  <CardTitle className="text-white flex items-center gap-4 text-xl font-bold group-hover:scale-105 transition-transform duration-300">
-                    <dept.icon className="h-7 w-7 bg-white/20 p-1 rounded-lg" />
-                    {dept.title}
-                  </CardTitle>
-                  <div className="bg-white/25 backdrop-blur-sm rounded-2xl px-4 py-3 mt-4 hover:bg-white/35 transition-all duration-300 transform hover:scale-105 border border-white/20 shadow-lg">
-                    <p className="text-white/90 font-semibold text-sm">رئيس القسم:</p>
-                    <p className="text-white font-bold text-lg mt-1">{dept.head}</p>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-3 relative z-10 pb-8">
-                  <p className="text-white/95 font-bold text-base mb-4 flex items-center gap-3 bg-white/15 rounded-xl px-4 py-2">
-                    <Users className="h-5 w-5" />
-                    أعضاء القسم:
-                  </p>
-                  {dept.members.map((member, memberIndex) => (
-                    <div key={memberIndex} className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-3 hover:bg-white/30 transition-all duration-300 transform hover:scale-105 hover:translate-x-2 border border-white/10 shadow-md">
-                      <div className="text-white font-semibold text-base flex items-center gap-3">
-                        <div className="w-3 h-3 bg-white rounded-full shadow-sm"></div>
-                        {member}
-                      </div>
+              {clubData.departmentsAdministrative.map((dept, index) => (
+                <Card key={index} className={`
+                  group overflow-hidden border-0 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-3 hover:scale-105 relative
+                  ${dept.color === 'green' ? 'bg-gradient-to-br from-green-500 via-green-600 to-emerald-700' :
+                    dept.color === 'blue' ? 'bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700' :
+                    dept.color === 'yellow' ? 'bg-gradient-to-br from-yellow-500 via-amber-500 to-orange-600' :
+                    dept.color === 'orange' ? 'bg-gradient-to-br from-orange-500 via-red-500 to-red-600' :
+                    'bg-gradient-to-br from-red-500 via-red-600 to-pink-600'}
+                  hover:rotate-2 rounded-3xl
+                `}>
+                  {/* Enhanced floating orbs with Google colors */}
+                  <div className="absolute top-6 right-6 w-16 h-16 bg-white/15 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute bottom-6 left-6 w-12 h-12 bg-yellow-300/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  <div className="absolute top-1/2 left-1/2 w-8 h-8 bg-blue-300/15 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                  <CardHeader className="pb-6 relative z-10 pt-8">
+                    <CardTitle className="text-white flex items-center gap-4 text-xl font-bold group-hover:scale-105 transition-transform duration-300">
+                      <dept.icon className="h-7 w-7 bg-white/20 p-1 rounded-lg" />
+                      {dept.title}
+                    </CardTitle>
+                    <div className="bg-white/25 backdrop-blur-sm rounded-2xl px-4 py-3 mt-4 hover:bg-white/35 transition-all duration-300 transform hover:scale-105 border border-white/20 shadow-lg">
+                      <p className="text-white/90 font-semibold text-sm">رئيس القسم:</p>
+                      <p className="text-white font-bold text-lg mt-1">{dept.head}</p>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
-            ))}
+                  </CardHeader>
+                  <CardContent className="space-y-3 relative z-10 pb-8">
+                    <p className="text-white/95 font-bold text-base mb-4 flex items-center gap-3 bg-white/15 rounded-xl px-4 py-2">
+                      <Users className="h-5 w-5" />
+                      أعضاء القسم:
+                    </p>
+                    {dept.members.map((member, memberIndex) => (
+                      <div key={memberIndex} className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-3 hover:bg-white/30 transition-all duration-300 transform hover:scale-105 hover:translate-x-2 border border-white/10 shadow-md">
+                        <div className="text-white font-semibold text-base flex items-center gap-3">
+                          <div className="w-3 h-3 bg-white rounded-full shadow-sm"></div>
+                          {member}
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </div>
