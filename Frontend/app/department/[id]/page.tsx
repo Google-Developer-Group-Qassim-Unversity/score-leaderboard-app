@@ -92,7 +92,7 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
                           </div>
                           <div>
                             <p className="font-semibold text-gray-900 dark:text-white">{event.event_name}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{event.action_points}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{event.action_name}</p>
                             <p className="text-sm text-gray-500">{new Date(event.start_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
                           </div>
                         </div>

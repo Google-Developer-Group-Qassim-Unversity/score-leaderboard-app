@@ -4,23 +4,28 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 
-
 export async function handleDepartments(req: Request, res: Response) {
     console.log("Fetching departments with points...");
-    
-    // 1. Get all departments_points records
+
+    // 1. Get all departments (to ensure we return zeros for those with no points)
+    const allDepartments = await prisma.departments.findMany({
+        select: {
+            id: true,
+            name: true,
+        },
+    });
+
+    // 2. Get all departments_points records
     const departmentsPoints = await prisma.departments_points.findMany();
-    
-    // 2. Process each record to calculate points
-    // No absences to account for!
+
+    // 3. Process each record to calculate points (no absences to account for)
     const processedPoints = departmentsPoints.map((record) => {
         // Number of event days (inclusive)
         const startDate = new Date(record.start_date);
         const endDate = new Date(record.end_date); // These need to exist on your view!
         const diffTime = endDate.getTime() - startDate.getTime();
-        const eventDays =
-            Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 for inclusive
-        
+        const eventDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
         // Points for this log record
         const points = record.action_points * eventDays;
 
@@ -31,9 +36,8 @@ export async function handleDepartments(req: Request, res: Response) {
         };
     });
 
-    // 3. Group by department and sum points
+    // 4. Group by department and sum points
     const deptPointsMap = new Map<number, { name: string; points: number }>();
-
     processedPoints.forEach(({ department_id, department_name, points }) => {
         if (deptPointsMap.has(department_id)) {
             deptPointsMap.get(department_id)!.points += points;
@@ -42,10 +46,23 @@ export async function handleDepartments(req: Request, res: Response) {
         }
     });
 
-    // 4. Convert to array and sort descending
+    // 5. Convert to array
     const result = Array.from(deptPointsMap.entries())
-        .map(([id, { name, points }]) => ({ id, name, points }))
-        .sort((a, b) => b.points - a.points);
+        .map(([id, { name, points }]) => ({ id, name, points }));
+
+    // 6. Include departments with 0 points if missing
+    for (const dept of allDepartments) {
+        if (!result.find((r) => r.id === dept.id)) {
+            result.push({
+                id: dept.id,
+                name: dept.name,
+                points: 0,
+            });
+        }
+    }
+
+    // 7. Sort descending by points
+    result.sort((a, b) => b.points - a.points);
 
     res.status(200).json(result).end();
 }
