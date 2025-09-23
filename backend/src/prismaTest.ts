@@ -1,6 +1,13 @@
 import { PrismaClient } from "@prisma/client"
 import {writeFileSync} from "fs";
 import { performance } from "perf_hooks";
+import dotenv from "dotenv";
+dotenv.config();
+
+if (process.env.DEV_DATABASE_URL) {
+  process.env.DATABASE_URL = process.env.DEV_DATABASE_URL;
+}
+
 const prisma = new PrismaClient()
 const JSON_OUTPUT_FILE = "output.json"
 async function main() {

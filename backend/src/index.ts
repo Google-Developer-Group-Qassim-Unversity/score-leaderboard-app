@@ -5,6 +5,12 @@ import cors from "cors";
 import { logErrorsMiddleware } from "./middlewares.js";
 import { handleMembers, handleMembersCount, handleMembersById } from "./members.js";
 import { handleDepartments, handleDepartmentsCount, handleDepartmentsById } from "./departments.js";
+import dotenv from "dotenv";
+dotenv.config();
+
+if (process.env.DEV_DATABASE_URL) {
+  process.env.DATABASE_URL = process.env.DEV_DATABASE_URL;
+}
 
 const app = express();
 const PORT = 8000;

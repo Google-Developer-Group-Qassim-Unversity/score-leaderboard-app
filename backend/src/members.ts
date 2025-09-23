@@ -1,5 +1,13 @@
 import type { Response, Request } from "express"
 import { PrismaClient } from "@prisma/client";
+import { log } from "console";
+import dotenv from "dotenv";
+dotenv.config();
+
+if (process.env.DEV_DATABASE_URL) {
+    console.log("Using development database URL", process.env.DEV_DATABASE_URL);
+    process.env.DATABASE_URL = process.env.DEV_DATABASE_URL;
+}
 
 const prisma = new PrismaClient();
 
@@ -25,11 +33,23 @@ export async function handleMembers(req: Request, res: Response) {
     // Get all unique member_log_ids to query absences efficiently
     const memberLogIds = [...new Set(membersPoints.map(record => record.member_log_id))];
     
+    // Get all unique log_ids to query modifications efficiently
+    const logIds = [...new Set(membersPoints.map(record => record.log_id))];
+    
     // Get all absences for these member_log_ids in bulk
     const allAbsences = await prisma.absence.findMany({
         where: {
             member_log_id: {
                 in: memberLogIds,
+            },
+        },
+    });
+    
+    // Get all modifications for these log_ids in bulk
+    const allModifications = await prisma.modifications.findMany({
+        where: {
+            log_id: {
+                in: logIds,
             },
         },
     });
@@ -52,8 +72,21 @@ export async function handleMembers(req: Request, res: Response) {
         // Calculate attended days
         const attendedDays = eventDays - absenceCount;
         
-        // Calculate adjusted points (0 if attended days <= 0)
-        const adjustedPoints = attendedDays > 0 ? record.action_points * attendedDays : 0;
+        // Calculate base adjusted points (0 if attended days <= 0)
+        let adjustedPoints = attendedDays > 0 ? record.action_points * attendedDays : 0;
+        
+        // Apply modifications for this log_id
+        const modifications = allModifications.filter(mod => mod.log_id === record.log_id);
+        modifications.forEach(mod => {
+            if (mod.type === 'bonus') {
+                adjustedPoints += mod.value;
+            } else if (mod.type === 'discount') {
+                adjustedPoints -= mod.value;
+            }
+        });
+        
+        // Ensure points don't go below 0
+        adjustedPoints = Math.max(0, adjustedPoints);
         
         return {
             member_id: record.member_id,
@@ -75,87 +108,97 @@ export async function handleMembers(req: Request, res: Response) {
     
     // Convert to array and sort by points descending
     const result = Array.from(memberPointsMap.entries())
-        .map(([id, { name, points }]) => ({ id, name, points }))
-        .sort((a, b) => b.points - a.points);
+    .map(([id, { name, points }]) => ({ id, name, points }))
+    .sort((a, b) => b.points - a.points);
 
     res.status(200).json(result).end();
 }
 
-export async function handleMembersById(req: Request, res: Response) {
-    const memberId = req.params.id;
-    const member = await prisma.members.findFirst({
-        where: {id: parseInt(memberId)}
+export async function handleMembersById(
+  req: Request,
+  res: Response
+) {
+  const memberId = parseInt(req.params.id, 10);
+
+  // 1. Fetch the member
+  const member = await prisma.members.findUnique({
+    where: { id: memberId },
+  });
+  if (!member) {
+    return res.status(404).json({ error: 'Member not found' });
+  }
+
+  // 2. Fetch the raw history (includes log_id)
+  const history = await prisma.members_points.findMany({
+    where: { member_id: memberId },
+  });
+
+  // 3. Gather IDs for bulk‐fetch
+  const memberLogIds = [...new Set(history.map(r => r.member_log_id))];
+  const logIds       = [...new Set(history.map(r => r.log_id))];
+
+  // 4. Bulk‐fetch absences & modifications
+  const [allAbsences, allMods] = await Promise.all([
+    prisma.absence.findMany({
+      where: { member_log_id: { in: memberLogIds } }
+    }),
+    prisma.modifications.findMany({
+      where: { log_id: { in: logIds } }
     })
-    
-    const history = await prisma.members_points.findMany({
-        where: {
-            member_id: parseInt(memberId)
-        },
-        omit : {
-            log_id: true,
-            member_id: true,
-            member_name: true
-        }
-    })
+  ]);
 
-    // Get all unique member_log_ids for this member to query absences
-    const memberLogIds = [...new Set(history.map(record => record.member_log_id))];
-    
-    // Get all absences for this member's events
-    const memberAbsences = await prisma.absence.findMany({
-        where: {
-            member_log_id: {
-                in: memberLogIds,
-            },
-        },
-    });
+  // 5. Process each event
+  const processed = history.map(rec => {
+    const start = new Date(rec.start_date);
+    const end   = new Date(rec.end_date);
+    const days  = Math.floor((end.getTime() - start.getTime()) / 86400000) + 1;
 
-    // Process each event to calculate adjusted points
-    const processedHistory = history.map((record) => {
-        // Calculate number of days in the event (inclusive)
-        const startDate = new Date(record.start_date);
-        const endDate = new Date(record.end_date);
-        const diffTime = endDate.getTime() - startDate.getTime();
-        const eventDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 for inclusive
-        
-        // Count absences for this specific event
-        const absenceCount = memberAbsences.filter(absence => 
-            absence.member_log_id === record.member_log_id &&
-            absence.date >= record.start_date &&
-            absence.date <= record.end_date
-        ).length;
-        
-        // Calculate attended days
-        const attendedDays = eventDays - absenceCount;
-        
-        // Calculate adjusted points (0 if attended days <= 0)
-        const adjustedPoints = attendedDays > 0 ? record.action_points * attendedDays : 0;
-        
-        return {
-            event_name: record.event_name,
-            start_date: record.start_date,
-            action_points: adjustedPoints, // This now represents the final calculated points
-            action_name: record.action_name,
-            // Optional: include additional info for debugging/transparency
-            original_points: record.action_points,
-            event_days: eventDays,
-            absences: absenceCount,
-            attended_days: attendedDays
-        };
-    });
+    const absCount = allAbsences.filter(a =>
+      a.member_log_id === rec.member_log_id &&
+      a.date >= rec.start_date &&
+      a.date <= rec.end_date
+    ).length;
 
-    // Calculate total points from adjusted points
-    let totalPoints = 0;
-    for (const event of processedHistory) {
-        totalPoints += event.action_points;
-    }
+    const attended = Math.max(0, days - absCount);
+    let pts = attended * rec.action_points;
 
-    return res.json({
-        id: member?.id,
-        name: member?.name,
-        points: totalPoints,
-        events: processedHistory
-    })
+    // apply bonuses/discounts on this log
+    allMods
+      .filter(m => m.log_id === rec.log_id)
+      .forEach(m => {
+        if (m.type === 'bonus')    pts += m.value;
+        else if (m.type === 'discount') pts -= m.value;
+      });
+    pts = Math.max(0, pts);
+
+    return {
+      event_name:     rec.event_name,
+      start_date:     rec.start_date,
+      end_date:       rec.end_date,
+      action_name:    rec.action_name,
+      original_points: rec.action_points,
+      event_days:     days,
+      absences:       absCount,
+      attended_days:  attended,
+      points:         pts,
+    };
+  });
+
+  // 6. Sort by start_date descending
+  processed.sort((a, b) =>
+    new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+  );
+
+  // 7. Total points
+  const totalPoints = processed.reduce((sum, ev) => sum + ev.points, 0);
+
+  // 8. Return payload
+  return res.status(200).json({
+    id:     member.id,
+    name:   member.name,
+    points: totalPoints,
+    events: processed,
+  });
 }
 
 
