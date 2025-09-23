@@ -95,7 +95,7 @@ export default async function MemberDetailPage({ params }: PageProps) {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold text-green-600 text-lg">+{event.action_points}</p>
+                          <p className="font-bold text-green-600 text-lg">+{event.points}</p>
                           <p className="text-xs text-gray-500">points</p>
                         </div>
                       </div>

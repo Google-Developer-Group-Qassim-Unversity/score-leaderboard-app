@@ -1,8 +1,7 @@
 // API utility functions for fetching data from localhost:8000
 
-const API_BASE_URL = "http://178.128.205.239:8000"
-// const API_BASE_URL = "https://scoreapp.albrrak773.com"
-// const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST ||"http://178.128.205.239:8000";
+
 export interface ApiMember {
   id: number
   name: string
@@ -24,7 +23,10 @@ export interface ApiEvent {
   event_name: string
   action_name: string
   start_date: string
-  action_points: number
+  end_date: string
+  absent_days: number
+  attended_days: number
+  points: number
 }
 
 export interface ApiMemberDetail extends ApiMember {
