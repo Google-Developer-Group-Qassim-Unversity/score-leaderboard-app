@@ -35,7 +35,7 @@ export default function ClubStructurePage() {
         head: "شذى خالد الحربي",
         members: [
           "رهف علي الحربي",
-          "ريما صالح الحربي",
+          "ريما صالح الاحمد",
           "ابتهال مهدي العمري",
           "مزنة صافي الدين عبدالقادر",
           "رغد عيدالله العبيد"
@@ -143,7 +143,7 @@ export default function ClubStructurePage() {
           animation: float 6s ease-in-out infinite;
         }
       `}</style>
-      
+
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/40 to-red-50/30 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -162,21 +162,21 @@ export default function ClubStructurePage() {
           <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_40%_90%,rgba(251,188,4,0.2),transparent_50%)]"></div>
           <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_60%_80%,rgba(234,67,53,0.2),transparent_50%)]"></div>
         </div>
-        
+
         {/* Subtle geometric shapes */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-1/4 left-1/4 w-20 h-20 border-2 border-white rotate-45 rounded-lg"></div>
           <div className="absolute top-3/4 right-1/4 w-16 h-16 border-2 border-white rounded-full"></div>
           <div className="absolute top-1/2 right-1/3 w-12 h-12 bg-white rounded-lg transform rotate-12"></div>
         </div>
-        
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center space-y-8">
             <div className="inline-flex items-center gap-3 bg-white/15 backdrop-blur-sm rounded-full px-8 py-4 border border-white/25 shadow-xl hover:bg-white/20 transition-all duration-300 hover:scale-105">
               <Users className="h-6 w-6 text-white animate-pulse" />
               <span className="text-white text-base font-semibold">Organization Structure</span>
             </div>
-            
+
             <div className="space-y-6">
               <h1 className="text-5xl md:text-7xl font-medium bg-gradient-to-r from-white via-blue-100 to-green-100 bg-clip-text text-transparent leading-tight tracking-tight">
                 هيكلة المجموعة
@@ -189,9 +189,9 @@ export default function ClubStructurePage() {
                 </div>
                 <span className="text-2xl font-bold text-white drop-shadow-lg">Google Developer Groups</span>
               </div>
-              
+
             </div>
-            
+
             <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto font-medium leading-relaxed drop-shadow-sm">
               تعرف على الهيكل التنظيمي لنادي مطوري قوقل والأقسام المختلفة
             </p>
@@ -207,7 +207,7 @@ export default function ClubStructurePage() {
           <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-red-500/5 to-red-600/10 rounded-full blur-lg"></div>
           <div className="absolute bottom-40 left-20 w-28 h-28 bg-gradient-to-br from-yellow-500/5 to-amber-500/10 rounded-full blur-xl"></div>
           <div className="absolute bottom-20 right-10 w-20 h-20 bg-gradient-to-br from-green-500/5 to-green-600/10 rounded-full blur-lg"></div>
-          
+
           {/* Floating Google-themed emojis and icons */}
           <div className="absolute top-24 left-20 text-4xl animate-bounce opacity-20 hover:opacity-60 transition-opacity duration-300">🤖</div>
           <div className="absolute top-1/3 right-32 text-3xl animate-pulse opacity-25 hover:opacity-70 transition-opacity duration-300">💡</div>
@@ -217,7 +217,7 @@ export default function ClubStructurePage() {
           <div className="absolute top-1/2 left-32 text-3xl opacity-22 hover:opacity-65 transition-opacity duration-300" style={{animation: 'float 8s ease-in-out infinite reverse'}}>🚀</div>
           <div className="absolute bottom-20 left-1/3 text-3xl animate-bounce opacity-16 hover:opacity-45 transition-opacity duration-300">🌟</div>
           <div className="absolute top-60 right-1/3 text-4xl opacity-20 hover:opacity-60 transition-opacity duration-300" style={{animation: 'float 7s ease-in-out infinite'}}>💻</div>
-          
+
           {/* Floating Google Logo SVG elements */}
           <div className="absolute top-32 left-1/2 opacity-8 hover:opacity-30 transition-opacity duration-300" style={{animation: 'float 10s ease-in-out infinite'}}>
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
@@ -227,7 +227,7 @@ export default function ClubStructurePage() {
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" opacity="0.4"/>
             </svg>
           </div>
-          
+
           <div className="absolute bottom-32 right-1/2 opacity-10 hover:opacity-35 transition-opacity duration-300" style={{animation: 'float 12s ease-in-out infinite reverse'}}>
             <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" opacity="0.5"/>
@@ -236,24 +236,24 @@ export default function ClubStructurePage() {
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" opacity="0.5"/>
             </svg>
           </div>
-          
+
           {/* Geometric Google-style shapes with enhanced animations */}
           <div className="absolute top-32 left-1/4 w-16 h-16 border-2 border-blue-500/15 rotate-45 rounded-lg hover:border-blue-500/40 transition-colors duration-300" style={{animation: 'float 9s ease-in-out infinite'}}></div>
           <div className="absolute top-1/2 right-1/4 w-12 h-12 border-2 border-red-500/15 rounded-full hover:border-red-500/40 transition-colors duration-300" style={{animation: 'pulse 4s ease-in-out infinite'}}></div>
           <div className="absolute bottom-1/3 left-1/3 w-14 h-14 border-2 border-yellow-500/15 rotate-12 rounded-lg hover:border-yellow-500/40 transition-colors duration-300" style={{animation: 'float 11s ease-in-out infinite reverse'}}></div>
           <div className="absolute top-2/3 right-1/3 w-10 h-10 border-2 border-green-500/15 rounded-full hover:border-green-500/40 transition-colors duration-300" style={{animation: 'bounce 3s ease-in-out infinite'}}></div>
-          
+
           {/* Interactive floating code symbols */}
           <div className="absolute top-28 right-40 text-2xl opacity-12 hover:opacity-40 transition-all duration-300 hover:scale-125" style={{animation: 'float 14s ease-in-out infinite'}}>&lt;/&gt;</div>
           <div className="absolute bottom-28 left-40 text-3xl opacity-15 hover:opacity-45 transition-all duration-300 hover:scale-110" style={{animation: 'float 13s ease-in-out infinite reverse'}}>{ }</div>
           <div className="absolute top-1/2 right-16 text-2xl opacity-18 hover:opacity-50 transition-all duration-300 hover:scale-120" style={{animation: 'pulse 5s ease-in-out infinite'}}>( )</div>
-          
+
           {/* Subtle grid pattern */}
           <div className="absolute inset-0 opacity-[0.02]" style={{
             backgroundImage: `radial-gradient(circle at 1px 1px, rgba(66,133,244,0.3) 1px, transparent 0)`,
             backgroundSize: '40px 40px'
           }}></div>
-          
+
           {/* Flowing Google-colored gradients */}
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-50/30 via-transparent to-transparent"></div>
           <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-red-50/20 via-transparent to-transparent"></div>
@@ -263,12 +263,12 @@ export default function ClubStructurePage() {
 
         {/* Club Structure */}
         <div className="space-y-16 relative z-10">
-          
+
           {/* Presidents Section */}
           <div className="text-center group relative">
             {/* Decorative background for this section */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-50/20 via-purple-50/20 to-indigo-50/20 rounded-3xl blur-3xl transform -rotate-1 scale-110 opacity-60"></div>
-            
+
             <Card className="inline-block bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 border-0 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-3 hover:rotate-1 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="absolute top-4 right-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
@@ -293,7 +293,7 @@ export default function ClubStructurePage() {
           <div className="text-center group flex justify-center relative">
             {/* Decorative background for this section */}
             <div className="absolute inset-0 bg-gradient-to-r from-green-50/20 via-emerald-50/20 to-teal-50/20 rounded-3xl blur-3xl transform rotate-1 scale-110 opacity-60"></div>
-            
+
             <Card className="inline-block bg-gradient-to-br from-green-600 via-green-700 to-emerald-700 border-0 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 hover:-rotate-1 relative overflow-hidden min-w-[320px]">
               <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="absolute bottom-4 left-4 w-20 h-20 bg-white/10 rounded-full blur-lg"></div>
