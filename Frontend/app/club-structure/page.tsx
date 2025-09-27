@@ -18,17 +18,6 @@ export default function ClubStructurePage() {
     },
     departmentsSpecialized: [
       {
-        title: "التطوير",
-        color: "blue",
-        icon: Cog,
-        head: "عبدالاله عبدالعزيز البراك",
-        members: [
-          "إبراهيم سليمان السكيتي",
-          "علي حسين الصابر",
-          "ريما عبدالرحمن اللهيميد"
-        ]
-      },
-      {
         title: "الروبوتات",
         color: "yellow",
         icon: Bot,
@@ -80,6 +69,17 @@ export default function ClubStructurePage() {
       }
     ],
     departmentsAdministrative: [
+      {
+        title: "التطوير",
+        color: "blue",
+        icon: Cog,
+        head: "عبدالاله عبدالعزيز البراك",
+        members: [
+          "إبراهيم سليمان السكيتي",
+          "علي حسين الصابر",
+          "ريما عبدالرحمن اللهيميد"
+        ]
+      },
       {
         title: "التصميم",
         color: "green",
@@ -335,13 +335,13 @@ export default function ClubStructurePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 relative z-10">
               {clubData.departmentsSpecialized.map((dept, index) => (
                 <Card key={index} className={`
-                  group overflow-hidden border-0 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-3 hover:scale-105 relative
+                  group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-102 relative
                   ${dept.color === 'green' ? 'bg-gradient-to-br from-green-500 via-green-600 to-emerald-700' :
                     dept.color === 'blue' ? 'bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700' :
                     dept.color === 'yellow' ? 'bg-gradient-to-br from-yellow-500 via-amber-500 to-orange-600' :
                     dept.color === 'orange' ? 'bg-gradient-to-br from-orange-500 via-red-500 to-red-600' :
                     'bg-gradient-to-br from-red-500 via-red-600 to-pink-600'}
-                  hover:rotate-2 rounded-3xl
+                  hover:rotate-1 rounded-3xl
                 `}>
                   {/* Enhanced floating orbs with Google colors */}
                   <div className="absolute top-6 right-6 w-16 h-16 bg-white/15 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -389,13 +389,13 @@ export default function ClubStructurePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 relative z-10">
               {clubData.departmentsAdministrative.map((dept, index) => (
                 <Card key={index} className={`
-                  group overflow-hidden border-0 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-3 hover:scale-105 relative
+                  group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-102 relative
                   ${dept.color === 'green' ? 'bg-gradient-to-br from-green-500 via-green-600 to-emerald-700' :
                     dept.color === 'blue' ? 'bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700' :
                     dept.color === 'yellow' ? 'bg-gradient-to-br from-yellow-500 via-amber-500 to-orange-600' :
                     dept.color === 'orange' ? 'bg-gradient-to-br from-orange-500 via-red-500 to-red-600' :
                     'bg-gradient-to-br from-red-500 via-red-600 to-pink-600'}
-                  hover:rotate-2 rounded-3xl
+                  hover:rotate-1 rounded-3xl
                 `}>
                   {/* Enhanced floating orbs with Google colors */}
                   <div className="absolute top-6 right-6 w-16 h-16 bg-white/15 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
