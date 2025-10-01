@@ -12,6 +12,7 @@ export interface Department {
   name: string
   totalPoints: number
   rank: number
+  type?: 'administrative' | 'practical'
 }
 
 export interface PointsHistoryEntry {

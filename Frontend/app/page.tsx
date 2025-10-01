@@ -7,6 +7,7 @@ import { Trophy, Users, Building2, AlertCircle, Infinity } from "lucide-react"
 import {
   fetchMembers,
   fetchDepartments,
+  fetchAllDepartments,
   fetchMembersCount,
   fetchDepartmentsCount,
   transformApiMember,
@@ -16,12 +17,18 @@ import {
 export default async function Dashboard() {
   let apiStatus = "connected" // 'connected' | 'fallback'
 
-  const [apiMembers, apiDepartments, membersCount, departmentsCount] = await Promise.all([
+  const [apiMembers, apiDepartmentsResponse, membersCount, departmentsCount] = await Promise.all([
     fetchMembers(),
     fetchDepartments(),
     fetchMembersCount(),
     fetchDepartmentsCount(),
   ])
+
+  // Combine and sort all departments for the preview
+  const allDepartments = [
+    ...(apiDepartmentsResponse.administrative || []), 
+    ...(apiDepartmentsResponse.practical || [])
+  ]
 
   if (apiMembers.length > 0 && apiMembers[0].id > 1000) {
     apiStatus = "fallback"
@@ -32,12 +39,16 @@ export default async function Dashboard() {
     .sort((a, b) => b.points - a.points)
     .map((member, index) => transformApiMember(member, index + 1))
 
-  const departments = apiDepartments
+  const departments = allDepartments
     .sort((a, b) => b.points - a.points)
-    .map((dept, index) => transformApiDepartment(dept, index + 1))
+    .map((dept, index) => {
+      const isAdministrative = (apiDepartmentsResponse.administrative || []).some(d => d.id === dept.id)
+      const type: 'administrative' | 'practical' = isAdministrative ? 'administrative' : 'practical'
+      return transformApiDepartment(dept, index + 1, type)
+    })
 
   const topMembers = members.slice(0, 10)
-  const topDepartments = departments.slice(0, 8)
+  const topDepartments = departments.slice(0, 10) // Increased to ensure we have enough for both types
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 relative overflow-x-hidden">
@@ -263,7 +274,6 @@ export default async function Dashboard() {
           </Card>
 
           {/* Top Departments Preview */}
-                    {/* Top Departments Preview */}
           <Card className="bg-gradient-to-br from-green-50/50 to-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
             <div className="p-1">
               <CardHeader className="pb-6">
@@ -271,11 +281,11 @@ export default async function Dashboard() {
                   <div>
                     <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-md">
-                        <Users className="h-4 w-4 text-white" />
+                        <Building2 className="h-4 w-4 text-white" />
                       </div>
                       Top Departments
                     </CardTitle>
-                    <CardDescription className="text-slate-600 font-medium mt-1">Leading team performers</CardDescription>
+                    <CardDescription className="text-slate-600 font-medium mt-1">Leading team performers by category</CardDescription>
                   </div>
                   <Link href="/departments">
                     <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
@@ -284,40 +294,108 @@ export default async function Dashboard() {
                   </Link>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {topDepartments.map((department, index) => (
-                  <div
-                    key={department.id}
-                    className="group flex items-center justify-between p-5 rounded-2xl bg-gradient-to-r from-white to-green-50/30 border border-slate-150 hover:border-green-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
-                  >
-                    <div className="flex items-center gap-5">
-                      <div className="relative">
-                        <Badge
-                          variant="secondary"
-                          className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-slate-700 bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-300 shadow-sm group-hover:shadow-md transition-shadow duration-300"
-                        >
-                          {department.rank}
-                        </Badge>
-                        {index < 3 && (
-                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center shadow-sm">
-                            <span className="text-xs text-white font-bold">🏅</span>
+              <CardContent className="space-y-6">
+
+
+                                {/* Practical Departments */}
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-1.5 bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-sm">
+                      <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4zM6.7 8.8c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6.7-.7 1.9-.7 2.6 0 .7.7.7 1.9 0 2.6z"/>
+                      </svg>
+                    </div>
+                    <h3 className="text-sm font-bold text-green-700 uppercase tracking-wider">الاقسام العملية</h3>
+                    <div className="flex-1 h-px bg-gradient-to-r from-green-300 to-transparent"></div>
+                  </div>
+                  <div className="space-y-3">
+                    {topDepartments.filter(dept => dept.type === 'practical').slice(0, 3).map((department, index) => (
+                      <div
+                        key={department.id}
+                        className="group flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-white to-green-50/30 border border-green-100 hover:border-green-200 hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="relative">
+                            <Badge
+                              variant="secondary"
+                              className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-slate-700 bg-gradient-to-br from-green-100 to-green-200 border border-green-300 shadow-sm group-hover:shadow-md transition-shadow duration-300"
+                            >
+                              {department.rank}
+                            </Badge>
+                            {index === 0 && (
+                              <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center shadow-sm">
+                                <span className="text-xs text-white font-bold">★</span>
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-slate-900 text-lg group-hover:text-slate-800 transition-colors duration-200">{department.name}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <p className="text-sm text-slate-500 font-medium">Department</p>
+                          <div className="flex-1">
+                            <p className="font-bold text-slate-900 text-sm group-hover:text-slate-800 transition-colors duration-200">{department.name}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-lg text-green-600">{department.totalPoints}</p>
+                          <p className="text-xs text-slate-400">pts</p>
                         </div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-xl text-slate-900">{department.totalPoints}</p>
-                      <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Team Score</p>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+
+
+                {/* Styled Separator */}
+                <div className="flex items-center justify-center py-2">
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
+                  <div className="px-4">
+                    <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-green-500 rounded-full shadow-sm"></div>
+                  </div>
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
+                </div>
+
+
+                {/* Administrative Departments */}
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-1.5 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-sm">
+                      <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
+                      </svg>
+                    </div>
+                    <h3 className="text-sm font-bold text-blue-700 uppercase tracking-wider">الاقسام الادارية</h3>
+                    <div className="flex-1 h-px bg-gradient-to-r from-blue-300 to-transparent"></div>
+                  </div>
+                  <div className="space-y-3">
+                    {topDepartments.filter(dept => dept.type === 'administrative').slice(0, 3).map((department, index) => (
+                      <div
+                        key={department.id}
+                        className="group flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-white to-blue-50/30 border border-blue-100 hover:border-blue-200 hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="relative">
+                            <Badge
+                              variant="secondary"
+                              className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-slate-700 bg-gradient-to-br from-blue-100 to-blue-200 border border-blue-300 shadow-sm group-hover:shadow-md transition-shadow duration-300"
+                            >
+                              {department.rank}
+                            </Badge>
+                            {index === 0 && (
+                              <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full flex items-center justify-center shadow-sm">
+                                <span className="text-xs text-white font-bold">★</span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-bold text-slate-900 text-sm group-hover:text-slate-800 transition-colors duration-200">{department.name}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-lg text-blue-600">{department.totalPoints}</p>
+                          <p className="text-xs text-slate-400">pts</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
               </CardContent>
             </div>
           </Card>

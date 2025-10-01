@@ -14,6 +14,11 @@ export interface ApiDepartment {
   points: number
 }
 
+export interface ApiDepartmentsResponse {
+  administrative: ApiDepartment[]
+  practical: ApiDepartment[]
+}
+
 export interface CountResponse {
   members_count?: number
   departments_count?: number
@@ -68,7 +73,7 @@ export async function fetchMembers(): Promise<ApiMember[]> {
   }
 }
 
-export async function fetchDepartments(): Promise<ApiDepartment[]> {
+export async function fetchDepartments(): Promise<ApiDepartmentsResponse> {
   try {
     console.log("[v0] Attempting to fetch departments from API...")
     const response = await fetch(`${API_BASE_URL}/departments`, {
@@ -84,16 +89,45 @@ export async function fetchDepartments(): Promise<ApiDepartment[]> {
     }
 
     const data = await response.json()
-    console.log("[v0] Successfully fetched departments from API:", data.length, "departments")
-    return data
+    
+    // Check if API is still returning old format (flat array)
+    if (Array.isArray(data)) {
+      console.log("[v0] API returned old format, converting to new structure")
+      // Split the flat array evenly between administrative and practical
+      const mid = Math.ceil(data.length / 2)
+      return {
+        administrative: data.slice(0, mid),
+        practical: data.slice(mid)
+      }
+    }
+    
+    console.log("[v0] Successfully fetched departments from API:", 
+      (data.administrative?.length || 0) + (data.practical?.length || 0), "departments")
+    
+    // Ensure the response has the expected structure
+    return {
+      administrative: data.administrative || [],
+      practical: data.practical || []
+    }
   } catch (error) {
     console.log("[v0] API fetch failed, falling back to mock data:", error)
-    return mockDepartments.map((dept) => ({
+    const mockDepts = mockDepartments.map((dept) => ({
       id: Number.parseInt(dept.id.replace("dept-", "")),
       name: dept.name,
       points: dept.totalPoints,
     }))
+    // Split mock departments evenly between administrative and practical
+    const mid = Math.ceil(mockDepts.length / 2)
+    return {
+      administrative: mockDepts.slice(0, mid),
+      practical: mockDepts.slice(mid)
+    }
   }
+}
+
+export async function fetchAllDepartments(): Promise<ApiDepartment[]> {
+  const departmentsResponse = await fetchDepartments()
+  return [...departmentsResponse.administrative, ...departmentsResponse.practical]
 }
 
 export async function fetchMembersCount(): Promise<number> {
@@ -123,22 +157,10 @@ export async function fetchMembersCount(): Promise<number> {
 export async function fetchDepartmentsCount(): Promise<number> {
   try {
     console.log("[v0] Attempting to fetch departments count from API...")
-    const response = await fetch(`${API_BASE_URL}/departments/count`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      signal: AbortSignal.timeout(5000),
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-    }
-
-    const data: CountResponse = await response.json()
-    console.log("[v0] Successfully fetched departments count from API:", data.departments_count)
-    console.log('[DBG] raw data:', JSON.stringify(data, null, 2));
-    return data.departments_count || 0
+    const departmentsResponse = await fetchDepartments()
+    const totalCount = (departmentsResponse.administrative?.length || 0) + (departmentsResponse.practical?.length || 0)
+    console.log("[v0] Successfully calculated departments count from API:", totalCount)
+    return totalCount
   } catch (error) {
     console.log("[v0] API fetch failed, falling back to mock data:", error)
     return mockDepartments.length
@@ -209,11 +231,16 @@ export function transformApiMember(
   }
 }
 
-export function transformApiDepartment(apiDepartment: ApiDepartment, rank: number): import("./types").Department {
+export function transformApiDepartment(
+  apiDepartment: ApiDepartment, 
+  rank: number, 
+  type?: 'administrative' | 'practical'
+): import("./types").Department {
   return {
     id: apiDepartment.id.toString(),
     name: apiDepartment.name,
     totalPoints: apiDepartment.points,
     rank,
+    type,
   }
 }
