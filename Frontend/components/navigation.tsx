@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Trophy, Users, Building2, Home, BadgeHelpIcon, Network} from "lucide-react"
+import { Trophy, Users, Building2, Home, BadgeHelpIcon, Network, BookOpen} from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navigationItems = [
@@ -27,6 +27,11 @@ const navigationItems = [
     name: "Club Structure",
     href: "/club-structure",
     icon: Network,
+  },
+  {
+    name: "Magazines",
+    href: "/magazines",
+    icon: BookOpen,
   },
   {
     name: "Points System",
