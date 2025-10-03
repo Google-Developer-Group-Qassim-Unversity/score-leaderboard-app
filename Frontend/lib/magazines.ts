@@ -14,7 +14,7 @@ export const magazines: Magazine[] = [
     id: "gdg-volume-1",
     title: "مجلة قوقل لشهر سبتمبر 2025",
     description: "",
-    pdfUrl: "https://heyzine.com/flip-book/60f5949df2.html", 
+    pdfUrl: "https://heyzine.com/flip-book/4717de5304.html", 
     coverImage: "/picV1.jpg",
     publishDate: "2025-10-03",
     pages: 8
