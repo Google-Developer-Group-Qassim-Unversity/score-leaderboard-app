@@ -1,6 +1,7 @@
 // API utility functions for fetching data from localhost:8000
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST ||"http://178.128.205.239:8000";
+const CACHE_REVALIDATE_TIME = 60; // 60 seconds timeout
 
 export interface ApiMember {
   id: number
@@ -54,6 +55,7 @@ export async function fetchMembers(): Promise<ApiMember[]> {
         "Content-Type": "application/json",
       },
       signal: AbortSignal.timeout(5000), // 5 second timeout
+      cache: 'no-store'
     })
 
     if (!response.ok) {
@@ -82,6 +84,7 @@ export async function fetchDepartments(): Promise<ApiDepartmentsResponse> {
         "Content-Type": "application/json",
       },
       signal: AbortSignal.timeout(5000),
+      cache: 'no-store'
     })
 
     if (!response.ok) {
@@ -139,6 +142,7 @@ export async function fetchMembersCount(): Promise<number> {
         "Content-Type": "application/json",
       },
       signal: AbortSignal.timeout(5000),
+      cache: 'no-store'
     })
 
     if (!response.ok) {
@@ -176,6 +180,7 @@ export async function fetchMemberById(id: string): Promise<ApiMemberDetail | und
         "Content-Type": "application/json",
       },
       signal: AbortSignal.timeout(5000),
+      cache: 'no-store'
     })
 
     if (!response.ok) {
@@ -199,6 +204,7 @@ export async function fetchDepartmentById(id: string): Promise<ApiDepartmentDeta
         "Content-Type": "application/json",
       },
       signal: AbortSignal.timeout(5000),
+      cache: 'no-store'
     })
 
     if (!response.ok) {
