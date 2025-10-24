@@ -21,6 +21,7 @@ model actions {
 model departments {
   id               Int                @id @default(autoincrement()) @db.UnsignedInt
   name             String             @db.VarChar(50)
+  type             departments_type
   departments_logs departments_logs[]
 }
 
@@ -139,4 +140,9 @@ enum actions_action_type {
 enum members_gender {
   Male
   Female
+}
+
+enum departments_type {
+  administrative
+  practical
 }

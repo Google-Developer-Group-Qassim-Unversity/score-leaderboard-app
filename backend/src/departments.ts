@@ -17,6 +17,7 @@ export async function handleDepartments(req: Request, res: Response) {
         select: {
             id: true,
             name: true,
+            type: true,
         },
     });
 
@@ -67,8 +68,8 @@ export async function handleDepartments(req: Request, res: Response) {
     });
 
     // 6. Group by department and sum points
-    const deptPointsMap = new Map<number, { name: string; points: number }>();
-    processedPoints.forEach(({ department_id, department_name, points }) => {
+    const deptPointsMap = new Map<number, { name: string; points: number;}>();
+    processedPoints.forEach(({ department_id, department_name, points}) => {
         if (deptPointsMap.has(department_id)) {
             deptPointsMap.get(department_id)!.points += points;
         } else {
@@ -91,10 +92,27 @@ export async function handleDepartments(req: Request, res: Response) {
         }
     }
 
-    // 9. Sort descending by points
-    result.sort((a, b) => b.points - a.points);
+    // 9. Split departments into two types
+    const splitDepts = {
+        "Specialized": [] as any[],
+        "Administrative": [] as any[],
+    }
+    
+    for (const dept of allDepartments) {
+        if (dept.type === 'practical') {
+            splitDepts["Specialized"].push(result.find(r => r.id === dept.id)!);
+        } else {
+            splitDepts["Administrative"].push(result.find(r => r.id === dept.id)!);
+        }
+    }
 
-    res.status(200).json(result).end();
+    console.log("Splitted depts: ",splitDepts);
+    
+    // 10. Sort descending by points
+    splitDepts["Specialized"].sort((a, b) => b.points - a.points);
+    splitDepts["Administrative"].sort((a, b) => b.points - a.points);
+
+    res.status(200).json(splitDepts).end();
 }
 
 

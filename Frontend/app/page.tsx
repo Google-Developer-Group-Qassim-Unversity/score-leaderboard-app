@@ -297,7 +297,7 @@ export default async function Dashboard() {
               <CardContent className="space-y-6">
 
 
-                                {/* Practical Departments */}
+                {/* Practical Departments */}
                 <div>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-1.5 bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-sm">
@@ -305,11 +305,11 @@ export default async function Dashboard() {
                         <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4zM6.7 8.8c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6.7-.7 1.9-.7 2.6 0 .7.7.7 1.9 0 2.6z"/>
                       </svg>
                     </div>
-                    <h3 className="text-sm font-bold text-green-700 uppercase tracking-wider">الاقسام العملية</h3>
+                    <h3 className="text-sm font-bold text-green-700 uppercase tracking-wider">الاقسام التخصصية</h3>
                     <div className="flex-1 h-px bg-gradient-to-r from-green-300 to-transparent"></div>
                   </div>
                   <div className="space-y-3">
-                    {topDepartments.filter(dept => dept.type === 'practical').slice(0, 3).map((department, index) => (
+                    {topDepartments.filter(dept => dept.type === 'practical').map((department, index) => (
                       <div
                         key={department.id}
                         className="group flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-white to-green-50/30 border border-green-100 hover:border-green-200 hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
@@ -364,7 +364,7 @@ export default async function Dashboard() {
                     <div className="flex-1 h-px bg-gradient-to-r from-blue-300 to-transparent"></div>
                   </div>
                   <div className="space-y-3">
-                    {topDepartments.filter(dept => dept.type === 'administrative').slice(0, 3).map((department, index) => (
+                    {topDepartments.filter(dept => dept.type === 'administrative').map((department, index) => (
                       <div
                         key={department.id}
                         className="group flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-white to-blue-50/30 border border-blue-100 hover:border-blue-200 hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5"

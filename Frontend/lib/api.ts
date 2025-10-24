@@ -93,24 +93,13 @@ export async function fetchDepartments(): Promise<ApiDepartmentsResponse> {
 
     const data = await response.json()
     
-    // Check if API is still returning old format (flat array)
-    if (Array.isArray(data)) {
-      console.log("[v0] API returned old format, converting to new structure")
-      // Split the flat array evenly between administrative and practical
-      const mid = Math.ceil(data.length / 2)
-      return {
-        administrative: data.slice(0, mid),
-        practical: data.slice(mid)
-      }
-    }
-    
     console.log("[v0] Successfully fetched departments from API:", 
-      (data.administrative?.length || 0) + (data.practical?.length || 0), "departments")
+      (data.Administrative?.length || 0) + (data.Specialized?.length || 0), "departments")
     
     // Ensure the response has the expected structure
     return {
-      administrative: data.administrative || [],
-      practical: data.practical || []
+      administrative: data.Administrative || [],
+      practical: data.Specialized || []
     }
   } catch (error) {
     console.log("[v0] API fetch failed, falling back to mock data:", error)
