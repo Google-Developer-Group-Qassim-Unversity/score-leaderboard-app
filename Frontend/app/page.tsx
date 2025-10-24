@@ -3,7 +3,8 @@ import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Trophy, Users, Building2, AlertCircle, Infinity, Eye } from "lucide-react"
+import { Trophy, Users, Building2, AlertCircle, Infinity } from "lucide-react"
+import { LeaderboardCard } from "@/components/leaderboard-card"
 import {
   fetchMembers,
   fetchDepartments,
@@ -112,60 +113,6 @@ export default async function Dashboard() {
           )}
         </div>
 
-        {/* Quick Stats Bar
-        <div className="mb-8">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">15</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Total Events</p>
-              </div>
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{topDepartments[0]?.totalPoints || 0}</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Best Dept</p>
-              </div>
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-amber-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{members.reduce((sum, m) => sum + m.totalPoints, 0)}</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Total Points</p>
-              </div>
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 11H7v4h2v-4zm4 0h-2v4h2v-4zm4 0h-2v4h2v-4zm2-7h-3V2h-2v2H8V2H6v2H3c-1.11 0-1.99.89-1.99 2L1 18c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 16H3V8h16v10z"/>
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{Math.round(members.reduce((sum, m) => sum + m.totalPoints, 0) / members.length) || 0}</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Avg Score</p>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-        */}
-
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <Card className="bg-gradient-to-br from-blue-50/50 to-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
@@ -263,87 +210,16 @@ export default async function Dashboard() {
                     <div className="flex-1 h-px bg-gradient-to-r from-blue-300 to-transparent"></div>
                   </div>
                   <div className="space-y-3">
-                    {topMaleMembers.map((member, index) => {
-                      const getPodiumStyles = (rank: number) => {
-                        switch (rank) {
-                          case 1:
-                            return {
-                              container: "bg-gradient-to-br from-amber-100/90 via-yellow-50 to-amber-200/60 border-2 border-amber-300/70 hover:border-amber-400 shadow-lg shadow-amber-500/20",
-                              badge: "bg-gradient-to-br from-amber-400 to-amber-500 text-white border-0",
-                              medalBadge: "bg-gradient-to-r from-amber-400 to-amber-500",
-                              points: "text-amber-600",
-                              icon: "🥇"
-                            }
-                          case 2:
-                            return {
-                              container: "bg-gradient-to-br from-blue-100/90 via-slate-100 to-blue-200/60 border-2 border-blue-400/70 hover:border-blue-500 shadow-lg shadow-blue-500/20",
-                              badge: "bg-gradient-to-br from-blue-400 to-blue-500 text-white border-0",
-                              medalBadge: "bg-gradient-to-r from-blue-400 to-blue-500",
-                              points: "text-blue-600",
-                              icon: "🥈"
-                            }
-                          case 3:
-                            return {
-                              container: "bg-gradient-to-br from-orange-100/90 via-red-50 to-orange-200/60 border-2 border-orange-400/70 hover:border-orange-500 shadow-lg shadow-orange-500/20",
-                              badge: "bg-gradient-to-br from-orange-400 to-orange-500 text-white border-0",
-                              medalBadge: "bg-gradient-to-r from-orange-400 to-orange-500",
-                              points: "text-orange-600",
-                              icon: "🥉"
-                            }
-                          default:
-                            return {
-                              container: "bg-slate-50/70 border border-slate-200 hover:border-slate-300",
-                              badge: "bg-gradient-to-br from-slate-200 to-slate-300 text-slate-700 border-0",
-                              medalBadge: "bg-gradient-to-r from-slate-400 to-slate-500",
-                              points: "text-blue-600",
-                              icon: ""
-                            }
-                        }
-                      }
-                      
-                      const podiumStyles = getPodiumStyles(member.rank)
-                      
-                      return (
-                        <div
-                          key={member.id}
-                          className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl transition-all duration-300 hover:shadow-md hover:scale-[1.01] group ${podiumStyles.container}`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="relative">
-                              <Badge
-                                variant={member.rank === 1 ? "default" : member.rank <= 3 ? "secondary" : "outline"}
-                                className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm ${podiumStyles.badge}`}
-                              >
-                                {member.rank}
-                              </Badge>
-                              {member.rank <= 3 && (
-                                <div className={`absolute -top-1 -right-1 w-5 h-5 ${podiumStyles.medalBadge} rounded-full flex items-center justify-center`}>
-                                  <span className="text-xs text-white font-bold">{podiumStyles.icon}</span>
-                                </div>
-                              )}
-                            </div>
-                            <div>
-                              <p className="font-bold text-sm text-slate-800 truncate">{member.name}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between sm:justify-end gap-4 mt-3 sm:mt-0 sm:ml-auto w-full sm:w-auto">
-                            <div className="text-left sm:text-right">
-                              <p className={`font-bold text-lg ${podiumStyles.points}`}>
-                                {member.totalPoints}
-                              </p>
-                              <p className="text-xs text-slate-500">pts</p>
-                            </div>
-                            <Link href={`/member/${member.id}`} className="flex-shrink-0">
-                              <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
-                                <Eye className="h-4 w-4 mr-1" />
-                                <span className="hidden xs:inline">View Details</span>
-                                <span className="xs:hidden">Details</span>
-                              </Button>
-                            </Link>
-                          </div>
-                        </div>
-                      )
-                    })}
+                    {topMaleMembers.map((member) => (
+                      <LeaderboardCard
+                        key={member.id}
+                        id={member.id}
+                        name={member.name}
+                        rank={member.rank}
+                        points={member.totalPoints}
+                        type="member"
+                      />
+                    ))}
                   </div>
                 </div>
 
@@ -368,87 +244,16 @@ export default async function Dashboard() {
                     <div className="flex-1 h-px bg-gradient-to-r from-pink-300 to-transparent"></div>
                   </div>
                   <div className="space-y-3">
-                    {topFemaleMembers.map((member, index) => {
-                      const getPodiumStyles = (rank: number) => {
-                        switch (rank) {
-                          case 1:
-                            return {
-                              container: "bg-gradient-to-br from-amber-100/90 via-yellow-50 to-amber-200/60 border-2 border-amber-300/70 hover:border-amber-400 shadow-lg shadow-amber-500/20",
-                              badge: "bg-gradient-to-br from-amber-400 to-amber-500 text-white border-0",
-                              medalBadge: "bg-gradient-to-r from-amber-400 to-amber-500",
-                              points: "text-amber-600",
-                              icon: "🥇"
-                            }
-                          case 2:
-                            return {
-                              container: "bg-gradient-to-br from-blue-100/90 via-slate-100 to-blue-200/60 border-2 border-blue-400/70 hover:border-blue-500 shadow-lg shadow-blue-500/20",
-                              badge: "bg-gradient-to-br from-blue-400 to-blue-500 text-white border-0",
-                              medalBadge: "bg-gradient-to-r from-blue-400 to-blue-500",
-                              points: "text-blue-600",
-                              icon: "🥈"
-                            }
-                          case 3:
-                            return {
-                              container: "bg-gradient-to-br from-orange-100/90 via-red-50 to-orange-200/60 border-2 border-orange-400/70 hover:border-orange-500 shadow-lg shadow-orange-500/20",
-                              badge: "bg-gradient-to-br from-orange-400 to-orange-500 text-white border-0",
-                              medalBadge: "bg-gradient-to-r from-orange-400 to-orange-500",
-                              points: "text-orange-600",
-                              icon: "🥉"
-                            }
-                          default:
-                            return {
-                              container: "bg-slate-50/70 border border-slate-200 hover:border-slate-300",
-                              badge: "bg-gradient-to-br from-slate-200 to-slate-300 text-slate-700 border-0",
-                              medalBadge: "bg-gradient-to-r from-slate-400 to-slate-500",
-                              points: "text-pink-600",
-                              icon: ""
-                            }
-                        }
-                      }
-                      
-                      const podiumStyles = getPodiumStyles(member.rank)
-                      
-                      return (
-                        <div
-                          key={member.id}
-                          className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl transition-all duration-300 hover:shadow-md hover:scale-[1.01] group ${podiumStyles.container}`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="relative">
-                              <Badge
-                                variant={member.rank === 1 ? "default" : member.rank <= 3 ? "secondary" : "outline"}
-                                className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm ${podiumStyles.badge}`}
-                              >
-                                {member.rank}
-                              </Badge>
-                              {member.rank <= 3 && (
-                                <div className={`absolute -top-1 -right-1 w-5 h-5 ${podiumStyles.medalBadge} rounded-full flex items-center justify-center`}>
-                                  <span className="text-xs text-white font-bold">{podiumStyles.icon}</span>
-                                </div>
-                              )}
-                            </div>
-                            <div>
-                              <p className="font-bold text-sm text-slate-800 truncate">{member.name}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between sm:justify-end gap-4 mt-3 sm:mt-0 sm:ml-auto w-full sm:w-auto">
-                            <div className="text-left sm:text-right">
-                              <p className={`font-bold text-lg ${podiumStyles.points}`}>
-                                {member.totalPoints}
-                              </p>
-                              <p className="text-xs text-slate-500">pts</p>
-                            </div>
-                            <Link href={`/member/${member.id}`} className="flex-shrink-0">
-                              <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
-                                <Eye className="h-4 w-4 mr-1" />
-                                <span className="hidden xs:inline">View Details</span>
-                                <span className="xs:hidden">Details</span>
-                              </Button>
-                            </Link>
-                          </div>
-                        </div>
-                      )
-                    })}
+                    {topFemaleMembers.map((member) => (
+                      <LeaderboardCard
+                        key={member.id}
+                        id={member.id}
+                        name={member.name}
+                        rank={member.rank}
+                        points={member.totalPoints}
+                        type="member"
+                      />
+                    ))}
                   </div>
                 </div>
               </CardContent>
@@ -491,87 +296,16 @@ export default async function Dashboard() {
                     <div className="flex-1 h-px bg-gradient-to-r from-green-300 to-transparent"></div>
                   </div>
                   <div className="space-y-3">
-                    {practicalDepartments.map((department, index) => {
-                      const getPodiumStyles = (rank: number) => {
-                        switch (rank) {
-                          case 1:
-                            return {
-                              container: "bg-gradient-to-br from-amber-100/90 via-yellow-50 to-amber-200/60 border-2 border-amber-300/70 hover:border-amber-400 shadow-lg shadow-amber-500/20",
-                              badge: "bg-gradient-to-br from-amber-400 to-amber-500 text-white border-0",
-                              medalBadge: "bg-gradient-to-r from-amber-400 to-amber-500",
-                              points: "text-amber-600",
-                              icon: "🥇"
-                            }
-                          case 2:
-                            return {
-                              container: "bg-gradient-to-br from-blue-100/90 via-slate-100 to-blue-200/60 border-2 border-blue-400/70 hover:border-blue-500 shadow-lg shadow-blue-500/20",
-                              badge: "bg-gradient-to-br from-blue-400 to-blue-500 text-white border-0",
-                              medalBadge: "bg-gradient-to-r from-blue-400 to-blue-500",
-                              points: "text-blue-600",
-                              icon: "🥈"
-                            }
-                          case 3:
-                            return {
-                              container: "bg-gradient-to-br from-orange-100/90 via-red-50 to-orange-200/60 border-2 border-orange-400/70 hover:border-orange-500 shadow-lg shadow-orange-500/20",
-                              badge: "bg-gradient-to-br from-orange-400 to-orange-500 text-white border-0",
-                              medalBadge: "bg-gradient-to-r from-orange-400 to-orange-500",
-                              points: "text-orange-600",
-                              icon: "🥉"
-                            }
-                          default:
-                            return {
-                              container: "bg-slate-50/70 border border-slate-200 hover:border-slate-300",
-                              badge: "bg-gradient-to-br from-slate-200 to-slate-300 text-slate-700 border-0",
-                              medalBadge: "bg-gradient-to-r from-slate-400 to-slate-500",
-                              points: "text-green-600",
-                              icon: ""
-                            }
-                        }
-                      }
-                      
-                      const podiumStyles = getPodiumStyles(department.rank)
-                      
-                      return (
-                        <div
-                          key={department.id}
-                          className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl transition-all duration-300 hover:shadow-md hover:scale-[1.01] group ${podiumStyles.container}`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="relative">
-                              <Badge
-                                variant={department.rank === 1 ? "default" : department.rank <= 3 ? "secondary" : "outline"}
-                                className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm ${podiumStyles.badge}`}
-                              >
-                                {department.rank}
-                              </Badge>
-                              {department.rank <= 3 && (
-                                <div className={`absolute -top-1 -right-1 w-5 h-5 ${podiumStyles.medalBadge} rounded-full flex items-center justify-center`}>
-                                  <span className="text-xs text-white font-bold">{podiumStyles.icon}</span>
-                                </div>
-                              )}
-                            </div>
-                            <div>
-                              <p className="font-bold text-sm text-slate-800 truncate">{department.name}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between sm:justify-end gap-4 mt-3 sm:mt-0 sm:ml-auto w-full sm:w-auto">
-                            <div className="text-left sm:text-right">
-                              <p className={`font-bold text-lg ${podiumStyles.points}`}>
-                                {department.totalPoints}
-                              </p>
-                              <p className="text-xs text-slate-500">pts</p>
-                            </div>
-                            <Link href={`/department/${department.id}`} className="flex-shrink-0">
-                              <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
-                                <Eye className="h-4 w-4 mr-1" />
-                                <span className="hidden xs:inline">View Details</span>
-                                <span className="xs:hidden">Details</span>
-                              </Button>
-                            </Link>
-                          </div>
-                        </div>
-                      )
-                    })}
+                    {practicalDepartments.map((department) => (
+                      <LeaderboardCard
+                        key={department.id}
+                        id={department.id}
+                        name={department.name}
+                        rank={department.rank}
+                        points={department.totalPoints}
+                        type="department"
+                      />
+                    ))}
                   </div>
                 </div>
 
@@ -598,87 +332,16 @@ export default async function Dashboard() {
                     <div className="flex-1 h-px bg-gradient-to-r from-blue-300 to-transparent"></div>
                   </div>
                   <div className="space-y-3">
-                    {administrativeDepartments.map((department, index) => {
-                      const getPodiumStyles = (rank: number) => {
-                        switch (rank) {
-                          case 1:
-                            return {
-                              container: "bg-gradient-to-br from-amber-100/90 via-yellow-50 to-amber-200/60 border-2 border-amber-300/70 hover:border-amber-400 shadow-lg shadow-amber-500/20",
-                              badge: "bg-gradient-to-br from-amber-400 to-amber-500 text-white border-0",
-                              medalBadge: "bg-gradient-to-r from-amber-400 to-amber-500",
-                              points: "text-amber-600",
-                              icon: "🥇"
-                            }
-                          case 2:
-                            return {
-                              container: "bg-gradient-to-br from-blue-100/90 via-slate-100 to-blue-200/60 border-2 border-blue-400/70 hover:border-blue-500 shadow-lg shadow-blue-500/20",
-                              badge: "bg-gradient-to-br from-blue-400 to-blue-500 text-white border-0",
-                              medalBadge: "bg-gradient-to-r from-blue-400 to-blue-500",
-                              points: "text-blue-600",
-                              icon: "🥈"
-                            }
-                          case 3:
-                            return {
-                              container: "bg-gradient-to-br from-orange-100/90 via-red-50 to-orange-200/60 border-2 border-orange-400/70 hover:border-orange-500 shadow-lg shadow-orange-500/20",
-                              badge: "bg-gradient-to-br from-orange-400 to-orange-500 text-white border-0",
-                              medalBadge: "bg-gradient-to-r from-orange-400 to-orange-500",
-                              points: "text-orange-600",
-                              icon: "🥉"
-                            }
-                          default:
-                            return {
-                              container: "bg-slate-50/70 border border-slate-200 hover:border-slate-300",
-                              badge: "bg-gradient-to-br from-slate-200 to-slate-300 text-slate-700 border-0",
-                              medalBadge: "bg-gradient-to-r from-slate-400 to-slate-500",
-                              points: "text-blue-600",
-                              icon: ""
-                            }
-                        }
-                      }
-                      
-                      const podiumStyles = getPodiumStyles(department.rank)
-                      
-                      return (
-                        <div
-                          key={department.id}
-                          className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl transition-all duration-300 hover:shadow-md hover:scale-[1.01] group ${podiumStyles.container}`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="relative">
-                              <Badge
-                                variant={department.rank === 1 ? "default" : department.rank <= 3 ? "secondary" : "outline"}
-                                className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm ${podiumStyles.badge}`}
-                              >
-                                {department.rank}
-                              </Badge>
-                              {department.rank <= 3 && (
-                                <div className={`absolute -top-1 -right-1 w-5 h-5 ${podiumStyles.medalBadge} rounded-full flex items-center justify-center`}>
-                                  <span className="text-xs text-white font-bold">{podiumStyles.icon}</span>
-                                </div>
-                              )}
-                            </div>
-                            <div>
-                              <p className="font-bold text-sm text-slate-800 truncate">{department.name}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between sm:justify-end gap-4 mt-3 sm:mt-0 sm:ml-auto w-full sm:w-auto">
-                            <div className="text-left sm:text-right">
-                              <p className={`font-bold text-lg ${podiumStyles.points}`}>
-                                {department.totalPoints}
-                              </p>
-                              <p className="text-xs text-slate-500">pts</p>
-                            </div>
-                            <Link href={`/department/${department.id}`} className="flex-shrink-0">
-                              <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
-                                <Eye className="h-4 w-4 mr-1" />
-                                <span className="hidden xs:inline">View Details</span>
-                                <span className="xs:hidden">Details</span>
-                              </Button>
-                            </Link>
-                          </div>
-                        </div>
-                      )
-                    })}
+                    {administrativeDepartments.map((department) => (
+                      <LeaderboardCard
+                        key={department.id}
+                        id={department.id}
+                        name={department.name}
+                        rank={department.rank}
+                        points={department.totalPoints}
+                        type="department"
+                      />
+                    ))}
                   </div>
                 </div>
 

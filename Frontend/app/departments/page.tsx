@@ -1,9 +1,9 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Trophy, Building2, ArrowLeft, Eye } from "lucide-react"
+import { Trophy, Building2, ArrowLeft } from "lucide-react"
 import { fetchDepartments, fetchDepartmentsCount, transformApiDepartment } from "@/lib/api"
+import { LeaderboardCard } from "@/components/leaderboard-card"
 
 export default async function DepartmentsLeaderboard() {
   const [apiDepartmentsResponse, departmentsCount] = await Promise.all([fetchDepartments(), fetchDepartmentsCount()])
@@ -138,85 +138,16 @@ export default async function DepartmentsLeaderboard() {
             </CardHeader>
             <CardContent className="p-6">
               <div className="space-y-3">
-                {administrativeDepartments.map((department) => {
-                  const getPodiumStyles = (rank: number) => {
-                    switch (rank) {
-                      case 1:
-                        return {
-                          container: "bg-gradient-to-br from-amber-100/90 via-yellow-50 to-amber-200/60 border-2 border-amber-300/70 hover:border-amber-400 shadow-lg shadow-amber-500/20",
-                          badge: "bg-gradient-to-br from-amber-400 to-amber-500 text-white border-0",
-                          medalBadge: "bg-gradient-to-r from-amber-400 to-amber-500",
-                          points: "text-amber-600",
-                          icon: "🥇"
-                        }
-                      case 2:
-                        return {
-                          container: "bg-gradient-to-br from-blue-100/90 via-slate-100 to-blue-200/60 border-2 border-blue-400/70 hover:border-blue-500 shadow-lg shadow-blue-500/20",
-                          badge: "bg-gradient-to-br from-blue-400 to-blue-500 text-white border-0",
-                          medalBadge: "bg-gradient-to-r from-blue-400 to-blue-500",
-                          points: "text-blue-600",
-                          icon: "🥈"
-                        }
-                      case 3:
-                        return {
-                          container: "bg-gradient-to-br from-orange-100/90 via-red-50 to-orange-200/60 border-2 border-orange-400/70 hover:border-orange-500 shadow-lg shadow-orange-500/20",
-                          badge: "bg-gradient-to-br from-orange-400 to-orange-500 text-white border-0",
-                          medalBadge: "bg-gradient-to-r from-orange-400 to-orange-500",
-                          points: "text-orange-600",
-                          icon: "🥉"
-                        }
-                      default:
-                        return {
-                          container: "bg-slate-50/70 border border-slate-200 hover:border-slate-300",
-                          badge: "bg-gradient-to-br from-slate-200 to-slate-300 text-slate-700 border-0",
-                          medalBadge: "bg-gradient-to-r from-slate-400 to-slate-500",
-                          points: "text-blue-600",
-                          icon: ""
-                        }
-                    }
-                  }
-                  
-                  const podiumStyles = getPodiumStyles(department.rank)
-                  
-                  return (
-                    <div
-                      key={department.id}
-                      className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 hover:shadow-md hover:scale-[1.01] ${podiumStyles.container}`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="relative">
-                          <Badge
-                            variant={department.rank === 1 ? "default" : department.rank <= 3 ? "secondary" : "outline"}
-                            className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm ${podiumStyles.badge}`}
-                          >
-                            {department.rank}
-                          </Badge>
-                          {department.rank <= 3 && (
-                            <div className={`absolute -top-1 -right-1 w-5 h-5 ${podiumStyles.medalBadge} rounded-full flex items-center justify-center`}>
-                              <span className="text-xs text-white font-bold">{podiumStyles.icon}</span>
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <p className="font-bold text-sm text-slate-800 truncate">{department.name}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="text-right">
-                          <p className={`font-bold text-lg ${podiumStyles.points}`}>
-                            {department.totalPoints}
-                          </p>
-                          <p className="text-xs text-slate-500">pts</p>
-                        </div>
-                        <Link href={`/department/${department.id}`}>
-                          <Button variant="outline" size="sm" className="bg-white/90 hover:bg-white border border-slate-200 hover:border-blue-300">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  )
-                })}
+                {administrativeDepartments.map((department) => (
+                  <LeaderboardCard
+                    key={department.id}
+                    id={department.id}
+                    name={department.name}
+                    rank={department.rank}
+                    points={department.totalPoints}
+                    type="department"
+                  />
+                ))}
                 
                 {administrativeDepartments.length === 0 && (
                   <div className="text-center py-12">
@@ -248,85 +179,16 @@ export default async function DepartmentsLeaderboard() {
             </CardHeader>
             <CardContent className="p-6">
               <div className="space-y-3">
-                {practicalDepartments.map((department) => {
-                  const getPodiumStyles = (rank: number) => {
-                    switch (rank) {
-                      case 1:
-                        return {
-                          container: "bg-gradient-to-br from-amber-100/90 via-yellow-50 to-amber-200/60 border-2 border-amber-300/70 hover:border-amber-400 shadow-lg shadow-amber-500/20",
-                          badge: "bg-gradient-to-br from-amber-400 to-amber-500 text-white border-0",
-                          medalBadge: "bg-gradient-to-r from-amber-400 to-amber-500",
-                          points: "text-amber-600",
-                          icon: "🥇"
-                        }
-                      case 2:
-                        return {
-                          container: "bg-gradient-to-br from-blue-100/90 via-slate-100 to-blue-200/60 border-2 border-blue-400/70 hover:border-blue-500 shadow-lg shadow-blue-500/20",
-                          badge: "bg-gradient-to-br from-blue-400 to-blue-500 text-white border-0",
-                          medalBadge: "bg-gradient-to-r from-blue-400 to-blue-500",
-                          points: "text-blue-600",
-                          icon: "🥈"
-                        }
-                      case 3:
-                        return {
-                          container: "bg-gradient-to-br from-orange-100/90 via-red-50 to-orange-200/60 border-2 border-orange-400/70 hover:border-orange-500 shadow-lg shadow-orange-500/20",
-                          badge: "bg-gradient-to-br from-orange-400 to-orange-500 text-white border-0",
-                          medalBadge: "bg-gradient-to-r from-orange-400 to-orange-500",
-                          points: "text-orange-600",
-                          icon: "🥉"
-                        }
-                      default:
-                        return {
-                          container: "bg-slate-50/70 border border-slate-200 hover:border-slate-300",
-                          badge: "bg-gradient-to-br from-slate-200 to-slate-300 text-slate-700 border-0",
-                          medalBadge: "bg-gradient-to-r from-slate-400 to-slate-500",
-                          points: "text-green-600",
-                          icon: ""
-                        }
-                    }
-                  }
-                  
-                  const podiumStyles = getPodiumStyles(department.rank)
-                  
-                  return (
-                    <div
-                      key={department.id}
-                      className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 hover:shadow-md hover:scale-[1.01] ${podiumStyles.container}`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="relative">
-                          <Badge
-                            variant={department.rank === 1 ? "default" : department.rank <= 3 ? "secondary" : "outline"}
-                            className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm ${podiumStyles.badge}`}
-                          >
-                            {department.rank}
-                          </Badge>
-                          {department.rank <= 3 && (
-                            <div className={`absolute -top-1 -right-1 w-5 h-5 ${podiumStyles.medalBadge} rounded-full flex items-center justify-center`}>
-                              <span className="text-xs text-white font-bold">{podiumStyles.icon}</span>
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <p className="font-bold text-sm text-slate-800 truncate">{department.name}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="text-right">
-                          <p className={`font-bold text-lg ${podiumStyles.points}`}>
-                            {department.totalPoints}
-                          </p>
-                          <p className="text-xs text-slate-500">pts</p>
-                        </div>
-                        <Link href={`/department/${department.id}`}>
-                          <Button variant="outline" size="sm" className="bg-white/90 hover:bg-white border border-slate-200 hover:border-green-300">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  )
-                })}
+                {practicalDepartments.map((department) => (
+                  <LeaderboardCard
+                    key={department.id}
+                    id={department.id}
+                    name={department.name}
+                    rank={department.rank}
+                    points={department.totalPoints}
+                    type="department"
+                  />
+                ))}
                 
                 {practicalDepartments.length === 0 && (
                   <div className="text-center py-12">
