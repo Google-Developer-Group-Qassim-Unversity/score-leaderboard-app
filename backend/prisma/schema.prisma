@@ -103,15 +103,16 @@ model absence {
 }
 
 view members_points {
-  member_id     Int      @default(0) @db.UnsignedInt
-  member_name   String   @db.VarChar(50)
-  member_log_id Int      @default(0) @db.UnsignedInt
-  log_id        Int      @default(0) @db.UnsignedInt
-  event_name    String   @db.VarChar(150)
-  start_date    DateTime @db.Date
-  end_date      DateTime @db.Date
-  action_points Int      @db.UnsignedInt
-  action_name   String   @db.VarChar(60)
+  member_id     Int                          @default(0) @db.UnsignedInt
+  member_name   String                       @db.VarChar(50)
+  member_log_id Int                          @default(0) @db.UnsignedInt
+  member_gender members_points_member_gender
+  log_id        Int                          @default(0) @db.UnsignedInt
+  event_name    String                       @db.VarChar(150)
+  start_date    DateTime                     @db.Date
+  end_date      DateTime                     @db.Date
+  action_points Int                          @db.UnsignedInt
+  action_name   String                       @db.VarChar(60)
 }
 
 view departments_points {
@@ -145,4 +146,9 @@ enum members_gender {
 enum departments_type {
   administrative
   practical
+}
+
+enum members_points_member_gender {
+  Male
+  Female
 }

@@ -7,6 +7,7 @@ export interface ApiMember {
   id: number
   name: string
   points: number
+  gender: string
 }
 
 export interface ApiDepartment {
@@ -46,7 +47,7 @@ export interface ApiDepartmentDetail extends ApiDepartment {
 import { notFound } from "next/navigation"
 import { mockMembers, mockDepartments } from "./mock-data"
 
-export async function fetchMembers(): Promise<ApiMember[]> {
+export async function fetchMembers(): Promise<{"Female": ApiMember[], "Male": ApiMember[]}> {
   try {
     console.log("[v0] Attempting to fetch members from API...")
     const response = await fetch(`${API_BASE_URL}/members`, {
@@ -66,12 +67,8 @@ export async function fetchMembers(): Promise<ApiMember[]> {
     console.log("[v0] Successfully fetched members from API:", data.length, "members")
     return data
   } catch (error) {
-    console.log("[v0] API fetch failed, falling back to mock data:", error)
-    return mockMembers.map((member) => ({
-      id: Number.parseInt(member.id.replace("member-", "")),
-      name: member.name,
-      points: member.totalPoints,
-    }))
+    console.log("[v0] API fetch failed", error)
+    return {"Female": [], "Male": []}
   }
 }
 

@@ -7,10 +7,19 @@ import { MembersSearch } from "./members-search"
 export default async function MembersLeaderboard() {
   const [apiMembers, membersCount] = await Promise.all([fetchMembers(), fetchMembersCount()])
 
-  // Transform and sort API data
-  const members = apiMembers
+  // Transform and sort API data by gender, limit to top 100 of each
+  const femaleMembers = (apiMembers.Female || [])
     .sort((a, b) => b.points - a.points)
+    .slice(0, 100) // Limit to top 100
     .map((member, index) => transformApiMember(member, index + 1))
+  
+  const maleMembers = (apiMembers.Male || [])
+    .sort((a, b) => b.points - a.points)
+    .slice(0, 100) // Limit to top 100
+    .map((member, index) => transformApiMember(member, index + 1))
+
+  // Combine all members for search functionality
+  const allMembers = [...femaleMembers, ...maleMembers]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 relative overflow-x-hidden">
@@ -105,7 +114,7 @@ export default async function MembersLeaderboard() {
         </div>
 
         {/* Search Component */}
-        <MembersSearch members={members} membersCount={membersCount} />
+        <MembersSearch members={allMembers} membersCount={membersCount} femaleMembers={femaleMembers} maleMembers={maleMembers} />
         </div>
       </div>
     </div>
