@@ -2,17 +2,20 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Trophy, Building2, ArrowLeft } from "lucide-react"
-import { fetchDepartments, fetchDepartmentsCount, transformApiDepartment } from "@/lib/api"
+import { fetchDepartments, transformApiDepartment } from "@/lib/api"
 import { LeaderboardCard } from "@/components/leaderboard-card"
 
 export default async function DepartmentsLeaderboard() {
-  const [apiDepartmentsResponse, departmentsCount] = await Promise.all([fetchDepartments(), fetchDepartmentsCount()])
+  const apiDepartmentsResponse = await fetchDepartments()
+  
+  // Calculate count from array lengths
+  const departmentsCount = (apiDepartmentsResponse.Administrative?.length || 0) + (apiDepartmentsResponse.Specialized?.length || 0)
 
-  // Transform and rank departments for each type separately
-  const administrativeDepartments = (apiDepartmentsResponse.administrative || [])
+  // Transform and rank departments for each type separately (already sorted from API)
+  const administrativeDepartments = (apiDepartmentsResponse.Administrative || [])
     .map((dept, index) => transformApiDepartment(dept, index + 1, 'administrative'))
   
-  const practicalDepartments = (apiDepartmentsResponse.practical || [])
+  const practicalDepartments = (apiDepartmentsResponse.Specialized || [])
     .map((dept, index) => transformApiDepartment(dept, index + 1, 'practical'))
 
   const getDepartmentIcon = (name: string) => {

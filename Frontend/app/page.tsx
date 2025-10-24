@@ -8,9 +8,6 @@ import { LeaderboardCard } from "@/components/leaderboard-card"
 import {
   fetchMembers,
   fetchDepartments,
-  fetchAllDepartments,
-  fetchMembersCount,
-  fetchDepartmentsCount,
   transformApiMember,
   transformApiDepartment,
 } from "@/lib/api"
@@ -18,20 +15,22 @@ import {
 export default async function Dashboard() {
   let apiStatus = "connected" // 'connected' | 'fallback'
 
-  const [apiMembers, apiDepartmentsResponse, membersCount, departmentsCount] = await Promise.all([
+  const [apiMembers, apiDepartmentsResponse] = await Promise.all([
     fetchMembers(),
     fetchDepartments(),
-    fetchMembersCount(),
-    fetchDepartmentsCount(),
   ])
 
-  // Combine and sort all departments for the preview
+  // Calculate counts from array lengths
+  const membersCount = (apiMembers.Male?.length || 0) + (apiMembers.Female?.length || 0)
+  const departmentsCount = (apiDepartmentsResponse.Administrative?.length || 0) + (apiDepartmentsResponse.Specialized?.length || 0)
+
+  // Combine all departments
   const allDepartments = [
-    ...(apiDepartmentsResponse.administrative || []), 
-    ...(apiDepartmentsResponse.practical || [])
+    ...(apiDepartmentsResponse.Administrative || []), 
+    ...(apiDepartmentsResponse.Specialized || [])
   ]
 
-  // Combine and sort all members for the preview
+  // Combine all members
   const allMembers = [
     ...(apiMembers.Female || []),
     ...(apiMembers.Male || [])
@@ -41,26 +40,22 @@ export default async function Dashboard() {
     apiStatus = "fallback"
   }
 
-  // Transform and sort API data for members by gender
+  // Transform API data for members by gender (already sorted from API)
   const femaleMembers = (apiMembers.Female || [])
-    .sort((a, b) => b.points - a.points)
     .map((member, index) => transformApiMember(member, index + 1))
   
   const maleMembers = (apiMembers.Male || [])
-    .sort((a, b) => b.points - a.points)
     .map((member, index) => transformApiMember(member, index + 1))
 
+  // Already sorted from backend
   const allMembersSorted = allMembers
-    .sort((a, b) => b.points - a.points)
     .map((member, index) => transformApiMember(member, index + 1))
 
-  // Transform and sort departments by type with independent rankings
-  const practicalDepartments = (apiDepartmentsResponse.practical || [])
-    .sort((a, b) => b.points - a.points)
+  // Transform departments by type with independent rankings (already sorted from API)
+  const practicalDepartments = (apiDepartmentsResponse.Specialized || [])
     .map((dept, index) => transformApiDepartment(dept, index + 1, 'practical'))
 
-  const administrativeDepartments = (apiDepartmentsResponse.administrative || [])
-    .sort((a, b) => b.points - a.points)
+  const administrativeDepartments = (apiDepartmentsResponse.Administrative || [])
     .map((dept, index) => transformApiDepartment(dept, index + 1, 'administrative'))
 
   const topFemaleMembers = femaleMembers.slice(0, 10)
@@ -188,7 +183,7 @@ export default async function Dashboard() {
                       </div>
                       Top Members
                     </CardTitle>
-                    <CardDescription className="text-slate-600 font-medium mt-1">Leading individual performers by gender</CardDescription>
+                    <CardDescription className="text-slate-600 font-medium mt-1">Leading individual performers</CardDescription>
                   </div>
                   <Link href="/members">
                     <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
@@ -221,15 +216,6 @@ export default async function Dashboard() {
                       />
                     ))}
                   </div>
-                </div>
-
-                {/* Styled Separator */}
-                <div className="flex items-center justify-center py-2">
-                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
-                  <div className="px-4">
-                    <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-pink-500 rounded-full shadow-sm"></div>
-                  </div>
-                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
                 </div>
 
                 {/* Female Members */}
@@ -292,7 +278,7 @@ export default async function Dashboard() {
                         <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4zM6.7 8.8c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6.7-.7 1.9-.7 2.6 0 .7.7.7 1.9 0 2.6z"/>
                       </svg>
                     </div>
-                    <h3 className="text-sm font-bold text-green-700 uppercase tracking-wider">الاقسام التخصصية</h3>
+                    <h3 className="text-sm font-bold text-green-700 uppercase tracking-wider">Specialized departments</h3>
                     <div className="flex-1 h-px bg-gradient-to-r from-green-300 to-transparent"></div>
                   </div>
                   <div className="space-y-3">
@@ -309,17 +295,6 @@ export default async function Dashboard() {
                   </div>
                 </div>
 
-
-                {/* Styled Separator */}
-                <div className="flex items-center justify-center py-2">
-                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
-                  <div className="px-4">
-                    <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-green-500 rounded-full shadow-sm"></div>
-                  </div>
-                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
-                </div>
-
-
                 {/* Administrative Departments */}
                 <div>
                   <div className="flex items-center gap-3 mb-4">
@@ -328,7 +303,7 @@ export default async function Dashboard() {
                         <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
                       </svg>
                     </div>
-                    <h3 className="text-sm font-bold text-blue-700 uppercase tracking-wider">الاقسام الادارية</h3>
+                    <h3 className="text-sm font-bold text-blue-700 uppercase tracking-wider">Administrative departments</h3>
                     <div className="flex-1 h-px bg-gradient-to-r from-blue-300 to-transparent"></div>
                   </div>
                   <div className="space-y-3">

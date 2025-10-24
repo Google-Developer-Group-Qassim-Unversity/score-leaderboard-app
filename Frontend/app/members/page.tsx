@@ -1,20 +1,21 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Trophy, Users, ArrowLeft, Eye, Search } from "lucide-react"
-import { fetchMembers, fetchMembersCount, transformApiMember } from "@/lib/api"
+import { fetchMembers, transformApiMember } from "@/lib/api"
 import { MembersSearch } from "./members-search"
 
 export default async function MembersLeaderboard() {
-  const [apiMembers, membersCount] = await Promise.all([fetchMembers(), fetchMembersCount()])
+  const apiMembers = await fetchMembers()
+  
+  // Calculate count from array lengths
+  const membersCount = (apiMembers.Male?.length || 0) + (apiMembers.Female?.length || 0)
 
-  // Transform and sort API data by gender, limit to top 100 of each
+  // Transform API data by gender (already sorted from API), limit to top 100 of each
   const femaleMembers = (apiMembers.Female || [])
-    .sort((a, b) => b.points - a.points)
     .slice(0, 100) // Limit to top 100
     .map((member, index) => transformApiMember(member, index + 1))
   
   const maleMembers = (apiMembers.Male || [])
-    .sort((a, b) => b.points - a.points)
     .slice(0, 100) // Limit to top 100
     .map((member, index) => transformApiMember(member, index + 1))
 
