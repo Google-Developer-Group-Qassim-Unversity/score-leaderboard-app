@@ -8,18 +8,29 @@ import { MembersSearch } from "./members-search"
 export default async function MembersLeaderboard() {
   const apiMembers = await fetchMembers()
   
-  // Calculate count from array lengths
-  const membersCount = (apiMembers.Male?.length || 0) + (apiMembers.Female?.length || 0)
+  // Calculate count from array length
+  const membersCount = apiMembers.length || 0
 
-  // Get top 100 members per gender (already sorted from API)
-  const femaleMembers = (apiMembers.Female || []).slice(0, 100)
-  const maleMembers = (apiMembers.Male || []).slice(0, 100)
-
-  // Combine all members for search functionality (convert to expected format)
-  const allMembers = [
-    ...femaleMembers.map((m, i) => ({ ...m, id: m.id.toString(), rank: i + 1, totalPoints: m.points })),
-    ...maleMembers.map((m, i) => ({ ...m, id: m.id.toString(), rank: i + 1, totalPoints: m.points }))
-  ]
+  // Get top 100 members for initial display (already sorted from API)
+  const topMembers = (apiMembers || []).slice(0, 100)
+  
+  // Convert all members for search (with proper ranking)
+  const allMembersForSearch = (apiMembers || []).map((m, i) => ({ 
+    ...m, 
+    id: m.id.toString(), 
+    rank: i + 1, 
+    totalPoints: m.points,
+    departmentId: ""
+  }))
+  
+  // Convert top 100 for initial display
+  const topMembersForDisplay = topMembers.map((m, i) => ({ 
+    ...m, 
+    id: m.id.toString(), 
+    rank: i + 1, 
+    totalPoints: m.points,
+    departmentId: ""
+  }))
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 relative overflow-x-hidden">
@@ -66,10 +77,9 @@ export default async function MembersLeaderboard() {
 
         {/* Search Component */}
         <MembersSearch 
-          members={allMembers} 
+          members={topMembersForDisplay}
+          allMembers={allMembersForSearch}
           membersCount={membersCount} 
-          femaleMembers={femaleMembers.map((m, i) => ({ ...m, id: m.id.toString(), rank: i + 1, totalPoints: m.points, departmentId: "", isManager: false }))} 
-          maleMembers={maleMembers.map((m, i) => ({ ...m, id: m.id.toString(), rank: i + 1, totalPoints: m.points, departmentId: "", isManager: false }))} 
         />
         </div>
       </div>

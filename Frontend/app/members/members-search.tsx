@@ -12,32 +12,27 @@ interface Member {
   name: string
   totalPoints: number
   rank: number
+  departmentId: string
 }
 
 interface MembersSearchProps {
   members: Member[]
+  allMembers: Member[]
   membersCount: number
-  femaleMembers: Member[]
-  maleMembers: Member[]
 }
 
-export function MembersSearch({ members: allMembers, membersCount, femaleMembers, maleMembers }: MembersSearchProps) {
+export function MembersSearch({ members: topMembers, allMembers, membersCount }: MembersSearchProps) {
   const [searchTerm, setSearchTerm] = useState("")
-  const [activeGender, setActiveGender] = useState<"all" | "male" | "female">("all")
 
-  // Filter members based on search term and gender
+  // Filter members based on search term - use full dataset when searching, top 100 when not
   const getFilteredMembers = () => {
-    let membersToFilter = allMembers
-    
-    if (activeGender === "male") {
-      membersToFilter = maleMembers
-    } else if (activeGender === "female") {
-      membersToFilter = femaleMembers
+    if (!searchTerm) {
+      // No search term: show only top 100 members for performance
+      return topMembers
     }
     
-    if (!searchTerm) return membersToFilter
-    
-    return membersToFilter.filter(member =>
+    // Search term provided: search through all members
+    return allMembers.filter(member =>
       member.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
   }
@@ -84,52 +79,7 @@ export function MembersSearch({ members: allMembers, membersCount, femaleMembers
         )}
       </div>
 
-      {/* Gender Filter Tabs */}
-      <div className="flex items-center justify-center gap-3 mb-6">
-        <button
-          onClick={() => setActiveGender("all")}
-          className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 ${
-            activeGender === "all"
-              ? "bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-lg shadow-purple-500/30"
-              : "bg-white text-slate-600 hover:bg-slate-50 border-2 border-slate-200"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            <span>All Members</span>
-          </div>
-        </button>
-        <button
-          onClick={() => setActiveGender("male")}
-          className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 ${
-            activeGender === "male"
-              ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30"
-              : "bg-white text-slate-600 hover:bg-slate-50 border-2 border-slate-200"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-            </svg>
-            <span>Male ({maleMembers.length})</span>
-          </div>
-        </button>
-        <button
-          onClick={() => setActiveGender("female")}
-          className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 ${
-            activeGender === "female"
-              ? "bg-gradient-to-r from-pink-500 to-pink-600 text-white shadow-lg shadow-pink-500/30"
-              : "bg-white text-slate-600 hover:bg-slate-50 border-2 border-slate-200"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-            </svg>
-            <span>Female ({femaleMembers.length})</span>
-          </div>
-        </button>
-      </div>
+
 
       {/* Results count */}
       {searchTerm && (
@@ -138,14 +88,13 @@ export function MembersSearch({ members: allMembers, membersCount, femaleMembers
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
             <span>
               {filteredMembers.length} of {membersCount} members found
-              {activeGender !== "all" && ` (${activeGender === "male" ? "Male" : "Female"})`}
             </span>
           </div>
         </div>
       )}
-      {!searchTerm && activeGender !== "all" && (
+      {!searchTerm && (
         <div className="text-center mb-6 text-sm text-muted-foreground">
-          Showing top 100 {activeGender === "male" ? "male" : "female"} members
+          Showing top 100 members
         </div>
       )}
 

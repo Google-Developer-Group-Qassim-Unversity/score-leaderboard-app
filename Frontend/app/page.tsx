@@ -17,12 +17,11 @@ export default async function Dashboard() {
   ])
 
   // Calculate counts from array lengths
-  const membersCount = (apiMembers.Male?.length || 0) + (apiMembers.Female?.length || 0)
+  const membersCount = apiMembers.length || 0
   const departmentsCount = (apiDepartmentsResponse.Administrative?.length || 0) + (apiDepartmentsResponse.Specialized?.length || 0)
 
-  // Get top 10 male members (already sorted from API)
-  const topMaleMembers = (apiMembers.Male || []).slice(0, 10)
-  const topFemaleMembers = (apiMembers.Female || []).slice(0, 10)
+  // Get top 10 members (already sorted from API)
+  const topMembers = (apiMembers || []).slice(0, 10)
   
   // Get all departments (already sorted from API)
   const practicalDepartments = apiDepartmentsResponse.Specialized || []
@@ -139,23 +138,12 @@ export default async function Dashboard() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Male Members */}
+                {/* Top Members */}
                 <div>
-                  <SectionHeader icon={UserCircle} title="Male" color="blue"/>
+                  <SectionHeader icon={UserCircle} title="Top Performers" color="blue"/>
                   <div className="space-y-3">
-                    {topMaleMembers.map((member, index) => (
+                    {topMembers.map((member, index) => (
                       <LeaderboardCard key={member.id} id={member.id.toString()} name={member.name} rank={index + 1} points={member.points} type="member" />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Female Members */}
-                <div>
-                  <SectionHeader icon={UserCircle} title="Female" color="pink"
-                  />
-                  <div className="space-y-3">
-                    {topFemaleMembers.map((member, index) => (
-                      <LeaderboardCard key={member.id} id={member.id.toString()} name={member.name} rank={index + 1} points={member.points} type="member"/>
                     ))}
                   </div>
                 </div>

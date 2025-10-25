@@ -10,10 +10,7 @@ export interface ApiMember {
   gender: string
 }
 
-export interface ApiMembersResponse {
-  Male: ApiMember[]
-  Female: ApiMember[]
-}
+export type ApiMembersResponse = ApiMember[]
 
 export interface ApiDepartment {
   id: number

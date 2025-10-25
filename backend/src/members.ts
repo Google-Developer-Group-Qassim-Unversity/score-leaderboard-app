@@ -110,13 +110,13 @@ export async function handleMembers(req: Request, res: Response) {
     // Convert to array and sort by points descending
     const result = Array.from(memberPointsMap.entries())
     .map(([id, { name, points, gender }]) => ({ id, name, points, gender }))
-    
-    const splitResult = {
-      "Male": result.filter(m => m.gender === members_gender.Male).sort((a, b) => b.points - a.points),
-      "Female": result.filter(m => m.gender === members_gender.Female).sort((a, b) => b.points - a.points)
-    }
+    .sort((a, b) => b.points - a.points);
+    // const splitResult = {
+    //   "Male": result.filter(m => m.gender === members_gender.Male).sort((a, b) => b.points - a.points),
+    //   "Female": result.filter(m => m.gender === members_gender.Female).sort((a, b) => b.points - a.points)
+    // }
 
-    res.status(200).json(splitResult).end();
+    res.status(200).json(result).end();
 }
 
 export async function handleMembersById(

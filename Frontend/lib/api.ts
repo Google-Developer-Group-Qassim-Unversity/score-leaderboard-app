@@ -50,12 +50,12 @@ export async function fetchMembers(): Promise<ApiMembersResponse> {
     }
 
     const data: ApiMembersResponse = await response.json()
-    const totalMembers = (data.Male?.length || 0) + (data.Female?.length || 0)
-    console.log(`✅ Successfully fetched ${totalMembers} members (${data.Male?.length || 0} male, ${data.Female?.length || 0} female)`)
+    const totalMembers = data.length || 0
+    console.log(`✅ Successfully fetched ${totalMembers} members`)
     return data
   } catch (error) {
     console.error("❌ Failed to fetch members:", error)
-    return { Male: [], Female: [] }
+    return []
   }
 }
 
