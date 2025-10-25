@@ -1,9 +1,9 @@
 import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Trophy, Building2, ArrowLeft } from "lucide-react"
+import { Trophy, Building2, ArrowLeft, Settings, Wrench } from "lucide-react"
+import { PageHeader } from "@/components/page-header"
 import { fetchDepartments } from "@/lib/api"
-import { LeaderboardCard } from "@/components/leaderboard-card"
+import { DepartmentTypeCard } from "./department-type-card"
 
 export default async function DepartmentsLeaderboard() {
   const apiDepartmentsResponse = await fetchDepartments()
@@ -14,21 +14,6 @@ export default async function DepartmentsLeaderboard() {
   // Get departments (already sorted from API)
   const administrativeDepartments = apiDepartmentsResponse.Administrative || []
   const practicalDepartments = apiDepartmentsResponse.Specialized || []
-
-  const getDepartmentIcon = (name: string) => {
-    const icons: Record<string, string> = {
-      Engineering: "⚙️",
-      Marketing: "📢",
-      Sales: "💼",
-      HR: "👥",
-      Finance: "💰",
-      Operations: "🔧",
-      "Customer Success": "🎯",
-      Legal: "⚖️",
-      "Tech and Business": "💻", // Added icon for the example department
-    }
-    return icons[name] || "🏢"
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 relative overflow-x-hidden">
@@ -56,61 +41,13 @@ export default async function DepartmentsLeaderboard() {
             </Button>
           </Link>
           
-          <div className="text-center">
-            <div className="flex items-center justify-center flex-col md:flex-row gap-4 mb-6">
-              <div className="relative">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30 transform hover:scale-105 transition-transform duration-200">
-                  <Building2 className="h-8 w-8 text-white" />
-                </div>
-              </div>
-              <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
-                Departments Leaderboard
-              </h1>
-            </div>
-            <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium">
-              {departmentsCount} departments ranked by total points earned through team collaboration and achievements
-            </p>
-          </div>
+          <PageHeader 
+            icon={Building2}
+            iconColor="green"
+            heading="Departments Leaderboard"
+            subHeading={`${departmentsCount} departments ranked by total points earned through team collaboration and achievements`}
+          />
         </div>
-
-        {/* Quick Stats
-        <div className="mb-8">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center">
-                    <Trophy className="w-3 h-3 text-white" />
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-amber-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{departments[0]?.totalPoints || 0}</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Top Score</p>
-              </div>
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                    <Building2 className="w-3 h-3 text-white" />
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{departmentsCount}</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Total Departments</p>
-              </div>
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 11H7v4h2v-4zm4 0h-2v4h2v-4zm4 0h-2v4h2v-4zm2-7h-3V2h-2v2H8V2H6v2H3c-1.11 0-1.99.89-1.99 2L1 18c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 16H3V8h16v10z"/>
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{departments.length > 0 ? Math.round(departments.reduce((sum, d) => sum + d.totalPoints, 0) / departments.length) : 0}</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Avg Score</p>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-        */}
 
         {/* Section Divider */}
         <div className="flex items-center justify-center mb-8">
@@ -124,86 +61,22 @@ export default async function DepartmentsLeaderboard() {
         {/* Department Type Leaderboards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Administrative Departments */}
-          <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl rounded-3xl overflow-hidden">
-            <CardHeader className="border-b border-slate-200">
-              <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg">
-                  <svg className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
-                  </svg>
-                </div>
-                Administrative Departments
-              </CardTitle>
-              <CardDescription className="text-sm text-slate-600 font-medium">Support and management teams</CardDescription>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-3">
-                {administrativeDepartments.map((department, index) => (
-                  <LeaderboardCard
-                    key={department.id}
-                    id={department.id.toString()}
-                    name={department.name}
-                    rank={index + 1}
-                    points={department.points}
-                    type="department"
-                  />
-                ))}
-                
-                {administrativeDepartments.length === 0 && (
-                  <div className="text-center py-12">
-                    <div className="p-4 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                      <svg className="h-8 w-8 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
-                      </svg>
-                    </div>
-                    <p className="text-sm text-slate-500 font-medium mb-1">No administrative departments</p>
-                    <p className="text-xs text-slate-400">Check back later</p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          <DepartmentTypeCard
+            title="Administrative Departments"
+            description="Support and management teams"
+            departments={administrativeDepartments}
+            icon={Settings}
+            gradientColors={{ from: "from-blue-500", to: "to-blue-600" }}
+          />
 
-          {/* Practical Departments */}
-          <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl rounded-3xl overflow-hidden">
-            <CardHeader className="border-b border-slate-200">
-              <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
-                  <svg className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4zM6.7 8.8c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6.7-.7 1.9-.7 2.6 0 .7.7.7 1.9 0 2.6z"/>
-                  </svg>
-                </div>
-                Specialized Departments
-              </CardTitle>
-              <CardDescription className="text-sm text-slate-600 font-medium">Hands-on and technical teams</CardDescription>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-3">
-                {practicalDepartments.map((department, index) => (
-                  <LeaderboardCard
-                    key={department.id}
-                    id={department.id.toString()}
-                    name={department.name}
-                    rank={index + 1}
-                    points={department.points}
-                    type="department"
-                  />
-                ))}
-                
-                {practicalDepartments.length === 0 && (
-                  <div className="text-center py-12">
-                    <div className="p-4 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                      <svg className="h-8 w-8 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4zM6.7 8.8c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6.7-.7 1.9-.7 2.6 0 .7.7.7 1.9 0 2.6z"/>
-                      </svg>
-                    </div>
-                    <p className="text-sm text-slate-500 font-medium mb-1">No practical departments</p>
-                    <p className="text-xs text-slate-400">Check back later</p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          {/* Specialized Departments */}
+          <DepartmentTypeCard
+            title="Specialized Departments"
+            description="Hands-on and technical teams"
+            departments={practicalDepartments}
+            icon={Wrench}
+            gradientColors={{ from: "from-green-500", to: "to-green-600" }}
+          />
         </div>
         </div>
       </div>

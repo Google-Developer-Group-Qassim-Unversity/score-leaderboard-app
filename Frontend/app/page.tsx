@@ -7,6 +7,7 @@ import { Trophy, Users, Building2, UserCircle, Wrench } from "lucide-react"
 import DashboardHonorDept from "./DashboradHonorDept"
 import { LeaderboardCard } from "@/components/leaderboard-card"
 import { SectionHeader } from "@/components/section-header"
+import { PageHeader } from "@/components/page-header"
 import { fetchMembers, fetchDepartments } from "@/lib/api"
 
 export default async function Dashboard() {
@@ -46,27 +47,12 @@ export default async function Dashboard() {
       <div className="relative z-10">
         <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center flex-col md:flex-row gap-4 mb-6">
-            <div className="relative">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200">
-                <Image
-                  src="/gdg-transparent.png"
-                  alt="GDG Logo"
-                  width={64}
-                  height={64}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
-              Leaderboard Dashboard
-            </h1>
-          </div>
-          <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium">
-            Track performance across members and departments with comprehensive points tracking
-          </p>
-        </div>
+        <PageHeader 
+          icon="/gdg-transparent.png"
+          heading="Leaderboard Dashboard"
+          iconColor="white"
+          subHeading="Track performance across members and departments with comprehensive points tracking"
+        />
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
@@ -155,42 +141,21 @@ export default async function Dashboard() {
               <CardContent className="space-y-6">
                 {/* Male Members */}
                 <div>
-                  <SectionHeader
-                    icon={UserCircle}
-                    title="Male"
-                    color="blue"
-                  />
+                  <SectionHeader icon={UserCircle} title="Male" color="blue"/>
                   <div className="space-y-3">
                     {topMaleMembers.map((member, index) => (
-                      <LeaderboardCard
-                        key={member.id}
-                        id={member.id.toString()}
-                        name={member.name}
-                        rank={index + 1}
-                        points={member.points}
-                        type="member"
-                      />
+                      <LeaderboardCard key={member.id} id={member.id.toString()} name={member.name} rank={index + 1} points={member.points} type="member" />
                     ))}
                   </div>
                 </div>
 
                 {/* Female Members */}
                 <div>
-                  <SectionHeader
-                    icon={UserCircle}
-                    title="Female"
-                    color="pink"
+                  <SectionHeader icon={UserCircle} title="Female" color="pink"
                   />
                   <div className="space-y-3">
                     {topFemaleMembers.map((member, index) => (
-                      <LeaderboardCard
-                        key={member.id}
-                        id={member.id.toString()}
-                        name={member.name}
-                        rank={index + 1}
-                        points={member.points}
-                        type="member"
-                      />
+                      <LeaderboardCard key={member.id} id={member.id.toString()} name={member.name} rank={index + 1} points={member.points} type="member"/>
                     ))}
                   </div>
                 </div>
@@ -219,9 +184,8 @@ export default async function Dashboard() {
                   </Link>
                 </div>
               </CardHeader>
+
               <CardContent className="space-y-6">
-
-
                 {/* Practical Departments */}
                 <div>
                   <SectionHeader icon={Wrench} title="Specialized departments" color="green"/>
@@ -239,6 +203,7 @@ export default async function Dashboard() {
                 </div>
 
               </CardContent>
+
             </div>
           </Card>
         </div>
