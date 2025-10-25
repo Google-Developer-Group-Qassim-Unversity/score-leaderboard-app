@@ -3,41 +3,30 @@ import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Trophy, Users, Building2, AlertCircle, Infinity, Eye } from "lucide-react"
-import {
-  fetchMembers,
-  fetchDepartments,
-  fetchMembersCount,
-  fetchDepartmentsCount,
-  transformApiMember,
-  transformApiDepartment,
-} from "@/lib/api"
+import { Trophy, Users, Building2, UserCircle, Wrench } from "lucide-react"
+import DashboardHonorDept from "./DashboradHonorDept"
+import { LeaderboardCard } from "@/components/leaderboard-card"
+import { SectionHeader } from "@/components/section-header"
+import { PageHeader } from "@/components/page-header"
+import { fetchMembers, fetchDepartments } from "@/lib/api"
 
 export default async function Dashboard() {
-  let apiStatus = "connected" // 'connected' | 'fallback'
-
-  const [apiMembers, apiDepartments, membersCount, departmentsCount] = await Promise.all([
+  const [apiMembers, apiDepartmentsResponse] = await Promise.all([
     fetchMembers(),
     fetchDepartments(),
-    fetchMembersCount(),
-    fetchDepartmentsCount(),
   ])
 
-  if (apiMembers.length > 0 && apiMembers[0].id > 1000) {
-    apiStatus = "fallback"
-  }
+  // Calculate counts from array lengths
+  const membersCount = apiMembers.length || 0
+  const departmentsCount = (apiDepartmentsResponse.Administrative?.length || 0) + (apiDepartmentsResponse.Specialized?.length || 0)
 
-  // Transform and sort API data
-  const members = apiMembers
-    .sort((a, b) => b.points - a.points)
-    .map((member, index) => transformApiMember(member, index + 1))
+  // Get top 10 members (already sorted from API)
+  const topMembers = (apiMembers || []).slice(0, 10)
+  
+  // Get all departments (already sorted from API)
+  const practicalDepartments = apiDepartmentsResponse.Specialized || []
+  const administrativeDepartments = apiDepartmentsResponse.Administrative || []
 
-  const departments = apiDepartments
-    .sort((a, b) => b.points - a.points)
-    .map((dept, index) => transformApiDepartment(dept, index + 1))
-
-  const topMembers = members.slice(0, 10)
-  const topDepartments = departments.slice(0, 8)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 relative overflow-x-hidden">
@@ -57,88 +46,12 @@ export default async function Dashboard() {
       <div className="relative z-10">
         <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center flex-col md:flex-row gap-4 mb-6">
-            <div className="relative">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200">
-                <Image
-                  src="/gdg-transparent.png"
-                  alt="GDG Logo"
-                  width={64}
-                  height={64}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
-              Leaderboard Dashboard
-            </h1>
-          </div>
-          <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium">
-            Track performance across members and departments with comprehensive points tracking
-          </p>
-
-          {apiStatus === "fallback" && (
-            <div className="mt-6 inline-flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-amber-100 to-amber-200 text-amber-800 rounded-full text-sm font-medium shadow-md">
-              <AlertCircle className="h-4 w-4" />
-              Using demo data - API server not available
-            </div>
-          )}
-        </div>
-
-        {/* Quick Stats Bar
-        <div className="mb-8">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">15</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Total Events</p>
-              </div>
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{topDepartments[0]?.totalPoints || 0}</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Best Dept</p>
-              </div>
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-amber-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{members.reduce((sum, m) => sum + m.totalPoints, 0)}</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Total Points</p>
-              </div>
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 11H7v4h2v-4zm4 0h-2v4h2v-4zm4 0h-2v4h2v-4zm2-7h-3V2h-2v2H8V2H6v2H3c-1.11 0-1.99.89-1.99 2L1 18c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 16H3V8h16v10z"/>
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{Math.round(members.reduce((sum, m) => sum + m.totalPoints, 0) / members.length) || 0}</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Avg Score</p>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-        */}
+        <PageHeader 
+          icon="/gdg-transparent.png"
+          heading="Leaderboard Dashboard"
+          iconColor="white"
+          subHeading="Track performance across members and departments with comprehensive points tracking"
+        />
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
@@ -224,90 +137,16 @@ export default async function Dashboard() {
                   </Link>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {topMembers.map((member, index) => {
-                  // Google-themed podium colors for top 3
-                  const getPodiumStyles = (rank: number) => {
-                    switch (rank) {
-                      case 1: // Gold - Google Yellow/Amber inspired
-                        return {
-                          container: "bg-gradient-to-br from-amber-100/90 via-yellow-50 to-amber-200/60 border-2 border-amber-300/70 hover:border-amber-400 shadow-xl shadow-amber-500/20 hover:shadow-amber-500/30",
-                          badge: "bg-gradient-to-br from-amber-400 to-amber-500 text-white shadow-lg shadow-amber-500/30",
-                          star: "bg-gradient-to-r from-amber-500 to-yellow-500",
-                          icon: "🥇"
-                        };
-                      case 2: // Silver - Google Blue-Gray inspired  
-                        return {
-                          container: "bg-gradient-to-br from-gray-100/90 via-slate-50 to-gray-200/60 border-2 border-gray-400/70 hover:border-gray-500 shadow-xl shadow-gray-500/20 hover:shadow-gray-500/30",
-                          badge: "bg-gradient-to-br from-slate-400 to-slate-500 text-white shadow-lg shadow-slate-500/30",
-                          star: "bg-gradient-to-r from-slate-400 to-gray-500",
-                          icon: "🥈"
-                        };
-                      case 3: // Copper - Google Red-Orange inspired
-                        return {
-                          container: "bg-gradient-to-br from-orange-100/90 via-red-50 to-orange-200/60 border-2 border-orange-400/70 hover:border-orange-500 shadow-xl shadow-orange-500/20 hover:shadow-orange-500/30",
-                          badge: "bg-gradient-to-br from-orange-600 to-red-600 text-white shadow-lg shadow-orange-500/30",
-                          star: "bg-gradient-to-r from-orange-500 to-red-500",
-                          icon: "🥉"
-                        };
-                      default:
-                        return {
-                          container: "bg-gradient-to-r from-white to-slate-50/50 border border-slate-150 hover:border-slate-200 hover:shadow-lg",
-                          badge: "bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-300 shadow-sm text-slate-700",
-                          star: "",
-                          icon: ""
-                        };
-                    }
-                  }
-                  
-                  const styles = getPodiumStyles(member.rank)
-                  
-                  return (
-                    <div
-                      key={member.id}
-                      className={`group p-4 sm:p-5 rounded-2xl ${styles.container} hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5`}
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                        <div className="flex items-center gap-4">
-                          <div className="relative flex-shrink-0">
-                            <Badge
-                              variant="secondary"
-                              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${member.rank <= 3 ? styles.badge : 'bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-300 shadow-sm text-slate-700'} group-hover:shadow-md transition-shadow duration-300`}
-                            >
-                              {member.rank}
-                            </Badge>
-                            {member.rank <= 3 && (
-                              <div className={`absolute -top-1 -right-1 w-5 h-5 ${styles.star} rounded-full flex items-center justify-center shadow-sm`}>
-                                <span className="text-xs text-white font-bold">{styles.icon}</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="font-bold text-sm sm:text-base group-hover:text-slate-800 transition-colors duration-200 truncate">{member.name}</p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                              <p className="text-sm text-slate-500 font-medium">Member</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between sm:justify-end gap-4 mt-3 sm:mt-0 sm:ml-auto">
-                          <div className="text-left sm:text-right">
-                            <p className="font-bold text-xl">{member.totalPoints}</p>
-                            <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Points Earned</p>
-                          </div>
-                          <Link href={`/member/${member.id}`} className="flex-shrink-0">
-                            <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
-                              <Eye className="h-4 w-4 mr-1" />
-                              <span className="hidden xs:inline">View Details</span>
-                              <span className="xs:hidden">Details</span>
-                            </Button>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
+              <CardContent className="space-y-6">
+                {/* Top Members */}
+                <div>
+                  <SectionHeader icon={UserCircle} title="Top Performers" color="blue"/>
+                  <div className="space-y-3">
+                    {topMembers.map((member, index) => (
+                      <LeaderboardCard key={member.id} id={member.id.toString()} name={member.name} rank={index + 1} points={member.points} type="member" />
+                    ))}
+                  </div>
+                </div>
               </CardContent>
             </div>
           </Card>
@@ -320,11 +159,11 @@ export default async function Dashboard() {
                   <div>
                     <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-md">
-                        <Users className="h-4 w-4 text-white" />
+                        <Building2 className="h-4 w-4 text-white" />
                       </div>
                       Top Departments
                     </CardTitle>
-                    <CardDescription className="text-slate-600 font-medium mt-1">Leading team performers</CardDescription>
+                    <CardDescription className="text-slate-600 font-medium mt-1">Leading team performers by category</CardDescription>
                   </div>
                   <Link href="/departments">
                     <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
@@ -333,157 +172,32 @@ export default async function Dashboard() {
                   </Link>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {topDepartments.map((department, index) => {
-                  // Google-themed podium colors for top 3 departments
-                  const getDepartmentPodiumStyles = (rank: number) => {
-                    switch (rank) {
-                      case 1: // Gold - Google Yellow/Amber inspired
-                        return {
-                          container: "bg-gradient-to-br from-amber-100/90 via-yellow-50 to-amber-200/60 border-2 border-amber-300/70 hover:border-amber-400 shadow-xl shadow-amber-500/20 hover:shadow-amber-500/30",
-                          badge: "bg-gradient-to-br from-amber-400 to-amber-500 text-white shadow-lg shadow-amber-500/30",
-                          star: "bg-gradient-to-r from-amber-500 to-yellow-500",
-                          icon: "🥇"
-                        };
-                      case 2: // Silver - Google Blue-Gray inspired  
-                        return {
-                          container: "bg-gradient-to-br from-gray-100/90 via-slate-50 to-gray-200/60 border-2 border-gray-400/70 hover:border-gray-500 shadow-xl shadow-gray-500/20 hover:shadow-gray-500/30",
-                          badge: "bg-gradient-to-br from-slate-400 to-slate-500 text-white shadow-lg shadow-slate-500/30",
-                          star: "bg-gradient-to-r from-slate-400 to-gray-500",
-                          icon: "🥈"
-                        };
-                      case 3: // Copper - Google Red-Orange inspired
-                        return {
-                          container: "bg-gradient-to-br from-orange-100/90 via-red-50 to-orange-200/60 border-2 border-orange-400/70 hover:border-orange-500 shadow-xl shadow-orange-500/20 hover:shadow-orange-500/30",
-                          badge: "bg-gradient-to-br from-orange-600 to-red-600 text-white shadow-lg shadow-orange-500/30",
-                          star: "bg-gradient-to-r from-orange-500 to-red-500",
-                          icon: "🥉"
-                        };
-                      default:
-                        return {
-                          container: "bg-gradient-to-r from-white to-green-50/30 border border-slate-150 hover:border-green-200 hover:shadow-lg",
-                          badge: "bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-300 shadow-sm text-slate-700",
-                          star: "",
-                          icon: ""
-                        };
-                    }
-                  }
-                  
-                  const styles = getDepartmentPodiumStyles(department.rank)
-                  
-                  return (
-                    <div
-                      key={department.id}
-                      className={`group p-4 sm:p-5 rounded-2xl ${styles.container} hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5`}
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                        <div className="flex items-center gap-4">
-                          <div className="relative flex-shrink-0">
-                            <Badge
-                              variant="secondary"
-                              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${department.rank <= 3 ? styles.badge : 'bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-300 shadow-sm text-slate-700'} group-hover:shadow-md transition-shadow duration-300`}
-                            >
-                              {department.rank}
-                            </Badge>
-                            {department.rank <= 3 && (
-                              <div className={`absolute -top-1 -right-1 w-5 h-5 ${styles.star} rounded-full flex items-center justify-center shadow-sm`}>
-                                <span className="text-xs text-white font-bold">{styles.icon}</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="font-bold text-sm sm:text-base group-hover:text-slate-800 transition-colors duration-200 truncate">{department.name}</p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                              <p className="text-sm text-slate-500 font-medium">Department</p>
-                            </div>
-                          </div>
-                        </div>
 
-                        <div className="flex items-center justify-between sm:justify-end gap-4 mt-3 sm:mt-0 sm:ml-auto">
-                          <div className="text-left sm:text-right">
-                            <p className="font-bold text-xl">{department.totalPoints}</p>
-                            <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Team Score</p>
-                          </div>
-                          <Link href={`/department/${department.id}`} className="flex-shrink-0">
-                            <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
-                              <Eye className="h-4 w-4 mr-1" />
-                              <span className="hidden xs:inline">View Details</span>
-                              <span className="xs:hidden">Details</span>
-                            </Button>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
+              <CardContent className="space-y-6">
+                {/* Practical Departments */}
+                <div>
+                  <SectionHeader icon={Wrench} title="Specialized departments" color="green"/>
+                  <div className="space-y-3">
+                    {practicalDepartments.map((department, index) => ( <LeaderboardCard key={department.id} id={department.id.toString()} name={department.name} rank={index + 1} points={department.points} type="department"/> ))}
+                  </div>
+                </div>
+
+                {/* Administrative Departments */}
+                <div>
+                  <SectionHeader icon={Building2} title="Administrative departments" color="blue"/>
+                  <div className="space-y-3">
+                    {administrativeDepartments.map((department, index) => (<LeaderboardCard key={department.id} id={department.id.toString()} name={department.name} rank={index + 1} points={department.points} type="department"/>))}
+                  </div>
+                </div>
+
               </CardContent>
+
             </div>
           </Card>
         </div>
 
         {/* Special Department Section */}
-        <div className="mt-8">
-          <Card className="bg-gradient-to-br from-cyan-50 via-white to-blue-50 rounded-2xl shadow-xl border-2 border-cyan-200 hover:shadow-2xl transition-all duration-300 overflow-hidden">
-            <div className="relative">
-              {/* Code-like background effect */}
-              <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-4 left-8 w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                <div className="absolute top-12 right-12 w-1 h-1 bg-blue-400 rounded-full animate-pulse delay-500"></div>
-                <div className="absolute bottom-8 left-16 w-1.5 h-1.5 bg-teal-400 rounded-full animate-pulse delay-1000"></div>
-                <div className="absolute bottom-16 right-8 w-1 h-1 bg-indigo-400 rounded-full animate-pulse delay-700"></div>
-              </div>
-              
-              <CardHeader className="pb-6 relative z-10">
-                <div className="flex items-center justify-center">
-                  <div>
-                    <CardTitle className="text-2xl font-bold text-center text-slate-900 flex items-center justify-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg animate-pulse">
-                        <Infinity className="h-6 w-6 text-white" />
-                      </div>
-                      Honor Department
-                    </CardTitle>
-                  </div>
-                </div>
-              </CardHeader>
-              
-              <CardContent className="relative z-10">
-                <div className="group flex items-center justify-between p-8 rounded-2xl bg-gradient-to-r from-cyan-100/50 via-white to-blue-100/50 border-2 border-cyan-200 shadow-lg hover:shadow-xl transition-all duration-300">
-                  <div className="flex items-center gap-6">
-                    <div className="relative">
-                      <Badge
-                        variant="secondary"
-                        className="w-14 h-14 rounded-full flex items-center justify-center font-bold text-white bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-700 border-2 border-cyan-300 shadow-lg group-hover:shadow-xl transition-all duration-300"
-                      >
-                        <Infinity className="h-7 w-7" />
-                      </Badge>
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-bold text-slate-900 sm:text-2xl group-hover:text-cyan-800 transition-colors duration-200">
-                        Software Development
-                      </p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <div className="w-3 h-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full animate-pulse"></div>
-                        <p className="text-sm text-cyan-600 font-semibold">Department</p>
-                      </div>
-                      <p className="text-xs text-slate-500 mt-1 italic">
-                        GDG dev team
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex items-center justify-end gap-2 mb-2">
-                      <p className="font-bold text-5xl bg-gradient-to-r from-cyan-600 to-blue-800 bg-clip-text text-transparent">
-                        ∞
-                      </p>
-                    </div>
-                    <p className="text-xs text-cyan-400 uppercase tracking-wider font-bold">Team Score</p>
-                  </div>
-                </div>
-              </CardContent>
-            </div>
-          </Card>
-        </div>
+        <DashboardHonorDept />
         </div>
       </div>
     </div>

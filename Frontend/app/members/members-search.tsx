@@ -1,32 +1,43 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Trophy, Users, Eye, Search } from "lucide-react"
+import { Trophy, Users, Search } from "lucide-react"
+import { LeaderboardCard } from "@/components/leaderboard-card"
 
 interface Member {
   id: string
   name: string
   totalPoints: number
   rank: number
+  departmentId: string
 }
 
 interface MembersSearchProps {
   members: Member[]
+  allMembers: Member[]
   membersCount: number
 }
 
-export function MembersSearch({ members: allMembers, membersCount }: MembersSearchProps) {
+export function MembersSearch({ members: topMembers, allMembers, membersCount }: MembersSearchProps) {
   const [searchTerm, setSearchTerm] = useState("")
 
-  // Filter members based on search term
-  const filteredMembers = allMembers.filter(member =>
-    member.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Filter members based on search term - use full dataset when searching, top 100 when not
+  const getFilteredMembers = () => {
+    if (!searchTerm) {
+      // No search term: show only top 100 members for performance
+      return topMembers
+    }
+    
+    // Search term provided: search through all members
+    return allMembers.filter(member =>
+      member.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  }
+
+  const filteredMembers = getFilteredMembers()
 
   return (
     <>
@@ -68,19 +79,28 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
         )}
       </div>
 
+
+
       {/* Results count */}
       {searchTerm && (
         <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium shadow-sm">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-            <span>{filteredMembers.length} of {membersCount} members found</span>
+            <span>
+              {filteredMembers.length} of {membersCount} members found
+            </span>
           </div>
+        </div>
+      )}
+      {!searchTerm && (
+        <div className="text-center mb-6 text-sm text-muted-foreground">
+          Showing top 100 members
         </div>
       )}
 
       {/* Leaderboard */}
       <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
-        <div className="bg-gradient-to-br from-blue-50/50 to-white p-1">
+        <div className="p-1">
           <CardHeader className="pb-6">
             <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3">
               <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center shadow-md">
@@ -96,97 +116,16 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
             <CardDescription className="text-slate-600 font-medium mt-1">Individual member performance rankings</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {filteredMembers.map((member, index) => {
-              // Google-themed podium colors for top 3
-              const getPodiumStyles = (rank: number) => {
-                switch (rank) {
-                  case 1: // Gold - Google Yellow/Amber inspired
-                    return {
-                      container: "bg-gradient-to-br from-amber-100/90 via-yellow-50 to-amber-200/60 border-2 border-amber-300/70 hover:border-amber-400 shadow-xl shadow-amber-500/20 hover:shadow-amber-500/30",
-                      badge: "bg-gradient-to-br from-amber-400 to-amber-500 text-white shadow-lg shadow-amber-500/30",
-                      name: "text-amber-900 font-bold",
-                      points: "text-amber-800 font-bold",
-                      star: "bg-gradient-to-r from-amber-500 to-yellow-500",
-                      icon: "🥇"
-                    }
-                  case 2: // Silver - Google Blue-Gray inspired  
-                    return {
-                      container: "bg-gradient-to-br from-gray-100/90 via-slate-50 to-gray-200/60 border-2 border-gray-400/70 hover:border-gray-500 shadow-xl shadow-gray-500/20 hover:shadow-gray-500/30", 
-                      badge: "bg-gradient-to-br from-slate-400 to-slate-500 text-white shadow-lg shadow-slate-500/30",
-                      name: "text-blue-900 font-bold",
-                      points: "text-blue-800 font-bold",
-                      star: "bg-gradient-to-r from-slate-400 to-gray-500",
-                      icon: "🥈"
-                    }
-                  case 3: // Copper - Google Red-Orange inspired
-                    return {
-                      container: "bg-gradient-to-br from-orange-100/90 via-red-50 to-orange-200/60 border-2 border-orange-400/70 hover:border-orange-500 shadow-xl shadow-orange-500/20 hover:shadow-orange-500/30",
-                      badge: "bg-gradient-to-br from-orange-600 to-red-600 text-white shadow-lg shadow-orange-500/30", 
-                      name: "text-orange-900 font-bold",
-                      points: "text-orange-800 font-bold",
-                      star: "bg-gradient-to-r from-orange-500 to-red-500",
-                      icon: "🥉"
-                    }
-                  default:
-                    return {
-                      container: "bg-gradient-to-r from-white to-slate-50/50 border-slate-150 hover:border-slate-200",
-                      badge: "bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-300 text-slate-700",
-                      name: "text-slate-900",
-                      points: "text-slate-900", 
-                      star: "bg-gradient-to-r from-amber-400 to-amber-500",
-                      icon: "★"
-                    }
-                }
-              }
-              
-              const podiumStyles = getPodiumStyles(member.rank)
-              
-              return (
-                <div
-                  key={member.id}
-                  className={`group p-4 sm:p-5 rounded-2xl ${podiumStyles.container} hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5`}
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className="relative flex-shrink-0">
-                        <Badge
-                          variant="secondary"
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${podiumStyles.badge} group-hover:shadow-md transition-shadow duration-300`}
-                        >
-                          {member.rank}
-                        </Badge>
-                        {member.rank <= 3 && (
-                          <div className={`absolute -top-1 -right-1 w-5 h-5 ${podiumStyles.star} rounded-full flex items-center justify-center shadow-sm`}>
-                            <span className="text-xs text-white font-bold">{podiumStyles.icon}</span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="min-w-0">
-                        <p className={`font-bold text-sm sm:text-base group-hover:text-slate-800 transition-colors duration-200 truncate`}>{member.name}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                          <p className="text-sm text-slate-500 font-medium">Member</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between sm:justify-end gap-4 mt-3 sm:mt-0 sm:ml-auto">
-                      <div className="text-left sm:text-right">
-                        <p className={`font-bold text-xl`}>{member.totalPoints}</p>
-                        <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Points Earned</p>
-                      </div>
-                      <Link href={`/member/${member.id}`} className="flex-shrink-0">
-                        <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
-                          <Eye className="h-4 w-4 mr-1" />
-                          <span className="hidden xs:inline">View Details</span>
-                          <span className="xs:hidden">Details</span>
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
+            {filteredMembers.map((member) => (
+              <LeaderboardCard
+                key={member.id}
+                id={member.id}
+                name={member.name}
+                rank={member.rank}
+                points={member.totalPoints}
+                type="member"
+              />
+            ))}
 
             {filteredMembers.length === 0 && searchTerm && (
               <div className="text-center py-12">
@@ -196,16 +135,17 @@ export function MembersSearch({ members: allMembers, membersCount }: MembersSear
                   variant="outline"
                   size="sm"
                   onClick={() => setSearchTerm("")}
+                  className="bg-white/80 hover:bg-white"
                 >
-                  Clear search
+                  Clear Search
                 </Button>
               </div>
             )}
 
-            {allMembers.length === 0 && (
+            {filteredMembers.length === 0 && !searchTerm && (
               <div className="text-center py-12">
                 <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No members found.</p>
+                <p className="text-gray-500 mb-2">No members available</p>
               </div>
             )}
           </CardContent>

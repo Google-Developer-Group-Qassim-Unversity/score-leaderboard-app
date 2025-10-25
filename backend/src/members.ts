@@ -1,5 +1,5 @@
 import type { Response, Request } from "express"
-import { PrismaClient } from "@prisma/client";
+import { members, members_gender, PrismaClient } from "@prisma/client";
 import { log } from "console";
 import dotenv from "dotenv";
 dotenv.config();
@@ -92,24 +92,29 @@ export async function handleMembers(req: Request, res: Response) {
             member_id: record.member_id,
             member_name: record.member_name,
             adjustedPoints,
+            member_gender: record.member_gender
         };
     });
     
     // Group by member and sum adjusted points
-    const memberPointsMap = new Map<number, { name: string; points: number }>();
-    
-    processedPoints.forEach(({ member_id, member_name, adjustedPoints }) => {
+    const memberPointsMap = new Map<number, { name: string; points: number; gender: string }>();
+
+    processedPoints.forEach(({ member_id, member_name, adjustedPoints, member_gender }) => {
         if (memberPointsMap.has(member_id)) {
             memberPointsMap.get(member_id)!.points += adjustedPoints;
         } else {
-            memberPointsMap.set(member_id, { name: member_name, points: adjustedPoints });
+            memberPointsMap.set(member_id, { name: member_name, points: adjustedPoints, gender: member_gender });
         }
     });
     
     // Convert to array and sort by points descending
     const result = Array.from(memberPointsMap.entries())
-    .map(([id, { name, points }]) => ({ id, name, points }))
+    .map(([id, { name, points, gender }]) => ({ id, name, points, gender }))
     .sort((a, b) => b.points - a.points);
+    // const splitResult = {
+    //   "Male": result.filter(m => m.gender === members_gender.Male).sort((a, b) => b.points - a.points),
+    //   "Female": result.filter(m => m.gender === members_gender.Female).sort((a, b) => b.points - a.points)
+    // }
 
     res.status(200).json(result).end();
 }
@@ -193,12 +198,14 @@ export async function handleMembersById(
   const totalPoints = processed.reduce((sum, ev) => sum + ev.points, 0);
 
   // 8. Return payload
-  return res.status(200).json({
+  const result = {
     id:     member.id,
     name:   member.name,
     points: totalPoints,
     events: processed,
-  });
+  }
+
+  return res.status(200).json(result).end();
 }
 
 

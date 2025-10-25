@@ -8,6 +8,12 @@ if (process.env.DEV_DATABASE_URL) {
 }
 const prisma = new PrismaClient();
 
+type DepartmentPoints = {
+    id: number;
+    name: string;
+    points: number;
+};
+
 
 export async function handleDepartments(req: Request, res: Response) {
     console.log("Fetching departments with points...");
@@ -17,6 +23,7 @@ export async function handleDepartments(req: Request, res: Response) {
         select: {
             id: true,
             name: true,
+            type: true,
         },
     });
 
@@ -67,8 +74,8 @@ export async function handleDepartments(req: Request, res: Response) {
     });
 
     // 6. Group by department and sum points
-    const deptPointsMap = new Map<number, { name: string; points: number }>();
-    processedPoints.forEach(({ department_id, department_name, points }) => {
+    const deptPointsMap = new Map<number, { name: string; points: number;}>();
+    processedPoints.forEach(({ department_id, department_name, points}) => {
         if (deptPointsMap.has(department_id)) {
             deptPointsMap.get(department_id)!.points += points;
         } else {
@@ -91,10 +98,28 @@ export async function handleDepartments(req: Request, res: Response) {
         }
     }
 
-    // 9. Sort descending by points
-    result.sort((a, b) => b.points - a.points);
+    // 9. Split departments into two types
+    type resultDept = typeof result[0];
+    const splitDepts = {
+        "Specialized": [] as resultDept[],
+        "Administrative": [] as resultDept[]
+    }
+    
+    for (const dept of allDepartments) {
+        if (dept.type === 'practical') {
+            splitDepts["Specialized"].push(result.find(r => r.id === dept.id)!);
+        } else {
+            splitDepts["Administrative"].push(result.find(r => r.id === dept.id)!);
+        }
+    }
 
-    res.status(200).json(result).end();
+    console.log("Splitted depts: ",splitDepts);
+    
+    // 10. Sort descending by points
+    splitDepts["Specialized"].sort((a, b) => b.points - a.points);
+    splitDepts["Administrative"].sort((a, b) => b.points - a.points);
+
+    res.status(200).json(splitDepts).end();
 }
 
 
@@ -172,12 +197,13 @@ export async function handleDepartmentsById(req: Request, res: Response) {
     const totalPoints = processedHistory.reduce((sum, event) => sum + event.points, 0);
 
     // 8. Return response
-    return res.status(200).json({
+    const result = {
         id: department.id,
         name: department.name,
         points: totalPoints,
         events: processedHistory,
-    });
+    }
+    return res.status(200).json(result).end();
 }
 
 export async function handleDepartmentsCount(req: Request, res: Response) {

@@ -1,219 +1,144 @@
-// API utility functions for fetching data from localhost:8000
+// API utility functions for fetching data from the backend
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST ||"http://178.128.205.239:8000";
+import type {
+  ApiMember,
+  ApiMembersResponse,
+  ApiDepartment,
+  ApiDepartmentsResponse,
+  ApiEvent,
+  ApiMemberDetail,
+  ApiDepartmentDetail,
+  Member,
+  Department,
+  PointsHistoryEntry,
+  LeaderboardSummary,
+} from "./api-types"
 
-export interface ApiMember {
-  id: number
-  name: string
-  points: number
+// Re-export all types for backward compatibility
+export type {
+  ApiMember,
+  ApiMembersResponse,
+  ApiDepartment,
+  ApiDepartmentsResponse,
+  ApiEvent,
+  ApiMemberDetail,
+  ApiDepartmentDetail,
+  Member,
+  Department,
+  PointsHistoryEntry,
+  LeaderboardSummary,
 }
 
-export interface ApiDepartment {
-  id: number
-  name: string
-  points: number
-}
+const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST || "http://178.128.205.239:8000";
 
-export interface CountResponse {
-  members_count?: number
-  departments_count?: number
-}
+// ===== API Fetch Functions =====
 
-export interface ApiEvent {
-  event_name: string
-  action_name: string
-  start_date: string
-  end_date: string
-  absent_days: number
-  attended_days: number
-  points: number
-}
-
-export interface ApiMemberDetail extends ApiMember {
-  events: ApiEvent[]
-}
-
-export interface ApiDepartmentDetail extends ApiDepartment {
-  events: ApiEvent[]
-}
-
-import { notFound } from "next/navigation"
-import { mockMembers, mockDepartments } from "./mock-data"
-
-export async function fetchMembers(): Promise<ApiMember[]> {
+export async function fetchMembers(): Promise<ApiMembersResponse> {
   try {
-    console.log("[v0] Attempting to fetch members from API...")
+    console.log("🔍 Fetching members from API...")
     const response = await fetch(`${API_BASE_URL}/members`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      signal: AbortSignal.timeout(5000), // 5 second timeout
+      signal: AbortSignal.timeout(5000),
+      cache: 'no-store'
     })
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
 
-    const data = await response.json()
-    console.log("[v0] Successfully fetched members from API:", data.length, "members")
+    const data: ApiMembersResponse = await response.json()
+    const totalMembers = data.length || 0
+    console.log(`✅ Successfully fetched ${totalMembers} members`)
     return data
   } catch (error) {
-    console.log("[v0] API fetch failed, falling back to mock data:", error)
-    return mockMembers.map((member) => ({
-      id: Number.parseInt(member.id.replace("member-", "")),
-      name: member.name,
-      points: member.totalPoints,
-    }))
+    console.error("❌ Failed to fetch members:", error)
+    return []
   }
 }
 
-export async function fetchDepartments(): Promise<ApiDepartment[]> {
+export async function fetchDepartments(): Promise<ApiDepartmentsResponse> {
   try {
-    console.log("[v0] Attempting to fetch departments from API...")
+    console.log("🔍 Fetching departments from API...")
     const response = await fetch(`${API_BASE_URL}/departments`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
       signal: AbortSignal.timeout(5000),
+      cache: 'no-store'
     })
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
 
-    const data = await response.json()
-    console.log("[v0] Successfully fetched departments from API:", data.length, "departments")
+    const data: ApiDepartmentsResponse = await response.json()
+    const totalDepts = (data.Administrative?.length || 0) + (data.Specialized?.length || 0)
+    console.log(`✅ Successfully fetched ${totalDepts} departments (${data.Administrative?.length || 0} administrative, ${data.Specialized?.length || 0} specialized)`)
     return data
   } catch (error) {
-    console.log("[v0] API fetch failed, falling back to mock data:", error)
-    return mockDepartments.map((dept) => ({
-      id: Number.parseInt(dept.id.replace("dept-", "")),
-      name: dept.name,
-      points: dept.totalPoints,
-    }))
+    console.error("❌ Failed to fetch departments:", error)
+    return { Administrative: [], Specialized: [] }
   }
 }
 
-export async function fetchMembersCount(): Promise<number> {
+export async function fetchMemberById(id: string): Promise<ApiMemberDetail | null> {
   try {
-    console.log("[v0] Attempting to fetch members count from API...")
-    const response = await fetch(`${API_BASE_URL}/members/count`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      signal: AbortSignal.timeout(5000),
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-    }
-
-    const data: CountResponse = await response.json()
-    console.log("[v0] Successfully fetched members count from API:", data.members_count)
-    return data.members_count || 0
-  } catch (error) {
-    console.log("[v0] API fetch failed, falling back to mock data:", error)
-    return mockMembers.length
-  }
-}
-
-export async function fetchDepartmentsCount(): Promise<number> {
-  try {
-    console.log("[v0] Attempting to fetch departments count from API...")
-    const response = await fetch(`${API_BASE_URL}/departments/count`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      signal: AbortSignal.timeout(5000),
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-    }
-
-    const data: CountResponse = await response.json()
-    console.log("[v0] Successfully fetched departments count from API:", data.departments_count)
-    console.log('[DBG] raw data:', JSON.stringify(data, null, 2));
-    return data.departments_count || 0
-  } catch (error) {
-    console.log("[v0] API fetch failed, falling back to mock data:", error)
-    return mockDepartments.length
-  }
-}
-
-export async function fetchMemberById(id: string): Promise<ApiMemberDetail | undefined> {
-  try {
-    console.log(`[v0] Attempting to fetch member ${id} from API...`)
+    console.log(`🔍 Fetching member ${id} from API...`)
     const response = await fetch(`${API_BASE_URL}/members/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
       signal: AbortSignal.timeout(5000),
+      cache: 'no-store'
     })
 
     if (!response.ok) {
-      throw new Error(`[HTTP] ${response.status}: ${response.statusText}`)
+      if (response.status === 404) {
+        console.warn(`⚠️  Member ${id} not found`)
+        return null
+      }
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
 
-    const data = await response.json()
-    console.log(`[v0] Successfully fetched member ${id} from API`)
+    const data: ApiMemberDetail = await response.json()
+    console.log(`✅ Successfully fetched member ${id} (${data.events?.length || 0} events)`)
     return data
   } catch (error) {
-    console.log(`[v0] API fetch failed for member ${id}, falling back to mock data:`, error)
+    console.error(`❌ Failed to fetch member ${id}:`, error)
+    return null
   }
 }
 
-export async function fetchDepartmentById(id: string): Promise<ApiDepartmentDetail | undefined> {
+export async function fetchDepartmentById(id: string): Promise<ApiDepartmentDetail | null> {
   try {
-    console.log(`[v0] Attempting to fetch department ${id} from API...`)
+    console.log(`🔍 Fetching department ${id} from API...`)
     const response = await fetch(`${API_BASE_URL}/departments/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
       signal: AbortSignal.timeout(5000),
+      cache: 'no-store'
     })
 
     if (!response.ok) {
+      if (response.status === 404) {
+        console.warn(`⚠️  Department ${id} not found`)
+        return null
+      }
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
 
-    const data = await response.json()
-    console.log(`[v0] Successfully fetched department ${id} from API`)
+    const data: ApiDepartmentDetail = await response.json()
+    console.log(`✅ Successfully fetched department ${id} (${data.events?.length || 0} events)`)
     return data
   } catch (error) {
-    console.log(`[v0] API fetch failed for department ${id}, falling back to mock data:`, error)
-    // Fallback to mock data with fake events
-    notFound()
-  }
-}
-
-// Transform API data to match our internal types
-export function transformApiMember(
-  apiMember: ApiMember,
-  rank: number,
-  departmentId = "dept-1",
-): import("./types").Member {
-  return {
-    id: apiMember.id.toString(),
-    name: apiMember.name,
-    totalPoints: apiMember.points,
-    rank,
-    departmentId,
-    isManager: false,
-  }
-}
-
-export function transformApiDepartment(apiDepartment: ApiDepartment, rank: number): import("./types").Department {
-  return {
-    id: apiDepartment.id.toString(),
-    name: apiDepartment.name,
-    totalPoints: apiDepartment.points,
-    rank,
+    console.error(`❌ Failed to fetch department ${id}:`, error)
+    return null
   }
 }
