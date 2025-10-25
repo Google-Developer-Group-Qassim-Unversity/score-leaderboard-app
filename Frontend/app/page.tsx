@@ -3,18 +3,11 @@ import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Trophy, Users, Building2, AlertCircle, Infinity } from "lucide-react"
+import { Trophy, Users, Building2, Infinity } from "lucide-react"
 import { LeaderboardCard } from "@/components/leaderboard-card"
-import {
-  fetchMembers,
-  fetchDepartments,
-  transformApiMember,
-  transformApiDepartment,
-} from "@/lib/api"
+import { fetchMembers, fetchDepartments } from "@/lib/api"
 
 export default async function Dashboard() {
-  let apiStatus = "connected" // 'connected' | 'fallback'
-
   const [apiMembers, apiDepartmentsResponse] = await Promise.all([
     fetchMembers(),
     fetchDepartments(),
@@ -24,42 +17,14 @@ export default async function Dashboard() {
   const membersCount = (apiMembers.Male?.length || 0) + (apiMembers.Female?.length || 0)
   const departmentsCount = (apiDepartmentsResponse.Administrative?.length || 0) + (apiDepartmentsResponse.Specialized?.length || 0)
 
-  // Combine all departments
-  const allDepartments = [
-    ...(apiDepartmentsResponse.Administrative || []), 
-    ...(apiDepartmentsResponse.Specialized || [])
-  ]
-
-  // Combine all members
-  const allMembers = [
-    ...(apiMembers.Female || []),
-    ...(apiMembers.Male || [])
-  ]
-
-  if (allMembers.length > 0 && allMembers[0].id > 1000) {
-    apiStatus = "fallback"
-  }
-
-  // Transform API data for members by gender (already sorted from API)
-  const femaleMembers = (apiMembers.Female || [])
-    .map((member, index) => transformApiMember(member, index + 1))
+  // Get top 10 male members (already sorted from API)
+  const topMaleMembers = (apiMembers.Male || []).slice(0, 10)
+  const topFemaleMembers = (apiMembers.Female || []).slice(0, 10)
   
-  const maleMembers = (apiMembers.Male || [])
-    .map((member, index) => transformApiMember(member, index + 1))
+  // Get all departments (already sorted from API)
+  const practicalDepartments = apiDepartmentsResponse.Specialized || []
+  const administrativeDepartments = apiDepartmentsResponse.Administrative || []
 
-  // Already sorted from backend
-  const allMembersSorted = allMembers
-    .map((member, index) => transformApiMember(member, index + 1))
-
-  // Transform departments by type with independent rankings (already sorted from API)
-  const practicalDepartments = (apiDepartmentsResponse.Specialized || [])
-    .map((dept, index) => transformApiDepartment(dept, index + 1, 'practical'))
-
-  const administrativeDepartments = (apiDepartmentsResponse.Administrative || [])
-    .map((dept, index) => transformApiDepartment(dept, index + 1, 'administrative'))
-
-  const topFemaleMembers = femaleMembers.slice(0, 10)
-  const topMaleMembers = maleMembers.slice(0, 10)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 relative overflow-x-hidden">
@@ -99,13 +64,6 @@ export default async function Dashboard() {
           <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium">
             Track performance across members and departments with comprehensive points tracking
           </p>
-
-          {apiStatus === "fallback" && (
-            <div className="mt-6 inline-flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-amber-100 to-amber-200 text-amber-800 rounded-full text-sm font-medium shadow-md">
-              <AlertCircle className="h-4 w-4" />
-              Using demo data - API server not available
-            </div>
-          )}
         </div>
 
         {/* Stats Overview */}
@@ -205,13 +163,13 @@ export default async function Dashboard() {
                     <div className="flex-1 h-px bg-gradient-to-r from-blue-300 to-transparent"></div>
                   </div>
                   <div className="space-y-3">
-                    {topMaleMembers.map((member) => (
+                    {topMaleMembers.map((member, index) => (
                       <LeaderboardCard
                         key={member.id}
-                        id={member.id}
+                        id={member.id.toString()}
                         name={member.name}
-                        rank={member.rank}
-                        points={member.totalPoints}
+                        rank={index + 1}
+                        points={member.points}
                         type="member"
                       />
                     ))}
@@ -230,13 +188,13 @@ export default async function Dashboard() {
                     <div className="flex-1 h-px bg-gradient-to-r from-pink-300 to-transparent"></div>
                   </div>
                   <div className="space-y-3">
-                    {topFemaleMembers.map((member) => (
+                    {topFemaleMembers.map((member, index) => (
                       <LeaderboardCard
                         key={member.id}
-                        id={member.id}
+                        id={member.id.toString()}
                         name={member.name}
-                        rank={member.rank}
-                        points={member.totalPoints}
+                        rank={index + 1}
+                        points={member.points}
                         type="member"
                       />
                     ))}
@@ -282,13 +240,13 @@ export default async function Dashboard() {
                     <div className="flex-1 h-px bg-gradient-to-r from-green-300 to-transparent"></div>
                   </div>
                   <div className="space-y-3">
-                    {practicalDepartments.map((department) => (
+                    {practicalDepartments.map((department, index) => (
                       <LeaderboardCard
                         key={department.id}
-                        id={department.id}
+                        id={department.id.toString()}
                         name={department.name}
-                        rank={department.rank}
-                        points={department.totalPoints}
+                        rank={index + 1}
+                        points={department.points}
                         type="department"
                       />
                     ))}
@@ -307,13 +265,13 @@ export default async function Dashboard() {
                     <div className="flex-1 h-px bg-gradient-to-r from-blue-300 to-transparent"></div>
                   </div>
                   <div className="space-y-3">
-                    {administrativeDepartments.map((department) => (
+                    {administrativeDepartments.map((department, index) => (
                       <LeaderboardCard
                         key={department.id}
-                        id={department.id}
+                        id={department.id.toString()}
                         name={department.name}
-                        rank={department.rank}
-                        points={department.totalPoints}
+                        rank={index + 1}
+                        points={department.points}
                         type="department"
                       />
                     ))}

@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Trophy, Building2, ArrowLeft } from "lucide-react"
-import { fetchDepartments, transformApiDepartment } from "@/lib/api"
+import { fetchDepartments } from "@/lib/api"
 import { LeaderboardCard } from "@/components/leaderboard-card"
 
 export default async function DepartmentsLeaderboard() {
@@ -11,12 +11,9 @@ export default async function DepartmentsLeaderboard() {
   // Calculate count from array lengths
   const departmentsCount = (apiDepartmentsResponse.Administrative?.length || 0) + (apiDepartmentsResponse.Specialized?.length || 0)
 
-  // Transform and rank departments for each type separately (already sorted from API)
-  const administrativeDepartments = (apiDepartmentsResponse.Administrative || [])
-    .map((dept, index) => transformApiDepartment(dept, index + 1, 'administrative'))
-  
-  const practicalDepartments = (apiDepartmentsResponse.Specialized || [])
-    .map((dept, index) => transformApiDepartment(dept, index + 1, 'practical'))
+  // Get departments (already sorted from API)
+  const administrativeDepartments = apiDepartmentsResponse.Administrative || []
+  const practicalDepartments = apiDepartmentsResponse.Specialized || []
 
   const getDepartmentIcon = (name: string) => {
     const icons: Record<string, string> = {
@@ -141,13 +138,13 @@ export default async function DepartmentsLeaderboard() {
             </CardHeader>
             <CardContent className="p-6">
               <div className="space-y-3">
-                {administrativeDepartments.map((department) => (
+                {administrativeDepartments.map((department, index) => (
                   <LeaderboardCard
                     key={department.id}
-                    id={department.id}
+                    id={department.id.toString()}
                     name={department.name}
-                    rank={department.rank}
-                    points={department.totalPoints}
+                    rank={index + 1}
+                    points={department.points}
                     type="department"
                   />
                 ))}
@@ -182,13 +179,13 @@ export default async function DepartmentsLeaderboard() {
             </CardHeader>
             <CardContent className="p-6">
               <div className="space-y-3">
-                {practicalDepartments.map((department) => (
+                {practicalDepartments.map((department, index) => (
                   <LeaderboardCard
                     key={department.id}
-                    id={department.id}
+                    id={department.id.toString()}
                     name={department.name}
-                    rank={department.rank}
-                    points={department.totalPoints}
+                    rank={index + 1}
+                    points={department.points}
                     type="department"
                   />
                 ))}

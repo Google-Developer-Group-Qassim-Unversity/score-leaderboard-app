@@ -142,34 +142,3 @@ export async function fetchDepartmentById(id: string): Promise<ApiDepartmentDeta
     return null
   }
 }
-
-// ===== Transform Functions =====
-// Simple transformations to match internal types
-
-export function transformApiMember(
-  apiMember: ApiMember,
-  rank: number
-): Member {
-  return {
-    id: apiMember.id.toString(),
-    name: apiMember.name,
-    totalPoints: apiMember.points,
-    rank,
-    departmentId: "",
-    isManager: false,
-  }
-}
-
-export function transformApiDepartment(
-  apiDepartment: ApiDepartment, 
-  rank: number, 
-  type: 'administrative' | 'practical'
-): Department {
-  return {
-    id: apiDepartment.id.toString(),
-    name: apiDepartment.name,
-    totalPoints: apiDepartment.points,
-    rank,
-    type,
-  }
-}
