@@ -3,8 +3,9 @@ import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Trophy, Users, Building2, Infinity } from "lucide-react"
+import { Trophy, Users, Building2, Infinity, UserCircle, Wrench } from "lucide-react"
 import { LeaderboardCard } from "@/components/leaderboard-card"
+import { SectionHeader } from "@/components/section-header"
 import { fetchMembers, fetchDepartments } from "@/lib/api"
 
 export default async function Dashboard() {
@@ -153,15 +154,11 @@ export default async function Dashboard() {
               <CardContent className="space-y-6">
                 {/* Male Members */}
                 <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-1.5 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-sm">
-                      <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                      </svg>
-                    </div>
-                    <h3 className="text-sm font-bold text-blue-700 uppercase tracking-wider">Male</h3>
-                    <div className="flex-1 h-px bg-gradient-to-r from-blue-300 to-transparent"></div>
-                  </div>
+                  <SectionHeader
+                    icon={UserCircle}
+                    title="Male"
+                    color="blue"
+                  />
                   <div className="space-y-3">
                     {topMaleMembers.map((member, index) => (
                       <LeaderboardCard
@@ -178,15 +175,11 @@ export default async function Dashboard() {
 
                 {/* Female Members */}
                 <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-1.5 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg shadow-sm">
-                      <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                      </svg>
-                    </div>
-                    <h3 className="text-sm font-bold text-pink-700 uppercase tracking-wider">Female</h3>
-                    <div className="flex-1 h-px bg-gradient-to-r from-pink-300 to-transparent"></div>
-                  </div>
+                  <SectionHeader
+                    icon={UserCircle}
+                    title="Female"
+                    color="pink"
+                  />
                   <div className="space-y-3">
                     {topFemaleMembers.map((member, index) => (
                       <LeaderboardCard
@@ -230,51 +223,17 @@ export default async function Dashboard() {
 
                 {/* Practical Departments */}
                 <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-1.5 bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-sm">
-                      <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4zM6.7 8.8c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6.7-.7 1.9-.7 2.6 0 .7.7.7 1.9 0 2.6z"/>
-                      </svg>
-                    </div>
-                    <h3 className="text-sm font-bold text-green-700 uppercase tracking-wider">Specialized departments</h3>
-                    <div className="flex-1 h-px bg-gradient-to-r from-green-300 to-transparent"></div>
-                  </div>
+                  <SectionHeader icon={Wrench} title="Specialized departments" color="green"/>
                   <div className="space-y-3">
-                    {practicalDepartments.map((department, index) => (
-                      <LeaderboardCard
-                        key={department.id}
-                        id={department.id.toString()}
-                        name={department.name}
-                        rank={index + 1}
-                        points={department.points}
-                        type="department"
-                      />
-                    ))}
+                    {practicalDepartments.map((department, index) => ( <LeaderboardCard key={department.id} id={department.id.toString()} name={department.name} rank={index + 1} points={department.points} type="department"/> ))}
                   </div>
                 </div>
 
                 {/* Administrative Departments */}
                 <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-1.5 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-sm">
-                      <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
-                      </svg>
-                    </div>
-                    <h3 className="text-sm font-bold text-blue-700 uppercase tracking-wider">Administrative departments</h3>
-                    <div className="flex-1 h-px bg-gradient-to-r from-blue-300 to-transparent"></div>
-                  </div>
+                  <SectionHeader icon={Building2} title="Administrative departments" color="blue"/>
                   <div className="space-y-3">
-                    {administrativeDepartments.map((department, index) => (
-                      <LeaderboardCard
-                        key={department.id}
-                        id={department.id.toString()}
-                        name={department.name}
-                        rank={index + 1}
-                        points={department.points}
-                        type="department"
-                      />
-                    ))}
+                    {administrativeDepartments.map((department, index) => (<LeaderboardCard key={department.id} id={department.id.toString()} name={department.name} rank={index + 1} points={department.points} type="department"/>))}
                   </div>
                 </div>
 

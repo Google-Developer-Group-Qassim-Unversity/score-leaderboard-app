@@ -8,6 +8,12 @@ if (process.env.DEV_DATABASE_URL) {
 }
 const prisma = new PrismaClient();
 
+type DepartmentPoints = {
+    id: number;
+    name: string;
+    points: number;
+};
+
 
 export async function handleDepartments(req: Request, res: Response) {
     console.log("Fetching departments with points...");
@@ -93,9 +99,10 @@ export async function handleDepartments(req: Request, res: Response) {
     }
 
     // 9. Split departments into two types
+    type resultDept = typeof result[0];
     const splitDepts = {
-        "Specialized": [] as any[],
-        "Administrative": [] as any[],
+        "Specialized": [] as resultDept[],
+        "Administrative": [] as resultDept[]
     }
     
     for (const dept of allDepartments) {
@@ -190,12 +197,13 @@ export async function handleDepartmentsById(req: Request, res: Response) {
     const totalPoints = processedHistory.reduce((sum, event) => sum + event.points, 0);
 
     // 8. Return response
-    return res.status(200).json({
+    const result = {
         id: department.id,
         name: department.name,
         points: totalPoints,
         events: processedHistory,
-    });
+    }
+    return res.status(200).json(result).end();
 }
 
 export async function handleDepartmentsCount(req: Request, res: Response) {

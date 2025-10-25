@@ -1,5 +1,5 @@
 import type { Response, Request } from "express"
-import { members_gender, PrismaClient } from "@prisma/client";
+import { members, members_gender, PrismaClient } from "@prisma/client";
 import { log } from "console";
 import dotenv from "dotenv";
 dotenv.config();
@@ -198,12 +198,14 @@ export async function handleMembersById(
   const totalPoints = processed.reduce((sum, ev) => sum + ev.points, 0);
 
   // 8. Return payload
-  return res.status(200).json({
+  const result = {
     id:     member.id,
     name:   member.name,
     points: totalPoints,
     events: processed,
-  });
+  }
+
+  return res.status(200).json(result).end();
 }
 
 
