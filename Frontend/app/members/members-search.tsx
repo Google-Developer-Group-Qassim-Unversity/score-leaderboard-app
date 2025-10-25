@@ -151,7 +151,7 @@ export function MembersSearch({ members: allMembers, membersCount, femaleMembers
 
       {/* Leaderboard */}
       <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
-        <div className="bg-gradient-to-br from-blue-50/50 to-white p-1">
+        <div className="p-1">
           <CardHeader className="pb-6">
             <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-3">
               <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center shadow-md">
