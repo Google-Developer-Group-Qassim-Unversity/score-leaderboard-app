@@ -140,7 +140,6 @@ export default async function Dashboard() {
               <CardContent className="space-y-6">
                 {/* Top Members */}
                 <div>
-                  <SectionHeader icon={UserCircle} title="Top Performers" color="blue"/>
                   <div className="space-y-3">
                     {topMembers.map((member, index) => (
                       <LeaderboardCard key={member.id} id={member.id.toString()} name={member.name} rank={index + 1} points={member.points} type="member" />

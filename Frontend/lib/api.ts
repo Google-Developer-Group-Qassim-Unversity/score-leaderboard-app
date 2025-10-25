@@ -76,6 +76,8 @@ export async function fetchDepartments(): Promise<ApiDepartmentsResponse> {
     }
 
     const data: ApiDepartmentsResponse = await response.json()
+    
+    data.Administrative = data.Administrative?.filter(m => m.name !== "Development")
     const totalDepts = (data.Administrative?.length || 0) + (data.Specialized?.length || 0)
     console.log(`✅ Successfully fetched ${totalDepts} departments (${data.Administrative?.length || 0} administrative, ${data.Specialized?.length || 0} specialized)`)
     return data

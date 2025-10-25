@@ -11,7 +11,24 @@ interface LeaderboardCardProps {
   type: "member" | "department"
 }
 
-const getPodiumStyles = (rank: number) => {
+const getPodiumStyles = (rank: number, type: "member" | "department") => {
+  // If type is department, always return golden styling
+  if (type === "department") {
+    switch (rank) {
+      case 1:
+        return {
+          container: "bg-gradient-to-br from-amber-100/90 via-yellow-50 to-amber-200/60 border-2 border-amber-300/70 hover:border-amber-400 shadow-lg shadow-amber-500/20",
+          badge: "bg-gradient-to-br from-amber-400 to-amber-500 text-white border-0",
+        }
+      default:
+        return {
+          container: "bg-slate-50/70 border border-slate-200 hover:border-slate-300",
+          badge: "bg-gradient-to-br from-slate-200 to-slate-300 text-slate-700 border-0",
+        }
+    }
+  }
+  
+  // For members, use the original rank-based styling
   switch (rank) {
     case 1:
       return {
@@ -37,7 +54,7 @@ const getPodiumStyles = (rank: number) => {
 }
 
 export function LeaderboardCard({ id, name, rank, points, type }: LeaderboardCardProps) {
-  const styles = getPodiumStyles(rank)
+  const styles = getPodiumStyles(rank, type)
   const detailsUrl = type === "member" ? `/member/${id}` : `/department/${id}`
 
   return (

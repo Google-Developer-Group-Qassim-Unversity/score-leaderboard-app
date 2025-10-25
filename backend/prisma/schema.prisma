@@ -105,8 +105,8 @@ model absence {
 view members_points {
   member_id     Int                          @default(0) @db.UnsignedInt
   member_name   String                       @db.VarChar(50)
-  member_log_id Int                          @default(0) @db.UnsignedInt
   member_gender members_points_member_gender
+  member_log_id Int                          @default(0) @db.UnsignedInt
   log_id        Int                          @default(0) @db.UnsignedInt
   event_name    String                       @db.VarChar(150)
   start_date    DateTime                     @db.Date
