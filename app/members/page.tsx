@@ -1,16 +1,36 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Trophy, Users, ArrowLeft, Eye, Search } from "lucide-react"
-import { fetchMembers, fetchMembersCount, transformApiMember } from "@/lib/api"
+import { PageHeader } from "@/components/page-header"
+import { fetchMembers } from "@/lib/api"
 import { MembersSearch } from "./members-search"
 
 export default async function MembersLeaderboard() {
-  const [apiMembers, membersCount] = await Promise.all([fetchMembers(), fetchMembersCount()])
+  const apiMembers = await fetchMembers()
+  
+  // Calculate count from array length
+  const membersCount = apiMembers.length || 0
 
-  // Transform and sort API data
-  const members = apiMembers
-    .sort((a, b) => b.points - a.points)
-    .map((member, index) => transformApiMember(member, index + 1))
+  // Get top 100 members for initial display (already sorted from API)
+  const topMembers = (apiMembers || []).slice(0, 100)
+  
+  // Convert all members for search (with proper ranking)
+  const allMembersForSearch = (apiMembers || []).map((m, i) => ({ 
+    ...m, 
+    id: m.id.toString(), 
+    rank: i + 1, 
+    totalPoints: m.points,
+    departmentId: ""
+  }))
+  
+  // Convert top 100 for initial display
+  const topMembersForDisplay = topMembers.map((m, i) => ({ 
+    ...m, 
+    id: m.id.toString(), 
+    rank: i + 1, 
+    totalPoints: m.points,
+    departmentId: ""
+  }))
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 relative overflow-x-hidden">
@@ -38,62 +58,13 @@ export default async function MembersLeaderboard() {
             </Button>
           </Link>
           
-          <div className="text-center">
-            <div className="flex items-center justify-center flex-col md:flex-row gap-4 mb-6">
-              <div className="relative">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 transform hover:scale-105 transition-transform duration-200">
-                  <Users className="h-8 w-8 text-white" />
-                </div>
-              </div>
-              <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
-                Members Leaderboard
-              </h1>
-              
-            </div>
-            <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium">
-              {membersCount} members ranked by total points earned through various activities and achievements
-            </p>
-          </div>
+          <PageHeader 
+            icon={Users}
+            iconColor="blue"
+            heading="Members Leaderboard"
+            subHeading={`${membersCount} members ranked by total points earned through various activities and achievements`}
+          />
         </div>
-
-        {/* Quick Stats
-        <div className="mb-8">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center">
-                    <Trophy className="w-3 h-3 text-white" />
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-amber-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{members[0]?.totalPoints || 0}</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Top Score</p>
-              </div>
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                    <Users className="w-3 h-3 text-white" />
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{membersCount}</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Total Members</p>
-              </div>
-              <div className="text-center group">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 11H7v4h2v-4zm4 0h-2v4h2v-4zm4 0h-2v4h2v-4zm2-7h-3V2h-2v2H8V2H6v2H3c-1.11 0-1.99.89-1.99 2L1 18c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 16H3V8h16v10z"/>
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">{Math.round(members.reduce((sum, m) => sum + m.totalPoints, 0) / members.length) || 0}</div>
-                </div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Avg Score</p>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-        */}
 
         {/* Section Divider */}
         <div className="flex items-center justify-center mb-8">
@@ -105,7 +76,11 @@ export default async function MembersLeaderboard() {
         </div>
 
         {/* Search Component */}
-        <MembersSearch members={members} membersCount={membersCount} />
+        <MembersSearch 
+          members={topMembersForDisplay}
+          allMembers={allMembersForSearch}
+          membersCount={membersCount} 
+        />
         </div>
       </div>
     </div>

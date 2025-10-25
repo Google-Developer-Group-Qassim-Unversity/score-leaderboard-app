@@ -21,14 +21,14 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-8">
           <Link href="/departments">
             <Button variant="outline" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Departments
             </Button>
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3">
             <Building2 className="h-8 w-8 text-green-600" />
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white font-semibold">{departmentData.name}</h1>
@@ -36,7 +36,7 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
             </div>
           </div>
         </div>
-
+        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Department Info */}
           <div className="lg:col-span-1">
@@ -92,12 +92,12 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
                           </div>
                           <div>
                             <p className="font-semibold text-gray-900 dark:text-white">{event.event_name}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{event.action_points}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{event.action_name}</p>
                             <p className="text-sm text-gray-500">{new Date(event.start_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold text-green-600 text-lg">+{event.action_points}</p>
+                          <p className="font-bold text-green-600 text-lg">+{event.points}</p>
                           <p className="text-xs text-gray-500">points</p>
                         </div>
                       </div>

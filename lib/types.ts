@@ -1,3 +1,4 @@
+// Internal types used across the app
 export interface Member {
   id: string
   name: string
@@ -12,6 +13,7 @@ export interface Department {
   name: string
   totalPoints: number
   rank: number
+  type?: 'administrative' | 'practical'
 }
 
 export interface PointsHistoryEntry {
@@ -20,7 +22,7 @@ export interface PointsHistoryEntry {
   source: "attended on-site course" | "on-site course"
   points: number
   entityId: string // member or department ID
-  entityType: "member" | "department" // Removed "manager" type
+  entityType: "member" | "department"
 }
 
 export interface LeaderboardSummary {
