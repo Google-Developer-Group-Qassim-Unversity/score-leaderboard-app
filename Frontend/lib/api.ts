@@ -31,19 +31,19 @@ export type {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST || "http://178.128.205.239:8000";
 
-// ===== API Fetch Functions =====
+// Define common options for GET requests
+const options = {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  next: { revalidate: 86400 },
+};
 
 export async function fetchMembers(): Promise<ApiMembersResponse> {
   try {
     console.log("🔍 Fetching members from API...")
-    const response = await fetch(`${API_BASE_URL}/members`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      signal: AbortSignal.timeout(5000),
-      cache: 'no-store'
-    })
+    const response = await fetch(`${API_BASE_URL}/members`, options)
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
@@ -53,6 +53,7 @@ export async function fetchMembers(): Promise<ApiMembersResponse> {
     const totalMembers = data.length || 0
     console.log(`✅ Successfully fetched ${totalMembers} members`)
     return data
+
   } catch (error) {
     console.error("❌ Failed to fetch members:", error)
     return []
@@ -62,14 +63,7 @@ export async function fetchMembers(): Promise<ApiMembersResponse> {
 export async function fetchDepartments(): Promise<ApiDepartmentsResponse> {
   try {
     console.log("🔍 Fetching departments from API...")
-    const response = await fetch(`${API_BASE_URL}/departments`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      signal: AbortSignal.timeout(5000),
-      cache: 'no-store'
-    })
+    const response = await fetch(`${API_BASE_URL}/departments`, options)
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
@@ -81,6 +75,7 @@ export async function fetchDepartments(): Promise<ApiDepartmentsResponse> {
     const totalDepts = (data.Administrative?.length || 0) + (data.Specialized?.length || 0)
     console.log(`✅ Successfully fetched ${totalDepts} departments (${data.Administrative?.length || 0} administrative, ${data.Specialized?.length || 0} specialized)`)
     return data
+
   } catch (error) {
     console.error("❌ Failed to fetch departments:", error)
     return { Administrative: [], Specialized: [] }
@@ -90,14 +85,7 @@ export async function fetchDepartments(): Promise<ApiDepartmentsResponse> {
 export async function fetchMemberById(id: string): Promise<ApiMemberDetail | null> {
   try {
     console.log(`🔍 Fetching member ${id} from API...`)
-    const response = await fetch(`${API_BASE_URL}/members/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      signal: AbortSignal.timeout(5000),
-      cache: 'no-store'
-    })
+    const response = await fetch(`${API_BASE_URL}/members/${id}`, options)
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -119,14 +107,7 @@ export async function fetchMemberById(id: string): Promise<ApiMemberDetail | nul
 export async function fetchDepartmentById(id: string): Promise<ApiDepartmentDetail | null> {
   try {
     console.log(`🔍 Fetching department ${id} from API...`)
-    const response = await fetch(`${API_BASE_URL}/departments/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      signal: AbortSignal.timeout(5000),
-      cache: 'no-store'
-    })
+    const response = await fetch(`${API_BASE_URL}/departments/${id}`, options)
 
     if (!response.ok) {
       if (response.status === 404) {
