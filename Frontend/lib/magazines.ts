@@ -18,6 +18,15 @@ export const magazines: Magazine[] = [
     coverImage: "/picV1.jpg",
     publishDate: "2025-10-03",
     pages: 8
+  },
+  {
+    id: "gdg-volume-2",
+    title: "مجلة قوقل لشهر أكتوبر 2025",
+    description: "",
+    pdfUrl: "https://heyzine.com/flip-book/0d3b4f275c.html", 
+    coverImage: "/picV2.jpg",
+    publishDate: "2025-11-06",
+    pages: 12
   }
 ]
 
