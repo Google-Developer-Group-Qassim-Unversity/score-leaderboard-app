@@ -47,11 +47,11 @@ export default function ClubStructurePage() {
         title: "ريادة الأعمال",
         color: "blue",
         icon: Trophy,
-        head: "صفية جلال ريحان",
+        head: "غادة الفايز",
         members: [
-          "غادة محمد الفايز",
           "غادة حمد العمران",
-          "تالا صالح المزيني"
+          "تالا صالح المزيني",
+          "عهد المطيري"
         ]
       },
       {
@@ -77,7 +77,6 @@ export default function ClubStructurePage() {
         members: [
           "إبراهيم سليمان السكيتي",
           "علي حسين الصابر",
-          "ريما عبدالرحمن اللهيميد"
         ]
       },
       {
@@ -88,7 +87,8 @@ export default function ClubStructurePage() {
         members: [
           "لمار ماجد الفوزان",
           "جنى إبراهيم الضبيبان",
-          "أسماء حامد الطريفي"
+          "أسماء حامد الطريفي",
+          "أثير عبدالله غزواني"
         ]
       },
       {
@@ -107,10 +107,12 @@ export default function ClubStructurePage() {
         title: "التنظيم والاجتماعات",
         color: "red",
         icon: Users,
-        head: "أحمد فيصل الحجيلان",
-        members: [
-          "ياسمين حمود التويجري",
-          "عبدالملك غازي المطيري",
+        head_male: "عبدالملك غازي المطيري",
+        head_female: "ياسمين حمود التويجري",
+        members_male: [
+          "أحمد فيصل الحجيلان",
+        ],
+        members_female: [
           "خولة سعود البشري",
           "أميرة عيد المطيري"
         ]
@@ -387,46 +389,89 @@ export default function ClubStructurePage() {
               <h2 className="text-3xl font-bold text-red-700 bg-white/40 rounded-xl inline-block px-8 py-4 shadow-lg border border-red-200">الاقسام الإدارية</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 relative z-10">
-              {clubData.departmentsAdministrative.map((dept, index) => (
-                <Card key={index} className={`
-                  group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-102 relative
-                  ${dept.color === 'green' ? 'bg-gradient-to-br from-green-500 via-green-600 to-emerald-700' :
-                    dept.color === 'blue' ? 'bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700' :
-                    dept.color === 'yellow' ? 'bg-gradient-to-br from-yellow-500 via-amber-500 to-orange-600' :
-                    dept.color === 'orange' ? 'bg-gradient-to-br from-orange-500 via-red-500 to-red-600' :
-                    'bg-gradient-to-br from-red-500 via-red-600 to-pink-600'}
-                  hover:rotate-1 rounded-3xl
-                `}>
-                  {/* Enhanced floating orbs with Google colors */}
-                  <div className="absolute top-6 right-6 w-16 h-16 bg-white/15 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  <div className="absolute bottom-6 left-6 w-12 h-12 bg-yellow-300/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                  <div className="absolute top-1/2 left-1/2 w-8 h-8 bg-blue-300/15 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
-                  <CardHeader className="pb-6 relative z-10 pt-8">
-                    <CardTitle className="text-white flex items-center gap-4 text-xl font-bold group-hover:scale-105 transition-transform duration-300">
-                      <dept.icon className="h-7 w-7 bg-white/20 p-1 rounded-lg" />
-                      {dept.title}
-                    </CardTitle>
-                    <div className="bg-white/25 backdrop-blur-sm rounded-2xl px-4 py-3 mt-4 hover:bg-white/35 transition-all duration-300 transform hover:scale-105 border border-white/20 shadow-lg">
-                      <p className="text-white/90 font-semibold text-sm">رئيس القسم:</p>
-                      <p className="text-white font-bold text-lg mt-1">{dept.head}</p>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3 relative z-10 pb-8">
-                    <p className="text-white/95 font-bold text-base mb-4 flex items-center gap-3 bg-white/15 rounded-xl px-4 py-2">
-                      <Users className="h-5 w-5" />
-                      أعضاء القسم:
-                    </p>
-                    {dept.members.map((member, memberIndex) => (
-                      <div key={memberIndex} className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-3 hover:bg-white/30 transition-all duration-300 transform hover:scale-105 hover:translate-x-2 border border-white/10 shadow-md">
-                        <div className="text-white font-semibold text-base flex items-center gap-3">
-                          <div className="w-3 h-3 bg-white rounded-full shadow-sm"></div>
-                          {member}
+              {clubData.departmentsAdministrative.map((dept, index) => {
+                // Check if department has two heads (male and female)
+                const hasTwoHeads = 'head_male' in dept && 'head_female' in dept;
+                
+                return (
+                  <Card key={index} className={`
+                    group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-102 relative
+                    ${dept.color === 'green' ? 'bg-gradient-to-br from-green-500 via-green-600 to-emerald-700' :
+                      dept.color === 'blue' ? 'bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700' :
+                      dept.color === 'yellow' ? 'bg-gradient-to-br from-yellow-500 via-amber-500 to-orange-600' :
+                      dept.color === 'orange' ? 'bg-gradient-to-br from-orange-500 via-red-500 to-red-600' :
+                      'bg-gradient-to-br from-red-500 via-red-600 to-pink-600'}
+                    hover:rotate-1 rounded-3xl
+                  `}>
+                    {/* Enhanced floating orbs with Google colors */}
+                    <div className="absolute top-6 right-6 w-16 h-16 bg-white/15 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="absolute bottom-6 left-6 w-12 h-12 bg-yellow-300/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <div className="absolute top-1/2 left-1/2 w-8 h-8 bg-blue-300/15 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                    <CardHeader className="pb-6 relative z-10 pt-8">
+                      <CardTitle className="text-white flex items-center gap-4 text-xl font-bold group-hover:scale-105 transition-transform duration-300">
+                        <dept.icon className="h-7 w-7 bg-white/20 p-1 rounded-lg" />
+                        {dept.title}
+                      </CardTitle>
+                      {hasTwoHeads ? (
+                        // Render two heads in the same card
+                        <div className="space-y-3 mt-4">
+                          <div className="bg-white/25 backdrop-blur-sm rounded-2xl px-4 py-3 hover:bg-white/35 transition-all duration-300 transform hover:scale-105 border border-white/20 shadow-lg">
+                            <p className="text-white/90 font-semibold text-sm">رئيس القسم (طلاب)</p>
+                            <p className="text-white font-bold text-lg mt-1">{dept.head_male}</p>
+                          </div>
+                          <div className="bg-white/25 backdrop-blur-sm rounded-2xl px-4 py-3 hover:bg-white/35 transition-all duration-300 transform hover:scale-105 border border-white/20 shadow-lg">
+                            <p className="text-white/90 font-semibold text-sm">رئيس القسم (طالبات)</p>
+                            <p className="text-white font-bold text-lg mt-1">{dept.head_female}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              ))}
+                      ) : (
+                        // Render single head
+                        <div className="bg-white/25 backdrop-blur-sm rounded-2xl px-4 py-3 mt-4 hover:bg-white/35 transition-all duration-300 transform hover:scale-105 border border-white/20 shadow-lg">
+                          <p className="text-white/90 font-semibold text-sm">رئيس القسم:</p>
+                          <p className="text-white font-bold text-lg mt-1">{dept.head}</p>
+                        </div>
+                      )}
+                    </CardHeader>
+                    <CardContent className="space-y-3 relative z-10 pb-8">
+                      <p className="text-white/95 font-bold text-base mb-4 flex items-center gap-3 bg-white/15 rounded-xl px-4 py-2">
+                        <Users className="h-5 w-5" />
+                        أعضاء القسم:
+                      </p>
+                      {hasTwoHeads ? (
+                        // Render all members in a flat list
+                        <>
+                          {dept.members_male && dept.members_male.map((member, memberIndex) => (
+                            <div key={`male-${memberIndex}`} className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-3 hover:bg-white/30 transition-all duration-300 transform hover:scale-105 hover:translate-x-2 border border-white/10 shadow-md">
+                              <div className="text-white font-semibold text-base flex items-center gap-3">
+                                <div className="w-3 h-3 bg-white rounded-full shadow-sm"></div>
+                                {member}
+                              </div>
+                            </div>
+                          ))}
+                          {dept.members_female && dept.members_female.map((member, memberIndex) => (
+                            <div key={`female-${memberIndex}`} className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-3 hover:bg-white/30 transition-all duration-300 transform hover:scale-105 hover:translate-x-2 border border-white/10 shadow-md">
+                              <div className="text-white font-semibold text-base flex items-center gap-3">
+                                <div className="w-3 h-3 bg-white rounded-full shadow-sm"></div>
+                                {member}
+                              </div>
+                            </div>
+                          ))}
+                        </>
+                      ) : (
+                        // Render regular members list
+                        dept.members.map((member, memberIndex) => (
+                          <div key={memberIndex} className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-3 hover:bg-white/30 transition-all duration-300 transform hover:scale-105 hover:translate-x-2 border border-white/10 shadow-md">
+                            <div className="text-white font-semibold text-base flex items-center gap-3">
+                              <div className="w-3 h-3 bg-white rounded-full shadow-sm"></div>
+                              {member}
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </div>
         </div>
