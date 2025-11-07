@@ -23,6 +23,7 @@ app.all("/", handleRoot);
 app.get("/departments", async (req, res, next) => {
     try {
         await handleDepartments(req, res);
+        console.log(`Request: ${req.method} '/departments', responded with \x1b[32m200\x1b[0m`);
     } catch (error) {
         next(error);
     }
@@ -31,6 +32,7 @@ app.get("/departments", async (req, res, next) => {
 app.get("/departments/count", async (req, res, next) => {
     try {
         await handleDepartmentsCount(req, res);
+        console.log(`Request: ${req.method} '/departments/count', responded with \x1b[32m200\x1b[0m`);
     } catch (error) {
         next(error);
     }
@@ -39,6 +41,7 @@ app.get("/departments/count", async (req, res, next) => {
 app.get("/departments/:id", async (req, res, next) => {
     try {
         await handleDepartmentsById(req, res);
+        console.log(`Request: ${req.method} '/departments/${req.params.id}', responded with \x1b[32m200\x1b[0m`);
     } catch (error) {
         next(error);
     }
@@ -47,6 +50,7 @@ app.get("/departments/:id", async (req, res, next) => {
 app.get("/members", async (req, res, next) => {
     try {
         await handleMembers(req, res);
+        console.log(`Request: ${req.method} '/members', responded with \x1b[32m200\x1b[0m`);
     } catch (error) {
         next(error);
     }
@@ -55,6 +59,7 @@ app.get("/members", async (req, res, next) => {
 app.get("/members/count", async (req, res, next) => {
     try {
         await handleMembersCount(req, res);
+        console.log(`Request: ${req.method} '/members/count', responded with \x1b[32m200\x1b[0m`);
     } catch (error) {
         next(error);
     }
@@ -63,6 +68,7 @@ app.get("/members/count", async (req, res, next) => {
 app.get("/members/:id", async (req, res, next) => {
     try {
         await handleMembersById(req, res);
+        console.log(`Request: ${req.method} '/members/${req.params.id}', responded with \x1b[32m200\x1b[0m`);
     } catch (error) {
         next(error);
     }
@@ -72,6 +78,7 @@ app.get("/members/:id", async (req, res, next) => {
 
 async function handleRoot(req: Request, res: Response) {
     res.status(200).send("<h1>Score Leaderboard API is Ready ✅</h1>").end()
+    console.log(`Request: ${req.method} '/', responded with \x1b[32m200\x1b[0m`);
 }
 
 

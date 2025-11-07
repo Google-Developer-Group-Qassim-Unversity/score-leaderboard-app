@@ -42,8 +42,14 @@ export async function handleDepartments(req: Request, res: Response) {
         },
     });
 
+    // Filter out results Post nov 7th 2025
+    const filteredPoints = departmentsPoints.filter(record => {
+        const eventDate = new Date(record.start_date);
+        return eventDate < new Date("2025-11-07");
+    });
+
     // 5. Process each record to calculate adjusted points
-    const processedPoints = departmentsPoints.map((record) => {
+    const processedPoints = filteredPoints.map((record) => {
         // Number of event days (inclusive)
         const startDate = new Date(record.start_date);
         const endDate = new Date(record.end_date);
@@ -153,8 +159,14 @@ export async function handleDepartmentsById(req: Request, res: Response) {
         },
     });
 
+    // Filter out results Post nov 7th 2025
+    const filteredHistory = history.filter(record => {
+        const eventDate = new Date(record.start_date);
+        return eventDate < new Date("2025-11-07");
+    });
+
     // 5. Process each event to calculate adjusted points
-    const processedHistory = history.map((record) => {
+    const processedHistory = filteredHistory.map((record) => {
         // Compute event duration in days (inclusive)
         const startDate = new Date(record.start_date);
         const endDate = new Date(record.end_date);
