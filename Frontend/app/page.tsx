@@ -1,3 +1,6 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,11 +13,65 @@ import { SectionHeader } from "@/components/section-header"
 import { PageHeader } from "@/components/page-header"
 import { fetchMembers, fetchDepartments } from "@/lib/api"
 
-export default async function Dashboard() {
-  const [apiMembers, apiDepartmentsResponse] = await Promise.all([
-    fetchMembers(),
-    fetchDepartments(),
-  ])
+export default function Dashboard() {
+  const [isBlurred, setIsBlurred] = useState(true)
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  })
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date()
+      let targetYear = now.getFullYear()
+      // Create Dec 2 of the target year (months are 0-based: 11 = December)
+      let targetDate = new Date(targetYear, 11, 2, 0, 0, 0)
+
+      // If Dec 2 this year is already past, use next year's Dec 2
+      if (now > targetDate) {
+        targetYear += 1
+        targetDate = new Date(targetYear, 11, 2, 0, 0, 0)
+      }
+
+      const difference = targetDate.getTime() - now.getTime()
+
+      if (difference > 0) {
+        return {
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60)
+        }
+      }
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 }
+    }
+
+    setTimeLeft(calculateTimeLeft())
+
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft())
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  // Move data fetching to useEffect since this is now a client component
+  const [apiMembers, setApiMembers] = useState([])
+  const [apiDepartmentsResponse, setApiDepartmentsResponse] = useState({ Administrative: [], Specialized: [] })
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const [members, departments] = await Promise.all([
+        fetchMembers(),
+        fetchDepartments(),
+      ])
+      setApiMembers(members)
+      setApiDepartmentsResponse(departments)
+    }
+    fetchData()
+  }, [])
 
   // Calculate counts from array lengths
   const membersCount = apiMembers.length || 0
@@ -26,7 +83,6 @@ export default async function Dashboard() {
   // Get all departments (already sorted from API)
   const practicalDepartments = apiDepartmentsResponse.Specialized || []
   const administrativeDepartments = apiDepartmentsResponse.Administrative || []
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 relative overflow-x-hidden">
@@ -114,10 +170,66 @@ export default async function Dashboard() {
           </p>
         </div>
 
+        {/* Countdown Timer Section */}
+        <div className="mb-8 text-center">
+          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 max-w-2xl mx-auto">
+            <p className="text-2xl font-bold text-slate-800 mb-6" style={{ direction: 'rtl' }}>
+العد التنازلي بدأ ⏳
+            </p>
+            <p className="text-2xl font-bold text-slate-800 mb-6" style={{ direction: 'rtl' }}>
+تحديث النقاط متوقف مؤقتًا… ترقبوا الحدث الكبير     
+       </p>
+            
+            <div className="flex justify-center gap-4 mb-6" dir="ltr">
+              <div className="bg-white rounded-xl shadow-md p-4 min-w-[80px]">
+                <div className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                  {timeLeft.days}
+                </div>
+                <div className="text-xs text-slate-600 font-semibold mt-1">DAYS</div>
+              </div>
+              <div className="bg-white rounded-xl shadow-md p-4 min-w-[80px]">
+                <div className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                  {timeLeft.hours}
+                </div>
+                <div className="text-xs text-slate-600 font-semibold mt-1">HOURS</div>
+              </div>
+              <div className="bg-white rounded-xl shadow-md p-4 min-w-[80px]">
+                <div className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                  {timeLeft.minutes}
+                </div>
+                <div className="text-xs text-slate-600 font-semibold mt-1">MINUTES</div>
+              </div>
+              <div className="bg-white rounded-xl shadow-md p-4 min-w-[80px]">
+                <div className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                  {timeLeft.seconds}
+                </div>
+                <div className="text-xs text-slate-600 font-semibold mt-1">SECONDS</div>
+              </div>
+            </div>
+
+            {/* Added Arabic "انتظرونا" under the countdown */}
+            <p className="text-xl font-bold text-slate-700 mb-6" style={{ direction: 'rtl' }}>
+              انتظرونا
+            </p>
+
+            {/* replace unblur button with navigation to members */}
+            {isBlurred && (
+              <Link href="/members">
+                <Button 
+                  className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-lg"
+                  aria-label="عرض النقاط - اذهب إلى صفحة الأعضاء"
+                >
+                  عرض النقاط
+                </Button>
+              </Link>
+            )}
+          </div>
+        </div>
+
         {/* Leaderboard Previews */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Top Members Preview */}
-          <Card className="bg-gradient-to-br from-blue-50/50 to-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+          <Card className={`bg-gradient-to-br from-blue-50/50 to-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-500 overflow-hidden ${isBlurred ? 'blur-md' : 'blur-0'}`}>
             <div className="p-1">
               <CardHeader className="pb-6">
                 <div className="flex items-center justify-between">
@@ -151,7 +263,7 @@ export default async function Dashboard() {
           </Card>
 
           {/* Top Departments Preview */}
-          <Card className="bg-gradient-to-br from-green-50/50 to-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+          <Card className={`bg-gradient-to-br from-green-50/50 to-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-500 overflow-hidden ${isBlurred ? 'blur-md' : 'blur-0'}`}>
             <div className="p-1">
               <CardHeader className="pb-6">
                 <div className="flex items-center justify-between">
