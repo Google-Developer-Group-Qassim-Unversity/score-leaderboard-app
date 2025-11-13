@@ -29,7 +29,7 @@ export type {
   LeaderboardSummary,
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST || "http://178.128.205.239:8000";
+const API_BASE_URL = "http://178.128.205.239:8500"
 
 // Define common options for GET requests
 const options = {
