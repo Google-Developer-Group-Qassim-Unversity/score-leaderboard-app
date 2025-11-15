@@ -65,52 +65,39 @@ export default function SignUpPage() {
     setError('')
     setLoading(true)
 
-    console.log('🔵 Submit triggered. Pending verification:', pendingVerification)
-    console.log('🔵 Form data:', data)
-
     try {
       if (!pendingVerification) {
-        console.log('🟢 Creating sign-up...')
         // Create sign-up and send verification code
         await signUp.create({
           emailAddress: data.emailAddress,
           password: data.password,
         })
 
-        console.log('🟢 Preparing email verification...')
         await signUp.prepareEmailAddressVerification({
           strategy: 'email_code',
         })
 
-        console.log('🟢 Verification email sent!')
         setPendingVerification(true)
       } else {
-        console.log('🟣 Attempting to verify code...')
         // Verify the code
         if (!data.code || data.code.length !== 6) {
-          console.log('❌ Invalid code:', data.code)
           setError('Please enter a valid 6-digit verification code')
           setLoading(false)
           return
         }
 
-        console.log('🟣 Calling attemptEmailAddressVerification with code:', data.code)
         const completeSignUp = await signUp.attemptEmailAddressVerification({
           code: data.code,
         })
 
-        console.log('🟣 Verification response:', completeSignUp.status)
         if (completeSignUp.status === 'complete') {
-          console.log('✅ Sign-up complete! Redirecting...')
           await setActive({ session: completeSignUp.createdSessionId })
           router.push('/onboarding')
         } else {
-          console.log('❌ Sign-up not complete')
           setError('Unable to complete sign up. Please try again.')
         }
       }
     } catch (err: any) {
-      console.error('❌ Error:', err)
       setError(err.errors?.[0]?.message || 'An error occurred')
     } finally {
       setLoading(false)
