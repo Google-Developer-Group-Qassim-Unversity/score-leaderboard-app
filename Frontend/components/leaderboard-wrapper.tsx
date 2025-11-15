@@ -11,7 +11,7 @@ export function LeaderboardWrapper({ children }: LeaderboardWrapperProps) {
   return (
     <>
       <CountdownTimer />
-      <div className="transition-all duration-500 blur-md">
+      <div>
         {children}
       </div>
     </>
