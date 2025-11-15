@@ -85,15 +85,6 @@ export function CountdownTimer() {
         <p className="text-xl font-bold text-slate-700 mb-6" style={{ direction: 'rtl' }}>
           انتظرونا
         </p>
-
-        <Link href="/members">
-          <Button 
-            className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-lg"
-            aria-label="عرض النقاط - اذهب إلى صفحة الأعضاء"
-          >
-            عرض النقاط
-          </Button>
-        </Link>
       </div>
     </div>
   )
