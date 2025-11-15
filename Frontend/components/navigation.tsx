@@ -4,13 +4,14 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Trophy, Users, Building2, Home, BadgeHelpIcon, Network, BookOpen} from "lucide-react"
+import { Trophy, Users, Building2, Home, BadgeHelpIcon, Network, BookOpen, UserCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
   SignedIn,
   SignedOut,
   UserButton,
 } from "@clerk/nextjs"
+import CustomInfoPage from "@/components/custom-info-page"
 
 const navigationItems = [
   {
@@ -100,7 +101,11 @@ export function Navigation() {
               </Link>
             </SignedOut>
             <SignedIn>
-              <UserButton />
+              <UserButton>
+                <UserButton.UserProfilePage label="Personal Info" labelIcon={<UserCircle size={16} />} url="personal-info">
+                  <CustomInfoPage />
+                </UserButton.UserProfilePage>
+              </UserButton>
             </SignedIn>
           </div>
 
@@ -116,7 +121,11 @@ export function Navigation() {
                 </Link>
               </SignedOut>
               <SignedIn>
-                <UserButton />
+                <UserButton>
+                  <UserButton.UserProfilePage label="Personal Info" labelIcon={<UserCircle size={16} />} url="personal-info">
+                    <CustomInfoPage />
+                  </UserButton.UserProfilePage>
+                </UserButton>
               </SignedIn>
             </div>
             
