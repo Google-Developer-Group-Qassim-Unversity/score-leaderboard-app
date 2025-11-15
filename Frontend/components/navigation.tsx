@@ -6,6 +6,11 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Trophy, Users, Building2, Home, BadgeHelpIcon, Network, BookOpen} from "lucide-react"
 import { cn } from "@/lib/utils"
+import {
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs"
 
 const navigationItems = [
   {
@@ -80,8 +85,42 @@ export function Navigation() {
             })}
           </div>
 
+          {/* Auth Section */}
+          <div className="flex items-center gap-2">
+            <SignedOut>
+              <Link href="/sign-in">
+                <Button variant="ghost" size="sm">
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/sign-up">
+                <Button size="sm">
+                  Sign Up
+                </Button>
+              </Link>
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
+
           {/* Mobile Navigation */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-2">
+            {/* Mobile Auth */}
+            <div className="flex items-center gap-1">
+              <SignedOut>
+                <Link href="/sign-in">
+                  <Button variant="ghost" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </div>
+            
+            {/* Mobile Nav Icons */}
             <div className="flex items-center gap-1">
               {navigationItems.map((item) => {
                 const Icon = item.icon
