@@ -9,12 +9,14 @@ interface UserPublicMetadata {
   saudiPhone?: string
   gender?: string
   personalEmail?: string
+  uiId?: string
 }
 
 export default function SessionDebugPage() {
   const [isDebugEnabled, setIsDebugEnabled] = useState<boolean | null>(null)
   const [token, setToken] = useState<string | null>(null)
   const [decodedToken, setDecodedToken] = useState<any>(null)
+  const [copied, setCopied] = useState(false)
   const { getToken } = useAuth()
   const auth = useAuth()
   const { user, isLoaded: userLoaded, isSignedIn } = useUser()
@@ -55,6 +57,18 @@ export default function SessionDebugPage() {
     }
   }, [getToken, auth.isLoaded, auth.isSignedIn])
 
+  const handleCopyToken = async () => {
+    if (token) {
+      try {
+        await navigator.clipboard.writeText(token)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      } catch (error) {
+        console.error('Failed to copy token:', error)
+      }
+    }
+  }
+
   // Show loading or redirect to 404
   if (isDebugEnabled === null) {
     return null // Loading
@@ -83,7 +97,26 @@ export default function SessionDebugPage() {
       </div>
       
       <div style={{ marginTop: '2rem', padding: '1rem', background: '#e8f4f8', borderRadius: '4px' }}>
-        <h2>Session Token (JWT):</h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2 style={{ margin: 0 }}>Session Token (JWT):</h2>
+          <button
+            onClick={handleCopyToken}
+            disabled={!token}
+            style={{
+              padding: '0.5rem 1rem',
+              borderRadius: '4px',
+              border: 'none',
+              background: copied ? '#10b981' : '#3b82f6',
+              color: 'white',
+              fontWeight: 'bold',
+              cursor: token ? 'pointer' : 'not-allowed',
+              fontSize: '0.875rem',
+              transition: 'background 0.2s',
+            }}
+          >
+            {copied ? '✓ Copied!' : '📋 Copy Token'}
+          </button>
+        </div>
         <div style={{ marginTop: '0.5rem' }}>
           <strong>Token Length:</strong> {token?.length || 'N/A'} characters
         </div>
@@ -104,6 +137,7 @@ export default function SessionDebugPage() {
       <div style={{ marginTop: '2rem', padding: '1rem', background: '#e8f4f8', borderRadius: '4px' }}>
         <h2>Public Metadata:</h2>
         <ul>
+          <li><strong>UI ID:</strong> {publicMetadata?.uiId || 'N/A'}</li>
           <li><strong>Full Arabic Name:</strong> {publicMetadata?.fullArabicName || 'N/A'}</li>
           <li><strong>Saudi Phone:</strong> {publicMetadata?.saudiPhone || 'N/A'}</li>
           <li><strong>Gender:</strong> {publicMetadata?.gender || 'N/A'}</li>
