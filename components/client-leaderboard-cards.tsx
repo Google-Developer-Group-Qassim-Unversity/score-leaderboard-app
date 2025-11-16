@@ -57,16 +57,21 @@ export function ClientLeaderboardCards({
               </div>
             </div>
           </CardHeader>
-          <CardContent className={`space-y-6 transition-all duration-500 px-3 sm:px-6 ${!showMembersDetails ? 'blur-md' : ''}`}>
-            <div className="w-full max-w-full min-w-0 overflow-hidden">
-              <div className="space-y-3">
-                {topMembers.map((member, index) => (
-                  <div key={member.id} className="w-full max-w-full min-w-0">
-                    <LeaderboardCard id={member.id.toString()} name={member.name} rank={index + 1} points={member.points} type="member" />
-                  </div>
-                ))}
+          <CardContent className="relative px-3 sm:px-6">
+            <div className={`space-y-6 transition-all duration-500 ${!showMembersDetails ? 'blur-md pointer-events-none' : ''}`}>
+              <div className="w-full max-w-full min-w-0 overflow-hidden">
+                <div className="space-y-3">
+                  {topMembers.map((member, index) => (
+                    <div key={member.id} className="w-full max-w-full min-w-0">
+                      <LeaderboardCard id={member.id.toString()} name={member.name} rank={index + 1} points={member.points} type="member" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
+            {!showMembersDetails && (
+              <div className="absolute inset-0 bg-transparent z-10"></div>
+            )}
           </CardContent>
         </div>
       </Card>
@@ -105,30 +110,35 @@ export function ClientLeaderboardCards({
             </div>
           </CardHeader>
 
-          <CardContent className={`space-y-6 transition-all duration-500 px-3 sm:px-6 ${!showDepartmentsDetails ? 'blur-md' : ''}`}>
-            {/* Practical Departments */}
-            <div className="w-full max-w-full min-w-0">
-              <SectionHeader icon={Wrench} title="Specialized departments" color="green"/>
-              <div className="space-y-3 w-full max-w-full">
-                {practicalDepartments.map((department, index) => ( 
-                  <div key={department.id} className="w-full max-w-full min-w-0">
-                    <LeaderboardCard id={department.id.toString()} name={department.name} rank={index + 1} points={department.points} type="department"/> 
-                  </div>
-                ))}
+          <CardContent className="relative px-3 sm:px-6">
+            <div className={`space-y-6 transition-all duration-500 ${!showDepartmentsDetails ? 'blur-md pointer-events-none' : ''}`}>
+              {/* Practical Departments */}
+              <div className="w-full max-w-full min-w-0">
+                <SectionHeader icon={Wrench} title="Specialized departments" color="green"/>
+                <div className="space-y-3 w-full max-w-full">
+                  {practicalDepartments.map((department, index) => ( 
+                    <div key={department.id} className="w-full max-w-full min-w-0">
+                      <LeaderboardCard id={department.id.toString()} name={department.name} rank={index + 1} points={department.points} type="department"/> 
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Administrative Departments */}
-            <div className="w-full max-w-full min-w-0">
-              <SectionHeader icon={Building2} title="Administrative departments" color="blue"/>
-              <div className="space-y-3 w-full max-w-full">
-                {administrativeDepartments.map((department, index) => (
-                  <div key={department.id} className="w-full max-w-full min-w-0">
-                    <LeaderboardCard id={department.id.toString()} name={department.name} rank={index + 1} points={department.points} type="department"/>
-                  </div>
-                ))}
+              {/* Administrative Departments */}
+              <div className="w-full max-w-full min-w-0">
+                <SectionHeader icon={Building2} title="Administrative departments" color="blue"/>
+                <div className="space-y-3 w-full max-w-full">
+                  {administrativeDepartments.map((department, index) => (
+                    <div key={department.id} className="w-full max-w-full min-w-0">
+                      <LeaderboardCard id={department.id.toString()} name={department.name} rank={index + 1} points={department.points} type="department"/>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
+            {!showDepartmentsDetails && (
+              <div className="absolute inset-0 bg-transparent z-10"></div>
+            )}
           </CardContent>
         </div>
       </Card>
