@@ -59,31 +59,33 @@ export function LeaderboardCard({ id, name, rank, points, type }: LeaderboardCar
 
   return (
     <div
-      className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl transition-all duration-300 hover:shadow-md hover:scale-[1.01] group ${styles.container}`}
+      className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 rounded-xl transition-all duration-300 hover:shadow-md hover:scale-[1.01] group ${styles.container} w-full max-w-full min-w-0`}
     >
-      <div className="flex items-center gap-3">
-        <div className="relative">
+      <div className="flex items-start sm:items-center gap-3 w-full sm:w-auto min-w-0 flex-1">
+        <div className="relative flex-shrink-0">
           <Badge
             variant={rank === 1 ? "default" : rank <= 3 ? "secondary" : "outline"}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm ${styles.badge}`}
+            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center font-bold text-xs sm:text-sm ${styles.badge}`}
           >
             {rank}
           </Badge>
         </div>
-        <div>
-          <p className="font-bold text-sm text-slate-800 truncate">{name}</p>
+        <div className="min-w-0 flex-1">
+          <p className="font-bold text-sm sm:text-base text-slate-800 break-words hyphens-auto leading-tight max-w-full">
+            {name}
+          </p>
         </div>
       </div>
-      <div className="flex items-center justify-between sm:justify-end gap-4 mt-3 sm:mt-0 sm:ml-auto w-full sm:w-auto">
+      <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 mt-3 sm:mt-0 w-full sm:w-auto flex-shrink-0">
         <div className="text-left sm:text-right">
-          <p className={`font-bold text-lg`}>
+          <p className="font-bold text-base sm:text-lg">
             {points}
           </p>
           <p className="text-xs text-slate-500">Points</p>
         </div>
         <Link href={detailsUrl} className="flex-shrink-0">
-          <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200">
-            <Eye className="h-4 w-4 mr-1" />
+          <Button variant="outline" size="sm" className="whitespace-nowrap bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2">
+            <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
             <span className="hidden xs:inline">View Details</span>
             <span className="xs:hidden">Details</span>
           </Button>
