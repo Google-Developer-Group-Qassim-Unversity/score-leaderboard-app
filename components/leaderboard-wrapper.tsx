@@ -11,7 +11,7 @@ export function LeaderboardWrapper({ children }: LeaderboardWrapperProps) {
   return (
     <>
       <CountdownTimer />
-      <div>
+      <div className="w-full max-w-full overflow-hidden">
         {children}
       </div>
     </>

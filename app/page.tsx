@@ -117,11 +117,15 @@ export default async function Dashboard() {
 
         {/* Leaderboard Previews */}
         <LeaderboardWrapper>
-          <ClientLeaderboardCards 
-            topMembers={topMembers}
-            practicalDepartments={practicalDepartments}
-            administrativeDepartments={administrativeDepartments}
-          />
+          <div className="space-y-6 w-full">
+            <div className="w-full max-w-full overflow-hidden px-2 sm:px-0">
+              <ClientLeaderboardCards 
+                topMembers={topMembers}
+                practicalDepartments={practicalDepartments}
+                administrativeDepartments={administrativeDepartments}
+              />
+            </div>
+          </div>
         </LeaderboardWrapper>
 
         {/* Special Department Section */}
