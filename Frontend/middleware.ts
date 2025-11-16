@@ -5,17 +5,13 @@ const isOnboardingRoute = createRouteMatcher(['/onboarding'])
 const isAuthRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
 
 export default clerkMiddleware(async (auth, req) => {
+  // Return early for routes that don't need auth checks to avoid unnecessary await calls
+  if (isOnboardingRoute(req) || isAuthRoute(req)) {
+    return NextResponse.next()
+  }
+
+  // Only call await auth() when we actually need to check authentication
   const { userId, sessionClaims } = await auth()
-
-  // If user is on onboarding route, allow access
-  if (isOnboardingRoute(req)) {
-    return NextResponse.next()
-  }
-
-  // If user is on auth routes (sign-in/sign-up), allow access
-  if (isAuthRoute(req)) {
-    return NextResponse.next()
-  }
 
   // If user is authenticated but hasn't completed onboarding, redirect to onboarding
   if (userId && !sessionClaims?.metadata?.onboardingComplete) {

@@ -35,6 +35,7 @@ export default function RootLayout({
           </Script>
         </head>
         <body className="font-sans">
+          {/* TODO: Add a better loading indicator */}
           <Suspense fallback={<div>Loading...</div>}>
             <Navigation />
             {children}
