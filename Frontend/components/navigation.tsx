@@ -17,7 +17,8 @@ import {
   LogIn,
   UserPlus,
   Layout,
-  MoreHorizontal
+  MoreHorizontal,
+  CalendarDays
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -27,6 +28,7 @@ const navigationItems = [
   { href: "/", label: "Home", shortLabel: "Home", icon: Home },
   { href: "/members", label: "Members", shortLabel: "Members", icon: Users },
   { href: "/departments", label: "Departments", shortLabel: "Depts", icon: Building2 },
+  { href: "/events", label: "Events", shortLabel: "Events", icon: CalendarDays },
   { href: "/magazines", label: "Magazines", shortLabel: "Mags", icon: BookOpen },
   { href: "/club-structure", label: "Club Structure", shortLabel: "Structure", icon: Layout },
   { href: "/how", label: "How It Works", shortLabel: "How", icon: BadgeHelp },

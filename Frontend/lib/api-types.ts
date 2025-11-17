@@ -83,3 +83,21 @@ export interface LeaderboardSummary {
   totalMembers: number
   totalDepartments: number
 }
+
+// ===== Events Types =====
+
+export type EventStatus = "announced" | "open" | "closed"
+
+export interface ApiEventItem {
+  id: number
+  name: string
+  description: string | null
+  location_type: "online" | "on-site" | "none"
+  location: string
+  start_datetime: string
+  end_datetime: string
+  status: EventStatus
+  image_url: string | null
+}
+
+export type ApiEventsResponse = ApiEventItem[]

@@ -8,6 +8,8 @@ import type {
   ApiEvent,
   ApiMemberDetail,
   ApiDepartmentDetail,
+  ApiEventItem,
+  ApiEventsResponse,
   Member,
   Department,
   PointsHistoryEntry,
@@ -23,6 +25,8 @@ export type {
   ApiEvent,
   ApiMemberDetail,
   ApiDepartmentDetail,
+  ApiEventItem,
+  ApiEventsResponse,
   Member,
   Department,
   PointsHistoryEntry,
@@ -125,3 +129,27 @@ export async function fetchDepartmentById(id: string): Promise<ApiDepartmentDeta
     return null
   }
 }
+
+export async function fetchEvents(): Promise<ApiEventsResponse> {
+  try {
+    console.log("🔍 Fetching events from API...")
+    const response = await fetch(`${API_BASE_URL}/events`, options)
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data: ApiEventsResponse = await response.json()
+    
+    // Filter out events with location_type "none" as they are not real events
+    const filteredData = data.filter(event => event.location_type !== "none")
+    
+    console.log(`✅ Successfully fetched ${filteredData.length} events (${data.length - filteredData.length} filtered out)`)
+    return filteredData
+
+  } catch (error) {
+    console.error("❌ Failed to fetch events:", error)
+    return []
+  }
+}
+
