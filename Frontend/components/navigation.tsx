@@ -96,7 +96,7 @@ export function Navigation() {
   }, [])
 
   // Don't show navigation on auth pages
-  if (pathname?.startsWith("/sign-in") || pathname?.startsWith("/sign-up")) {
+  if (pathname?.startsWith("/sign-in") || pathname?.startsWith("/sign-up") || pathname?.startsWith("/onboarding")) {
     return null
   }
 

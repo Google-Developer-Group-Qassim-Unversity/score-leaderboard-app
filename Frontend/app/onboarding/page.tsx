@@ -21,23 +21,14 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { AlertCircle, Loader2 } from 'lucide-react'
+import { AlertCircle, Loader2, Lock } from 'lucide-react'
 import { completeOnboarding, type OnboardingFormData } from './_actions'
 import { isAllowedRedirectUrl } from '@/lib/redirect-config'
+import { UserAccountCard } from '@/components/user-account-card'
 
 // Form validation schema
 const onboardingSchema = z.object({
-  uni_id: z
-    .string()
-    .length(9, 'UI ID must be exactly 9 digits')
-    .regex(/^\d{9}$/, 'UI ID must contain only numbers')
-    .refine(
-      (val) => {
-        const thirdDigit = val.charAt(2)
-        return thirdDigit === '1' || thirdDigit === '2' || thirdDigit === '3'
-      },
-      { message: 'The 3rd digit must be 1, 2, or 3' }
-    ),
+  uni_id: z.string(), // No validation needed - extracted from email
   fullArabicName: z
     .string()
     .min(1, 'Full Arabic name is required')
@@ -70,16 +61,32 @@ export default function OnboardingPage() {
   const [error, setError] = React.useState('')
   const [isSubmitting, setIsSubmitting] = React.useState(false)
 
+  // Extract uni_id from user's email
+  const extractUniIdFromEmail = (email: string | undefined): string => {
+    if (!email) return ''
+    const localPart = email.split('@')[0]
+    return localPart
+  }
+
+  const uniId = extractUniIdFromEmail(user?.primaryEmailAddress?.emailAddress)
+
   const form = useForm<OnboardingFormValues>({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
-      uni_id: '',
+      uni_id: uniId,
       fullArabicName: '',
       saudiPhone: '',
       gender: undefined,
       personalEmail: '',
     },
   })
+
+  // Update uni_id when user data loads
+  React.useEffect(() => {
+    if (uniId) {
+      form.setValue('uni_id', uniId)
+    }
+  }, [uniId, form])
 
   const onSubmit = async (data: OnboardingFormValues) => {
     setError('')
@@ -117,6 +124,9 @@ export default function OnboardingPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-2xl">
         <CardHeader>
+          {/* Clerk User Button for account management */}
+          <UserAccountCard />
+          
           <CardTitle className="text-2xl font-bold">Complete Your Profile</CardTitle>
           <CardDescription>
             Please provide the following information to complete your registration
@@ -133,25 +143,28 @@ export default function OnboardingPage() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* UI ID Field */}
+              {/* UI ID Field - Auto-populated from email */}
               <FormField
                 control={form.control}
                 name="uni_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>University ID</FormLabel>
+                    <FormLabel dir="rtl">الرقم الجامعي</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="412345678"
-                        {...field}
-                        maxLength={9}
-                        disabled={isSubmitting}
-                        dir="ltr"
-                      />
+                      <div className="relative">
+                        <Input
+                          placeholder="444444444"
+                          {...field}
+                          disabled={true}
+                          className="bg-muted/60 cursor-not-allowed text-muted-foreground border-dashed opacity-70"
+                          dir="ltr"
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-muted-foreground bg-background px-2 py-0.5 rounded border">
+                          <Lock className="h-3 w-3" />
+                          Auto-filled
+                        </div>
+                      </div>
                     </FormControl>
-                    <FormDescription>
-                      9-digit student ID (3rd digit must be 1, 2, or 3)
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -163,18 +176,15 @@ export default function OnboardingPage() {
                 name="fullArabicName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>الاسم الرباعي (Full Arabic Name)</FormLabel>
+                    <FormLabel dir='rtl'>الاسم الرباعي</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="أحمد محمد علي السعيد"
+                        placeholder="ابراهيم عبدالاله علي الحربي"
                         {...field}
                         disabled={isSubmitting}
                         dir="rtl"
                       />
                     </FormControl>
-                    <FormDescription>
-                      Enter your full name in Arabic
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -186,19 +196,16 @@ export default function OnboardingPage() {
                 name="saudiPhone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Saudi Phone Number</FormLabel>
+                    <FormLabel dir='rtl'>رقم الجول</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="0512345678"
+                        placeholder="05xxxxxxxx"
                         {...field}
                         maxLength={10}
                         disabled={isSubmitting}
                         dir="ltr"
                       />
                     </FormControl>
-                    <FormDescription>
-                      Must start with 05 (e.g., 0512345678)
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -210,9 +217,10 @@ export default function OnboardingPage() {
                 name="gender"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel>Gender</FormLabel>
+                    <FormLabel dir='rtl'>القسم</FormLabel>
                     <FormControl>
                       <RadioGroup
+                        dir='rtl'
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                         className="flex flex-col space-y-1"
@@ -222,16 +230,16 @@ export default function OnboardingPage() {
                           <FormControl>
                             <RadioGroupItem value="male" />
                           </FormControl>
-                          <FormLabel className="font-normal cursor-pointer">
-                            Male
+                          <FormLabel className="font-normal cursor-pointer" dir="rtl">
+                            طلاب
                           </FormLabel>
                         </FormItem>
                         <FormItem className="flex items-center space-x-3 space-y-0">
                           <FormControl>
                             <RadioGroupItem value="female" />
                           </FormControl>
-                          <FormLabel className="font-normal cursor-pointer">
-                            Female
+                          <FormLabel className="font-normal cursor-pointer" dir="rtl">
+                            طالبات
                           </FormLabel>
                         </FormItem>
                       </RadioGroup>
@@ -247,7 +255,7 @@ export default function OnboardingPage() {
                 name="personalEmail"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Personal Email</FormLabel>
+                    <FormLabel dir="rtl">البريد الشخصي</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -257,8 +265,8 @@ export default function OnboardingPage() {
                         dir="ltr"
                       />
                     </FormControl>
-                    <FormDescription>
-                      Your personal email (not @qu.edu.sa)
+                    <FormDescription dir='rtl'>
+                     البريد الشخصي وليس المنتهي بـ qu.edu.sa@
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
