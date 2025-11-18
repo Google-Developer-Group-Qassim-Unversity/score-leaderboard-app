@@ -101,3 +101,40 @@ export interface ApiEventItem {
 }
 
 export type ApiEventsResponse = ApiEventItem[]
+
+// ===== Forms Types =====
+
+export interface FormQuestion {
+  id: number
+  value: string
+  formId: number
+}
+
+export interface ApiEventForm {
+  formId: number
+  questions: FormQuestion[]
+}
+
+export interface FormResponseInput {
+  questionId: number
+  value: string
+}
+
+export interface FormSubmissionRequest {
+  formId: number
+  memberUniId: string
+  responses: FormResponseInput[]
+}
+
+export interface FormSubmissionResponse {
+  submission: {
+    id: number
+    memberId: number
+    formId: number
+  }
+  responses: {
+    submissionId: number
+    questionId: number
+    value: string
+  }[]
+}

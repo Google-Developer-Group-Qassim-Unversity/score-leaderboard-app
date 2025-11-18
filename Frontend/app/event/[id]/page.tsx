@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import Image from "next/image"
-import { fetchEvents } from "@/lib/api"
+import { fetchEvents, fetchEventForm } from "@/lib/api"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,6 +9,7 @@ import { Calendar, Clock, MapPin, Users, ChevronLeft, Timer } from "lucide-react
 import { calculateEventDuration } from "@/lib/event-utils"
 import Link from "next/link"
 import type { ApiEventItem } from "@/lib/api-types"
+import { EventSignupDialog } from "@/components/event-signup-dialog"
 
 export const dynamic = "force-dynamic"
 
@@ -44,6 +45,23 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
   if (!event) {
     notFound()
+  }
+
+  // Fetch form data for the event if it's open for signup
+  let eventForm = null
+  let formLoadError = false
+  
+  if (event.status === "open") {
+    try {
+      eventForm = await fetchEventForm(event.id)
+      // If eventForm is null, it means the API call failed or returned null
+      if (eventForm === null) {
+        formLoadError = true
+      }
+    } catch (error) {
+      console.error("Failed to fetch event form:", error)
+      formLoadError = true
+    }
   }
 
   const styles = getStatusStyles(event.status)
@@ -210,10 +228,17 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                   <p className="text-sm text-slate-600">
                     Registration is currently open for this event. Sign up now to secure your spot!
                   </p>
-                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white" size="lg">
-                    <Users className="h-4 w-4 ml-2" />
-                    Sign Up Now
-                  </Button>
+                  <EventSignupDialog 
+                    eventId={event.id}
+                    eventName={event.name}
+                    form={eventForm}
+                    formLoadError={formLoadError}
+                  >
+                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white" size="lg">
+                      <Users className="h-4 w-4 ml-2" />
+                      Sign Up Now
+                    </Button>
+                  </EventSignupDialog>
                 </>
               )}
               {event.status === "announced" && (
