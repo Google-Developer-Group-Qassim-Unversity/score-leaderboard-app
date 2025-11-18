@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { useSignIn } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/form'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { isAllowedRedirectUrl } from '@/lib/redirect-config'
 
 // Sign-in form validation schema
 const signInSchema = z.object({
@@ -39,6 +40,7 @@ export default function SignInPage() {
   const [error, setError] = React.useState('')
   const [loading, setLoading] = React.useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -65,7 +67,15 @@ export default function SignInPage() {
       if (result.status === 'complete') {
         // Set the active session
         await setActive({ session: result.createdSessionId })
-        // Redirect to home page
+        
+        // Check for redirect URL from another app
+        const redirectUrl = searchParams.get('redirect_url')
+        if (redirectUrl && isAllowedRedirectUrl(redirectUrl)) {
+          window.location.href = redirectUrl
+          return
+        }
+        
+        // Default redirect to home page
         router.push('/')
       } else {
         setError('Unable to complete sign in. Please try again.')
@@ -160,7 +170,13 @@ export default function SignInPage() {
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center text-muted-foreground">
             Don't have an account?{' '}
-            <Link href="/sign-up" className="text-primary hover:underline">
+            <Link 
+              href={searchParams.get('redirect_url') 
+                ? `/sign-up?redirect_url=${encodeURIComponent(searchParams.get('redirect_url')!)}` 
+                : '/sign-up'
+              } 
+              className="text-primary hover:underline"
+            >
               Sign Up
             </Link>
           </div>

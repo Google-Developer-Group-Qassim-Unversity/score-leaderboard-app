@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useSignUp } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -48,6 +48,7 @@ export default function SignUpPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -92,7 +93,14 @@ export default function SignUpPage() {
 
         if (completeSignUp.status === 'complete') {
           await setActive({ session: completeSignUp.createdSessionId })
-          router.push('/onboarding')
+          
+          // Preserve redirect URL through onboarding
+          const redirectUrl = searchParams.get('redirect_url')
+          if (redirectUrl) {
+            router.push(`/onboarding?redirect_url=${encodeURIComponent(redirectUrl)}`)
+          } else {
+            router.push('/onboarding')
+          }
         } else {
           setError('Unable to complete sign up. Please try again.')
         }
@@ -243,7 +251,13 @@ export default function SignUpPage() {
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center text-muted-foreground">
             Already have an account?{' '}
-            <Link href="/sign-in" className="text-primary hover:underline">
+            <Link 
+              href={searchParams.get('redirect_url') 
+                ? `/sign-in?redirect_url=${encodeURIComponent(searchParams.get('redirect_url')!)}` 
+                : '/sign-in'
+              } 
+              className="text-primary hover:underline"
+            >
               Sign In
             </Link>
           </div>

@@ -16,6 +16,13 @@ export default clerkMiddleware(async (auth, req) => {
   // If user is authenticated but hasn't completed onboarding, redirect to onboarding
   if (userId && !sessionClaims?.metadata?.onboardingComplete) {
     const onboardingUrl = new URL('/onboarding', req.url)
+    
+    // Preserve redirect_url parameter if present
+    const redirectUrl = req.nextUrl.searchParams.get('redirect_url')
+    if (redirectUrl) {
+      onboardingUrl.searchParams.set('redirect_url', redirectUrl)
+    }
+    
     return NextResponse.redirect(onboardingUrl)
   }
 

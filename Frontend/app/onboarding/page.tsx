@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { useUser } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -23,10 +23,11 @@ import {
 } from '@/components/ui/form'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import { completeOnboarding, type OnboardingFormData } from './_actions'
+import { isAllowedRedirectUrl } from '@/lib/redirect-config'
 
 // Form validation schema
 const onboardingSchema = z.object({
-  uiId: z
+  uni_id: z
     .string()
     .length(9, 'UI ID must be exactly 9 digits')
     .regex(/^\d{9}$/, 'UI ID must contain only numbers')
@@ -65,13 +66,14 @@ type OnboardingFormValues = z.infer<typeof onboardingSchema>
 export default function OnboardingPage() {
   const { user } = useUser()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [error, setError] = React.useState('')
   const [isSubmitting, setIsSubmitting] = React.useState(false)
 
   const form = useForm<OnboardingFormValues>({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
-      uiId: '',
+      uni_id: '',
       fullArabicName: '',
       saudiPhone: '',
       gender: undefined,
@@ -91,7 +93,15 @@ export default function OnboardingPage() {
       } else if (result.success) {
         // Reload user data to get updated metadata
         await user?.reload()
-        // Redirect to home page
+        
+        // Check for redirect URL from another app
+        const redirectUrl = searchParams.get('redirect_url')
+        if (redirectUrl && isAllowedRedirectUrl(redirectUrl)) {
+          window.location.href = redirectUrl
+          return
+        }
+        
+        // Default redirect to home page
         router.push('/')
       } else {
         setError('Unexpected response from server. Please try again.')
@@ -126,10 +136,10 @@ export default function OnboardingPage() {
               {/* UI ID Field */}
               <FormField
                 control={form.control}
-                name="uiId"
+                name="uni_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>University ID (UI ID)</FormLabel>
+                    <FormLabel>University ID</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="412345678"

@@ -3,7 +3,7 @@
 import { auth, clerkClient } from '@clerk/nextjs/server'
 
 export interface OnboardingFormData {
-  uiId: string
+  uni_id: string
   fullArabicName: string
   saudiPhone: string
   gender: 'male' | 'female'
@@ -22,7 +22,7 @@ export const completeOnboarding = async (formData: OnboardingFormData) => {
     const res = await client.users.updateUser(userId, {
       publicMetadata: {
         onboardingComplete: true,
-        uiId: formData.uiId,
+        uni_id: formData.uni_id,
         fullArabicName: formData.fullArabicName,
         saudiPhone: formData.saudiPhone,
         gender: formData.gender,
