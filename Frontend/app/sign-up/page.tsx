@@ -250,6 +250,9 @@ export default function SignUpPage() {
                 )}
               />
 
+              {/* Clerk CAPTCHA - Only shows when suspicious activity is detected */}
+              {!pendingVerification && <div id="clerk-captcha" />}
+
               {pendingVerification && (
                 <FormField
                   control={form.control}

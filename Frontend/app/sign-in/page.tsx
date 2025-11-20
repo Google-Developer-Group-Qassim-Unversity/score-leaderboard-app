@@ -120,11 +120,11 @@ export default function SignInPage() {
                 name="emailAddress"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email Address</FormLabel>
+                    <FormLabel>University Email Address</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="your.name@qu.edu.sa"
+                        placeholder="442106350@qu.edu.sa"
                         {...field}
                         disabled={loading}
                       />
