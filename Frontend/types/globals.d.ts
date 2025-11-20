@@ -4,7 +4,7 @@ declare global {
   interface CustomJwtSessionClaims {
     metadata: {
       onboardingComplete?: boolean
-      uiId?: string
+      uni_id?: string
       fullArabicName?: string
       saudiPhone?: string
       gender?: 'male' | 'female'

@@ -60,55 +60,97 @@ export default function SignUpPage() {
     },
   })
 
-  const onSubmit = async (data: SignUpFormValues) => {
+  // Handle submission of the sign-up form
+  const handleSignUp = async (data: SignUpFormValues) => {
     if (!isLoaded) return
 
     setError('')
     setLoading(true)
 
     try {
-      if (!pendingVerification) {
-        // Create sign-up and send verification code
-        await signUp.create({
-          emailAddress: data.emailAddress,
-          password: data.password,
-        })
+      // Start the sign-up process using the email and password provided
+      await signUp.create({
+        emailAddress: data.emailAddress,
+        password: data.password,
+      })
 
-        await signUp.prepareEmailAddressVerification({
-          strategy: 'email_code',
-        })
+      // Send the user an email with the verification code
+      await signUp.prepareEmailAddressVerification({
+        strategy: 'email_code',
+      })
 
-        setPendingVerification(true)
-      } else {
-        // Verify the code
-        if (!data.code || data.code.length !== 6) {
-          setError('Please enter a valid 6-digit verification code')
-          setLoading(false)
-          return
-        }
-
-        const completeSignUp = await signUp.attemptEmailAddressVerification({
-          code: data.code,
-        })
-
-        if (completeSignUp.status === 'complete') {
-          await setActive({ session: completeSignUp.createdSessionId })
-          
-          // Preserve redirect URL through onboarding
-          const redirectUrl = searchParams.get('redirect_url')
-          if (redirectUrl) {
-            router.push(`/onboarding?redirect_url=${encodeURIComponent(redirectUrl)}`)
-          } else {
-            router.push('/onboarding')
-          }
-        } else {
-          setError('Unable to complete sign up. Please try again.')
-        }
-      }
+      // Set 'pendingVerification' true to display verification form
+      setPendingVerification(true)
     } catch (err: any) {
-      setError(err.errors?.[0]?.message || 'An error occurred')
+      // See https://clerk.com/docs/guides/development/custom-flows/error-handling
+      console.error('Sign-up error:', JSON.stringify(err, null, 2))
+      setError(err.errors?.[0]?.message || 'An error occurred during sign-up')
     } finally {
       setLoading(false)
+    }
+  }
+
+  // Handle submission of the verification form
+  const handleVerify = async (data: SignUpFormValues) => {
+    if (!isLoaded) return
+
+    setError('')
+    setLoading(true)
+
+    try {
+      if (!data.code || data.code.length !== 6) {
+        setError('Please enter a valid 6-digit verification code')
+        setLoading(false)
+        return
+      }
+
+      // Use the code the user provided to attempt verification
+      const signUpAttempt = await signUp.attemptEmailAddressVerification({
+        code: data.code,
+      })
+
+      // If verification was completed, set the session to active and redirect
+      if (signUpAttempt.status === 'complete') {
+        await setActive({
+          session: signUpAttempt.createdSessionId,
+          navigate: async ({ session }) => {
+            if (session?.currentTask) {
+              // Check for session tasks and navigate to custom UI to help users resolve them
+              // See https://clerk.com/docs/guides/development/custom-flows/overview#session-tasks
+              console.log('Session task detected:', session.currentTask)
+              router.push('/sign-up/tasks')
+              return
+            }
+
+            // Preserve redirect URL through onboarding
+            const redirectUrl = searchParams.get('redirect_url')
+            if (redirectUrl) {
+              router.push(`/onboarding?redirect_url=${encodeURIComponent(redirectUrl)}`)
+            } else {
+              router.push('/onboarding')
+            }
+          },
+        })
+      } else {
+        // If the status is not complete, check why. User may need to complete further steps.
+        console.error('Sign-up attempt not complete:', signUpAttempt)
+        console.error('Sign-up attempt status:', signUpAttempt.status)
+        setError('Unable to complete sign up. Please try again.')
+      }
+    } catch (err: any) {
+      // See https://clerk.com/docs/guides/development/custom-flows/error-handling
+      console.error('Verification error:', JSON.stringify(err, null, 2))
+      setError(err.errors?.[0]?.message || 'An error occurred during verification')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const onSubmit = async (data: SignUpFormValues) => {
+    if (!pendingVerification) {
+      await handleSignUp(data)
+    } else {
+      await handleVerify(data)
     }
   }
 
