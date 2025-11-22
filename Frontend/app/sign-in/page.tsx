@@ -39,6 +39,8 @@ export default function SignInPage() {
   const { isLoaded, signIn, setActive } = useSignIn()
   const [error, setError] = React.useState('')
   const [loading, setLoading] = React.useState(false)
+  const [needsSecondFactor, setNeedsSecondFactor] = React.useState(false)
+  const [verificationCode, setVerificationCode] = React.useState('')
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -58,7 +60,7 @@ export default function SignInPage() {
     setLoading(true)
 
     try {
-      // Start the sign-in process
+      // Step 1: Initiate the sign-in process
       const result = await signIn.create({
         identifier: data.emailAddress,
         password: data.password,
@@ -66,7 +68,66 @@ export default function SignInPage() {
 
       if (result.status === 'complete') {
         // Set the active session
-        console.log('Sign-in successful setting active session')
+        console.log('Sign-in successful setting active session', result)
+        console.log("result stringified:", JSON.stringify(result, null, 2))
+        await setActive({ session: result.createdSessionId })
+        
+        // Check for redirect URL from another app
+        const redirectUrl = searchParams.get('redirect_url')
+        if (redirectUrl && isAllowedRedirectUrl(redirectUrl)) {
+          window.location.href = redirectUrl
+          return
+        }
+        
+        router.push('/user-profile')
+      } else if (result.status === 'needs_second_factor') {
+        // Step 2: Second factor required - prepare email_code verification
+        // Get the email address ID from the supported second factors
+        const emailAddressId = result.supportedSecondFactors?.find(
+          (factor) => factor.strategy === 'email_code'
+        )?.emailAddressId
+
+        if (!emailAddressId) {
+          setError('Unable to send verification code. Please try again.')
+          return
+        }
+
+        await signIn.prepareSecondFactor({
+          strategy: 'email_code',
+          emailAddressId: emailAddressId,
+        })
+        
+        // Show the verification code input
+        setNeedsSecondFactor(true)
+      } else {
+        console.error('Sign-in status not complete:', result.status, result)
+        setError('Unable to complete sign in, please try again later.')
+      }
+    } catch (err: any) {
+      console.error('Sign-in error:', err)
+      setError(err.errors?.[0]?.longMessage || err.errors?.[0]?.message || 'Invalid email or password')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const onVerifySecondFactor = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+
+    if (!isLoaded || !verificationCode) return
+
+    setLoading(true)
+
+    try {
+      // Step 3: Attempt to complete second factor verification
+      const result = await signIn.attemptSecondFactor({
+        strategy: 'email_code',
+        code: verificationCode,
+      })
+
+      if (result.status === 'complete') {
+        // Set the active session
         await setActive({ session: result.createdSessionId })
         
         // Check for redirect URL from another app
@@ -78,12 +139,12 @@ export default function SignInPage() {
         
         router.push('/user-profile')
       } else {
-        console.error('Sign-in status not complete:', result.status, result);
-        setError('Unable to complete sign in, please try again later.');
+        console.error('Second factor verification failed:', result.status, result)
+        setError('Verification failed. Please check the code and try again.')
       }
     } catch (err: any) {
-      console.error('Sign-in error:', err)
-      setError(err.errors?.[0]?.longMessage || err.errors?.[0]?.message || 'Invalid email or password')
+      console.error('Second factor verification error:', err)
+      setError(err.errors?.[0]?.longMessage || err.errors?.[0]?.message || 'Invalid verification code')
     } finally {
       setLoading(false)
     }
@@ -115,58 +176,109 @@ export default function SignInPage() {
             </Alert>
           )}
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="emailAddress"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>University Email Address</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="442106350@qu.edu.sa"
-                        {...field}
-                        disabled={loading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          {!needsSecondFactor ? (
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="emailAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>University Email Address</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="442106350@qu.edu.sa"
+                          {...field}
+                          disabled={loading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter password"
-                        {...field}
-                        disabled={loading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="Enter password"
+                          {...field}
+                          disabled={loading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Signing In...
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
+                </Button>
+              </form>
+            </Form>
+          ) : (
+            <form onSubmit={onVerifySecondFactor} className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  A verification code has been sent to your email. Please enter it below to complete sign-in.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="verificationCode" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Verification Code
+                </label>
+                <Input
+                  id="verificationCode"
+                  type="text"
+                  placeholder="Enter 6-digit code"
+                  value={verificationCode}
+                  onChange={(e) => setVerificationCode(e.target.value)}
+                  disabled={loading}
+                  maxLength={6}
+                  autoComplete="one-time-code"
+                />
+              </div>
+
+              <Button type="submit" className="w-full" disabled={loading || !verificationCode}>
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Signing In...
+                    Verifying...
                   </>
                 ) : (
-                  'Sign In'
+                  'Verify Code'
                 )}
               </Button>
+
+              <Button
+                type="button"
+                variant="ghost"
+                className="w-full"
+                onClick={() => {
+                  setNeedsSecondFactor(false)
+                  setVerificationCode('')
+                  setError('')
+                }}
+                disabled={loading}
+              >
+                Back to Sign In
+              </Button>
             </form>
-          </Form>
+          )}
         </CardContent>
 
         <CardFooter className="flex flex-col space-y-2">
