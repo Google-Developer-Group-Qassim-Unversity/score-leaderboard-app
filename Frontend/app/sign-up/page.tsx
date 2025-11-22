@@ -193,7 +193,7 @@ export default function SignUpPage() {
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="your.name@qu.edu.sa"
+                        placeholder="442106350@qu.edu.sa"
                         autoComplete="email"
                         disabled={loading || pendingVerification}
                         {...field}

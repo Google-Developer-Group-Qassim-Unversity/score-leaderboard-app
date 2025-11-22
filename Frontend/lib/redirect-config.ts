@@ -7,17 +7,12 @@ export const ALLOWED_REDIRECT_DOMAINS = [
   // Local development
   'localhost',
   '127.0.0.1',
-  'gdg-q',
-  'https://gdg-q.com',
-  'event.gdg-q',
-  'event',
-  'https://event.gdg-q.com',
-  'auth.gdg-q',
-  'https://auth.gdg-q.com',
-  'event.gdg-q',
-  'https://event.gdg-q.com',
-  'g-spark.vercel.app',
   
+  // Production domains (without protocol)
+  'gdg-q.com',
+  'event.gdg-q.com',
+  'auth.gdg-q.com',
+  'g-spark.vercel.app',
   
   // Add your local test domains here
   // 'main.test',
