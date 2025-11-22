@@ -66,6 +66,7 @@ export default function SignInPage() {
 
       if (result.status === 'complete') {
         // Set the active session
+        console.log('Sign-in successful setting active session')
         await setActive({ session: result.createdSessionId })
         
         // Check for redirect URL from another app
@@ -75,13 +76,14 @@ export default function SignInPage() {
           return
         }
         
-        // Default redirect to home page
-        router.push('/')
+        router.push('/user-profile')
       } else {
-        setError('Unable to complete sign in. Please try again.')
+        console.error('Sign-in status not complete:', result.status, result);
+        setError('Unable to complete sign in, please try again later.');
       }
     } catch (err: any) {
-      setError(err.errors?.[0]?.message || 'Invalid email or password')
+      console.error('Sign-in error:', err)
+      setError(err.errors?.[0]?.longMessage || err.errors?.[0]?.message || 'Invalid email or password')
     } finally {
       setLoading(false)
     }
