@@ -1,33 +1,67 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
+// Define allowed routes
 const isOnboardingRoute = createRouteMatcher(['/onboarding'])
 const isAuthRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
+const isUserProfileRoute = createRouteMatcher(['/user-profile'])
+const isRootRoute = createRouteMatcher(['/'])
 
 export default clerkMiddleware(async (auth, req) => {
-  // Return early for routes that don't need auth checks to avoid unnecessary await calls
-  if (isOnboardingRoute(req) || isAuthRoute(req)) {
+  const { userId, sessionClaims } = await auth()
+
+  // Handle root route
+  if (isRootRoute(req)) {
+    if (!userId) {
+      // Redirect unauthenticated users to sign-in
+      return NextResponse.redirect(new URL('/sign-in', req.url))
+    }
+    
+    if (!sessionClaims?.metadata?.onboardingComplete) {
+      // Redirect authenticated but not onboarded users to onboarding
+      return NextResponse.redirect(new URL('/onboarding', req.url))
+    }
+    
+    // Redirect authenticated and onboarded users to user-profile page
+    return NextResponse.redirect(new URL('/user-profile', req.url))
+  }
+
+  // Allow auth routes for everyone
+  if (isAuthRoute(req)) {
     return NextResponse.next()
   }
 
-  // Only call await auth() when we actually need to check authentication
-  const { userId, sessionClaims } = await auth()
-
-  // If user is authenticated but hasn't completed onboarding, redirect to onboarding
-  if (userId && !sessionClaims?.metadata?.onboardingComplete) {
-    const onboardingUrl = new URL('/onboarding', req.url)
-    
-    // Preserve redirect_url parameter if present
-    const redirectUrl = req.nextUrl.searchParams.get('redirect_url')
-    if (redirectUrl) {
-      onboardingUrl.searchParams.set('redirect_url', redirectUrl)
+  // Allow onboarding route for authenticated users
+  if (isOnboardingRoute(req)) {
+    if (!userId) {
+      return NextResponse.redirect(new URL('/sign-in', req.url))
     }
-    
-    return NextResponse.redirect(onboardingUrl)
+    return NextResponse.next()
   }
 
-  // Allow all other routes (keeping everything public)
-  return NextResponse.next()
+  // Allow user-profile route only for authenticated users who completed onboarding
+  if (isUserProfileRoute(req)) {
+    if (!userId) {
+      return NextResponse.redirect(new URL('/sign-in', req.url))
+    }
+    
+    if (!sessionClaims?.metadata?.onboardingComplete) {
+      return NextResponse.redirect(new URL('/onboarding', req.url))
+    }
+    
+    return NextResponse.next()
+  }
+
+  // Block all other routes - redirect to appropriate page
+  if (!userId) {
+    return NextResponse.redirect(new URL('/sign-in', req.url))
+  }
+  
+  if (!sessionClaims?.metadata?.onboardingComplete) {
+    return NextResponse.redirect(new URL('/onboarding', req.url))
+  }
+  
+  return NextResponse.redirect(new URL('/user-profile', req.url))
 })
 
 export const config = {

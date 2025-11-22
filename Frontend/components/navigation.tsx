@@ -95,8 +95,8 @@ export function Navigation() {
     }
   }, [])
 
-  // Don't show navigation on auth pages
-  if (pathname?.startsWith("/sign-in") || pathname?.startsWith("/sign-up") || pathname?.startsWith("/onboarding")) {
+  // Don't show navigation on auth pages and user-profile page
+  if (pathname?.startsWith("/sign-in") || pathname?.startsWith("/sign-up") || pathname?.startsWith("/onboarding") || pathname?.startsWith("/user-profile")) {
     return null
   }
 
