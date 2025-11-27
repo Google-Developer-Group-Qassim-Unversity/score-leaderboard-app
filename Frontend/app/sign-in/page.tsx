@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { useSignIn } from '@clerk/nextjs'
+import { useSignIn, useAuth } from '@clerk/nextjs'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -13,7 +13,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,20 +22,16 @@ import { AlertCircle, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { isAllowedRedirectUrl } from '@/lib/redirect-config'
 
-// Sign-in form validation schema
 const signInSchema = z.object({
-  emailAddress: z
-    .string()
-    .email('Invalid email address'),
-  password: z
-    .string()
-    .min(1, 'Password is required'),
+  emailAddress: z.string().email('Invalid email address'),
+  password: z.string().min(1, 'Password is required'),
 })
 
 type SignInFormValues = z.infer<typeof signInSchema>
 
 export default function SignInPage() {
   const { isLoaded, signIn, setActive } = useSignIn()
+  const { isSignedIn } = useAuth() 
   const [error, setError] = React.useState('')
   const [loading, setLoading] = React.useState(false)
   const [needsSecondFactor, setNeedsSecondFactor] = React.useState(false)
@@ -52,43 +47,68 @@ export default function SignInPage() {
     },
   })
 
+  // Auto-redirect if already signed in
+  React.useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      const redirectUrl = searchParams.get('redirect_url')
+      if (redirectUrl) {
+         window.location.href = redirectUrl
+      } else {
+         router.push('/user-profile')
+      }
+    }
+  }, [isLoaded, isSignedIn, searchParams, router])
+
+  const handleComplete = async (sessionId: string) => {
+    // FIX 1: Guard clause for setActive
+    if (!setActive) {
+      return;
+    }
+
+    try {
+      await setActive({ session: sessionId })
+      
+      const redirectUrl = searchParams.get('redirect_url')
+      console.log("Attempting redirect to:", redirectUrl);
+      
+      if (redirectUrl && isAllowedRedirectUrl(redirectUrl)) {
+        window.location.href = redirectUrl
+      } else {
+        if (redirectUrl) console.warn("Redirect URL blocked by AllowList:", redirectUrl);
+        router.push('/user-profile')
+      }
+    } catch (err) {
+      console.error("Error setting active session:", err);
+      window.location.reload();
+    }
+  }
+
   const onSubmit = async (data: SignInFormValues) => {
     setError('')
-
     if (!isLoaded) return
-
     setLoading(true)
 
     try {
-      // Step 1: Initiate the sign-in process
       const result = await signIn.create({
         identifier: data.emailAddress,
         password: data.password,
       })
 
       if (result.status === 'complete') {
-        // Set the active session
-        console.log('Sign-in successful setting active session', result)
-        console.log("result stringified:", JSON.stringify(result, null, 2))
-        await setActive({ session: result.createdSessionId })
-        
-        // Check for redirect URL from another app
-        const redirectUrl = searchParams.get('redirect_url')
-        if (redirectUrl && isAllowedRedirectUrl(redirectUrl)) {
-          window.location.href = redirectUrl
-          return
+        // FIX 2: Ensure session ID exists before calling handleComplete
+        if (!result.createdSessionId) {
+            console.error("Session complete but no ID returned")
+            setError('Error creating session.')
+            return
         }
-        
-        router.push('/user-profile')
+        await handleComplete(result.createdSessionId)
       } else if (result.status === 'needs_second_factor') {
-        // Step 2: Second factor required - prepare email_code verification
-        // Get the email address ID from the supported second factors
         const emailAddressId = result.supportedSecondFactors?.find(
           (factor) => factor.strategy === 'email_code'
         )?.emailAddressId
 
         if (!emailAddressId) {
-          setError('Unable to send verification code. Please try again.')
+          setError('Unable to send verification code.')
           return
         }
 
@@ -96,16 +116,18 @@ export default function SignInPage() {
           strategy: 'email_code',
           emailAddressId: emailAddressId,
         })
-        
-        // Show the verification code input
         setNeedsSecondFactor(true)
       } else {
-        console.error('Sign-in status not complete:', result.status, result)
-        setError('Unable to complete sign in, please try again later.')
+        setError('Unable to complete sign in.')
       }
     } catch (err: any) {
       console.error('Sign-in error:', err)
-      setError(err.errors?.[0]?.longMessage || err.errors?.[0]?.message || 'Invalid email or password')
+      if (err.errors?.[0]?.code === 'form_password_incorrect' || 
+          err.errors?.[0]?.code === 'form_identifier_not_found') {
+        setError('Invalid email or password')
+      } else {
+        setError(err.errors?.[0]?.longMessage || 'An unexpected error occurred.')
+      }
     } finally {
       setLoading(false)
     }
@@ -114,46 +136,38 @@ export default function SignInPage() {
   const onVerifySecondFactor = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-
     if (!isLoaded || !verificationCode) return
-
     setLoading(true)
 
     try {
-      // Step 3: Attempt to complete second factor verification
       const result = await signIn.attemptSecondFactor({
         strategy: 'email_code',
         code: verificationCode,
       })
 
       if (result.status === 'complete') {
-        // Set the active session
-        await setActive({ session: result.createdSessionId })
-        
-        // Check for redirect URL from another app
-        const redirectUrl = searchParams.get('redirect_url')
-        if (redirectUrl && isAllowedRedirectUrl(redirectUrl)) {
-          window.location.href = redirectUrl
-          return
+        // FIX 3: Ensure session ID exists here too
+        if (!result.createdSessionId) {
+            console.error("Session complete but no ID returned")
+            setError('Error creating session.')
+            return
         }
-        
-        router.push('/user-profile')
+        await handleComplete(result.createdSessionId)
       } else {
-        console.error('Second factor verification failed:', result.status, result)
-        setError('Verification failed. Please check the code and try again.')
+        setError('Verification failed.')
       }
     } catch (err: any) {
-      console.error('Second factor verification error:', err)
-      setError(err.errors?.[0]?.longMessage || err.errors?.[0]?.message || 'Invalid verification code')
+      setError(err.errors?.[0]?.longMessage || 'Invalid verification code')
     } finally {
       setLoading(false)
     }
   }
 
-  if (!isLoaded) {
+  if (!isLoaded || (isLoaded && isSignedIn)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
+        <span className="ml-2">Redirecting...</span>
       </div>
     )
   }
