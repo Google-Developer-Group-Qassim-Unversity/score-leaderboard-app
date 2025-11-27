@@ -13,6 +13,8 @@ export const ALLOWED_REDIRECT_DOMAINS = [
   'event.gdg-q.com',
   'auth.gdg-q.com',
   'g-spark.vercel.app',
+  'localhost:3000',
+  'localhost:3001'
   
   // Add your local test domains here
   // 'main.test',
