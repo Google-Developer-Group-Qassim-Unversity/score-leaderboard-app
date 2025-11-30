@@ -16,11 +16,11 @@ export function CountdownTimer() {
     const calculateTimeLeft = () => {
       const now = new Date()
       let targetYear = now.getFullYear()
-      let targetDate = new Date(targetYear, 11, 2, 0, 0, 0)
+      let targetDate = new Date(targetYear, 11, 9, 0, 0, 0)
 
       if (now > targetDate) {
         targetYear += 1
-        targetDate = new Date(targetYear, 11, 2, 0, 0, 0)
+        targetDate = new Date(targetYear, 11, 9, 0, 0, 0)
       }
 
       const difference = targetDate.getTime() - now.getTime()
