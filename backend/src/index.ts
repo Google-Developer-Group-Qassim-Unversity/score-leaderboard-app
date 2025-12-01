@@ -13,7 +13,7 @@ if (process.env.DEV_DATABASE_URL) {
 }
 
 const app = express();
-const PORT = 8000;
+const PORT = 8500;
 export const prisma = new PrismaClient();
 
 app.use(cors());
