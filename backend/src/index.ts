@@ -71,7 +71,7 @@ app.get("/members/:id", async (req, res, next) => {
 
 
 async function handleRoot(req: Request, res: Response) {
-    res.status(200).send("<h1>Score Leaderboard API is Ready ✅</h1>").end()
+    res.status(200).send("<h1>🥷 Private Score Leaderboard API is Ready ✅</h1>").end()
 }
 
 
