@@ -3,7 +3,6 @@
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
 import { useState, useEffect, useRef } from "react"
 import {
   Home,
@@ -14,8 +13,6 @@ import {
   BadgeHelp,
   Menu,
   X,
-  LogIn,
-  UserPlus,
   Layout,
   MoreHorizontal,
   CalendarDays
@@ -50,13 +47,12 @@ export function Navigation() {
       
       // Estimate space needed for each component
       const logoWidth = width < 640 ? 80 : 180 // Logo + text
-      const authWidth = width < 1024 ? 100 : 200 // Auth buttons (compact on mobile/tablet)
       const menuButtonWidth = 48 // Hamburger/overflow button
       const padding = 32 // Container padding
       const gaps = 32 // Gaps between sections
       
       // Calculate available space for navigation
-      const availableSpace = width - logoWidth - authWidth - menuButtonWidth - padding - gaps
+      const availableSpace = width - logoWidth - menuButtonWidth - padding - gaps
       
       // Estimate item width based on screen size
       let itemWidth: number
@@ -94,11 +90,6 @@ export function Navigation() {
       window.removeEventListener('resize', calculateVisibleItems)
     }
   }, [])
-
-  // Don't show navigation on auth pages
-  if (pathname?.startsWith("/sign-in") || pathname?.startsWith("/sign-up")) {
-    return null
-  }
 
   const visibleNavItems = navigationItems.slice(0, visibleItems)
   const hiddenNavItems = navigationItems.slice(visibleItems)
@@ -150,51 +141,8 @@ export function Navigation() {
           })}
         </div>
 
-        {/* Auth Section */}
+        {/* Overflow/Mobile Menu */}
         <div className="flex items-center gap-1.5 shrink-0">
-          <SignedOut>
-            <div className="hidden lg:flex items-center gap-1.5">
-              <Button asChild variant="ghost" size="sm" className="h-9">
-                <Link href="/sign-in" className="flex items-center gap-1.5 px-3">
-                  <LogIn className="h-4 w-4" />
-                  <span className="text-sm">Sign In</span>
-                </Link>
-              </Button>
-              <Button asChild size="sm" className="h-9">
-                <Link href="/sign-up" className="flex items-center gap-1.5 px-3">
-                  <UserPlus className="h-4 w-4" />
-                  <span className="text-sm">Sign Up</span>
-                </Link>
-              </Button>
-            </div>
-            <div className="flex lg:hidden items-center gap-1">
-              <Button asChild variant="ghost" size="icon" className="h-9 w-9">
-                <Link href="/sign-in">
-                  <LogIn className="h-4 w-4" />
-                  <span className="sr-only">Sign In</span>
-                </Link>
-              </Button>
-              <Button asChild size="icon" className="h-9 w-9">
-                <Link href="/sign-up">
-                  <UserPlus className="h-4 w-4" />
-                  <span className="sr-only">Sign Up</span>
-                </Link>
-              </Button>
-            </div>
-          </SignedOut>
-          
-          <SignedIn>
-            <UserButton 
-              afterSignOutUrl="/"
-              appearance={{
-                elements: {
-                  avatarBox: "h-9 w-9"
-                }
-              }}
-            />
-          </SignedIn>
-
-          {/* Overflow/Mobile Menu */}
           {(hasHiddenItems || visibleItems === 0) && (
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
@@ -250,26 +198,6 @@ export function Navigation() {
                       })}
                     </div>
                   </div>
-
-                  {/* Auth Buttons */}
-                  <SignedOut>
-                    <div className="p-4 border-t bg-muted/30">
-                      <div className="flex gap-2">
-                        <Button asChild variant="outline" size="sm" className="flex-1">
-                          <Link href="/sign-in" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
-                            <LogIn className="h-4 w-4" />
-                            <span>Sign In</span>
-                          </Link>
-                        </Button>
-                        <Button asChild size="sm" className="flex-1">
-                          <Link href="/sign-up" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
-                            <UserPlus className="h-4 w-4" />
-                            <span>Sign Up</span>
-                          </Link>
-                        </Button>
-                      </div>
-                    </div>
-                  </SignedOut>
                 </div>
               </SheetContent>
             </Sheet>
