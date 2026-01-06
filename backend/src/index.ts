@@ -6,6 +6,7 @@ import { logErrorsMiddleware } from "./middlewares.js";
 import { handleMembers, handleMembersCount, handleMembersById } from "./members.js";
 import { handleDepartments, handleDepartmentsCount, handleDepartmentsById } from "./departments.js";
 import dotenv from "dotenv";
+// yay
 dotenv.config();
 
 if (process.env.DEV_DATABASE_URL) {
