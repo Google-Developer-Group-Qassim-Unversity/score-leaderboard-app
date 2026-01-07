@@ -29,7 +29,7 @@ export type {
   LeaderboardSummary,
 }
 
-const API_BASE_URL = "http://178.128.205.239:8500"
+const API_BASE_URL = "https://private.albrrak773.com"
 
 // Define common options for GET requests
 const options = {
