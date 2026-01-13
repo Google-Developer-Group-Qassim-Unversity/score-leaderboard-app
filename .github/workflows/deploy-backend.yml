@@ -20,16 +20,21 @@ jobs:
 
       - name: Copy backend files to VPS
         run: |
-          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" backend/ root@178.128.205.239:/root/score-leaderboard-app
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" backend/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/ubuntu/score-leaderboard-app
 
       - name: Set environment variables on VPS
         run: |
-          ssh -o StrictHostKeyChecking=no root@178.128.205.239 "echo 'DATABASE_URL=${{ secrets.DATABASE_URL }}' > /root/score-leaderboard-app/.env"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} "echo 'DATABASE_URL=${{ secrets.DATABASE_URL }}' > /home/ubuntu/score-leaderboard-app/.env"
 
       - name: Install dependencies and restart backend
         run: |
-          ssh -o StrictHostKeyChecking=no root@178.128.205.239 << 'EOF'
-            cd /root/score-leaderboard-app
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
+            cd /home/ubuntu/score-leaderboard-app
+            
+            export NVM_DIR="$HOME/.nvm"
+            # Load NVM manually since this is a non-interactive shell
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
             npm install
             npm run build
             pm2 restart gdg-qassim-leaderboard-backend || pm2 start dist/index.js --name gdg-qassim-leaderboard-backend
