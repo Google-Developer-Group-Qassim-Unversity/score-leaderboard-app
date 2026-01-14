@@ -40,12 +40,12 @@ export function EventCard({ event }: EventCardProps) {
       </CardHeader>
       <CardContent>
         {event.image_url && (
-          <div className="relative w-full aspect-square">
+          <div className="relative w-full aspect-auto">
             <Image
               src={IMAGE_SOURCE + event.image_url}
               alt={event.name}
-              width={350}
-              height={467}
+              width={3000}
+              height={4000}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover rounded-md"
             />

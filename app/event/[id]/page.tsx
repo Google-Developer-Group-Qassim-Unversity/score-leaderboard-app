@@ -11,6 +11,7 @@ import Link from "next/link"
 import type { ApiEventItem } from "@/lib/api-types"
 
 export const dynamic = "force-dynamic"
+const IMAGE_SOURCE = process.env.NEXT_PUBLIC_DEV_IMAGE_SOURCE || process.env.NEXT_PUBLIC_IMAGE_SOURCE;
 
 interface EventDetailPageProps {
   params: {
@@ -62,11 +63,10 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
       {event.image_url && (
         <div className="relative w-full max-w-2xl mx-auto bg-slate-100 rounded-2xl overflow-hidden mb-8 shadow-xl">
           <Image
-            src={event.image_url}
+            src={IMAGE_SOURCE + event.image_url}
             alt={event.name}
-            width={4023}
-            height={4160}
-            quality={95}
+            width={3000}
+            height={4000}
             className="w-full h-auto"
             style={{ imageRendering: 'crisp-edges' }}
             priority
