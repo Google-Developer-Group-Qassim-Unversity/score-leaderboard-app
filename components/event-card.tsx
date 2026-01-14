@@ -54,7 +54,7 @@ export function EventCard({ event }: EventCardProps) {
       </CardContent>
 
       <CardFooter className="gap-2">
-        <Link href={`/event/${event.id}`} className="flex-1">
+        <Link href={`/events/${event.id}`} className="flex-1">
           <Button variant="outline" className="w-full">
             View Details
           </Button>
