@@ -19,6 +19,7 @@ import {
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
+import { AuthButton } from "@/components/auth-button"
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
@@ -67,56 +68,61 @@ export function Navigation() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <Image src="/gdg.png" alt="GDG Logo" width={32} height={32} className="rounded" />
-          <span className="font-bold text-lg hidden sm:block">GDG Leaderboard</span>
+          <span className="font-bold text-lg hidden sm:block">GDG Qassim</span>
           <span className="font-bold text-lg sm:hidden">GDG</span>
         </Link>
 
         {/* Desktop & Tablet Navigation - hidden on mobile */}
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden md:flex items-center gap-1 flex-1 justify-center">
           {navItems.map((item) => (
             <NavLink key={item.href} {...item} isActive={pathname === item.href} />
           ))}
         </div>
 
-        {/* Mobile Menu - visible only on mobile */}
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[280px] p-0 [&>button]:hidden">
-            <div className="flex flex-col h-full">
-              {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b">
-                <Link href="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
-                  <Image src="/gdg.png" alt="GDG Logo" width={32} height={32} className="rounded" />
-                  <span className="font-bold">GDG Leaderboard</span>
-                </Link>
-                <SheetClose asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full">
-                    <X className="h-5 w-5" strokeWidth={2.5} />
-                    <span className="sr-only">Close</span>
-                  </Button>
-                </SheetClose>
-              </div>
+        {/* Auth Button & Mobile Menu */}
+        <div className="flex items-center gap-2">
+          <AuthButton />
+          
+          {/* Mobile Menu - visible only on mobile */}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[280px] p-0 [&>button]:hidden">
+              <div className="flex flex-col h-full">
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b">
+                  <Link href="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
+                    <Image src="/gdg.png" alt="GDG Logo" width={32} height={32} className="rounded" />
+                    <span className="font-bold">GDG-Qassim</span>
+                  </Link>
+                  <SheetClose asChild>
+                    <Button variant="ghost" size="icon" className="rounded-full">
+                      <X className="h-5 w-5" strokeWidth={2.5} />
+                      <span className="sr-only">Close</span>
+                    </Button>
+                  </SheetClose>
+                </div>
 
-              {/* Nav Items */}
-              <div className="flex-1 overflow-y-auto p-3">
-                <div className="flex flex-col gap-1">
-                  {navItems.map((item) => (
-                    <MobileNavLink key={item.href} {...item} isActive={pathname === item.href} onClick={() => setIsOpen(false)} />
-                  ))}
+                {/* Nav Items */}
+                <div className="flex-1 overflow-y-auto p-3">
+                  <div className="flex flex-col gap-1">
+                    {navItems.map((item) => (
+                      <MobileNavLink key={item.href} {...item} isActive={pathname === item.href} onClick={() => setIsOpen(false)} />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </nav>
   )
