@@ -1,12 +1,30 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
-import { Suspense } from "react"
-import Script from 'next/script';
+import { ThemeProvider } from "@/components/theme-provider"
+import Script from "next/script"
+
 export const metadata: Metadata = {
-  title: "GDG",
+  title: {
+    default: "GDG",
+    template: "%s - GDG",
+  },
+  description: "Track scores for members and departments GDG-Q ",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  manifest: "/site.webmanifest",
+}
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "#252525" },
+  ],
 }
 
 export default function RootLayout({
@@ -15,10 +33,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.png" type="image/png"/>
-        <link rel="manifest" href="/manifest.json" />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-Z62ENW3LFQ"
           strategy="afterInteractive"
@@ -32,12 +48,17 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body className="font-sans">
-        <Suspense fallback={<div>Loading...</div>}>
+      <body className="font-sans antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
           <Navigation />
           {children}
-        </Suspense>
-        <Analytics />
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   )

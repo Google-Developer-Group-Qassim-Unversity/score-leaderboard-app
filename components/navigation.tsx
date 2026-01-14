@@ -108,7 +108,7 @@ export function Navigation() {
         {/* Logo and Site Name */}
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0">
           <Image
-            src="/gdg-transparent.png"
+            src="/gdg.png"
             alt="GDG Logo"
             width={32}
             height={32}

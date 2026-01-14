@@ -48,7 +48,7 @@ export default async function Dashboard() {
         <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <PageHeader 
-          icon="/gdg-transparent.png"
+          icon="/gdg.png"
           heading="Leaderboard Dashboard"
           iconColor="white"
           subHeading="Track performance across members and departments with comprehensive points tracking"

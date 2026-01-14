@@ -25,8 +25,8 @@ export function PageHeader({ icon, iconColor = "blue", heading, subHeading }: Pa
       <Image
         src={icon}
         alt="Logo"
-        width={64}
-        height={64}
+        width={16}
+        height={16}
         className="w-full h-full object-contain"
       />
     );

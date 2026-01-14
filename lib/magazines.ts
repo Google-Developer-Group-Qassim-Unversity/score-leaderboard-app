@@ -15,7 +15,7 @@ export const magazines: Magazine[] = [
     title: "مجلة قوقل لشهر سبتمبر 2025",
     description: "",
     pdfUrl: "https://heyzine.com/flip-book/4717de5304.html", 
-    coverImage: "/picV1.jpg",
+    coverImage: "/magazine/picV1.jpg",
     publishDate: "2025-10-03",
     pages: 8
   },
@@ -24,7 +24,7 @@ export const magazines: Magazine[] = [
     title: "مجلة قوقل لشهر أكتوبر 2025",
     description: "",
     pdfUrl: "https://heyzine.com/flip-book/cccf4781db.html", 
-    coverImage: "/picV2.jpg",
+    coverImage: "/magazine/picV2.jpg",
     publishDate: "2025-11-06",
     pages: 12
   }
