@@ -1,7 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton"
 import { PageHeader } from "@/components/page-header"
-import { CalendarDays } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { SectionHeader } from "@/components/section-header"
+import { CalendarDays, CheckCircle2, History } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
 
 export default function EventsLoading() {
   return (
@@ -12,27 +13,42 @@ export default function EventsLoading() {
         icon={CalendarDays}
       />
 
-      <Tabs defaultValue="open" className="mt-8">
-        <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid">
-          <TabsTrigger value="open" disabled>
-            Open (...)
-          </TabsTrigger>
-          <TabsTrigger value="upcoming" disabled>
-            Upcoming (...)
-          </TabsTrigger>
-          <TabsTrigger value="history" disabled>
-            History (...)
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="open" className="mt-6">
+      <div className="mt-8 space-y-12">
+        {/* Open Events Section */}
+        <section>
+          <div className="flex items-center gap-2 mb-6">
+            <CheckCircle2 className="h-6 w-6 text-slate-600" />
+            <div className="flex-1">
+              <Skeleton className="h-7 w-40 mb-1" />
+              <Skeleton className="h-4 w-60" />
+            </div>
+          </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, i) => (
+            {Array.from({ length: 3 }).map((_, i) => (
               <EventCardSkeleton key={i} />
             ))}
           </div>
-        </TabsContent>
-      </Tabs>
+        </section>
+
+        {/* Separator */}
+        <Separator className="my-12" />
+
+        {/* Event History Section */}
+        <section>
+          <div className="flex items-center gap-2 mb-6">
+            <History className="h-6 w-6 text-slate-600" />
+            <div className="flex-1">
+              <Skeleton className="h-7 w-40 mb-1" />
+              <Skeleton className="h-4 w-60" />
+            </div>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <EventCardSkeleton key={i} />
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   )
 }

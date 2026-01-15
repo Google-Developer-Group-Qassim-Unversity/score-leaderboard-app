@@ -1,273 +1,252 @@
-import { notFound } from "next/navigation"
-import Image from "next/image"
-import { fetchEvents } from "@/lib/api"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Calendar, Clock, MapPin, Users, ChevronLeft, Timer } from "lucide-react"
-import { calculateEventDuration } from "@/lib/event-utils"
-import Link from "next/link"
-import type { ApiEventItem } from "@/lib/api-types"
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import { fetchEvents } from "@/lib/api";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Globe,
+  ChevronLeft,
+  Info,
+} from "lucide-react";
+import Link from "next/link";
+import type { ApiEventItem } from "@/lib/api-types";
+import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 
-export const dynamic = "force-dynamic"
-const IMAGE_SOURCE = process.env.NEXT_PUBLIC_DEV_IMAGE_SOURCE || process.env.NEXT_PUBLIC_IMAGE_SOURCE;
+export const dynamic = "force-dynamic";
+const IMAGE_SOURCE =
+  process.env.NEXT_PUBLIC_DEV_IMAGE_SOURCE ||
+  process.env.NEXT_PUBLIC_IMAGE_SOURCE;
 
 interface EventDetailPageProps {
   params: {
-    id: string
-  }
+    id: string;
+  };
 }
 
-const getStatusStyles = (status: ApiEventItem["status"]) => {
+const getStatusVariant = (status: ApiEventItem["status"]) => {
   switch (status) {
-    case "announced":
-      return {
-        badge: "bg-blue-100 text-blue-700 border-blue-300",
-        label: "Upcoming"
-      }
     case "open":
-      return {
-        badge: "bg-green-100 text-green-700 border-green-300",
-        label: "Open for Signup"
-      }
+      return "default" as const;
+    case "announced":
+      return "secondary" as const;
     case "closed":
-      return {
-        badge: "bg-gray-100 text-gray-700 border-gray-300",
-        label: "Closed"
-      }
+      return "outline" as const;
+    default:
+      return "secondary" as const;
   }
-}
+};
 
-export default async function EventDetailPage({ params }: EventDetailPageProps) {
-  const events = await fetchEvents()
-  const event = events.find(e => e.id === parseInt(params.id))
+export default async function EventDetailPage({
+  params,
+}: EventDetailPageProps) {
+  const events = await fetchEvents();
+  const event = events.find((e) => e.id === parseInt(params.id));
 
   if (!event) {
-    notFound()
+    notFound();
   }
 
-  const styles = getStatusStyles(event.status)
-  const isOnline = event.location_type === "online"
-  const duration = calculateEventDuration(event.start_datetime, event.end_datetime)
+  // Construct full image URL
+  const imageUrl =
+    event.image_url && IMAGE_SOURCE
+      ? `${IMAGE_SOURCE}${event.image_url}`
+      : null;
+
+  // Get location icon based on location type
+  const LocationIcon = event.location_type === "online" ? Globe : MapPin;
+
+  // Format date only
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  // Format time only
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const startDate = formatDate(event.start_datetime);
+  const endDate = formatDate(event.end_datetime);
+  const dailyStartTime = formatTime(event.start_datetime);
+  const dailyEndTime = formatTime(event.end_datetime);
+
+  // Check if start and end are on the same day
+  const isSameDay =
+    new Date(event.start_datetime).toDateString() ===
+    new Date(event.end_datetime).toDateString();
+
+  // Calculate duration in days
+  const start = new Date(event.start_datetime);
+  const end = new Date(event.end_datetime);
+  const startDateOnly = new Date(
+    start.getFullYear(),
+    start.getMonth(),
+    start.getDate()
+  );
+  const endDateOnly = new Date(
+    end.getFullYear(),
+    end.getMonth(),
+    end.getDate()
+  );
+  const diffTime = Math.abs(endDateOnly.getTime() - startDateOnly.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+  // Get location type label
+  const getLocationTypeLabel = () => {
+    switch (event.location_type) {
+      case "online":
+        return "Online Event";
+      case "on-site":
+        return "On-site Event";
+      case "none":
+        return "No Location";
+      default:
+        return event.location_type;
+    }
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl" dir="rtl">
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Back Button */}
-      <Link href="/events" className="inline-flex items-center text-sm text-slate-600 hover:text-slate-900 mb-6 transition-colors">
+      <Link
+        href="/events"
+        className="inline-flex items-center text-sm text-slate-600 hover:text-slate-900 mb-6 transition-colors"
+      >
         <ChevronLeft className="h-4 w-4 ml-1" />
         Back to Events
       </Link>
 
-      {/* Event Image */}
-      {event.image_url && (
-        <div className="relative w-full max-w-2xl mx-auto bg-slate-100 rounded-2xl overflow-hidden mb-8 shadow-xl">
-          <Image
-            src={IMAGE_SOURCE + event.image_url}
-            alt={event.name}
-            width={3000}
-            height={4000}
-            className="w-full h-auto"
-            style={{ imageRendering: 'crisp-edges' }}
-            priority
-          />
-        </div>
-      )}
-
-      {/* Event Header */}
-      <div className="mb-8">
-        <div className="flex items-start justify-between flex-wrap gap-4 mb-4">
-          <h1 className="text-4xl font-bold text-slate-900">{event.name}</h1>
-          <Badge variant="outline" className={`${styles.badge} font-semibold text-sm px-3 py-1`}>
-            {styles.label}
-          </Badge>
-        </div>
-        {event.description && (
-          <p className="text-lg text-slate-600 mt-4 whitespace-pre-line">
-            {event.description}
-          </p>
-        )}
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Event Details Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Event Details</CardTitle>
-              <CardDescription>When and where this event takes place</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Date */}
-              <div className="flex items-start gap-4">
-                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-3 shadow-md">
-                  <Calendar className="h-5 w-5 text-white" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-slate-900 mb-1">
-                    {duration.isSingleDay ? "Date" : "Dates"}
-                  </p>
-                  <p className="text-slate-600 text-lg" dir="ltr">{duration.dateDisplay}</p>
-                  {!duration.isSingleDay && (
-                    <p className="text-sm text-slate-500 mt-1" dir="ltr">
-                      {duration.numberOfDays} day{duration.numberOfDays !== 1 ? 's' : ''}
-                    </p>
-                  )}
-                </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-start">
+        {/* Event Image - Left Side */}
+        <div className="flex justify-center lg:justify-start">
+          {imageUrl ? (
+            <ImageZoom zoomMargin={20}>
+              <Image
+                src={imageUrl}
+                alt={event.name}
+                width={600}
+                height={200}
+                className="rounded-xl max-w-full lg:max-w-md xl:max-w-lg h-auto max-h-150 object-contain"
+                priority
+              />
+            </ImageZoom>
+          ) : (
+            <div className="flex items-center justify-center w-64 h-64 bg-muted rounded-xl text-muted-foreground">
+              <div className="text-center">
+                <Calendar className="h-16 w-16 mx-auto mb-2 opacity-50" />
+                <span className="text-sm">No event image</span>
               </div>
-
-              <Separator />
-
-              {/* Time */}
-              <div className="flex items-start gap-4">
-                <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-3 shadow-md">
-                  <Clock className="h-5 w-5 text-white" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-slate-900 mb-1">Time</p>
-                  <p className="text-slate-600 text-lg" dir="ltr">{duration.timeDisplay}</p>
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Duration */}
-              <div className="flex items-start gap-4">
-                <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg p-3 shadow-md">
-                  <Timer className="h-5 w-5 text-white" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-slate-900 mb-1">Duration</p>
-                  {duration.isSingleDay ? (
-                    <p className="text-slate-600 text-lg" dir="ltr">
-                      {Math.floor(duration.hoursPerDay)} hour{Math.floor(duration.hoursPerDay) !== 1 ? 's' : ''}
-                      {duration.hoursPerDay % 1 !== 0 && ` ${Math.round((duration.hoursPerDay % 1) * 60)} minutes`}
-                    </p>
-                  ) : (
-                    <div>
-                      <p className="text-slate-600 text-lg" dir="ltr">
-                        {Math.floor(duration.hoursPerDay)} hour{Math.floor(duration.hoursPerDay) !== 1 ? 's' : ''} per day
-                      </p>
-                      <p className="text-sm text-slate-500 mt-1" dir="ltr">
-                        Total: {duration.numberOfDays} days
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Location */}
-              <div className="flex items-start gap-4">
-                <div className={`bg-gradient-to-br ${isOnline ? 'from-green-500 to-emerald-600' : 'from-orange-500 to-red-600'} rounded-lg p-3 shadow-md`}>
-                  <MapPin className="h-5 w-5 text-white" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-slate-900 mb-1">Location</p>
-                  {isOnline ? (
-                    <div>
-                      <p className="text-green-600 font-medium mb-1">Online Event</p>
-                      <p className="text-sm text-slate-600">Join from anywhere with an internet connection</p>
-                    </div>
-                  ) : (
-                    <div>
-                      <p className="text-orange-600 font-medium mb-1">On-Site Event</p>
-                      <p className="text-slate-600">{event.location || "Location to be announced"}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Additional Information Card */}
-          {!event.description && (
-            <Card>
-              <CardHeader>
-                <CardTitle>About This Event</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-slate-600">
-                  More details about this event will be shared soon. Please check back later for updates.
-                </p>
-              </CardContent>
-            </Card>
+            </div>
           )}
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Registration Card */}
-          <Card className={event.status === "open" ? "border-2 border-green-300 shadow-lg" : ""}>
-            <CardHeader>
-              <CardTitle className="text-lg">Registration</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {event.status === "open" && (
-                <>
-                  <p className="text-sm text-slate-600">
-                    Registration is currently open for this event. Sign up now to secure your spot!
-                  </p>
-                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white" size="lg">
-                    <Users className="h-4 w-4 ml-2" />
-                    Sign Up Now
-                  </Button>
-                </>
-              )}
-              {event.status === "announced" && (
-                <>
-                  <p className="text-sm text-slate-600">
-                    Registration has not opened yet. Check back soon to sign up for this event.
-                  </p>
-                  <Button className="w-full" variant="outline" disabled>
-                    Registration Not Open
-                  </Button>
-                </>
-              )}
-              {event.status === "closed" && (
-                <>
-                  <p className="text-sm text-slate-600">
-                    Registration for this event has closed. Stay tuned for future events!
-                  </p>
-                  <Button className="w-full" variant="outline" disabled>
-                    Registration Closed
-                  </Button>
-                </>
-              )}
-            </CardContent>
-          </Card>
+        {/* Event Info - Right Side */}
+        <div className="space-y-6 min-w-0">
+          {/* Title */}
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold" dir="auto">
+            {event.name}
+          </h1>
 
-          {/* Quick Info Card */}
+          {/* Badges */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Badge
+              variant={getStatusVariant(event.status)}
+              className="text-sm px-3 py-1"
+            >
+              {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
+            </Badge>
+          </div>
+
+          {/* Date & Time */}
+          <div className="space-y-3">
+            <div className="flex items-start gap-2 text-muted-foreground">
+              <Calendar className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <div className="flex-1">
+                {isSameDay ? (
+                  <span className="font-medium text-foreground text-base sm:text-lg">
+                    {startDate}
+                  </span>
+                ) : (
+                  <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-1 sm:gap-2">
+                    <span className="font-medium text-foreground text-base sm:text-lg">
+                      {startDate}
+                    </span>
+                    <span className="hidden sm:inline">—</span>
+                    <span className="font-medium text-foreground text-base sm:text-lg">
+                      {endDate}
+                    </span>
+                    {diffDays > 1 && (
+                      <span className="text-sm text-muted-foreground font-normal">
+                        ({diffDays} Days)
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Clock className="h-5 w-5 text-primary shrink-0" />
+              <span className="font-medium text-foreground">
+                {dailyStartTime} - {dailyEndTime}
+              </span>
+              {!isSameDay && (
+                <span className="text-sm text-muted-foreground">(daily)</span>
+              )}
+            </div>
+          </div>
+
+          {/* Location */}
+          {event.location_type !== "none" && (
+            <div className="flex items-start gap-2 text-muted-foreground">
+              <LocationIcon className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <div>
+                <span className="text-sm">{getLocationTypeLabel()}</span>
+                <p className="font-medium text-foreground">{event.location}</p>
+              </div>
+            </div>
+          )}
+
+          <Separator />
+
+          {/* Description Section */}
           <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Quick Info</CardTitle>
+            <CardHeader className="flex flex-row items-center gap-2 py-4">
+              <Info className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xl font-semibold">
+                Description
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-600">Event Type:</span>
-                <span className="font-medium text-slate-900">{isOnline ? "Online" : "On-Site"}</span>
-              </div>
-              <Separator />
-              <div className="flex justify-between">
-                <span className="text-slate-600">Status:</span>
-                <span className="font-medium text-slate-900">{styles.label}</span>
-              </div>
-              <Separator />
-              <div className="flex justify-between">
-                <span className="text-slate-600">Duration:</span>
-                <span className="font-medium text-slate-900">
-                  {duration.isSingleDay 
-                    ? `${Math.floor(duration.hoursPerDay)}hr${Math.floor(duration.hoursPerDay) !== 1 ? 's' : ''}`
-                    : `${duration.numberOfDays} days`
-                  }
-                </span>
-              </div>
+            <CardContent className="pb-6">
+              {event.description ? (
+                <p
+                  className="text-muted-foreground leading-relaxed whitespace-pre-wrap"
+                  dir="auto"
+                >
+                  {event.description}
+                </p>
+              ) : (
+                <p className="text-muted-foreground italic">
+                  No description provided for this event.
+                </p>
+              )}
             </CardContent>
           </Card>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -6,7 +6,6 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-  CardAction,
   CardFooter,
 } from "@/components/ui/card";
 import {
@@ -20,16 +19,16 @@ import {
 } from "@/components/ui/dialog";
 import type { ApiEventItem } from "@/lib/api-types";
 import { Button } from "./ui/button";
-import { Separator } from "./ui/separator";
 interface EventCardProps {
   event: ApiEventItem;
+  hideSignup?: boolean;
 }
 
 const IMAGE_SOURCE =
   process.env.NEXT_PUBLIC_DEV_IMAGE_SOURCE ||
   process.env.NEXT_PUBLIC_IMAGE_SOURCE;
 
-export function EventCard({ event }: EventCardProps) {
+export function EventCard({ event, hideSignup = false }: EventCardProps) {
   return (
     <Card dir="rtl">
       <CardHeader>
@@ -54,28 +53,30 @@ export function EventCard({ event }: EventCardProps) {
       </CardContent>
 
       <CardFooter className="gap-2">
-        <Link href={`/events/${event.id}`} className="flex-1">
+        <Link href={`/events/${event.id}`} className={hideSignup ? "w-full" : "flex-1"}>
           <Button variant="outline" className="w-full">
             View Details
           </Button>
         </Link>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="flex-1">Sign Up</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Confirm Sign Up</DialogTitle>
-              <DialogDescription>
-                Are you sure you want to sign up for this event: {event.name}?
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button variant="outline">Cancel</Button>
-              <Button>Confirm Sign Up</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        {!hideSignup && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="flex-1">Sign Up</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Confirm Sign Up</DialogTitle>
+                <DialogDescription>
+                  Are you sure you want to sign up for this event: {event.name}?
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="outline">Cancel</Button>
+                <Button>Confirm Sign Up</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
       </CardFooter>
     </Card>
   );

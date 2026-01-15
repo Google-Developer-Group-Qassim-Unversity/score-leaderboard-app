@@ -9,10 +9,10 @@ import type { ApiEventItem } from "@/lib/api-types"
 interface EventsListProps {
   events: ApiEventItem[]
   emptyMessage?: string
-  hideStatus?: boolean
+  hideSignup?: boolean
 }
 
-export function EventsList({ events, emptyMessage = "No events found", hideStatus = false }: EventsListProps) {
+export function EventsList({ events, emptyMessage = "No events found", hideSignup = false}: EventsListProps) {
   const [searchQuery, setSearchQuery] = useState("")
 
   const filteredEvents = events.filter((event) =>
@@ -31,7 +31,7 @@ export function EventsList({ events, emptyMessage = "No events found", hideStatu
   return (
     <div className="space-y-6">
       {/* Search Bar */}
-      {events.length > 3 && (
+      {events.length > 10 && (
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
@@ -48,7 +48,7 @@ export function EventsList({ events, emptyMessage = "No events found", hideStatu
       {filteredEvents.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredEvents.map((event) => (
-            <EventCard key={event.id} event={event} hideStatus={hideStatus} />
+            <EventCard key={event.id} event={event} hideSignup={hideSignup} />
           ))}
         </div>
       ) : (

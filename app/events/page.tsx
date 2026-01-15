@@ -1,8 +1,9 @@
 import { fetchEvents } from "@/lib/api"
 import { EventsList } from "@/components/events-list"
 import { PageHeader } from "@/components/page-header"
+import { SectionHeader } from "@/components/section-header"
 import { CalendarDays, CheckCircle2, History } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Separator } from "@/components/ui/separator"
 
 export const dynamic = "force-dynamic"
 
@@ -23,35 +24,43 @@ export default async function EventsPage() {
         icon={CalendarDays}
       />
 
-      <Tabs defaultValue="open" className="mt-8">
-        <TabsList className="grid w-full grid-cols-2 lg:w-auto lg:inline-grid">
-          <TabsTrigger value="open" className="gap-2">
-            <CheckCircle2 className="h-4 w-4" />
-            <span>Open ({openEvents.length})</span>
-          </TabsTrigger>
-          <TabsTrigger value="history" className="gap-2">
-            <History className="h-4 w-4" />
-            <span>History ({closedEvents.length})</span>
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Open Events */}
-        <TabsContent value="open" className="mt-6">
-          <EventsList 
-            events={openEvents}
-            emptyMessage="There are currently no events accepting signups. Check back soon!"
+      <div className="mt-8 space-y-12">
+        {/* Open Events Section */}
+        <section>
+          <SectionHeader
+            title="Open Events"
+            icon={CheckCircle2}
+            color="green"
           />
-        </TabsContent>
+          <div className="mt-6">
+            <EventsList 
+              events={openEvents}
+              emptyMessage="There are currently no events available for signups. Check back soon!"
+            />
+          </div>
+        </section>
 
-        {/* Event History */}
-        <TabsContent value="history" className="mt-6">
-          <EventsList 
-            events={closedEvents}
-            emptyMessage="Past events will appear here once they are completed."
-            hideStatus={true}
+        {/* Separator */}
+        {openEvents.length > 0 && closedEvents.length > 0 && (
+          <Separator className="my-12" />
+        )}
+
+        {/* Event History Section */}
+        <section>
+          <SectionHeader
+            title="Past Events"
+            icon={History}
+            color="blue"
           />
-        </TabsContent>
-      </Tabs>
+          <div className="mt-6">
+            <EventsList 
+              events={closedEvents}
+              emptyMessage="Past events will appear here once they are completed."
+              hideSignup={true}
+            />
+          </div>
+        </section>
+      </div>
     </div>
   )
 }
