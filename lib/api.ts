@@ -10,6 +10,8 @@ import type {
   ApiDepartmentDetail,
   ApiEventItem,
   ApiEventsResponse,
+  ApiOpenEventItem,
+  ApiOpenEventsResponse,
   Member,
   Department,
   PointsHistoryEntry,
@@ -27,6 +29,8 @@ export type {
   ApiDepartmentDetail,
   ApiEventItem,
   ApiEventsResponse,
+  ApiOpenEventItem,
+  ApiOpenEventsResponse,
   Member,
   Department,
   PointsHistoryEntry,
@@ -150,6 +154,50 @@ export async function fetchEvents(): Promise<ApiEventsResponse> {
   } catch (error) {
     console.error("❌ Failed to fetch events:", error)
     return []
+  }
+}
+
+export async function fetchOpenEvents(): Promise<ApiOpenEventsResponse> {
+  try {
+    console.log("🔍 Fetching open events from API...")
+    const response = await fetch(`${API_BASE_URL}/events/open`, options)
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data: ApiOpenEventsResponse = await response.json()
+    console.log(`✅ Successfully fetched ${data.length} open events`)
+    return data
+
+  } catch (error) {
+    console.error("❌ Failed to fetch open events:", error)
+    return []
+  }
+}
+
+export async function checkSubmissionStatus(formId: number, token: string): Promise<boolean> {
+  try {
+    console.log(`🔍 Checking submission status for form ${formId}...`)
+    const response = await fetch(`${API_BASE_URL}/submissions/${formId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data: { submitted: boolean } = await response.json()
+    console.log(`✅ Submission status for form ${formId}: ${data.submitted}`)
+    return data.submitted
+
+  } catch (error) {
+    console.error(`❌ Failed to check submission status for form ${formId}:`, error)
+    return false
   }
 }
 

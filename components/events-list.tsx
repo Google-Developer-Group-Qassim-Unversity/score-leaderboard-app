@@ -4,10 +4,10 @@ import { useState } from "react"
 import { EventCard } from "./event-card"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
-import type { ApiEventItem } from "@/lib/api-types"
+import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api-types"
 
 interface EventsListProps {
-  events: ApiEventItem[]
+  events: (ApiEventItem | ApiOpenEventItem)[]
   emptyMessage?: string
   hideSignup?: boolean
 }
@@ -22,8 +22,8 @@ export function EventsList({ events, emptyMessage = "No events found", hideSignu
 
   if (events.length === 0) {
     return (
-      <div className="text-center py-12 bg-slate-50 rounded-lg border border-slate-200">
-        <p className="text-slate-600">{emptyMessage}</p>
+      <div className="text-center py-12 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
+        <p className="text-slate-600 dark:text-slate-400">{emptyMessage}</p>
       </div>
     )
   }
@@ -52,8 +52,8 @@ export function EventsList({ events, emptyMessage = "No events found", hideSignu
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 bg-slate-50 rounded-lg border border-slate-200">
-          <p className="text-slate-600">No events match your search.</p>
+        <div className="text-center py-12 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
+          <p className="text-slate-600 dark:text-slate-400">No events match your search.</p>
         </div>
       )}
     </div>

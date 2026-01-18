@@ -116,7 +116,6 @@ export default async function Dashboard() {
         </div>
 
         {/* Leaderboard Previews */}
-        <LeaderboardWrapper>
           <div className="space-y-6 w-full">
             <div className="w-full max-w-full overflow-hidden px-2 sm:px-0">
               <ClientLeaderboardCards 
@@ -126,7 +125,6 @@ export default async function Dashboard() {
               />
             </div>
           </div>
-        </LeaderboardWrapper>
 
         {/* Special Department Section */}
         <DashboardHonorDept />

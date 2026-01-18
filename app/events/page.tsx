@@ -1,4 +1,4 @@
-import { fetchEvents } from "@/lib/api"
+import { fetchEvents, fetchOpenEvents } from "@/lib/api"
 import { EventsList } from "@/components/events-list"
 import { PageHeader } from "@/components/page-header"
 import { SectionHeader } from "@/components/section-header"
@@ -8,11 +8,13 @@ import { Separator } from "@/components/ui/separator"
 export const dynamic = "force-dynamic"
 
 export default async function EventsPage() {
-  const events = await fetchEvents()
+  const [openEvents, allEvents] = await Promise.all([
+    fetchOpenEvents(),
+    fetchEvents()
+  ])
 
-  // Categorize events by status - filter out announced events
-  const openEvents = events.filter(event => event.status === "open")
-  const closedEvents = events
+  // Filter closed events for history
+  const closedEvents = allEvents
     .filter(event => event.status === "closed")
     .sort((a, b) => new Date(b.end_datetime).getTime() - new Date(a.end_datetime).getTime()) // Latest to oldest
 
@@ -26,7 +28,7 @@ export default async function EventsPage() {
 
       <div className="mt-8 space-y-12">
         {/* Open Events Section */}
-        <section>
+        <section className="mb-20">
           <SectionHeader
             title="Open Events"
             icon={CheckCircle2}
@@ -40,10 +42,6 @@ export default async function EventsPage() {
           </div>
         </section>
 
-        {/* Separator */}
-        {openEvents.length > 0 && closedEvents.length > 0 && (
-          <Separator className="my-12" />
-        )}
 
         {/* Event History Section */}
         <section>

@@ -100,4 +100,11 @@ export interface ApiEventItem {
   image_url: string | null
 }
 
+export interface ApiOpenEventItem extends ApiEventItem {
+  form_type: 'google' | 'none'
+  form_id: number
+  google_responders_url: string | null
+}
+
 export type ApiEventsResponse = ApiEventItem[]
+export type ApiOpenEventsResponse = ApiOpenEventItem[]

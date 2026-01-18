@@ -5,6 +5,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 import Script from "next/script"
 
 export const metadata: Metadata = {
@@ -60,6 +61,7 @@ export default function RootLayout({
             <Navigation />
             {children}
             <Analytics />
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>

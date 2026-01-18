@@ -8,19 +8,12 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import type { ApiEventItem } from "@/lib/api-types";
+import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api-types";
 import { Button } from "./ui/button";
+import { EventSignupButton } from "./event-signup-button";
+
 interface EventCardProps {
-  event: ApiEventItem;
+  event: ApiEventItem | ApiOpenEventItem;
   hideSignup?: boolean;
 }
 
@@ -58,24 +51,8 @@ export function EventCard({ event, hideSignup = false }: EventCardProps) {
             View Details
           </Button>
         </Link>
-        {!hideSignup && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="flex-1">Sign Up</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Confirm Sign Up</DialogTitle>
-                <DialogDescription>
-                  Are you sure you want to sign up for this event: {event.name}?
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <Button variant="outline">Cancel</Button>
-                <Button>Confirm Sign Up</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+        {!hideSignup && 'form_id' in event && (
+          <EventSignupButton event={event as ApiOpenEventItem} className="flex-1" />
         )}
       </CardFooter>
     </Card>
