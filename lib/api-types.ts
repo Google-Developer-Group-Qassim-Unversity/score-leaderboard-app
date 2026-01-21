@@ -108,3 +108,12 @@ export interface ApiOpenEventItem extends ApiEventItem {
 
 export type ApiEventsResponse = ApiEventItem[]
 export type ApiOpenEventsResponse = ApiOpenEventItem[]
+
+// ===== Submission Types =====
+
+export type SubmissionStatus = false | true | 'partial'
+
+export interface ApiSubmissionResponse {
+  submission_status: SubmissionStatus
+  submission_timestamp?: string
+}

@@ -15,11 +15,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { AuthRequiredDialog } from "@/components/auth-required-dialog"
-import { Loader2, CheckCircle2 } from "lucide-react"
-import type { ApiOpenEventItem } from "@/lib/api-types"
+import { Loader2, CheckCircle2, FileText } from "lucide-react"
+import type { ApiOpenEventItem, SubmissionStatus } from "@/lib/api-types"
 
 interface EventSignupButtonProps {
   event: ApiOpenEventItem
@@ -27,6 +26,9 @@ interface EventSignupButtonProps {
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST || "http://178.128.205.239:8000"
+
+// Delay before showing partial status (2 minutes in ms)
+const PARTIAL_DELAY_MS = 1 * 60 * 1000
 
 export function EventSignupButton({ event, className }: EventSignupButtonProps) {
   const { isSignedIn, isLoaded } = useUser()
@@ -36,7 +38,7 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
   const [error, setError] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [showAuthDialog, setShowAuthDialog] = useState(false)
-  const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>(false)
   const [isCheckingStatus, setIsCheckingStatus] = useState(false)
 
   useEffect(() => {
@@ -46,8 +48,24 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
         try {
           const token = await getToken()
           if (token) {
-            const submitted = await checkSubmissionStatus(event.form_id, token)
-            setHasSubmitted(submitted)
+            const response = await checkSubmissionStatus(event.form_id, token)
+            
+            // If partial, check if enough time has passed to show the partial state
+            if (response.submission_status === 'partial' && response.submission_timestamp) {
+              const submissionTime = new Date(response.submission_timestamp).getTime()
+              const now = Date.now()
+              const elapsed = now - submissionTime
+              
+              if (elapsed < PARTIAL_DELAY_MS) {
+                // Not enough time passed, don't show partial state yet
+                // Just show as not submitted so they don't see the prompt immediately
+                setSubmissionStatus(false)
+              } else {
+                setSubmissionStatus('partial')
+              }
+            } else {
+              setSubmissionStatus(response.submission_status)
+            }
           }
         } catch (err) {
           console.error("Failed to check submission status:", err)
@@ -62,9 +80,17 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
   const handleButtonClick = () => {
     if (!isSignedIn) {
       setShowAuthDialog(true)
-    } else {
-      setIsOpen(true)
+      return
     }
+    
+    // If partial status, redirect to Google Form directly
+    if (submissionStatus === 'partial' && event.google_responders_url) {
+      router.push(`/events/${event.id}/form?formUrl=${encodeURIComponent(event.google_responders_url)}`)
+      return
+    }
+    
+    // Otherwise show confirmation dialog
+    setIsOpen(true)
   }
 
   const handleSignup = async () => {
@@ -74,7 +100,10 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
     try {
       const token = await getToken()
       
-      const response = await fetch(`${API_BASE_URL}/submissions/${event.form_id}`, {
+      // Determine submission type based on form type
+      const submissionType = event.form_type === 'google' ? 'partial' : 'none'
+      
+      const response = await fetch(`${API_BASE_URL}/submissions/${event.form_id}?submission_type=${submissionType}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -88,17 +117,17 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
       }
 
       // Success - update state immediately
-      setHasSubmitted(true)
       setIsOpen(false)
 
       // Handle based on form type
       if (event.form_type === "google" && event.google_responders_url) {
-        // Redirect to Google Form - no toast since they still need to fill it
+        // Set to partial and redirect to Google Form - no toast since they still need to fill it
+        setSubmissionStatus('partial')
         router.push(`/events/${event.id}/form?formUrl=${encodeURIComponent(event.google_responders_url)}`)
       } else {
-        // Show success toast for non-google forms
+        // Completed signup for non-google forms
+        setSubmissionStatus(true)
         toast.success(`Successfully signed up for ${event.name}!`)
-        // Refresh the page to update any other UI
         router.refresh()
       }
     } catch (err) {
@@ -106,6 +135,47 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // Determine button state and appearance
+  const isCompleted = submissionStatus === true
+  const isPartial = submissionStatus === 'partial'
+  const isDisabled = !isLoaded || isCheckingStatus || isCompleted
+
+  const getButtonContent = () => {
+    if (isCompleted) {
+      return (
+        <>
+          <CheckCircle2 className="mr-2 h-4 w-4" />
+          Signed Up
+        </>
+      )
+    }
+    if (isPartial) {
+      return (
+        <>
+          <FileText className="mr-2 h-4 w-4" />
+          Fill Google Form
+        </>
+      )
+    }
+    return "Sign Up"
+  }
+
+  const getButtonStyle = () => {
+    if (isCompleted) {
+      return {
+        backgroundColor: 'rgb(34, 197, 94)',
+        color: 'white',
+      }
+    }
+    if (isPartial) {
+      return {
+        backgroundColor: 'rgb(251, 191, 36)',
+        color: 'rgb(0, 0, 0)',
+      }
+    }
+    return undefined
   }
 
   return (
@@ -121,15 +191,10 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
         <Button 
           className={className} 
           onClick={handleButtonClick}
-          disabled={!isLoaded || isCheckingStatus || hasSubmitted}
-          variant={hasSubmitted ? "default" : "default"}
-          style={hasSubmitted ? {
-            backgroundColor: 'rgb(34, 197, 94)',
-            color: 'white',
-          } : undefined}
+          disabled={isDisabled}
+          style={getButtonStyle()}
         >
-          {hasSubmitted && <CheckCircle2 className="mr-2 h-4 w-4" />}
-          {hasSubmitted ? "Signed Up" : "Sign Up"}
+          {getButtonContent()}
         </Button>
         <AlertDialogContent>
           <AlertDialogHeader>

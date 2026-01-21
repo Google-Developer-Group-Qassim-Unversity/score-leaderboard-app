@@ -16,6 +16,7 @@ import type {
   Department,
   PointsHistoryEntry,
   LeaderboardSummary,
+  ApiSubmissionResponse,
 } from "./api-types"
 
 // Re-export all types for backward compatibility
@@ -35,6 +36,7 @@ export type {
   Department,
   PointsHistoryEntry,
   LeaderboardSummary,
+  ApiSubmissionResponse,
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST || "http://178.128.205.239:8000";
@@ -176,7 +178,7 @@ export async function fetchOpenEvents(): Promise<ApiOpenEventsResponse> {
   }
 }
 
-export async function checkSubmissionStatus(formId: number, token: string): Promise<boolean> {
+export async function checkSubmissionStatus(formId: number, token: string): Promise<ApiSubmissionResponse> {
   try {
     console.log(`🔍 Checking submission status for form ${formId}...`)
     const response = await fetch(`${API_BASE_URL}/submissions/${formId}`, {
@@ -191,13 +193,13 @@ export async function checkSubmissionStatus(formId: number, token: string): Prom
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
 
-    const data: { submitted: boolean } = await response.json()
-    console.log(`✅ Submission status for form ${formId}: ${data.submitted}`)
-    return data.submitted
+    const data: ApiSubmissionResponse = await response.json()
+    console.log(`✅ Submission status for form ${formId}:`, data.submission_status)
+    return data
 
   } catch (error) {
     console.error(`❌ Failed to check submission status for form ${formId}:`, error)
-    return false
+    return { submission_status: false }
   }
 }
 
