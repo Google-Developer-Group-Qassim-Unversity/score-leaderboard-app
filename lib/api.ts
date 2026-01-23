@@ -203,3 +203,39 @@ export async function checkSubmissionStatus(formId: number, token: string): Prom
   }
 }
 
+export interface AttendanceResponse {
+  success: boolean
+  status: number
+  message?: string
+}
+
+export async function markAttendance(eventId: number, attendanceToken: string, authToken: string): Promise<AttendanceResponse> {
+  try {
+    console.log(`🔍 Marking attendance for event ${eventId}...`)
+    const response = await fetch(`${API_BASE_URL}/events/${eventId}/attend?token=${encodeURIComponent(attendanceToken)}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${authToken}`,
+      },
+    })
+
+    if (response.ok) {
+      console.log(`✅ Successfully marked attendance for event ${eventId}`)
+      return { success: true, status: 200 }
+    }
+
+    const errorData = await response.json().catch(() => ({}))
+    console.warn(`⚠️ Failed to mark attendance for event ${eventId}: ${response.status}`)
+    return {
+      success: false,
+      status: response.status,
+      message: errorData.detail
+    }
+
+  } catch (error) {
+    console.error(`❌ Failed to mark attendance for event ${eventId}:`, error)
+    return { success: false, status: 0, message: "Network error" }
+  }
+}
+
