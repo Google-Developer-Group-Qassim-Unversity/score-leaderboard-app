@@ -9,9 +9,9 @@ interface PageHeaderProps {
 }
 
 const colorMap = {
-  blue: "from-blue-500 to-blue-600 shadow-blue-500/30",
-  green: "from-green-500 to-emerald-600 shadow-green-500/30",
-  white: "from-white to-gray-50 shadow-gray-200/50 border border-gray-200",
+  blue: "from-blue-500 to-blue-600",
+  green: "from-green-500 to-emerald-600",
+  white: "from-white to-gray-50 border border-gray-200",
 }
 
 export function PageHeader({ icon, iconColor = "blue", heading, subHeading }: PageHeaderProps) {
@@ -40,15 +40,15 @@ export function PageHeader({ icon, iconColor = "blue", heading, subHeading }: Pa
     <div className="text-center mb-12">
       <div className="flex items-center justify-center flex-col md:flex-row gap-4 mb-6">
         <div className="relative">
-          <div className={`w-16 h-16 bg-gradient-to-br ${gradientClasses} rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200`}>
+          <div className={`w-16 h-16 bg-gradient-to-br ${gradientClasses} rounded-lg flex items-center justify-center`}>
             {iconElement}
           </div>
         </div>
-        <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
+        <h1 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
           {heading}
         </h1>
       </div>
-      <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium">
+      <p className="text-base md:text-lg text-slate-600 max-w-3xl mx-auto">
         {subHeading}
       </p>
     </div>

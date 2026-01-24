@@ -19,7 +19,7 @@ export default async function EventsPage() {
     .sort((a, b) => new Date(b.end_datetime).getTime() - new Date(a.end_datetime).getTime()) // Latest to oldest
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <div className="container mx-auto px-4 py-8 max-w-7xl bg-white">
       <PageHeader
         heading="Events"
         subHeading="Discover upcoming events, sign up for open registrations, and explore past events"
