@@ -7,6 +7,7 @@ import { Navigation } from "@/components/navigation"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import Script from "next/script"
+import { ClientDashboardWrapper } from "@/components/client-dashboard-wrapper"
 
 export const metadata: Metadata = {
   title: {
@@ -36,8 +37,14 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" dir="ltr" suppressHydrationWarning>
         <head>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100;200;300;400;500;600;700;800;900&display=swap"
+            rel="stylesheet"
+          />
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=G-Z62ENW3LFQ"
             strategy="afterInteractive"
@@ -52,17 +59,19 @@ export default function RootLayout({
           </Script>
         </head>
         <body className="font-sans antialiased">
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Navigation />
-            {children}
-            <Analytics />
-            <Toaster />
-          </ThemeProvider>
+          <ClientDashboardWrapper>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Navigation />
+              {children}
+              <Analytics />
+              <Toaster />
+            </ThemeProvider>
+          </ClientDashboardWrapper>
         </body>
       </html>
     </ClerkProvider>

@@ -4,6 +4,8 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
+import { useTranslation } from 'react-i18next'
+import '../lib/i18n'
 import {
   Home,
   Users,
@@ -15,6 +17,7 @@ import {
   Layout,
   CalendarDays,
   LucideIcon,
+  Globe,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -22,16 +25,18 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/s
 import { AuthButton } from "@/components/auth-button"
 
 const navItems = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/members", label: "Members", icon: Users },
-  { href: "/departments", label: "Departments", icon: Building2 },
-  { href: "/events", label: "Events", icon: CalendarDays },
-  { href: "/magazines", label: "Magazines", icon: BookOpen },
-  { href: "/club-structure", label: "Structure", icon: Layout },
-  { href: "/how", label: "How It Works", icon: BadgeHelp },
+  { href: "/", labelKey: "nav.home", icon: Home },
+  { href: "/members", labelKey: "nav.members", icon: Users },
+  { href: "/departments", labelKey: "nav.departments", icon: Building2 },
+  { href: "/events", labelKey: "nav.events", icon: CalendarDays },
+  { href: "/magazines", labelKey: "nav.magazines", icon: BookOpen },
+  { href: "/club-structure", labelKey: "nav.structure", icon: Layout },
+  { href: "/how", labelKey: "nav.howItWorks", icon: BadgeHelp },
 ]
 
-function NavLink({ href, label, icon: Icon, isActive }: { href: string; label: string; icon: LucideIcon; isActive: boolean }) {
+function NavLink({ href, labelKey, icon: Icon, isActive }: { href: string; labelKey: string; icon: LucideIcon; isActive: boolean }) {
+  const { t } = useTranslation();
+  
   return (
     <Link
       href={href}
@@ -41,23 +46,25 @@ function NavLink({ href, label, icon: Icon, isActive }: { href: string; label: s
       )}
     >
       <Icon className="h-4 w-4" strokeWidth={2.5} />
-      <span className="hidden lg:inline text-sm">{label}</span>
+      <span className="hidden lg:inline text-sm">{t(labelKey)}</span>
     </Link>
   )
 }
 
-function MobileNavLink({ href, label, icon: Icon, isActive, onClick }: { href: string; label: string; icon: LucideIcon; isActive: boolean; onClick: () => void }) {
+function MobileNavLink({ href, labelKey, icon: Icon, isActive, onClick }: { href: string; labelKey: string; icon: LucideIcon; isActive: boolean; onClick: () => void }) {
+  const { t } = useTranslation();
+  
   return (
     <Link
       href={href}
       onClick={onClick}
       className={cn(
-        "flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-colors",
+        "flex items-center gap-3 px-3 py-3 rounded-md font-semibold transition-colors text-base",
         isActive ? "bg-foreground text-background" : "text-foreground/70 hover:text-foreground hover:bg-accent"
       )}
     >
       <Icon className="h-5 w-5" strokeWidth={2.5} />
-      <span>{label}</span>
+      <span>{t(labelKey)}</span>
     </Link>
   )
 }
@@ -65,6 +72,16 @@ function MobileNavLink({ href, label, icon: Icon, isActive, onClick }: { href: s
 export function Navigation() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
+  const { i18n } = useTranslation()
+  
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'en' ? 'ar' : 'en';
+    i18n.changeLanguage(newLang);
+    
+    // Update HTML direction for Arabic
+    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = newLang;
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -83,8 +100,21 @@ export function Navigation() {
           ))}
         </div>
 
-        {/* Auth Button & Mobile Menu */}
+        {/* Auth Button, Language Switcher & Mobile Menu */}
         <div className="flex items-center gap-2">
+          {/* Language Switcher */}
+          <Button
+            onClick={toggleLanguage}
+            variant="ghost"
+            size="sm"
+            className="text-foreground/70 hover:text-foreground hover:bg-accent"
+          >
+            <Globe className="w-4 h-4" />
+            <span className="hidden sm:inline ml-2 text-sm font-medium">
+              {i18n.language === 'en' ? 'عربي' : 'EN'}
+            </span>
+          </Button>
+          
           <AuthButton />
           
           {/* Mobile Menu - visible only on mobile */}
@@ -117,6 +147,20 @@ export function Navigation() {
                     {navItems.map((item) => (
                       <MobileNavLink key={item.href} {...item} isActive={pathname === item.href} onClick={() => setIsOpen(false)} />
                     ))}
+                  </div>
+                  
+                  {/* Language Switcher in Mobile Menu */}
+                  <div className="mt-4 px-3">
+                    <Button
+                      onClick={toggleLanguage}
+                      variant="outline"
+                      className="w-full justify-start gap-3 py-3"
+                    >
+                      <Globe className="w-5 h-5" />
+                      <span className="font-semibold text-base">
+                        {i18n.language === 'en' ? 'العربية' : 'English'}
+                      </span>
+                    </Button>
                   </div>
                 </div>
               </div>

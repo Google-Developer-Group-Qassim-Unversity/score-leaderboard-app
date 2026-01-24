@@ -39,16 +39,7 @@ export function ClientLeaderboardCards({
                 <CardDescription className="text-slate-600 font-medium mt-1">Leading individual performers</CardDescription>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => setShowMembersDetails(!showMembersDetails)}
-                  className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-2 text-xs sm:text-sm px-2 sm:px-3"
-                >
-                  {showMembersDetails ? <EyeOff className="h-3 w-3 sm:h-4 sm:w-4" /> : <Eye className="h-3 w-3 sm:h-4 sm:w-4" />}
-                  <span className="hidden sm:inline">{showMembersDetails ? 'Hide Details' : 'Show Details'}</span>
-                  <span className="sm:hidden">{showMembersDetails ? 'Hide' : 'Show'}</span>
-                </Button>
+                {/* Removed Show/Hide Details button for landing page */}
                 <Link href="/members">
                   <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3">
                     View All
@@ -58,7 +49,7 @@ export function ClientLeaderboardCards({
             </div>
           </CardHeader>
           <CardContent className="relative px-3 sm:px-6">
-            <div className={`space-y-6 transition-all duration-500 ${!showMembersDetails ? 'blur-md pointer-events-none' : ''}`}>
+            <div className={`space-y-6 transition-all duration-500`}>
               <div className="w-full max-w-full min-w-0 overflow-hidden">
                 <div className="space-y-3">
                   {topMembers.map((member, index) => (
@@ -69,9 +60,7 @@ export function ClientLeaderboardCards({
                 </div>
               </div>
             </div>
-            {!showMembersDetails && (
-              <div className="absolute inset-0 bg-transparent z-10"></div>
-            )}
+            {/* Overlay removed to allow button/link interaction */}
           </CardContent>
         </div>
       </Card>
@@ -91,16 +80,7 @@ export function ClientLeaderboardCards({
                 <CardDescription className="text-slate-600 font-medium mt-1">Leading team performers by category</CardDescription>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => setShowDepartmentsDetails(!showDepartmentsDetails)}
-                  className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-2 text-xs sm:text-sm px-2 sm:px-3"
-                >
-                  {showDepartmentsDetails ? <EyeOff className="h-3 w-3 sm:h-4 sm:w-4" /> : <Eye className="h-3 w-3 sm:h-4 sm:w-4" />}
-                  <span className="hidden sm:inline">{showDepartmentsDetails ? 'Hide Details' : 'Show Details'}</span>
-                  <span className="sm:hidden">{showDepartmentsDetails ? 'Hide' : 'Show'}</span>
-                </Button>
+                {/* Removed Show/Hide Details button for landing page */}
                 <Link href="/departments">
                   <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3">
                     View All
@@ -111,7 +91,7 @@ export function ClientLeaderboardCards({
           </CardHeader>
 
           <CardContent className="relative px-3 sm:px-6">
-            <div className={`space-y-6 transition-all duration-500 ${!showDepartmentsDetails ? 'blur-md pointer-events-none' : ''}`}>
+            <div className={`space-y-6 transition-all duration-500`}>
               {/* Practical Departments */}
               <div className="w-full max-w-full min-w-0">
                 <SectionHeader icon={Wrench} title="Specialized departments" color="green"/>
@@ -136,9 +116,7 @@ export function ClientLeaderboardCards({
                 </div>
               </div>
             </div>
-            {!showDepartmentsDetails && (
-              <div className="absolute inset-0 bg-transparent z-10"></div>
-            )}
+            {/* Overlay removed to allow button/link interaction */}
           </CardContent>
         </div>
       </Card>
