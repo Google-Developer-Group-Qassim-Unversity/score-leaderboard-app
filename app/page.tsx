@@ -1,10 +1,11 @@
-import { fetchMembers, fetchDepartments } from "@/lib/api"
+import { fetchMembers, fetchDepartments, fetchOpenEvents } from "@/lib/api"
 import { DashboardContent } from "@/components/dashboard-content"
 
 export default async function Dashboard() {
-  const [apiMembers, apiDepartmentsResponse] = await Promise.all([
+  const [apiMembers, apiDepartmentsResponse, openEventsResponse] = await Promise.all([
     fetchMembers(),
     fetchDepartments(),
+    fetchOpenEvents(),
   ])
 
   const membersCount = apiMembers.length || 0
@@ -24,6 +25,7 @@ export default async function Dashboard() {
       membersCount={membersCount}
       departmentsCount={departmentsCount}
       totalPoints={totalPoints}
+      openEvents={openEventsResponse.slice(0, 6)}
     />
   )
 }

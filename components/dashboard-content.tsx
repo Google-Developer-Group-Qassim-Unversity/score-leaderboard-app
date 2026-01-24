@@ -5,12 +5,11 @@ import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Trophy, Users, Building2, TrendingUp, Sparkles, Award, ArrowRight, Activity } from "lucide-react"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { Trophy, Users, Building2, TrendingUp, Sparkles, Award, ArrowRight, Activity, Calendar } from "lucide-react"
 import { ClientLeaderboardCards } from "@/components/client-leaderboard-cards"
 import { useTranslation } from 'react-i18next'
 import { EventCard } from "@/components/event-card"
-import { fetchOpenEvents } from "@/lib/api"
-import { useEffect, useState } from "react"
 import type { ApiOpenEventItem } from "@/lib/api-types"
 import '../lib/i18n'
 
@@ -21,6 +20,7 @@ interface DashboardContentProps {
   membersCount: number
   departmentsCount: number
   totalPoints: number
+  openEvents: ApiOpenEventItem[]
 }
 
 export function DashboardContent({ 
@@ -29,27 +29,11 @@ export function DashboardContent({
   administrativeDepartments,
   membersCount,
   departmentsCount, 
-  totalPoints 
+  totalPoints,
+  openEvents
 }: DashboardContentProps) {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-  const [openEvents, setOpenEvents] = useState<ApiOpenEventItem[]>([]);
-  const [isLoadingEvents, setIsLoadingEvents] = useState(true);
-
-  // Fetch open events
-  useEffect(() => {
-    const loadEvents = async () => {
-      try {
-        const eventsResponse = await fetchOpenEvents();
-        setOpenEvents(eventsResponse.slice(0, 6)); // Show up to 6 events
-      } catch (error) {
-        console.error('Failed to fetch open events:', error);
-      } finally {
-        setIsLoadingEvents(false);
-      }
-    };
-    loadEvents();
-  }, []);
 
   return (
     <div className={`min-h-screen bg-white text-slate-900 ${isRTL ? 'rtl' : 'ltr'}`}>
@@ -193,6 +177,55 @@ export function DashboardContent({
               administrativeDepartments={administrativeDepartments}
             />
           </div>
+        </section>
+
+        {/* Open Events Section */}
+        <section className="container mx-auto px-4 py-12">
+          {/* Section Header */}
+          <div className="text-center mb-8 space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-full border border-slate-200">
+              <Calendar className="w-4 h-4 text-slate-600" />
+              <span className="text-sm font-medium text-slate-700">Open Events</span>
+            </div>
+            <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-slate-900">
+              Upcoming Events
+            </h2>
+            <p className="text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
+              Join our upcoming events and expand your knowledge
+            </p>
+          </div>
+
+          {/* Events Scroll Area */}
+          {openEvents.length > 0 ? (
+            <ScrollArea className="w-full whitespace-nowrap rounded-lg">
+              <div className="flex gap-4 pb-4">
+                {openEvents.map((event) => (
+                  <div key={event.id} className="w-[300px] md:w-[350px] flex-shrink-0">
+                    <EventCard event={event} />
+                  </div>
+                ))}
+              </div>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-slate-500">No open events at the moment</p>
+            </div>
+          )}
+
+          {/* View All Button */}
+          {openEvents.length > 0 && (
+            <div className="text-center mt-8">
+              <Link href="/events" passHref legacyBehavior>
+                <Button asChild variant="outline" className="border-slate-300 hover:bg-slate-50 cursor-pointer">
+                  <a>
+                    View All Events
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </a>
+                </Button>
+              </Link>
+            </div>
+          )}
         </section>
 
         
