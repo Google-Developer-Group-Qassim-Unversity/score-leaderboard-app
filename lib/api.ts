@@ -1,13 +1,13 @@
 // API utility functions for fetching data from the backend
 
 import type {
-  ApiMember,
-  ApiMembersResponse,
-  ApiDepartment,
-  ApiDepartmentsResponse,
-  ApiEvent,
-  ApiMemberDetail,
-  ApiDepartmentDetail,
+  ApiMemberPoints,
+  ApiMembersPointsResponse,
+  ApiDepartmentPoints,
+  ApiDepartmentsPointsResponse,
+  ApiPointsEvent,
+  ApiMemberPointsHistory,
+  ApiDepartmentPointsHistory,
   ApiEventItem,
   ApiEventsResponse,
   ApiOpenEventItem,
@@ -17,10 +17,25 @@ import type {
   PointsHistoryEntry,
   LeaderboardSummary,
   ApiSubmissionResponse,
+  // Backward compatibility aliases
+  ApiMember,
+  ApiMembersResponse,
+  ApiDepartment,
+  ApiDepartmentsResponse,
+  ApiEvent,
+  ApiMemberDetail,
+  ApiDepartmentDetail,
 } from "./api-types"
 
 // Re-export all types for backward compatibility
 export type {
+  ApiMemberPoints,
+  ApiMembersPointsResponse,
+  ApiDepartmentPoints,
+  ApiDepartmentsPointsResponse,
+  ApiPointsEvent,
+  ApiMemberPointsHistory,
+  ApiDepartmentPointsHistory,
   ApiMember,
   ApiMembersResponse,
   ApiDepartment,
@@ -39,7 +54,7 @@ export type {
   ApiSubmissionResponse,
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST || "http://178.128.205.239:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST;
 
 // Define common options for GET requests
 const options = {
@@ -50,16 +65,16 @@ const options = {
   next: { revalidate: 86400 },
 };
 
-export async function fetchMembers(): Promise<ApiMembersResponse> {
+export async function fetchMembers(): Promise<ApiMembersPointsResponse> {
   try {
     console.log("🔍 Fetching members from API...")
-    const response = await fetch(`${API_BASE_URL}/members`, options)
+    const response = await fetch(`${API_BASE_URL}/points/members/total`, options)
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
 
-    const data: ApiMembersResponse = await response.json()
+    const data: ApiMembersPointsResponse = await response.json()
     const totalMembers = data.length || 0
     console.log(`✅ Successfully fetched ${totalMembers} members`)
     return data
@@ -70,32 +85,32 @@ export async function fetchMembers(): Promise<ApiMembersResponse> {
   }
 }
 
-export async function fetchDepartments(): Promise<ApiDepartmentsResponse> {
+export async function fetchDepartments(): Promise<ApiDepartmentsPointsResponse> {
   try {
     console.log("🔍 Fetching departments from API...")
-    const response = await fetch(`${API_BASE_URL}/departments`, options)
+    const response = await fetch(`${API_BASE_URL}/points/departments/total`, options)
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
 
-    const data: ApiDepartmentsResponse = await response.json()
+    const data: ApiDepartmentsPointsResponse = await response.json()
     
-    data.Administrative = data.Administrative?.filter(m => m.name !== "Development")
-    const totalDepts = (data.Administrative?.length || 0) + (data.Specialized?.length || 0)
-    console.log(`✅ Successfully fetched ${totalDepts} departments (${data.Administrative?.length || 0} administrative, ${data.Specialized?.length || 0} specialized)`)
+    data.administrative = data.administrative?.filter(d => d.department_name !== "Development")
+    const totalDepts = (data.administrative?.length || 0) + (data.practical?.length || 0)
+    console.log(`✅ Successfully fetched ${totalDepts} departments (${data.administrative?.length || 0} administrative, ${data.practical?.length || 0} practical)`)
     return data
 
   } catch (error) {
     console.error("❌ Failed to fetch departments:", error)
-    return { Administrative: [], Specialized: [] }
+    return { administrative: [], practical: [] }
   }
 }
 
-export async function fetchMemberById(id: string): Promise<ApiMemberDetail | null> {
+export async function fetchMemberById(id: string): Promise<ApiMemberPointsHistory | null> {
   try {
     console.log(`🔍 Fetching member ${id} from API...`)
-    const response = await fetch(`${API_BASE_URL}/members/${id}`, options)
+    const response = await fetch(`${API_BASE_URL}/points/members/${id}`, options)
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -105,7 +120,7 @@ export async function fetchMemberById(id: string): Promise<ApiMemberDetail | nul
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
 
-    const data: ApiMemberDetail = await response.json()
+    const data: ApiMemberPointsHistory = await response.json()
     console.log(`✅ Successfully fetched member ${id} (${data.events?.length || 0} events)`)
     return data
   } catch (error) {
@@ -114,10 +129,10 @@ export async function fetchMemberById(id: string): Promise<ApiMemberDetail | nul
   }
 }
 
-export async function fetchDepartmentById(id: string): Promise<ApiDepartmentDetail | null> {
+export async function fetchDepartmentById(id: string): Promise<ApiDepartmentPointsHistory | null> {
   try {
     console.log(`🔍 Fetching department ${id} from API...`)
-    const response = await fetch(`${API_BASE_URL}/departments/${id}`, options)
+    const response = await fetch(`${API_BASE_URL}/points/departments/${id}`, options)
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -127,7 +142,7 @@ export async function fetchDepartmentById(id: string): Promise<ApiDepartmentDeta
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
 
-    const data: ApiDepartmentDetail = await response.json()
+    const data: ApiDepartmentPointsHistory = await response.json()
     console.log(`✅ Successfully fetched department ${id} (${data.events?.length || 0} events)`)
     return data
   } catch (error) {

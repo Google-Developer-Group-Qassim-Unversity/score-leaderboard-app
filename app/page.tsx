@@ -9,7 +9,7 @@ export default async function Dashboard() {
   ])
 
   const membersCount = apiMembers.length || 0
-  const departmentsCount = (apiDepartmentsResponse.Administrative?.length || 0) + (apiDepartmentsResponse.Specialized?.length || 0)
+  const departmentsCount = (apiDepartmentsResponse.administrative?.length || 0) + (apiDepartmentsResponse.practical?.length || 0)
 
   const topMembers = (apiMembers || []).slice(0, 3)
   const practicalDepartments = (apiDepartmentsResponse.Specialized || []).slice(0, 3)

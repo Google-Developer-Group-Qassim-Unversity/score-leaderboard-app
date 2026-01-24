@@ -3,9 +3,9 @@ import { LeaderboardCard } from "@/components/leaderboard-card"
 import { LucideIcon } from "lucide-react"
 
 interface Department {
-  id: number
-  name: string
-  points: number
+  department_id: number
+  department_name: string
+  total_points: number
 }
 
 interface DepartmentTypeCardProps {
@@ -41,11 +41,11 @@ export function DepartmentTypeCard({
         <div className="space-y-3">
           {departments.map((department, index) => (
             <LeaderboardCard
-              key={department.id}
-              id={department.id.toString()}
-              name={department.name}
+              key={department.department_id}
+              id={department.department_id.toString()}
+              name={department.department_name}
               rank={index + 1}
-              points={department.points}
+              points={department.total_points}
               type="department"
             />
           ))}

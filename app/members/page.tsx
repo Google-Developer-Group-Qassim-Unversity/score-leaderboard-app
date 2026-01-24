@@ -17,18 +17,20 @@ export default async function MembersLeaderboard() {
   // Convert all members for search (with proper ranking)
   const allMembersForSearch = (apiMembers || []).map((m, i) => ({ 
     ...m, 
-    id: m.id.toString(), 
+    id: m.member_id.toString(), 
+    name: m.member_name,
     rank: i + 1, 
-    totalPoints: m.points,
+    totalPoints: m.total_points ?? 0,
     departmentId: ""
   }))
   
   // Convert top 100 for initial display
   const topMembersForDisplay = topMembers.map((m, i) => ({ 
     ...m, 
-    id: m.id.toString(), 
+    id: m.member_id.toString(), 
+    name: m.member_name,
     rank: i + 1, 
-    totalPoints: m.points,
+    totalPoints: m.total_points ?? 0,
     departmentId: ""
   }))
 

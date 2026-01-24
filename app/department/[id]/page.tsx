@@ -31,7 +31,7 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
           <div className="hidden md:flex items-center gap-3">
             <Building2 className="h-8 w-8 text-green-600" />
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white font-semibold">{departmentData.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white font-semibold">{departmentData.department.department_name}</h1>
               <p className="text-gray-600 dark:text-gray-300">Department Details & Points History</p>
             </div>
           </div>
@@ -53,7 +53,7 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
                     <Building2 className="h-10 w-10 text-green-600" />
                   </div>
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white font-semibold">
-                    {departmentData.name}
+                    {departmentData.department.department_name}
                   </h2>
                   <p className="text-gray-500">Department</p>
                 </div>
@@ -61,7 +61,7 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Points</span>
-                    <span className="font-bold text-green-600 text-lg">{departmentData.points}</span>
+                    <span className="font-bold text-green-600 text-lg">{departmentData.department.total_points}</span>
                   </div>
                 </div>
               </CardContent>
@@ -93,7 +93,7 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
                           <div>
                             <p className="font-semibold text-gray-900 dark:text-white">{event.event_name}</p>
                             <p className="text-sm text-gray-600 dark:text-gray-400">{event.action_name}</p>
-                            <p className="text-sm text-gray-500">{new Date(event.start_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
+                            <p className="text-sm text-gray-500">{new Date(event.start_datetime).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
                           </div>
                         </div>
                         <div className="text-right">

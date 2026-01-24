@@ -3,50 +3,50 @@
 
 // ===== API Response Types (from backend) =====
 
-export interface ApiMember {
-  id: number
-  name: string
-  points: number
-  gender: string
+// Member Points Model
+export interface ApiMemberPoints {
+  member_id: number
+  member_name: string
+  total_points: number | null
 }
 
-export type ApiMembersResponse = ApiMember[]
+export type ApiMembersPointsResponse = ApiMemberPoints[]
 
-export interface ApiDepartment {
-  id: number
-  name: string
-  points: number
+// Department Points Model
+export interface ApiDepartmentPoints {
+  department_id: number
+  department_name: string
+  ar_department_name: string
+  department_type: string
+  total_points: number
 }
 
-export interface ApiDepartmentsResponse {
-  Specialized: ApiDepartment[]
-  Administrative: ApiDepartment[]
+export interface ApiDepartmentsPointsResponse {
+  administrative: ApiDepartmentPoints[]
+  practical: ApiDepartmentPoints[]
 }
 
-export interface ApiEvent {
+// Event Model (for points history)
+export interface ApiPointsEvent {
   event_name: string
-  start_date: string
-  end_date: string
+  event_id: number
+  start_datetime: string
+  end_datetime: string
+  points: number
   action_name: string
-  original_points: number
-  event_days: number
-  absences?: number // Only for members
-  attended_days?: number // Only for members
-  points: number
+  ar_action_name: string | null
 }
 
-export interface ApiMemberDetail {
-  id: number
-  name: string
-  points: number
-  events: ApiEvent[]
+// Member Event History Response
+export interface ApiMemberPointsHistory {
+  member: ApiMemberPoints
+  events: ApiPointsEvent[]
 }
 
-export interface ApiDepartmentDetail {
-  id: number
-  name: string
-  points: number
-  events: ApiEvent[]
+// Department Event History Response
+export interface ApiDepartmentPointsHistory {
+  department: ApiDepartmentPoints
+  events: ApiPointsEvent[]
 }
 
 // ===== Internal App Types (transformed from API) =====
@@ -71,7 +71,7 @@ export interface Department {
 export interface PointsHistoryEntry {
   id: string
   date: string
-  source: "attended on-site course" | "on-site course"
+  source: string
   points: number
   entityId: string // member or department ID
   entityType: "member" | "department"
@@ -83,6 +83,17 @@ export interface LeaderboardSummary {
   totalMembers: number
   totalDepartments: number
 }
+
+// ===== Backward Compatibility Aliases =====
+// These map the new API types to the old names used in the codebase
+
+export type ApiMember = ApiMemberPoints
+export type ApiMembersResponse = ApiMembersPointsResponse
+export type ApiDepartment = ApiDepartmentPoints
+export type ApiDepartmentsResponse = ApiDepartmentsPointsResponse
+export type ApiEvent = ApiPointsEvent
+export type ApiMemberDetail = ApiMemberPointsHistory
+export type ApiDepartmentDetail = ApiDepartmentPointsHistory
 
 // ===== Events Types =====
 

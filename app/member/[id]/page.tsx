@@ -31,7 +31,7 @@ export default async function MemberDetailPage({ params }: PageProps) {
           <div className="hidden md:flex items-center gap-3">
             <Users className="h-8 w-8 text-blue-600" />
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white font-semibold">{memberData.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white font-semibold">{memberData.member.member_name}</h1>
               <p className="text-gray-600 dark:text-gray-300">Member Details & Points History</p>
             </div>
           </div>
@@ -52,14 +52,14 @@ export default async function MemberDetailPage({ params }: PageProps) {
                   <div className="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-4">
                     <Users className="h-10 w-10 text-blue-600" />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white font-semibold">{memberData.name}</h2>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white font-semibold">{memberData.member.member_name}</h2>
                   <p className="text-gray-500">Member</p>
                 </div>
 
                 <div className="space-y-3">
                   <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Points</span>
-                    <span className="font-bold text-blue-600 text-lg">{memberData.points}</span>
+                    <span className="font-bold text-blue-600 text-lg">{memberData.member.total_points ?? 0}</span>
                   </div>
                 </div>
               </CardContent>
@@ -91,7 +91,7 @@ export default async function MemberDetailPage({ params }: PageProps) {
                           <div>
                             <p className="font-semibold text-gray-900 dark:text-white">{event.event_name}</p>
                             <p className="text-sm text-gray-600 dark:text-gray-400">{event.action_name}</p>
-                            <p className="text-sm text-gray-500">{new Date(event.start_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
+                            <p className="text-sm text-gray-500">{new Date(event.start_datetime).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
                           </div>
                         </div>
                         <div className="text-right">

@@ -53,8 +53,8 @@ export function ClientLeaderboardCards({
               <div className="w-full max-w-full min-w-0 overflow-hidden">
                 <div className="space-y-3">
                   {topMembers.map((member, index) => (
-                    <div key={member.id} className="w-full max-w-full min-w-0">
-                      <LeaderboardCard id={member.id.toString()} name={member.name} rank={index + 1} points={member.points} type="member" />
+                    <div key={member.member_id} className="w-full max-w-full min-w-0">
+                      <LeaderboardCard id={member.member_id.toString()} name={member.member_name} rank={index + 1} points={member.total_points ?? 0} type="member" />
                     </div>
                   ))}
                 </div>
@@ -97,8 +97,8 @@ export function ClientLeaderboardCards({
                 <SectionHeader icon={Wrench} title="Specialized departments" color="green"/>
                 <div className="space-y-3 w-full max-w-full">
                   {practicalDepartments.map((department, index) => ( 
-                    <div key={department.id} className="w-full max-w-full min-w-0">
-                      <LeaderboardCard id={department.id.toString()} name={department.name} rank={index + 1} points={department.points} type="department"/> 
+                    <div key={department.department_id} className="w-full max-w-full min-w-0">
+                      <LeaderboardCard id={department.department_id.toString()} name={department.department_name} rank={index + 1} points={department.total_points} type="department"/> 
                     </div>
                   ))}
                 </div>
@@ -109,8 +109,8 @@ export function ClientLeaderboardCards({
                 <SectionHeader icon={Building2} title="Administrative departments" color="blue"/>
                 <div className="space-y-3 w-full max-w-full">
                   {administrativeDepartments.map((department, index) => (
-                    <div key={department.id} className="w-full max-w-full min-w-0">
-                      <LeaderboardCard id={department.id.toString()} name={department.name} rank={index + 1} points={department.points} type="department"/>
+                    <div key={department.department_id} className="w-full max-w-full min-w-0">
+                      <LeaderboardCard id={department.department_id.toString()} name={department.department_name} rank={index + 1} points={department.total_points} type="department"/>
                     </div>
                   ))}
                 </div>

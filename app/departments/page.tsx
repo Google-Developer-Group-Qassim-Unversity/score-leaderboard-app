@@ -9,11 +9,11 @@ export default async function DepartmentsLeaderboard() {
   const apiDepartmentsResponse = await fetchDepartments()
   
   // Calculate count from array lengths
-  const departmentsCount = (apiDepartmentsResponse.Administrative?.length || 0) + (apiDepartmentsResponse.Specialized?.length || 0)
+  const departmentsCount = (apiDepartmentsResponse.administrative?.length || 0) + (apiDepartmentsResponse.practical?.length || 0)
 
   // Get departments (already sorted from API)
-  const administrativeDepartments = apiDepartmentsResponse.Administrative || []
-  const practicalDepartments = apiDepartmentsResponse.Specialized || []
+  const administrativeDepartments = apiDepartmentsResponse.administrative || []
+  const practicalDepartments = apiDepartmentsResponse.practical || []
 
   return (
     <div className="min-h-screen bg-white text-slate-800">
