@@ -86,7 +86,7 @@ export interface LeaderboardSummary {
 
 // ===== Events Types =====
 
-export type EventStatus = "announced" | "open" | "closed"
+export type EventStatus = "draft" | "open" | "active" |"closed"
 
 export interface ApiEventItem {
   id: number
@@ -101,7 +101,7 @@ export interface ApiEventItem {
 }
 
 export interface ApiOpenEventItem extends ApiEventItem {
-  form_type: 'google' | 'none'
+  form_type: 'none' | 'registration' | 'google'
   form_id: number
   google_responders_url: string | null
 }

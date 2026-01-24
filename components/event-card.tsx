@@ -46,13 +46,23 @@ export function EventCard({ event, hideSignup = false }: EventCardProps) {
       </CardContent>
 
       <CardFooter className="gap-2">
-        <Link href={`/events/${event.id}`} className={hideSignup ? "w-full" : "flex-1"}>
-          <Button variant="outline" className="w-full">
-            View Details
-          </Button>
-        </Link>
-        {!hideSignup && 'form_id' in event && (
-          <EventSignupButton event={event as ApiOpenEventItem} className="flex-1" />
+        {'form_id' in event && event.form_type === 'none' ? (
+          <Link href={`/events/${event.id}`} className="w-full">
+            <Button variant="default" className="w-full">
+              View Event
+            </Button>
+          </Link>
+        ) : (
+          <>
+            <Link href={`/events/${event.id}`} className={hideSignup ? "w-full" : "flex-1"}>
+              <Button variant="outline" className="w-full">
+                View Details
+              </Button>
+            </Link>
+            {!hideSignup && 'form_id' in event && (
+              <EventSignupButton event={event as ApiOpenEventItem} className="flex-1" />
+            )}
+          </>
         )}
       </CardFooter>
     </Card>

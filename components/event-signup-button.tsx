@@ -31,6 +31,11 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC
 const PARTIAL_DELAY_MS = 1 * 60 * 1000
 
 export function EventSignupButton({ event, className }: EventSignupButtonProps) {
+  // Early return if form_type is 'none' - no registration required
+  if (event.form_type === 'none') {
+    return null
+  }
+
   const { isSignedIn, isLoaded } = useUser()
   const { getToken } = useAuth()
   const router = useRouter()
@@ -101,7 +106,7 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
       const token = await getToken()
       
       // Determine submission type based on form type
-      const submissionType = event.form_type === 'google' ? 'partial' : 'none'
+      const submissionType = event.form_type === 'google' ? 'partial' : 'none' // 'registration' and other types use 'none'
       
       const response = await fetch(`${API_BASE_URL}/submissions/${event.form_id}?submission_type=${submissionType}`, {
         method: "POST",
@@ -201,11 +206,6 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
             <AlertDialogTitle>Confirm Sign Up</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to sign up for this event: {event.name}?
-              {event.form_type === "google" && (
-                <span className="block mt-2 text-amber-600 dark:text-amber-400">
-                  Note: You will be redirected to fill out a Google Form after confirmation.
-                </span>
-              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           {error && (
@@ -220,6 +220,11 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Signing up...
+                </>
+              ) : event.form_type === "google" ? (
+                <>
+                  <FileText className="mr-2 h-4 w-4" />
+                  Confirm Sign Up and Fill Form
                 </>
               ) : (
                 "Confirm Sign Up"
