@@ -1,4 +1,4 @@
-import { fetchMembers, fetchDepartments, fetchOpenEvents } from "@/lib/api"
+import { fetchMembers, fetchDepartments, fetchOpenEvents, ApiMemberPoints } from "@/lib/api"
 import { DashboardContent } from "@/components/dashboard-content"
 
 export default async function Dashboard() {
@@ -8,14 +8,14 @@ export default async function Dashboard() {
     fetchOpenEvents(),
   ])
 
-  const membersCount = apiMembers.length || 0
-  const departmentsCount = (apiDepartmentsResponse.administrative?.length || 0) + (apiDepartmentsResponse.practical?.length || 0)
+  const membersCount = apiMembers.length ?? 0
+  const departmentsCount = (apiDepartmentsResponse.administrative?.length ?? 0) + (apiDepartmentsResponse.practical?.length ?? 0)
 
-  const topMembers = (apiMembers || []).slice(0, 3)
-  const practicalDepartments = (apiDepartmentsResponse.Specialized || []).slice(0, 3)
-  const administrativeDepartments = (apiDepartmentsResponse.Administrative || []).slice(0, 3)
+  const topMembers = (apiMembers ?? []).slice(0, 3)
+  const practicalDepartments = (apiDepartmentsResponse.practical ?? []).slice(0, 3)
+  const administrativeDepartments = (apiDepartmentsResponse.administrative ?? []).slice(0, 3)
 
-  const totalPoints = apiMembers.reduce((sum, member) => sum + (member.points || 0), 0)
+  const totalPoints = apiMembers.reduce((sum: number, member: ApiMemberPoints) => sum + (member.total_points ?? 0), 0)
 
   return (
     <DashboardContent 
