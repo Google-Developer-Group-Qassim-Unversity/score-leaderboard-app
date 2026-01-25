@@ -29,7 +29,8 @@ export type {
   LeaderboardSummary,
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST || "http://178.128.205.239:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST;
+console.log(`🌎 API_BASE_URL: ${API_BASE_URL}`)
 
 // Define common options for GET requests
 const options = {
@@ -42,7 +43,7 @@ const options = {
 
 export async function fetchMembers(): Promise<ApiMembersResponse> {
   try {
-    console.log("🔍 Fetching members from API...")
+    console.log(`🔍 Fetching members from API... ${API_BASE_URL}/members`)
     const response = await fetch(`${API_BASE_URL}/members`, options)
 
     if (!response.ok) {
