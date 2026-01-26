@@ -93,11 +93,7 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount }:
           </div>
         </div>
       )}
-      {!searchTerm && (
-        <div className="text-center mb-6 text-sm text-muted-foreground">
-          {t('members.showingTop')}
-        </div>
-      )}
+      
 
       {/* Leaderboard */}
       <Card className="bg-white rounded-lg border border-slate-200">
