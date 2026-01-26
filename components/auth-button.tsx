@@ -9,7 +9,8 @@ import '@/lib/i18n-client'
 
 export function AuthButton() {
   const { isLoaded, isSignedIn } = useUser()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isRTL = i18n.language === 'ar'
 
   // Loading state
   if (!isLoaded) {
@@ -28,6 +29,7 @@ export function AuthButton() {
         appearance={{
           elements: {
             avatarBox: "h-8 w-8",
+            userButtonPopoverCard: isRTL ? "rtl" : "",
           },
         }}
       />

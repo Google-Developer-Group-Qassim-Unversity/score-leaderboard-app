@@ -1,13 +1,13 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Analytics } from "@vercel/analytics/next"
-import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import Script from "next/script"
 import { ClientDashboardWrapper } from "@/components/client-dashboard-wrapper"
+import { ClerkProviderWrapper } from "@/components/clerk-provider-wrapper"
 import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
 
 export const metadata: Metadata = {
@@ -40,7 +40,7 @@ export default async function RootLayout({
   const rtl = isRTL(lang);
 
   return (
-    <ClerkProvider>
+    <ClerkProviderWrapper>
       <html lang={lang} dir={rtl ? 'rtl' : 'ltr'} suppressHydrationWarning>
         <head>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -71,6 +71,6 @@ export default async function RootLayout({
           </ClientDashboardWrapper>
         </body>
       </html>
-    </ClerkProvider>
+    </ClerkProviderWrapper>
   )
 }
