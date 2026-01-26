@@ -9,9 +9,9 @@ interface PageHeaderProps {
 }
 
 const colorMap = {
-  blue: "from-blue-500 to-blue-600",
-  green: "from-green-500 to-emerald-600",
-  white: "from-white to-gray-50 border border-gray-200",
+  blue: "bg-blue-500",
+  green: "bg-green-500",
+  white: "bg-white border",
 }
 
 export function PageHeader({ icon, iconColor = "blue", heading, subHeading }: PageHeaderProps) {

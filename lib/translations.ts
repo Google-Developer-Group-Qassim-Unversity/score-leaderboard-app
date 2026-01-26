@@ -20,6 +20,9 @@ export const resources = {
       "stats.points.title": "Points",
       "stats.points.description": "Points earned",
       "stats.points.badge": "Total",
+      "stats.events.title": "Events",
+      "stats.events.description": "Total events",
+      "stats.events.badge": "Active",
       
       // Leaderboard Section
       "leaderboard.badge": "Live Rankings",
@@ -55,11 +58,12 @@ export const resources = {
       "version": "2.0"
     }
   },
+  // we always use the saudi arabian dialect for arabic words and phrases
   ar: {
     translation: {
       // Hero Section
       "hero.title.performance": "والرب يبارك",
-      "hero.title.leaderboard": "بالجميع",
+      "hero.title.leaderboard": "الجميع",
       "hero.subtitle": "تابع إنجازاتك وتحدى أصدقائك واحتفل بالنجاح مع مجتمعنا السعودي. تصنيفات مباشرة ونتائج لحظية!",
       "hero.viewAllMembers": "شوف كل الأعضاء",
       "hero.viewDepartments": "شوف الأقسام",
@@ -74,6 +78,9 @@ export const resources = {
       "stats.points.title": "النقاط",
       "stats.points.description": "نقاطك المكتسبة",
       "stats.points.badge": "الإجمالي",
+      "stats.events.title": "الفعاليات",
+      "stats.events.description": "إجمالي الفعاليات",
+      "stats.events.badge": "فعّال",
 
       // Leaderboard Section
       "leaderboard.badge": "الترتيب المباشر",
