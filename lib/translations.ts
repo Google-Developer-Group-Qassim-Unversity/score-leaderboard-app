@@ -33,6 +33,9 @@ export const resources = {
       "leaderboard.viewAll": "View All",
       "leaderboard.specializedDepts": "Specialized departments",
       "leaderboard.administrativeDepts": "Administrative departments",
+      "leaderboard.points": "Points",
+      "leaderboard.viewDetails": "View Details",
+      "leaderboard.details": "Details",
       
       // Footer CTA
       "footer.title": "Ready to Climb the Ranks?",
@@ -92,6 +95,9 @@ export const resources = {
       "leaderboard.viewAll": "الكل",
       "leaderboard.specializedDepts": "الأقسام التخصصية",
       "leaderboard.administrativeDepts": "الأقسام الإدارية",
+      "leaderboard.points": "نقاط",
+      "leaderboard.viewDetails": "التفاصيل",
+      "leaderboard.details": "التفاصيل",
 
       // Events Section
       "events.badge": "فعاليات مفتوحة",
