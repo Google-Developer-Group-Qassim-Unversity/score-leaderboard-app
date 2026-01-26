@@ -7,7 +7,7 @@ import { ClientLeaderboardCards } from "@/components/client-leaderboard-cards"
 import { fetchMembers, fetchDepartments } from "@/lib/api"
 import { useTranslation } from 'react-i18next'
 import type { ApiMemberPoints, ApiDepartmentPoints } from "@/lib/api-types"
-import '@/lib/i18n'
+import '@/lib/i18n-client'
 
 function LeaderboardCardSkeleton() {
   return (

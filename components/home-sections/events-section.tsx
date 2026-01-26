@@ -10,7 +10,7 @@ import { EventCard } from "@/components/event-card"
 import { fetchOpenEvents } from "@/lib/api"
 import { useTranslation } from 'react-i18next'
 import type { ApiOpenEventItem } from "@/lib/api-types"
-import '@/lib/i18n'
+import '@/lib/i18n-client'
 
 function EventCardSkeleton() {
   return (

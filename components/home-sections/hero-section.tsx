@@ -1,14 +1,13 @@
-'use client';
-
-import Link from "next/link"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Users, Building2 } from "lucide-react"
-import { useTranslation } from 'react-i18next'
-import '@/lib/i18n'
+import { getTranslation } from "@/lib/server-i18n"
+import type { Language } from "@/lib/translations"
 
-export function HeroSection() {
-  const { t } = useTranslation();
+interface HeroSectionProps {
+  lang: Language
+}
+
+export function HeroSection({ lang }: HeroSectionProps) {
+  const t = (key: string) => getTranslation(lang, key);
 
   return (
     <section className="container mx-auto px-4 pt-12 md:pt-20 pb-8 md:pb-12">
@@ -43,26 +42,6 @@ export function HeroSection() {
         <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
           {t('hero.subtitle')}
         </p>
-
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
-          <Link href="/members" passHref legacyBehavior>
-            <Button asChild size="lg" className="bg-slate-900 hover:bg-slate-800 text-white w-full sm:w-auto cursor-pointer">
-              <a>
-                <Users className="w-4 h-4 mr-2" />
-                {t('hero.viewAllMembers')}
-              </a>
-            </Button>
-          </Link>
-          <Link href="/departments" passHref legacyBehavior>
-            <Button asChild size="lg" variant="outline" className="border-slate-300 hover:bg-slate-50 w-full sm:w-auto cursor-pointer">
-              <a>
-                <Building2 className="w-4 h-4 mr-2" />
-                {t('hero.viewDepartments')}
-              </a>
-            </Button>
-          </Link>
-        </div>
       </div>
     </section>
   )

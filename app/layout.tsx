@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import Script from "next/script"
 import { ClientDashboardWrapper } from "@/components/client-dashboard-wrapper"
+import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
 
 export const metadata: Metadata = {
   title: {
@@ -30,14 +31,17 @@ export const viewport: Viewport = {
   ],
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const lang = await getLanguageFromCookies();
+  const rtl = isRTL(lang);
+
   return (
     <ClerkProvider>
-      <html lang="en" dir="ltr" suppressHydrationWarning>
+      <html lang={lang} dir={rtl ? 'rtl' : 'ltr'} suppressHydrationWarning>
         <head>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

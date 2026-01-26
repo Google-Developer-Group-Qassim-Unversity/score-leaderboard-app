@@ -1,18 +1,15 @@
-'use client';
-
-import { useTranslation } from 'react-i18next'
 import { HeroSection, StatsSection, EventsSection, LeaderboardSection } from "@/components/home-sections"
-import '@/lib/i18n'
+import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
 
-export default function Dashboard() {
-  const { i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
+export default async function Dashboard() {
+  const lang = await getLanguageFromCookies();
+  const rtl = isRTL(lang);
 
   return (
-    <div className={`min-h-screen bg-white text-slate-900 ${isRTL ? 'rtl' : 'ltr'}`}>
+    <div className={`min-h-screen bg-white text-slate-900 ${rtl ? 'rtl' : 'ltr'}`}>
       <div className="relative">
-        <HeroSection />
-        <StatsSection />
+        <HeroSection lang={lang} />
+        <StatsSection lang={lang} />
         <LeaderboardSection />
         <EventsSection />
       </div>

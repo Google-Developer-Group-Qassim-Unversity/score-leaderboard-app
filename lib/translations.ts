@@ -1,7 +1,6 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+export type Language = 'en' | 'ar';
 
-const resources = {
+export const resources = {
   en: {
     translation: {
       // Hero Section
@@ -111,21 +110,3 @@ const resources = {
     }
   }
 };
-
-// Initialize i18n synchronously
-i18n
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: 'en', // default language
-    fallbackLng: 'en',
-    debug: false, // Disable debug mode
-    interpolation: {
-      escapeValue: false, // react already does escaping
-    },
-    react: {
-      useSuspense: false, // Disable suspense to avoid rendering issues
-    }
-  });
-
-export default i18n;

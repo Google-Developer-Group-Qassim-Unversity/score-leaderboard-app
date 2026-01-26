@@ -11,7 +11,7 @@ import { ClientLeaderboardCards } from "@/components/client-leaderboard-cards"
 import { useTranslation } from 'react-i18next'
 import { EventCard } from "@/components/event-card"
 import type { ApiOpenEventItem } from "@/lib/api-types"
-import '../lib/i18n'
+import '../lib/i18n-client'
 
 interface DashboardContentProps {
   topMembers: any[]

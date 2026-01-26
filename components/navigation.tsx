@@ -2,10 +2,10 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { usePathname } from "next/navigation"
-import { useState } from "react"
+import { usePathname, useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
 import { useTranslation } from 'react-i18next'
-import '../lib/i18n'
+import '../lib/i18n-client'
 import {
   Home,
   Users,
@@ -69,18 +69,45 @@ function MobileNavLink({ href, labelKey, icon: Icon, isActive, onClick }: { href
   )
 }
 
+// Helper to get current language from cookie
+function getLanguageFromCookie(): 'en' | 'ar' {
+  if (typeof document === 'undefined') return 'ar';
+  const match = document.cookie.match(/(?:^|; )lang=([^;]*)/);
+  const lang = match ? match[1] : null;
+  return lang === 'en' ? 'en' : 'ar';
+}
+
 export function Navigation() {
   const pathname = usePathname()
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const { i18n } = useTranslation()
+  const [currentLang, setCurrentLang] = useState<'en' | 'ar'>('ar')
+
+  // Sync with cookie on mount
+  useEffect(() => {
+    const cookieLang = getLanguageFromCookie();
+    setCurrentLang(cookieLang);
+    // Also sync i18n for client components that still use it
+    if (i18n.language !== cookieLang) {
+      i18n.changeLanguage(cookieLang);
+    }
+  }, [i18n]);
   
   const toggleLanguage = () => {
-    const newLang = i18n.language === 'en' ? 'ar' : 'en';
+    const newLang = currentLang === 'en' ? 'ar' : 'en';
+    
+    // Set cookie with 1 year expiry
+    document.cookie = `lang=${newLang}; path=/; max-age=31536000; SameSite=Lax`;
+    
+    // Update i18n for client components
     i18n.changeLanguage(newLang);
     
-    // Update HTML direction for Arabic
-    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = newLang;
+    // Refresh the page to trigger SSR with new language
+    router.refresh();
+    
+    // Force a full page reload to ensure SSR picks up the new cookie
+    window.location.reload();
   };
 
   return (
@@ -111,7 +138,7 @@ export function Navigation() {
           >
             <Globe className="w-4 h-4" />
             <span className="hidden sm:inline ml-2 text-sm font-medium">
-              {i18n.language === 'en' ? 'عربي' : 'EN'}
+              {currentLang === 'en' ? 'عربي' : 'EN'}
             </span>
           </Button>
           
@@ -158,7 +185,7 @@ export function Navigation() {
                     >
                       <Globe className="w-5 h-5" />
                       <span className="font-semibold text-base">
-                        {i18n.language === 'en' ? 'العربية' : 'English'}
+                        {currentLang === 'en' ? 'العربية' : 'English'}
                       </span>
                     </Button>
                   </div>
