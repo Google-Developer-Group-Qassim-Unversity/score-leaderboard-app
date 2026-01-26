@@ -111,7 +111,7 @@ export function Navigation() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav dir="ltr" className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -129,12 +129,12 @@ export function Navigation() {
 
         {/* Auth Button, Language Switcher & Mobile Menu */}
         <div className="flex items-center gap-2">
-          {/* Language Switcher */}
+          {/* Language Switcher - Hidden on mobile */}
           <Button
             onClick={toggleLanguage}
             variant="ghost"
             size="sm"
-            className="text-foreground/70 hover:text-foreground hover:bg-accent"
+            className="hidden md:flex text-foreground/70 hover:text-foreground hover:bg-accent"
           >
             <Globe className="w-4 h-4" />
             <span className="hidden sm:inline ml-2 text-sm font-medium">
