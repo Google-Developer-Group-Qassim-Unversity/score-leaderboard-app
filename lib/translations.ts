@@ -31,6 +31,8 @@ export const resources = {
       "leaderboard.topMembers": "Top Members",
       "leaderboard.topDepartments": "Top Departments",
       "leaderboard.viewAll": "View All",
+      "leaderboard.specializedDepts": "Specialized departments",
+      "leaderboard.administrativeDepts": "Administrative departments",
       
       // Footer CTA
       "footer.title": "Ready to Climb the Ranks?",
@@ -83,12 +85,13 @@ export const resources = {
       "stats.events.badge": "فعّال",
 
       // Leaderboard Section
-      "leaderboard.badge": "الترتيب المباشر",
       "leaderboard.title": "المتصدرين الآن",
       "leaderboard.subtitle": "شوف أفضل المنافسين في كل الفئات، التحديث لحظي",
       "leaderboard.topMembers": "أقوى الأعضاء",
       "leaderboard.topDepartments": "أقوى الأقسام",
-      "leaderboard.viewAll": "شوف الكل",
+      "leaderboard.viewAll": "الكل",
+      "leaderboard.specializedDepts": "الأقسام التخصصية",
+      "leaderboard.administrativeDepts": "الأقسام الإدارية",
 
       // Events Section
       "events.badge": "فعاليات مفتوحة",
