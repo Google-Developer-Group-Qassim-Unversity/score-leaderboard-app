@@ -60,17 +60,10 @@ export default function RootLayout({
         </head>
         <body className="font-sans antialiased">
           <ClientDashboardWrapper>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="light"
-              enableSystem
-              disableTransitionOnChange
-            >
               <Navigation />
               {children}
               <Analytics />
               <Toaster />
-            </ThemeProvider>
           </ClientDashboardWrapper>
         </body>
       </html>
