@@ -6,6 +6,8 @@ import { useAuth } from "@clerk/nextjs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Loader2, CheckCircle2, XCircle, AlertTriangle, Clock } from "lucide-react"
 import { AuthRequiredDialog } from "@/components/auth-required-dialog"
+import { useTranslation } from 'react-i18next'
+import '@/lib/i18n-client'
 
 type AttendanceStatus = "loading" | "success" | "error" | "missing-token" | "auth-required"
 
@@ -17,10 +19,12 @@ interface AttendanceResult {
 const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST || "http://178.128.205.239:8000"
 
 function AttendanceContent() {
+  const { t, i18n } = useTranslation()
+  const rtl = i18n.language === 'ar'
   const searchParams = useSearchParams()
   const params = useParams()
   const { isSignedIn, isLoaded, getToken } = useAuth()
-  const [result, setResult] = useState<AttendanceResult>({ status: "loading", message: "Marking attendance..." })
+  const [result, setResult] = useState<AttendanceResult>({ status: "loading", message: t('attendance.markingAttendance') })
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const [hasSubmitted, setHasSubmitted] = useState(false)
 
@@ -33,7 +37,7 @@ function AttendanceContent() {
       if (!token) {
         setResult({
           status: "missing-token",
-          message: "No attendance token provided. Please use the QR code or link provided by the event organizer."
+          message: t('attendance.noToken')
         })
         return
       }
@@ -43,7 +47,7 @@ function AttendanceContent() {
 
       // Check if user is signed in
       if (!isSignedIn) {
-        setResult({ status: "auth-required", message: "Please sign in to mark your attendance." })
+        setResult({ status: "auth-required", message: t('attendance.pleaseSignIn') })
         setShowAuthDialog(true)
         return
       }
@@ -66,7 +70,7 @@ function AttendanceContent() {
         if (response.ok) {
           setResult({
             status: "success",
-            message: "Your attendance has been marked successfully!"
+            message: t('attendance.success')
           })
           return
         }
@@ -77,17 +81,17 @@ function AttendanceContent() {
         if (response.status === 400) {
           setResult({
             status: "error",
-            message: errorData.detail || "You are not eligible to mark attendance for this event."
+            message: errorData.detail || t('attendance.notEligible')
           })
         } else if (response.status === 404) {
           setResult({
             status: "error",
-            message: "The attendance link has expired or is invalid. Please request a new one from the event organizer."
+            message: t('attendance.expired')
           })
         } else if (response.status === 500) {
           setResult({
             status: "error",
-            message: "A server error occurred. Please try again later."
+            message: t('attendance.serverError')
           })
         } else {
           setResult({
@@ -99,7 +103,7 @@ function AttendanceContent() {
         console.error("Failed to mark attendance:", error)
         setResult({
           status: "error",
-          message: "Failed to connect to the server. Please check your internet connection and try again."
+          message: t('attendance.connectionError')
         })
       }
     }
@@ -127,15 +131,15 @@ function AttendanceContent() {
   const getTitle = () => {
     switch (result.status) {
       case "loading":
-        return "Processing..."
+        return t('attendance.processing')
       case "success":
-        return "Attendance Confirmed"
+        return t('attendance.confirmed')
       case "error":
-        return "Attendance Failed"
+        return t('attendance.failed')
       case "missing-token":
-        return "Invalid Link"
+        return t('attendance.invalidLink')
       case "auth-required":
-        return "Sign In Required"
+        return t('attendance.signInRequired')
       default:
         return ""
     }
@@ -161,11 +165,11 @@ function AttendanceContent() {
       <AuthRequiredDialog
         open={showAuthDialog}
         onOpenChange={setShowAuthDialog}
-        title="Sign In Required"
-        description="You need to sign in or create an account to mark your attendance."
+        title={t('attendance.dialog.title')}
+        description={t('attendance.dialog.description')}
       />
       
-      <div className="container mx-auto px-4 py-8 max-w-md">
+      <div dir={rtl ? 'rtl' : 'ltr'} className="container mx-auto px-4 py-8 max-w-md">
         <Card className={`text-center ${getCardStyle()}`}>
           <CardHeader className="pb-2">
             <div className="flex justify-center mb-4">
@@ -184,25 +188,27 @@ function AttendanceContent() {
   )
 }
 
+function SuspenseFallback() {
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-md">
+      <Card className="text-center">
+        <CardHeader className="pb-2">
+          <div className="flex justify-center mb-4">
+            <Loader2 className="h-16 w-16 animate-spin text-primary" />
+          </div>
+          <CardTitle className="text-2xl">Processing...</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">Marking attendance...</p>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
 export default function AttendancePage() {
   return (
-    <Suspense
-      fallback={
-        <div className="container mx-auto px-4 py-8 max-w-md">
-          <Card className="text-center">
-            <CardHeader className="pb-2">
-              <div className="flex justify-center mb-4">
-                <Loader2 className="h-16 w-16 animate-spin text-primary" />
-              </div>
-              <CardTitle className="text-2xl">Processing...</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Marking attendance...</p>
-            </CardContent>
-          </Card>
-        </div>
-      }
-    >
+    <Suspense fallback={<SuspenseFallback />}>
       <AttendanceContent />
     </Suspense>
   )

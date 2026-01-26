@@ -109,6 +109,23 @@ export const resources = {
       "auth.login": "Log In",
       "auth.signup": "Sign Up",
       
+      // Attendance Page
+      "attendance.processing": "Processing...",
+      "attendance.markingAttendance": "Marking attendance...",
+      "attendance.confirmed": "Attendance Confirmed",
+      "attendance.failed": "Attendance Failed",
+      "attendance.invalidLink": "Invalid Link",
+      "attendance.signInRequired": "Sign In Required",
+      "attendance.success": "Your attendance has been marked successfully!",
+      "attendance.noToken": "No attendance token provided. Please use the QR code or link provided by the event organizer.",
+      "attendance.pleaseSignIn": "Please sign in to mark your attendance.",
+      "attendance.notEligible": "You are not eligible to mark attendance for this event.",
+      "attendance.expired": "The attendance link has expired or is invalid. Please request a new one from the event organizer.",
+      "attendance.serverError": "A server error occurred. Please try again later.",
+      "attendance.connectionError": "Failed to connect to the server. Please check your internet connection and try again.",
+      "attendance.dialog.title": "Sign In Required",
+      "attendance.dialog.description": "You need to sign in or create an account to mark your attendance.",
+      
       // Common
       "version": "2.0"
     }
@@ -220,6 +237,23 @@ export const resources = {
       // Auth
       "auth.login": "تسجيل الدخول",
       "auth.signup": "إنشاء حساب",
+
+      // Attendance Page
+      "attendance.processing": "جاري المعالجة...",
+      "attendance.markingAttendance": "جاري تسجيل الحضور...",
+      "attendance.confirmed": "تم تأكيد الحضور",
+      "attendance.failed": "فشل تسجيل الحضور",
+      "attendance.invalidLink": "رابط غير صالح",
+      "attendance.signInRequired": "تسجيل الدخول مطلوب",
+      "attendance.success": "تم تسجيل حضورك بنجاح!",
+      "attendance.noToken": "ما فيه رمز حضور. استخدم رمز QR أو الرابط اللي أعطاك إياه منظم الفعالية.",
+      "attendance.pleaseSignIn": "سجل دخول عشان تسجل حضورك.",
+      "attendance.notEligible": "ما تقدر تسجل حضورك لهذي الفعالية.",
+      "attendance.expired": "رابط الحضور منتهي أو غير صالح. اطلب رابط جديد من منظم الفعالية.",
+      "attendance.serverError": "صار خطأ في السيرفر. جرب مرة ثانية بعدين.",
+      "attendance.connectionError": "ما قدرنا نتصل بالسيرفر. تأكد من الإنترنت وجرب مرة ثانية.",
+      "attendance.dialog.title": "تسجيل الدخول مطلوب",
+      "attendance.dialog.description": "لازم تسجل دخول أو تسوي حساب عشان تسجل حضورك.",
 
       // Common
       "version": "2.0"
