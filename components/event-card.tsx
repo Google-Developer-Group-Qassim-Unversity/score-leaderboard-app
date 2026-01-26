@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -11,6 +13,8 @@ import {
 import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api-types";
 import { Button } from "./ui/button";
 import { EventSignupButton } from "./event-signup-button";
+import { useTranslation } from 'react-i18next';
+import '@/lib/i18n-client';
 
 interface EventCardProps {
   event: ApiEventItem | ApiOpenEventItem;
@@ -21,11 +25,13 @@ const IMAGE_SOURCE =
   process.env.NEXT_PUBLIC_DEV_IMAGE_SOURCE ||
   process.env.NEXT_PUBLIC_IMAGE_SOURCE;
 export function EventCard({ event, hideSignup = false }: EventCardProps) {
+  const { t } = useTranslation();
+
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle>{event.name}</CardTitle>
-        <CardDescription className="line-clamp-2 mt-3 min-h-[2.5rem]">
+        <CardDescription className="line-clamp-2 mt-3 min-h-10">
           {event.description}
         </CardDescription>
       </CardHeader>
@@ -48,14 +54,14 @@ export function EventCard({ event, hideSignup = false }: EventCardProps) {
         {'form_id' in event && event.form_type === 'none' ? (
           <Link href={`/events/${event.id}`} className="w-full">
             <Button variant="default" className="w-full">
-              View Event
+              {t('eventCard.viewEvent')}
             </Button>
           </Link>
         ) : (
           <>
             <Link href={`/events/${event.id}`} className={hideSignup ? "w-full" : "flex-1"}>
               <Button variant="outline" className="w-full">
-                View Details
+                {t('eventCard.viewDetails')}
               </Button>
             </Link>
             {!hideSignup && 'form_id' in event && (

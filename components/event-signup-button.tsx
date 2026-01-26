@@ -19,6 +19,8 @@ import {
 import { AuthRequiredDialog } from "@/components/auth-required-dialog"
 import { Loader2, CheckCircle2, FileText } from "lucide-react"
 import type { ApiOpenEventItem, SubmissionStatus } from "@/lib/api-types"
+import { useTranslation } from 'react-i18next'
+import '@/lib/i18n-client'
 
 interface EventSignupButtonProps {
   event: ApiOpenEventItem
@@ -39,6 +41,7 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
   const { isSignedIn, isLoaded } = useUser()
   const { getToken } = useAuth()
   const router = useRouter()
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
@@ -132,7 +135,7 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
       } else {
         // Completed signup for non-google forms
         setSubmissionStatus(true)
-        toast.success(`Successfully signed up for ${event.name}!`)
+        toast.success(`${t('eventSignup.successToast')} ${event.name}!`)
         router.refresh()
       }
     } catch (err) {
@@ -152,7 +155,7 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
       return (
         <>
           <CheckCircle2 className="mr-2 h-4 w-4" />
-          Signed Up
+          {t('eventSignup.signedUp')}
         </>
       )
     }
@@ -160,11 +163,11 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
       return (
         <>
           <FileText className="mr-2 h-4 w-4" />
-          Fill Google Form
+          {t('eventSignup.fillGoogleForm')}
         </>
       )
     }
-    return "Sign Up"
+    return t('eventSignup.signUp')
   }
 
   const getButtonStyle = () => {
@@ -188,8 +191,8 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
       <AuthRequiredDialog
         open={showAuthDialog}
         onOpenChange={setShowAuthDialog}
-        title="Sign In Required"
-        description="You need to sign in or create an account to sign up for this event."
+        title={t('eventSignup.signInRequired')}
+        description={t('eventSignup.signInDescription')}
       />
       
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -203,9 +206,9 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
         </Button>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Sign Up</AlertDialogTitle>
+            <AlertDialogTitle>{t('eventSignup.confirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to sign up for this event: {event.name}?
+              {t('eventSignup.confirmDescription')} {event.name}?
             </AlertDialogDescription>
           </AlertDialogHeader>
           {error && (
@@ -214,20 +217,20 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
             </div>
           )}
           <AlertDialogFooter className="gap-2">
-            <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isLoading}>{t('eventSignup.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleSignup} disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing up...
+                  {t('eventSignup.signingUp')}
                 </>
               ) : event.form_type === "google" ? (
                 <>
                   <FileText className="mr-2 h-4 w-4" />
-                  Confirm Sign Up and Fill Form
+                  {t('eventSignup.confirmAndFillForm')}
                 </>
               ) : (
-                "Confirm Sign Up"
+                t('eventSignup.confirm')
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

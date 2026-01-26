@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { fetchEvents } from "@/lib/api";
+import { fetchEvents, fetchOpenEvents } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -13,8 +13,10 @@ import {
   Info,
 } from "lucide-react";
 import Link from "next/link";
-import type { ApiEventItem } from "@/lib/api-types";
+import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api-types";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
+import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n";
+import { EventSignupButton } from "@/components/event-signup-button";
 
 export const dynamic = "force-dynamic";
 const IMAGE_SOURCE =
@@ -27,11 +29,14 @@ interface EventDetailPageProps {
   };
 }
 
+// Valid statuses for display (excludes draft)
+const VALID_STATUSES: ApiEventItem["status"][] = ["open", "active", "closed"];
+
 const getStatusVariant = (status: ApiEventItem["status"]) => {
   switch (status) {
     case "open":
       return "default" as const;
-    case "announced":
+    case "active":
       return "secondary" as const;
     case "closed":
       return "outline" as const;
@@ -43,12 +48,27 @@ const getStatusVariant = (status: ApiEventItem["status"]) => {
 export default async function EventDetailPage({
   params,
 }: EventDetailPageProps) {
-  const events = await fetchEvents();
-  const event = events.find((e) => e.id === parseInt(params.id));
+  const lang = await getLanguageFromCookies();
+  const t = (key: string) => getTranslation(lang, key);
+
+  // Fetch both regular events and open events (for signup button)
+  const [events, openEvents] = await Promise.all([
+    fetchEvents(),
+    fetchOpenEvents(),
+  ]);
+
+  // Filter to only valid statuses (open, active, closed)
+  const validEvents = events.filter((e) => VALID_STATUSES.includes(e.status));
+  const event = validEvents.find((e) => e.id === parseInt(params.id));
 
   if (!event) {
     notFound();
   }
+
+  // Check if this event has an open registration form
+  const openEvent = openEvents.find(
+    (e) => e.id === event.id
+  ) as ApiOpenEventItem | undefined;
 
   // Construct full image URL
   const imageUrl =
@@ -59,7 +79,7 @@ export default async function EventDetailPage({
   // Get location icon based on location type
   const LocationIcon = event.location_type === "online" ? Globe : MapPin;
 
-  // Format date only
+  // Format date only (keeping as-is, no localization)
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -70,7 +90,7 @@ export default async function EventDetailPage({
     });
   };
 
-  // Format time only
+  // Format time only (keeping as-is, no localization)
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString("en-US", {
@@ -105,15 +125,29 @@ export default async function EventDetailPage({
   const diffTime = Math.abs(endDateOnly.getTime() - startDateOnly.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
-  // Get location type label
+  // Get translated status label
+  const getStatusLabel = () => {
+    switch (event.status) {
+      case "open":
+        return t("eventDetail.status.open");
+      case "active":
+        return t("eventDetail.status.active");
+      case "closed":
+        return t("eventDetail.status.closed");
+      default:
+        return event.status;
+    }
+  };
+
+  // Get translated location type label
   const getLocationTypeLabel = () => {
     switch (event.location_type) {
       case "online":
-        return "Online Event";
+        return t("eventDetail.locationType.online");
       case "on-site":
-        return "On-site Event";
+        return t("eventDetail.locationType.onsite");
       case "none":
-        return "No Location";
+        return t("eventDetail.locationType.none");
       default:
         return event.location_type;
     }
@@ -124,10 +158,10 @@ export default async function EventDetailPage({
       {/* Back Button */}
       <Link
         href="/events"
-        className="inline-flex items-center text-sm text-slate-600 hover:text-slate-900 mb-6 transition-colors"
+        className="inline-flex items-center text-sm text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 mb-6 transition-colors"
       >
-        <ChevronLeft className="h-4 w-4 ml-1" />
-        Back to Events
+        <ChevronLeft className="h-4 w-4 ltr:mr-1 rtl:ml-1" />
+        {t("eventDetail.backToEvents")}
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-start">
@@ -148,7 +182,7 @@ export default async function EventDetailPage({
             <div className="flex items-center justify-center w-64 h-64 bg-muted rounded-xl text-muted-foreground">
               <div className="text-center">
                 <Calendar className="h-16 w-16 mx-auto mb-2 opacity-50" />
-                <span className="text-sm">No event image</span>
+                <span className="text-sm">{t("eventDetail.noImage")}</span>
               </div>
             </div>
           )}
@@ -161,14 +195,17 @@ export default async function EventDetailPage({
             {event.name}
           </h1>
 
-          {/* Badges */}
+          {/* Badges and Signup Button */}
           <div className="flex flex-wrap items-center gap-3">
             <Badge
               variant={getStatusVariant(event.status)}
               className="text-sm px-3 py-1"
             >
-              {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
+              {getStatusLabel()}
             </Badge>
+            {openEvent && (
+              <EventSignupButton event={openEvent} />
+            )}
           </div>
 
           {/* Date & Time */}
@@ -191,7 +228,7 @@ export default async function EventDetailPage({
                     </span>
                     {diffDays > 1 && (
                       <span className="text-sm text-muted-foreground font-normal">
-                        ({diffDays} Days)
+                        ({diffDays} {t("eventDetail.days")})
                       </span>
                     )}
                   </div>
@@ -204,7 +241,7 @@ export default async function EventDetailPage({
                 {dailyStartTime} - {dailyEndTime}
               </span>
               {!isSameDay && (
-                <span className="text-sm text-muted-foreground">(daily)</span>
+                <span className="text-sm text-muted-foreground">({t("eventDetail.daily")})</span>
               )}
             </div>
           </div>
@@ -227,7 +264,7 @@ export default async function EventDetailPage({
             <CardHeader className="flex flex-row items-center gap-2 py-4">
               <Info className="h-4 w-4 text-muted-foreground" />
               <CardTitle className="text-xl font-semibold">
-                Description
+                {t("eventDetail.description")}
               </CardTitle>
             </CardHeader>
             <CardContent className="pb-6">
@@ -240,7 +277,7 @@ export default async function EventDetailPage({
                 </p>
               ) : (
                 <p className="text-muted-foreground italic">
-                  No description provided for this event.
+                  {t("eventDetail.noDescription")}
                 </p>
               )}
             </CardContent>

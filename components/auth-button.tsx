@@ -52,7 +52,7 @@ export function AuthButton() {
         asChild
         className="gap-2"
       >
-        <a href={signInUrl}>
+        <a href={signInUrl} aria-label={t('auth.loginAria')}>
           <LogIn className="h-4 w-4" />
           <span className="hidden sm:inline">{t('auth.login')}</span>
         </a>
@@ -63,7 +63,7 @@ export function AuthButton() {
         asChild
         className="gap-2"
       >
-        <a href={signUpUrl}>
+        <a href={signUpUrl} aria-label={t('auth.signupAria')}>
           <UserPlus className="h-4 w-4" />
           <span className="hidden sm:inline">{t('auth.signup')}</span>
         </a>

@@ -108,6 +108,32 @@ export const resources = {
       // Auth
       "auth.login": "Log In",
       "auth.signup": "Sign Up",
+      "auth.loginAria": "Sign in to your account",
+      "auth.signupAria": "Create a new account",
+      "auth.signIn": "Sign In",
+      "auth.cancel": "Cancel",
+      
+      // Auth Required Dialog
+      "authDialog.defaultTitle": "Sign In Required",
+      "authDialog.defaultDescription": "You need to sign in or create an account to continue.",
+      
+      // Event Signup
+      "eventSignup.signUp": "Sign Up",
+      "eventSignup.signedUp": "Signed Up",
+      "eventSignup.fillGoogleForm": "Fill Google Form",
+      "eventSignup.signInRequired": "Sign In Required",
+      "eventSignup.signInDescription": "You need to sign in or create an account to sign up for this event.",
+      "eventSignup.confirmTitle": "Confirm Sign Up",
+      "eventSignup.confirmDescription": "Are you sure you want to sign up for this event:",
+      "eventSignup.cancel": "Cancel",
+      "eventSignup.signingUp": "Signing up...",
+      "eventSignup.confirmAndFillForm": "Confirm Sign Up and Fill Form",
+      "eventSignup.confirm": "Confirm Sign Up",
+      "eventSignup.successToast": "Successfully signed up for",
+      
+      // Event Card
+      "eventCard.viewEvent": "View Event",
+      "eventCard.viewDetails": "View Details",
       
       // Attendance Page
       "attendance.processing": "Processing...",
@@ -125,6 +151,20 @@ export const resources = {
       "attendance.connectionError": "Failed to connect to the server. Please check your internet connection and try again.",
       "attendance.dialog.title": "Sign In Required",
       "attendance.dialog.description": "You need to sign in or create an account to mark your attendance.",
+      
+      // Event Detail Page
+      "eventDetail.backToEvents": "Back to Events",
+      "eventDetail.status.open": "Open",
+      "eventDetail.status.active": "Active",
+      "eventDetail.status.closed": "Closed",
+      "eventDetail.locationType.online": "Online Event",
+      "eventDetail.locationType.onsite": "On-site Event",
+      "eventDetail.locationType.none": "No Location",
+      "eventDetail.daily": "daily",
+      "eventDetail.days": "Days",
+      "eventDetail.description": "Description",
+      "eventDetail.noDescription": "No description provided for this event.",
+      "eventDetail.noImage": "No event image",
       
       // Common
       "version": "2.0"
@@ -237,6 +277,32 @@ export const resources = {
       // Auth
       "auth.login": "تسجيل الدخول",
       "auth.signup": "إنشاء حساب",
+      "auth.loginAria": "سجل دخول لحسابك",
+      "auth.signupAria": "أنشئ حساب جديد",
+      "auth.signIn": "سجل دخول",
+      "auth.cancel": "إلغاء",
+      
+      // Auth Required Dialog
+      "authDialog.defaultTitle": "تسجيل الدخول مطلوب",
+      "authDialog.defaultDescription": "لازم تسجل دخول أو تسوي حساب عشان تكمل.",
+      
+      // Event Signup
+      "eventSignup.signUp": "سجل في الفعالية",
+      "eventSignup.signedUp": "مسجل",
+      "eventSignup.fillGoogleForm": "عبي نموذج جوجل",
+      "eventSignup.signInRequired": "تسجيل الدخول مطلوب",
+      "eventSignup.signInDescription": "لازم تسجل دخول أو تسوي حساب عشان تسجل في هذي الفعالية.",
+      "eventSignup.confirmTitle": "تأكيد التسجيل",
+      "eventSignup.confirmDescription": "متأكد إنك تبي تسجل في هذي الفعالية:",
+      "eventSignup.cancel": "إلغاء",
+      "eventSignup.signingUp": "جاري التسجيل...",
+      "eventSignup.confirmAndFillForm": "أكد التسجيل وعبي النموذج",
+      "eventSignup.confirm": "أكد التسجيل",
+      "eventSignup.successToast": "تم تسجيلك بنجاح في",
+      
+      // Event Card
+      "eventCard.viewEvent": "اعرف الفعالية",
+      "eventCard.viewDetails": "اعرض التفاصيل",
 
       // Attendance Page
       "attendance.processing": "جاري المعالجة...",
@@ -254,6 +320,20 @@ export const resources = {
       "attendance.connectionError": "ما قدرنا نتصل بالسيرفر. تأكد من الإنترنت وجرب مرة ثانية.",
       "attendance.dialog.title": "تسجيل الدخول مطلوب",
       "attendance.dialog.description": "لازم تسجل دخول أو تسوي حساب عشان تسجل حضورك.",
+
+      // Event Detail Page
+      "eventDetail.backToEvents": "العودة للفعاليات",
+      "eventDetail.status.open": "مفتوح",
+      "eventDetail.status.active": "جارية",
+      "eventDetail.status.closed": "مغلق",
+      "eventDetail.locationType.online": "فعالية أونلاين",
+      "eventDetail.locationType.onsite": "فعالية حضورية",
+      "eventDetail.locationType.none": "بدون موقع",
+      "eventDetail.daily": "يومياً",
+      "eventDetail.days": "أيام",
+      "eventDetail.description": "الوصف",
+      "eventDetail.noDescription": "ما فيه وصف لهذي الفعالية.",
+      "eventDetail.noImage": "ما فيه صورة للفعالية",
 
       // Common
       "version": "2.0"
