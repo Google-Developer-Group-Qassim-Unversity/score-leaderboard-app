@@ -1,4 +1,4 @@
-import { HeroSection, StatsSection, EventsSection, LeaderboardSection } from "@/components/home-sections"
+import { HeroSection, StatsSection, EventsSection, LeaderboardSection, MagazinesSection } from "@/components/home-sections"
 import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
 
 export default async function Dashboard() {
@@ -12,6 +12,7 @@ export default async function Dashboard() {
         <StatsSection lang={lang} />
         <EventsSection />
         <LeaderboardSection />
+        <MagazinesSection />
       </div>
     </div>
   )

@@ -99,6 +99,12 @@ export const resources = {
       "magazines.pages": "pages",
       "magazines.readPDF": "Read PDF",
       
+      // Magazines Section (Home)
+      "magazines.section.title": "Latest Magazines",
+      "magazines.section.subtitle": "Explore our latest publications and stay updated with the community",
+      "magazines.section.viewAll": "View All Magazines",
+      "magazines.section.empty": "No magazines available yet",
+      
       // Auth
       "auth.login": "Log In",
       "auth.signup": "Sign Up",
@@ -204,6 +210,12 @@ export const resources = {
       "magazines.noMagazines.desc": "ارجع بعدين لإصدارات المجلات الجديدة اللي تحتوي على آخر التقنيات والتطوير.",
       "magazines.pages": "صفحة",
       "magazines.readPDF": "اقرأ PDF",
+      
+      // Magazines Section (Home)
+      "magazines.section.title": "آخر المجلات",
+      "magazines.section.subtitle": "اطلع على آخر إصداراتنا وخلك متابع مع المجتمع",
+      "magazines.section.viewAll": "شوف كل المجلات",
+      "magazines.section.empty": "ما فيه مجلات متاحة حالياً",
 
       // Auth
       "auth.login": "تسجيل الدخول",
