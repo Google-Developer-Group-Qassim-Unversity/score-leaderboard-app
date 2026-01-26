@@ -4,10 +4,15 @@ import { PageHeader } from "@/components/page-header"
 import { SectionHeader } from "@/components/section-header"
 import { CalendarDays, CheckCircle2, History } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
+import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 
 export const dynamic = "force-dynamic"
 
 export default async function EventsPage() {
+  const lang = await getLanguageFromCookies()
+  const rtl = isRTL(lang)
+  const t = (key: string) => getTranslation(lang, key)
+  
   const [openEvents, allEvents] = await Promise.all([
     fetchOpenEvents(),
     fetchEvents()
@@ -19,10 +24,10 @@ export default async function EventsPage() {
     .sort((a, b) => new Date(b.end_datetime).getTime() - new Date(a.end_datetime).getTime()) // Latest to oldest
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl bg-white">
+    <div className={`container mx-auto px-4 py-8 max-w-7xl bg-white ${rtl ? 'rtl' : 'ltr'}`}>
       <PageHeader
-        heading="Events"
-        subHeading="Discover upcoming events, sign up for open registrations, and explore past events"
+        heading={t('events.heading')}
+        subHeading={t('events.subHeading')}
         icon={CalendarDays}
       />
 
@@ -30,14 +35,14 @@ export default async function EventsPage() {
         {/* Open Events Section */}
         <section className="mb-20">
           <SectionHeader
-            title="Open Events"
+            title={t('events.openEvents')}
             icon={CheckCircle2}
             color="green"
           />
           <div className="mt-6">
             <EventsList 
               events={openEvents}
-              emptyMessage="There are currently no events available for signups. Check back soon!"
+              emptyMessage={t('events.noOpenEvents')}
             />
           </div>
         </section>
@@ -46,14 +51,14 @@ export default async function EventsPage() {
         {/* Event History Section */}
         <section>
           <SectionHeader
-            title="Past Events"
+            title={t('events.pastEvents')}
             icon={History}
             color="blue"
           />
           <div className="mt-6">
             <EventsList 
               events={closedEvents}
-              emptyMessage="Past events will appear here once they are completed."
+              emptyMessage={t('events.noPastEvents')}
               hideSignup={true}
             />
           </div>

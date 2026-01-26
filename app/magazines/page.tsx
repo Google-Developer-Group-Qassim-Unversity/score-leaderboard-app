@@ -7,16 +7,20 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getAllMagazines, formatMagazineDate, openMagazinePDF } from "@/lib/magazines"
 import { BookOpen, Calendar, FileText, ArrowLeft, ExternalLink } from "lucide-react"
+import { useTranslation } from 'react-i18next'
+import '@/lib/i18n-client'
 
 export default function MagazinesPage() {
+  const { t, i18n } = useTranslation()
   const magazines = getAllMagazines()
+  const rtl = i18n.language === 'ar'
 
   const handleReadPDF = (pdfUrl: string) => {
     openMagazinePDF(pdfUrl)
   }
 
   return (
-    <div className="min-h-screen bg-white text-slate-800">
+    <div className={`min-h-screen bg-white text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>
       {/* Content */}
       <div className="">
         <div className="container mx-auto px-4 py-8">
@@ -24,8 +28,8 @@ export default function MagazinesPage() {
           <div className="mb-12">
             <Link href="/" className="inline-block mb-6">
               <Button variant="outline" size="sm" className="border-slate-300 text-slate-700">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
+                <ArrowLeft className={`h-4 w-4 ${rtl ? 'ml-2' : 'mr-2'}`} />
+                {t('magazines.backButton')}
               </Button>
             </Link>
             
@@ -37,7 +41,7 @@ export default function MagazinesPage() {
                   </div>
                 </div>
                 <h1 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
-                  GDG Magazines
+                  {t('magazines.heading')}
                 </h1>
               </div>
               
@@ -49,10 +53,10 @@ export default function MagazinesPage() {
             <div className="bg-white rounded-lg p-12 text-center border border-slate-200">
               <BookOpen className="h-16 w-16 text-slate-400 mx-auto mb-6" />
               <h3 className="text-xl font-semibold text-slate-900 mb-3">
-                No magazines available
+                {t('magazines.noMagazines.title')}
               </h3>
               <p className="text-slate-600 max-w-md mx-auto">
-                Check back soon for new magazine releases featuring the latest in technology and development.
+                {t('magazines.noMagazines.desc')}
               </p>
             </div>
           ) : (
@@ -81,8 +85,8 @@ export default function MagazinesPage() {
                           className="bg-white text-slate-900 hover:bg-slate-100 font-semibold px-6"
                           onClick={() => handleReadPDF(magazine.pdfUrl)}
                         >
-                          <BookOpen className="h-4 w-4 mr-2" />
-                          Read PDF
+                          <BookOpen className={`h-4 w-4 ${rtl ? 'ml-2' : 'mr-2'}`} />
+                          {t('magazines.readPDF')}
                         </Button>
                       </div>
                     </div>
@@ -92,12 +96,12 @@ export default function MagazinesPage() {
                   <CardHeader className="space-y-4">
                     <div className="flex items-center justify-between">
                       <Badge variant="secondary" className="bg-slate-100 text-slate-700">
-                        <FileText className="h-3 w-3 mr-1" />
-                        {magazine.pages} pages
+                        <FileText className={`h-3 w-3 ${rtl ? 'ml-1' : 'mr-1'}`} />
+                        {magazine.pages} {t('magazines.pages')}
                       </Badge>
                       <Badge variant="outline" className="text-xs border-slate-300">
-                        <Calendar className="h-3 w-3 mr-1" />
-                        {formatMagazineDate(magazine.publishDate)}
+                        <Calendar className={`h-3 w-3 ${rtl ? 'ml-1' : 'mr-1'}`} />
+                        {formatMagazineDate(magazine.publishDate, i18n.language as 'en' | 'ar')}
                       </Badge>
                     </div>
                     
@@ -120,8 +124,8 @@ export default function MagazinesPage() {
                         className="w-full border-slate-300"
                         onClick={() => handleReadPDF(magazine.pdfUrl)}
                       >
-                        <ExternalLink className="h-3 w-3 mr-1" />
-                        Read PDF
+                        <ExternalLink className={`h-3 w-3 ${rtl ? 'ml-1' : 'mr-1'}`} />
+                        {t('magazines.readPDF')}
                       </Button>
                     </div>
                   </CardContent>

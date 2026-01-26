@@ -48,12 +48,14 @@ export function getLatestMagazines(count: number = 3): Magazine[] {
 }
 
 // Format date for display
-export function formatMagazineDate(dateString: string): string {
+export function formatMagazineDate(dateString: string, language: 'en' | 'ar' = 'en'): string {
   const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
+  const locale = language === 'ar' ? 'ar-SA' : 'en-US'
+  return date.toLocaleDateString(locale, {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
+    numberingSystem: 'latn' // Use Latin/Western numerals
   })
 }
 

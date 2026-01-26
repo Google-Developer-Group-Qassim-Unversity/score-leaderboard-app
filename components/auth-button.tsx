@@ -4,9 +4,12 @@ import { UserButton, useUser } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { LogIn, UserPlus } from "lucide-react"
+import { useTranslation } from 'react-i18next'
+import '@/lib/i18n-client'
 
 export function AuthButton() {
   const { isLoaded, isSignedIn } = useUser()
+  const { t } = useTranslation()
 
   // Loading state
   if (!isLoaded) {
@@ -49,7 +52,7 @@ export function AuthButton() {
       >
         <a href={signInUrl}>
           <LogIn className="h-4 w-4" />
-          <span className="hidden sm:inline">Log In</span>
+          <span className="hidden sm:inline">{t('auth.login')}</span>
         </a>
       </Button>
       <Button
@@ -60,7 +63,7 @@ export function AuthButton() {
       >
         <a href={signUpUrl}>
           <UserPlus className="h-4 w-4" />
-          <span className="hidden sm:inline">Sign Up</span>
+          <span className="hidden sm:inline">{t('auth.signup')}</span>
         </a>
       </Button>
     </div>
