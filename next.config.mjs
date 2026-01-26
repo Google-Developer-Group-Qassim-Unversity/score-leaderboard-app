@@ -7,8 +7,20 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
-  },
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '7001',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'refactor.albrrak773.com',
+        pathname: '/**',
+      }
+    ]
+  }
 }
 
 export default nextConfig

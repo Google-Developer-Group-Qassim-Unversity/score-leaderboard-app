@@ -20,7 +20,6 @@ interface EventCardProps {
 const IMAGE_SOURCE =
   process.env.NEXT_PUBLIC_DEV_IMAGE_SOURCE ||
   process.env.NEXT_PUBLIC_IMAGE_SOURCE;
-
 export function EventCard({ event, hideSignup = false }: EventCardProps) {
   return (
     <Card className="h-full flex flex-col">
@@ -36,7 +35,8 @@ export function EventCard({ event, hideSignup = false }: EventCardProps) {
             <Image
               src={IMAGE_SOURCE + event.image_url}
               alt={event.name}
-              fill
+              width={300}
+              height={400}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover"
             />

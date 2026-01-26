@@ -42,7 +42,7 @@ export default async function EventsPage() {
           <div className="mt-6">
             <EventsList 
               events={openEvents}
-              emptyMessage={t('events.noOpenEvents')}
+              emptyMessage={t('events.empty')}
             />
           </div>
         </section>

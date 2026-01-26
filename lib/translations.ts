@@ -102,7 +102,7 @@ export const resources = {
       // Magazines Section (Home)
       "magazines.section.title": "Latest Magazines",
       "magazines.section.subtitle": "Explore our latest publications and stay updated with the community",
-      "magazines.section.viewAll": "View All Magazines",
+      "magazines.section.viewAll": "View All",
       "magazines.section.empty": "No magazines available yet",
       
       // Auth
@@ -171,7 +171,7 @@ export const resources = {
       "events.title": "شارك في فعالياتنا",
       "events.subtitle": "عيش الحماس، شارك واكسب نقاط وتصدر القائمة!",
       "events.loading": "جاري تحميل الفعاليات...",
-      "events.empty": "ما فيه فعاليات مفتوحة حالياً",
+      "events.empty": "ما عندنا فعاليات متاحة حاليًا بس خلك قريب ترا فعاليتنا واجد 😉",
       "events.viewAll": "شوف كل الفعاليات",
 
       // Navigation
