@@ -1,31 +1,21 @@
-import { fetchMembers, fetchDepartments, fetchOpenEvents, ApiMemberPoints } from "@/lib/api"
-import { DashboardContent } from "@/components/dashboard-content"
+'use client';
 
-export default async function Dashboard() {
-  const [apiMembers, apiDepartmentsResponse, openEventsResponse] = await Promise.all([
-    fetchMembers(),
-    fetchDepartments(),
-    fetchOpenEvents(),
-  ])
+import { useTranslation } from 'react-i18next'
+import { HeroSection, StatsSection, EventsSection, LeaderboardSection } from "@/components/home-sections"
+import '@/lib/i18n'
 
-  const membersCount = apiMembers.length ?? 0
-  const departmentsCount = (apiDepartmentsResponse.administrative?.length ?? 0) + (apiDepartmentsResponse.practical?.length ?? 0)
-
-  const topMembers = (apiMembers ?? []).slice(0, 3)
-  const practicalDepartments = (apiDepartmentsResponse.practical ?? []).slice(0, 3)
-  const administrativeDepartments = (apiDepartmentsResponse.administrative ?? []).slice(0, 3)
-
-  const totalPoints = apiMembers.reduce((sum: number, member: ApiMemberPoints) => sum + (member.total_points ?? 0), 0)
+export default function Dashboard() {
+  const { i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
 
   return (
-    <DashboardContent 
-      topMembers={topMembers}
-      practicalDepartments={practicalDepartments} 
-      administrativeDepartments={administrativeDepartments}
-      membersCount={membersCount}
-      departmentsCount={departmentsCount}
-      totalPoints={totalPoints}
-      openEvents={openEventsResponse.slice(0, 6)}
-    />
+    <div className={`min-h-screen bg-white text-slate-900 ${isRTL ? 'rtl' : 'ltr'}`}>
+      <div className="relative">
+        <HeroSection />
+        <StatsSection />
+        <LeaderboardSection />
+        <EventsSection />
+      </div>
+    </div>
   )
 }
