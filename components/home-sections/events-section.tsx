@@ -3,10 +3,17 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 import { Calendar, ArrowRight } from "lucide-react"
 import { EventCard } from "@/components/event-card"
+import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
 import { fetchOpenEvents } from "@/lib/api"
 import { useTranslation } from 'react-i18next'
 import type { ApiOpenEventItem } from "@/lib/api-types"
@@ -14,13 +21,15 @@ import '@/lib/i18n-client'
 
 function EventCardSkeleton() {
   return (
-    <div className="w-[300px] md:w-[350px] flex-shrink-0 rounded-lg border border-slate-200 bg-white overflow-hidden">
+    <div className="rounded-lg border border-slate-200 bg-white overflow-hidden h-full flex flex-col">
       <div className="p-4 space-y-3">
         <Skeleton className="h-6 w-3/4" />
         <Skeleton className="h-4 w-full" />
         <Skeleton className="h-4 w-5/6" />
       </div>
-      <Skeleton className="h-48 w-full rounded-none" />
+      <div className="px-4 flex-1">
+        <Skeleton className="aspect-3/4 w-full rounded-md" />
+      </div>
       <div className="p-4 flex gap-2">
         <Skeleton className="h-9 flex-1" />
         <Skeleton className="h-9 flex-1" />
@@ -32,25 +41,29 @@ function EventCardSkeleton() {
 function EventsSectionSkeleton() {
   return (
     <section className="container mx-auto px-4 py-12">
-      {/* Section Header */}
+      {/* Section Header Skeleton */}
       <div className="text-center mb-8 space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-full border border-slate-200">
-          <Calendar className="w-4 h-4 text-slate-600" />
-          <Skeleton className="h-4 w-24" />
+        <div className="inline-flex items-center justify-center w-12 h-12 bg-slate-100 rounded-xl border border-slate-200">
+          <Calendar className="w-6 h-6 text-slate-400" />
         </div>
         <Skeleton className="h-10 w-64 mx-auto" />
         <Skeleton className="h-5 w-96 mx-auto max-w-full" />
       </div>
 
-      {/* Skeleton Cards */}
-      <ScrollArea className="w-full whitespace-nowrap rounded-lg">
-        <div className="flex gap-4 pb-4">
-          {[1, 2, 3, 4].map((i) => (
-            <EventCardSkeleton key={i} />
-          ))}
-        </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+      {/* Carousel Skeleton */}
+      <div className="mx-auto max-w-5xl px-12">
+        <Carousel opts={{ align: "start" }} className="w-full">
+          <CarouselContent>
+            {[1, 2, 3].map((i) => (
+              <CarouselItem key={i} className="basis-full md:basis-1/2 lg:basis-1/3">
+                <EventCardSkeleton />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="disabled:opacity-50" />
+          <CarouselNext className="disabled:opacity-50" />
+        </Carousel>
+      </div>
     </section>
   )
 }
@@ -82,31 +95,29 @@ export function EventsSection() {
   return (
     <section className="container mx-auto px-4 py-12">
       {/* Section Header */}
-      <div className="text-center mb-8 space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-full border border-slate-200">
-          <Calendar className="w-4 h-4 text-slate-600" />
-          <span className="text-sm font-medium text-slate-700">{t('events.badge')}</span>
-        </div>
-        <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-slate-900">
-          {t('events.title')}
-        </h2>
-        <p className="text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
-          {t('events.subtitle')}
-        </p>
-      </div>
+      <HomeSectionHeader
+        icon={Calendar}
+        title={t('events.title')}
+        subtitle={t('events.subtitle')}
+      />
 
-      {/* Events Scroll Area */}
+      {/* Events Carousel */}
       {events.length > 0 ? (
-        <ScrollArea className="w-full whitespace-nowrap rounded-lg">
-          <div className="flex gap-4 pb-4">
-            {events.map((event) => (
-              <div key={event.id} className="w-[300px] md:w-[350px] flex-shrink-0">
-                <EventCard event={event} />
-              </div>
-            ))}
-          </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+        <div className="mx-auto max-w-5xl px-12">
+          <Carousel opts={{ align: "start" }} className="w-full">
+            <CarouselContent>
+              {events.map((event) => (
+                <CarouselItem key={event.id} className="basis-full md:basis-1/2 lg:basis-1/3">
+                  <div className="h-full">
+                    <EventCard event={event} />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        </div>
       ) : (
         <div className="text-center py-12">
           <p className="text-slate-500">{t('events.empty')}</p>
@@ -120,7 +131,7 @@ export function EventsSection() {
             <Button asChild variant="outline" className="border-slate-300 hover:bg-slate-50 cursor-pointer">
               <a>
                 {t('events.viewAll')}
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-4 h-4 ms-2 rtl:rotate-180" />
               </a>
             </Button>
           </Link>

@@ -10,8 +10,8 @@ export default async function Dashboard() {
       <div className="relative">
         <HeroSection lang={lang} />
         <StatsSection lang={lang} />
-        <LeaderboardSection />
         <EventsSection />
+        <LeaderboardSection />
       </div>
     </div>
   )

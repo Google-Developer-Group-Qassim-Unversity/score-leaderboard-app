@@ -23,23 +23,22 @@ const IMAGE_SOURCE =
 
 export function EventCard({ event, hideSignup = false }: EventCardProps) {
   return (
-    <Card dir="rtl">
+    <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle>{event.name}</CardTitle>
         <CardDescription className="line-clamp-2 mt-3 min-h-[2.5rem]">
           {event.description}
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1">
         {event.image_url && (
-          <div className="relative w-full aspect-auto">
+          <div className="relative w-full aspect-3/4 overflow-hidden rounded-md">
             <Image
               src={IMAGE_SOURCE + event.image_url}
               alt={event.name}
-              width={3000}
-              height={4000}
+              fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover rounded-md"
+              className="object-cover"
             />
           </div>
         )}
