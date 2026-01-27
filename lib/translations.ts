@@ -224,7 +224,7 @@ export const resources = {
   ar: {
     translation: {
       // Hero Section
-      "hero.title.performance": "والرب يبارك",
+      "hero.title.performance": "للحين ندور عبارة تليق ",
       "hero.title.leaderboard": "الجميع",
       "hero.subtitle": "تابع إنجازاتك وتحدى أصدقائك واحتفل بالنجاح مع مجتمعنا السعودي. تصنيفات مباشرة ونتائج لحظية!",
       "hero.viewAllMembers": "شوف كل الأعضاء",
