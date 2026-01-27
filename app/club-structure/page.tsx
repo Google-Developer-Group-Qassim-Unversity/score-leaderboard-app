@@ -8,23 +8,23 @@ import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
 
 export default function ClubStructurePage() {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const rtl = i18n.language === 'ar'
   const clubData = {
     president: {
-      title: "رؤساء النادي",
+      title: t('clubStructurePage.presidents'),
       members: [
         "عزام خالد الخضيري",
         "جود سعود الفرم"
       ]
     },
     vicePresident: {
-      title: "نائب الرئيس",
+      title: t('clubStructurePage.vicePresident'),
       members: ["أحمد الحربي"]
     },
     departmentsSpecialized: [
       {
-        title: "الروبوتات",
+        title: t('clubStructurePage.robotics'),
         color: "yellow",
         icon: Bot,
         head: "شذى خالد الحربي",
@@ -37,7 +37,7 @@ export default function ClubStructurePage() {
         ]
       },
       {
-        title: "الذكاء الاصطناعي وتحليل البيانات",
+        title: t('clubStructurePage.ai'),
         color: "red",
         icon: Lightbulb,
         head: "نوره إبراهيم النفيسة",
@@ -50,7 +50,7 @@ export default function ClubStructurePage() {
         ]
       },
       {
-        title: "ريادة الأعمال",
+        title: t('clubStructurePage.entrepreneurship'),
         color: "blue",
         icon: Trophy,
         head: "غادة الفايز",
@@ -61,7 +61,7 @@ export default function ClubStructurePage() {
         ]
       },
       {
-        title: "الأمن السيبراني",
+        title: t('clubStructurePage.cybersecurity'),
         color: "green",
         icon: Shield,
         head: "حاتم محمد الحسيني",
@@ -76,7 +76,7 @@ export default function ClubStructurePage() {
     ],
     departmentsAdministrative: [
       {
-        title: "التطوير",
+        title: t('clubStructurePage.development'),
         color: "blue",
         icon: Cog,
         head: "عبدالاله عبدالعزيز البراك",
@@ -86,7 +86,7 @@ export default function ClubStructurePage() {
         ]
       },
       {
-        title: "التصميم",
+        title: t('clubStructurePage.design'),
         color: "green",
         icon: Palette,
         head: "أمل عبدالله الرحيمي",
@@ -98,7 +98,7 @@ export default function ClubStructurePage() {
         ]
       },
       {
-        title: "إدارة البرامج والفعاليات",
+        title: t('clubStructurePage.programs'),
         color: "orange",
         icon: Calendar,
         head: "غادة مجاهد المطيري",
@@ -110,7 +110,7 @@ export default function ClubStructurePage() {
         ]
       },
       {
-        title: "التنظيم والاجتماعات",
+        title: t('clubStructurePage.organization'),
         color: "red",
         icon: Users,
         head_male: "عبدالملك غازي المطيري",
@@ -124,7 +124,7 @@ export default function ClubStructurePage() {
         ]
       },
       {
-        title: "التقارير والإعلام",
+        title: t('clubStructurePage.media'),
         color: "blue",
         icon: Megaphone,
         head: "كادي عبدالله السبيعي",
@@ -150,11 +150,11 @@ export default function ClubStructurePage() {
               <Users className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
-              هيكلة المجموعة
+              {t('clubStructurePage.title')}
             </h1>
           </div>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            تعرف على الهيكل التنظيمي لنادي مطوري قوقل والأقسام المختلفة
+            {t('clubStructurePage.subtitle')}
           </p>
         </div>
 
@@ -164,11 +164,11 @@ export default function ClubStructurePage() {
           {/* Leadership Section */}
           <div className="bg-white rounded-lg p-8 border border-slate-200">
             <div className="text-center mb-8">
-              <h2 className={`text-2xl font-bold text-slate-900 inline-flex items-center gap-3 ${!rtl ? 'flex-row-reverse' : ''}`}>
+              <h2 className="text-2xl font-bold text-slate-900 inline-flex items-center gap-3">
                 <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                   <Crown className="h-5 w-5 text-white" />
                 </div>
-                القيادة
+                {t('clubStructurePage.leadership')}
               </h2>
             </div>
 
@@ -176,7 +176,7 @@ export default function ClubStructurePage() {
               {/* Presidents Section */}
               <Card className="bg-white border border-slate-200 rounded-lg shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className={`text-slate-900 flex items-center gap-3 justify-center text-lg font-bold ${!rtl ? 'flex-row-reverse' : ''}`}>
+                  <CardTitle className="text-slate-900 flex items-center gap-3 justify-center text-lg font-bold">
                     <Crown className="h-5 w-5 text-blue-600" />
                     {clubData.president.title}
                   </CardTitle>
@@ -193,7 +193,7 @@ export default function ClubStructurePage() {
               {/* Vice President */}
               <Card className="bg-white border border-slate-200 rounded-lg shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className={`text-slate-900 flex items-center gap-3 justify-center text-lg font-bold ${!rtl ? 'flex-row-reverse' : ''}`}>
+                  <CardTitle className="text-slate-900 flex items-center gap-3 justify-center text-lg font-bold">
                     <Shield className="h-5 w-5 text-green-600" />
                     {clubData.vicePresident.title}
                   </CardTitle>
@@ -211,19 +211,19 @@ export default function ClubStructurePage() {
           <div className="bg-white rounded-lg p-8 border border-slate-200">
             {/* Section Title */}
             <div className="mb-8 text-center">
-              <h2 className={`text-2xl font-bold text-slate-900 inline-flex items-center gap-3 ${!rtl ? 'flex-row-reverse' : ''}`}>
+              <h2 className="text-2xl font-bold text-slate-900 inline-flex items-center gap-3">
                 <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
                   <Lightbulb className="h-5 w-5 text-white" />
                 </div>
-                الاقسام التخصصية
+                {t('clubStructurePage.specializedDepts')}
               </h2>
-              <p className="text-slate-600 mt-2">أقسام متخصصة في مجالات التقنية والابتكار</p>
+              <p className="text-slate-600 mt-2">{t('clubStructurePage.specializedDesc')}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {clubData.departmentsSpecialized.map((dept, index) => (
                 <Card key={index} className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                   <CardHeader className="pb-4">
-                    <CardTitle className={`text-slate-900 flex items-center gap-3 text-lg font-bold ${!rtl ? 'flex-row-reverse' : ''}`}>
+                    <CardTitle className="text-slate-900 flex items-center gap-3 text-lg font-bold">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                         dept.color === 'green' ? 'bg-green-500' :
                         dept.color === 'blue' ? 'bg-blue-500' :
@@ -236,14 +236,14 @@ export default function ClubStructurePage() {
                       {dept.title}
                     </CardTitle>
                     <div className="rounded-lg px-4 py-3 mt-3 border bg-slate-50 border-slate-200">
-                      <p className="text-slate-600 font-medium text-sm text-center">رئيس القسم:</p>
+                      <p className="text-slate-600 font-medium text-sm text-center">{t('clubStructurePage.deptHead')}</p>
                       <p className="text-slate-900 font-semibold text-base mt-1 text-center">{dept.head}</p>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-2 pb-6">
                     <p className="text-slate-700 font-semibold text-sm mb-3 flex items-center gap-2">
                       <Users className="h-4 w-4" />
-                      أعضاء القسم:
+                      {t('clubStructurePage.deptMembers')}
                     </p>
                     {dept.members.map((member, memberIndex) => (
                       <div key={memberIndex} className="bg-slate-50 rounded-lg px-4 py-2 border border-slate-200">
@@ -262,13 +262,13 @@ export default function ClubStructurePage() {
           <div className="bg-white rounded-lg p-8 border border-slate-200">
             {/* Section Title */}
             <div className="mb-8 text-center">
-              <h2 className={`text-2xl font-bold text-slate-900 inline-flex items-center gap-3 ${!rtl ? 'flex-row-reverse' : ''}`}>
+              <h2 className="text-2xl font-bold text-slate-900 inline-flex items-center gap-3">
                 <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center">
                   <Cog className="h-5 w-5 text-white" />
                 </div>
-                الاقسام الإدارية
+                {t('clubStructurePage.administrativeDepts')}
               </h2>
-              <p className="text-slate-600 mt-2">أقسام إدارية لتنظيم وتطوير أعمال النادي</p>
+              <p className="text-slate-600 mt-2">{t('clubStructurePage.administrativeDesc')}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {clubData.departmentsAdministrative.map((dept, index) => {
@@ -278,7 +278,7 @@ export default function ClubStructurePage() {
                 return (
                   <Card key={index} className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                     <CardHeader className="pb-4">
-                      <CardTitle className={`text-slate-900 flex items-center gap-3 text-lg font-bold ${!rtl ? 'flex-row-reverse' : ''}`}>
+                      <CardTitle className="text-slate-900 flex items-center gap-3 text-lg font-bold">
                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                           dept.color === 'green' ? 'bg-green-500' :
                           dept.color === 'blue' ? 'bg-blue-500' :
@@ -294,18 +294,18 @@ export default function ClubStructurePage() {
                         // Render two heads in the same card
                         <div className="space-y-2 mt-3">
                           <div className="rounded-lg px-4 py-3 border bg-slate-50 border-slate-200">
-                            <p className="text-slate-600 font-medium text-sm text-center">رئيس القسم (طلاب)</p>
+                            <p className="text-slate-600 font-medium text-sm text-center">{t('clubStructurePage.deptHeadMale')}</p>
                             <p className="text-slate-900 font-semibold text-base mt-1 text-center">{dept.head_male}</p>
                           </div>
                           <div className="rounded-lg px-4 py-3 border bg-slate-50 border-slate-200">
-                            <p className="text-slate-600 font-medium text-sm text-center">رئيس القسم (طالبات)</p>
+                            <p className="text-slate-600 font-medium text-sm text-center">{t('clubStructurePage.deptHeadFemale')}</p>
                             <p className="text-slate-900 font-semibold text-base mt-1 text-center">{dept.head_female}</p>
                           </div>
                         </div>
                       ) : (
                         // Render single head
                         <div className="rounded-lg px-4 py-3 mt-3 border bg-slate-50 border-slate-200">
-                          <p className="text-slate-600 font-medium text-sm text-center">رئيس القسم:</p>
+                          <p className="text-slate-600 font-medium text-sm text-center">{t('clubStructurePage.deptHead')}</p>
                           <p className="text-slate-900 font-semibold text-base mt-1 text-center">{dept.head}</p>
                         </div>
                       )}
@@ -313,7 +313,7 @@ export default function ClubStructurePage() {
                     <CardContent className="space-y-2 pb-6">
                       <p className="text-slate-700 font-semibold text-sm mb-3 flex items-center gap-2">
                         <Users className="h-4 w-4" />
-                        أعضاء القسم:
+                        {t('clubStructurePage.deptMembers')}
                       </p>
                       {hasTwoHeads ? (
                         // Render all members in a flat list
