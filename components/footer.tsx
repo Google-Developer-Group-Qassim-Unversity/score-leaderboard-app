@@ -106,11 +106,112 @@ export function Footer() {
 
   return (
     <footer className="w-full border-t bg-muted/30 mt-16">
-      <div className="container mx-auto px-4 py-12">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-         
+      <div className="container mx-auto px-6 py-8 md:py-12">
+        {/* Mobile Layout */}
+        <div className="md:hidden space-y-8">
+          {/* Logo and Description */}
+          <div className="text-center space-y-3">
+            <Link href="/" className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <Image src="/gdg.png" alt="GDG Logo" width={40} height={40} className="rounded" />
+              <span className="font-bold text-lg">GDG Qassim</span>
+            </Link>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto">
+              {t('footer.about.description')}
+            </p>
+          </div>
 
+          {/* Developers Section */}
+          <div className="space-y-4">
+            <div className="text-center">
+              <h3 className="font-bold text-base mb-1">{t('footer.developers.title')}</h3>
+              <p className="text-xs text-muted-foreground">
+                {t('footer.developers.builtWith')}
+              </p>
+            </div>
+            <div className="space-y-3 max-w-md mx-auto">
+              {developers.map((dev) => (
+                <div key={dev.name} className="flex items-center justify-between px-4 py-3 rounded-xl bg-muted/50">
+                  <span className="text-sm font-medium">{dev.name}</span>
+                  <div className="flex items-center gap-2">
+                    {dev.twitter && (
+                      <a
+                        href={dev.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center w-8 h-8 rounded-full bg-background/80 text-muted-foreground hover:text-foreground hover:bg-background transition-all"
+                        title={`Twitter: ${dev.twitterHandle}`}
+                      >
+                        <Twitter className="h-4 w-4" />
+                      </a>
+                    )}
+                    {dev.linkedin && (
+                      <a
+                        href={dev.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center w-8 h-8 rounded-full bg-background/80 text-muted-foreground hover:text-foreground hover:bg-background transition-all"
+                        title="LinkedIn"
+                      >
+                        <Linkedin className="h-4 w-4" />
+                      </a>
+                    )}
+                    {dev.github && (
+                      <a
+                        href={dev.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center w-8 h-8 rounded-full bg-background/80 text-muted-foreground hover:text-foreground hover:bg-background transition-all"
+                        title="GitHub"
+                      >
+                        <Github className="h-4 w-4" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Connect With Us */}
+          <div className="space-y-4">
+            <h3 className="font-bold text-base text-center">{t('footer.connect.title')}</h3>
+            <div className="space-y-3 max-w-md mx-auto">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all active:scale-95 min-h-[48px] w-full"
+                  title={t(link.labelKey)}
+                >
+                  <link.icon className="h-5 w-5 flex-shrink-0" />
+                  <span className="text-sm font-medium leading-tight">{t(link.labelKey)}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div className="space-y-4">
+            <h3 className="font-bold text-base text-center">{t('footer.quickLinks.title')}</h3>
+            <div className="space-y-2 max-w-md mx-auto">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all w-full"
+                >
+                  <item.icon className="h-5 w-5 flex-shrink-0" />
+                  <span className="text-sm font-medium">{t(item.labelKey)}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop: Original 4-column grid layout */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* About Column */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity w-fit">
@@ -121,7 +222,8 @@ export function Footer() {
               {t('footer.about.description')}
             </p>
           </div>
-            {/* Developers Column - First */}
+
+          {/* Developers Column */}
           <div className="space-y-4">
             <h3 className="font-bold text-base">{t('footer.developers.title')}</h3>
             <p className="text-sm text-muted-foreground">
@@ -191,7 +293,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Quick Links Column - Last */}
+          {/* Quick Links Column */}
           <div className="space-y-4">
             <h3 className="font-bold text-base">{t('footer.quickLinks.title')}</h3>
             <ul className="space-y-2">
@@ -212,10 +314,9 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="pt-8 border-t">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm text-muted-foreground">
-            <span>{t('footer.copyright')}</span>
-            <span className="hidden sm:inline">•</span>
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col items-center justify-center gap-3 text-center">
+            <span className="text-sm text-muted-foreground">{t('footer.copyright')}</span>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
