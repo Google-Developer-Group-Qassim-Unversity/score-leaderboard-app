@@ -235,20 +235,16 @@ export const resources = {
       "footer.social.joinUs": "Join Our Community",
       "footer.social.telegram": "Telegram Group",
       "footer.social.discord": "Discord Server",
-      "footer.social.twitter": "Twitter",
-      "footer.social.hashtag": "Our Twitter Hashtag",
+      "footer.social.twitter": "X",
+      "footer.social.hashtag": "Our X Hashtag",
       "footer.social.tiktok": "TikTok",
       "footer.social.email": "Contact Us",
       "footer.social.gdgSite": "Official GDG Site",
       "footer.copyright": "© GDG-Q 2026",
       "footer.lastUpdated": "Last updated",
 
-      // Feedback Section
-      "feedback.section.title": "Your Opinion Matters",
-      "feedback.section.subtitle": "Help us improve by sharing your thoughts and ideas",
-      "feedback.card.title": "رأيك يهمنا",
-      "feedback.card.description": "Share your thoughts, suggestions, and ideas to help us create better experiences for everyone.",
-      "feedback.card.button": "Share Your Feedback",
+      // Feedback
+      "feedback.card.title": "Your Feedback Matters",
 
       // Common
       "version": "2.0"
@@ -487,7 +483,7 @@ export const resources = {
       "footer.social.joinUs": "انضم لمجتمعنا",
       "footer.social.telegram": "مجموعة التلقرام",
       "footer.social.discord": "سيرفر الديسكورد",
-      "footer.social.twitter": "Twitter",
+      "footer.social.twitter": "تطبيق X",
       "footer.social.hashtag": "هاشتاقنا على تويتر",
       "footer.social.tiktok": "تيك توك",
       "footer.social.email": "تواصل معنا",
@@ -495,12 +491,8 @@ export const resources = {
       "footer.copyright": "© GDG-Q 2026",
       "footer.lastUpdated": "آخر تحديث",
 
-      // Feedback Section
-      "feedback.section.title": "رأيك يهمنا",
-      "feedback.section.subtitle": "ساعدنا نتطور بمشاركة أفكارك واقتراحاتك",
+      // Feedback
       "feedback.card.title": "رأيك يهمنا",
-      "feedback.card.description": "شارك أفكارك واقتراحاتك وآرائك عشان نقدر نسوي تجارب أفضل للجميع.",
-      "feedback.card.button": "شارك رأيك",
 
       // Common
       "version": "2.0"
