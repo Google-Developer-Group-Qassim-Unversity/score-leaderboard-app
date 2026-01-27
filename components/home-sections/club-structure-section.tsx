@@ -68,7 +68,7 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
               {/* Leadership Info */}
               <div className="space-y-4">
                 {/* Presidents */}
-                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
                   <p className="text-sm text-slate-600 mb-2 font-medium">
                     {t('clubStructure.presidents')}
                   </p>
@@ -79,7 +79,7 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                 </div>
 
                 {/* Vice President */}
-                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
                   <p className="text-sm text-slate-600 mb-2 font-medium">
                     {t('clubStructure.vicePresident')}
                   </p>
