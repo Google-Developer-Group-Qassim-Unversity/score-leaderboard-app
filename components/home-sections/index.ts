@@ -1,0 +1,7 @@
+export { HeroSection } from './hero-section'
+export { StatsSection } from './stats-section'
+export { EventsSection } from './events-section'
+export { LeaderboardSection } from './leaderboard-section'
+export { MagazinesSection } from './magazines-section'
+export { ClubStructureSection } from './club-structure-section'
+export { HomeSectionHeader } from './home-section-header'
