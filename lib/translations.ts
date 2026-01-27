@@ -166,6 +166,26 @@ export const resources = {
       "eventDetail.noDescription": "No description provided for this event.",
       "eventDetail.noImage": "No event image",
       
+      // Member Detail Page
+      "memberDetail.backToMembers": "Back to Members",
+      "memberDetail.memberProfile": "Member Profile",
+      "memberDetail.member": "Member",
+      "memberDetail.totalPoints": "Total Points",
+      "memberDetail.pointsHistory": "Points History",
+      "memberDetail.detailedLog": "Detailed log of all points earned",
+      "memberDetail.points": "points",
+      "memberDetail.noHistory": "No points history available for this member.",
+
+      // Department Detail Page
+      "departmentDetail.backToDepartments": "Back to Departments",
+      "departmentDetail.departmentProfile": "Department Profile",
+      "departmentDetail.department": "Department",
+      "departmentDetail.totalPoints": "Total Points",
+      "departmentDetail.pointsHistory": "Points History",
+      "departmentDetail.detailedLog": "Detailed log of all points earned by the department",
+      "departmentDetail.points": "points",
+      "departmentDetail.noHistory": "No points history available for this department.",
+
       // Common
       "version": "2.0"
     }
@@ -221,7 +241,7 @@ export const resources = {
       "nav.events": "الفعاليات",
       "nav.magazines": "المجلات",
       "nav.structure": "الهيكل",
-      "nav.howItWorks": "طريقة العمل",
+      "nav.howItWorks": "نظام النقاط",
 
       // Footer CTA
       "footer.title": "جاهز تتصدر؟",
@@ -236,7 +256,6 @@ export const resources = {
       "members.searchPlaceholder": "ابحث عن الأعضاء بالاسم...",
       "members.rankings": "الترتيب",
       "members.performance": "ترتيب أداء الأعضاء الفردي",
-      "members.showingTop": "عرض أفضل 100 عضو",
       "members.of": "من",
       "members.found": "عضو",
       "members.noResults": "ما لقينا أعضاء يطابقون",
@@ -302,7 +321,7 @@ export const resources = {
       
       // Event Card
       "eventCard.viewEvent": "اعرف الفعالية",
-      "eventCard.viewDetails": "اعرض التفاصيل",
+      "eventCard.viewDetails": " التفاصيل",
 
       // Attendance Page
       "attendance.processing": "جاري المعالجة...",
@@ -334,6 +353,26 @@ export const resources = {
       "eventDetail.description": "الوصف",
       "eventDetail.noDescription": "ما فيه وصف لهذي الفعالية.",
       "eventDetail.noImage": "ما فيه صورة للفعالية",
+
+      // Member Detail Page
+      "memberDetail.backToMembers": "العودة للأعضاء",
+      "memberDetail.memberProfile": "ملف العضو",
+      "memberDetail.member": "عضو",
+      "memberDetail.totalPoints": "إجمالي النقاط",
+      "memberDetail.pointsHistory": "سجل النقاط",
+      "memberDetail.detailedLog": "سجل تفصيلي لجميع النقاط المكتسبة",
+      "memberDetail.points": "نقاط",
+      "memberDetail.noHistory": "ما فيه سجل نقاط متاح لهذا العضو.",
+
+      // Department Detail Page
+      "departmentDetail.backToDepartments": "العودة للأقسام",
+      "departmentDetail.departmentProfile": "ملف القسم",
+      "departmentDetail.department": "قسم",
+      "departmentDetail.totalPoints": "إجمالي النقاط",
+      "departmentDetail.pointsHistory": "سجل النقاط",
+      "departmentDetail.detailedLog": "سجل تفصيلي لجميع النقاط المكتسبة للقسم",
+      "departmentDetail.points": "نقاط",
+      "departmentDetail.noHistory": "ما فيه سجل نقاط متاح لهذا القسم.",
 
       // Common
       "version": "2.0"

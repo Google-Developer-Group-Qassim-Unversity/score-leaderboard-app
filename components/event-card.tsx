@@ -30,7 +30,11 @@ export function EventCard({ event, hideSignup = false }: EventCardProps) {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
-        <CardTitle>{event.name}</CardTitle>
+        <CardTitle>
+          <Link href={`/events/${event.id}`} className="hover:underline">
+            {event.name}
+          </Link>
+        </CardTitle>
         <CardDescription className="line-clamp-2 mt-3 min-h-10">
           {event.description}
         </CardDescription>
