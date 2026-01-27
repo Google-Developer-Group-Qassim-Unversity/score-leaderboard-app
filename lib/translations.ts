@@ -105,6 +105,18 @@ export const resources = {
       "magazines.section.viewAll": "View All",
       "magazines.section.empty": "No magazines available yet",
       
+      // Club Structure Section
+      "clubStructure.title": "Our Club Structure",
+      "clubStructure.subtitle": "Meet our leadership team and explore the departments driving our community",
+      "clubStructure.leadership": "Club Leadership",
+      "clubStructure.presidents": "Club Presidents",
+      "clubStructure.vicePresident": "Vice President",
+      "clubStructure.departmentsTitle": "Departments",
+      "clubStructure.departments": "Departments",
+      "clubStructure.specialized": "Specialized",
+      "clubStructure.administrative": "Administrative",
+      "clubStructure.viewFullStructure": "View Full Structure",
+      
       // Auth
       "auth.login": "Log In",
       "auth.signup": "Sign Up",
@@ -292,6 +304,18 @@ export const resources = {
       "magazines.section.subtitle": "اطلع على آخر إصداراتنا وخلك متابع مع المجتمع",
       "magazines.section.viewAll": "شوف كل المجلات",
       "magazines.section.empty": "ما فيه مجلات متاحة حالياً",
+
+      // Club Structure Section
+      "clubStructure.title": "هيكلة المجموعة",
+      "clubStructure.subtitle": "تعرف على فريق القيادة واستكشف الأقسام اللي تقود مجتمعنا",
+      "clubStructure.leadership": "القيادة",
+      "clubStructure.presidents": "رؤساء النادي",
+      "clubStructure.vicePresident": "نائب الرئيس",
+      "clubStructure.departmentsTitle": "الأقسام",
+      "clubStructure.departments": "قسم",
+      "clubStructure.specialized": "تخصصية",
+      "clubStructure.administrative": "إدارية",
+      "clubStructure.viewFullStructure": "شوف الهيكل الكامل",
 
       // Auth
       "auth.login": "تسجيل الدخول",

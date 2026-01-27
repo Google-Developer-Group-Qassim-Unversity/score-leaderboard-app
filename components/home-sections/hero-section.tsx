@@ -10,7 +10,9 @@ export function HeroSection({ lang }: HeroSectionProps) {
   const t = (key: string) => getTranslation(lang, key);
 
   return (
+
     <section className="container mx-auto px-4 pt-12 md:pt-20 pb-8 md:pb-12">
+      
       <div className="text-center space-y-6 max-w-4xl mx-auto">
         {/* Logo with Version Badge */}
         <div className="flex flex-col items-center gap-4 mb-6">
