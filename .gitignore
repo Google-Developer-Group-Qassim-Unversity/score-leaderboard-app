@@ -4,3 +4,9 @@ dist
 .env
 output.json
 errors.log
+.next
+.env.local
+.env.development.local
+.clerk
+next-env.d.ts
+tsconfig.tsbuildinfo
