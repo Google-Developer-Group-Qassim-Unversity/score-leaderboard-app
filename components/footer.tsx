@@ -21,6 +21,7 @@ import {
   Mail,
   Globe,
   Linkedin,
+  Github,
 } from "lucide-react"
 
 const navItems = [
@@ -79,21 +80,24 @@ const socialLinks = [
 const developers = [
   {
     name: "Albrrk773",
-    twitter: "https://x.com/albrra773",
-    twitterHandle: "@albrra773",
+    twitter: "https://x.com/albrrak773",
+    twitterHandle: "@albrrk773",
     linkedin: null,
+    github: "https://github.com/albrrak773",
   },
   {
     name: "Ibrahim Alsukaiti",
     twitter: "https://x.com/ibrr__q",
     twitterHandle: "@ibrr__q",
-    linkedin: null,
+    linkedin: "https://www.linkedin.com/in/ibrahim-alsukaiti-a055a92a5?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app",
+    github: "https://github.com/ENG-Sukaiti",
   },
   {
-    name: "Ali Alsabr",
-    twitter: null,
-    twitterHandle: null,
+    name: "Ali Alsabir",
+    twitter: "https://x.com/sbr_xi",
+    twitterHandle: "@sbr_xi",
     linkedin: "https://www.linkedin.com/in/ali-s-424630221/",
+    github: "https://github.com/Ctrl-X1",
   },
 ]
 
@@ -137,7 +141,6 @@ export function Footer() {
                         title={`Twitter: ${dev.twitterHandle}`}
                       >
                         <Twitter className="h-3.5 w-3.5" />
-                        <span className="text-xs" dir="ltr">{dev.twitterHandle}</span>
                       </a>
                     )}
                     {dev.linkedin && (
@@ -149,6 +152,17 @@ export function Footer() {
                         title="LinkedIn"
                       >
                         <Linkedin className="h-3.5 w-3.5" />
+                      </a>
+                    )}
+                    {dev.github && (
+                      <a
+                        href={dev.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        title="GitHub"
+                      >
+                        <Github className="h-3.5 w-3.5" />
                       </a>
                     )}
                   </div>
