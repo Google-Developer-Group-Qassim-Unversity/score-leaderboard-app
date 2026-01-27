@@ -1,6 +1,4 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Trophy, Users, ArrowLeft, Eye, Search } from "lucide-react"
+import { Users } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 import { fetchMembers } from "@/lib/api"
 import { MembersSearch } from "./members-search"
