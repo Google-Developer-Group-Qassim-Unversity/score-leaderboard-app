@@ -31,7 +31,8 @@ export function MagazineCard({ magazine }: MagazineCardProps) {
           <Image
             src={magazine.coverImage}
             alt={`${magazine.title} cover`}
-            fill
+            width={2550}
+            height={3300}
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           />
