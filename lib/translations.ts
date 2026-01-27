@@ -140,6 +140,9 @@ export const resources = {
       "clubStructurePage.programs": "Programs and Events Management",
       "clubStructurePage.organization": "Organization and Meetings",
       "clubStructurePage.media": "Reports and Media",
+      "clubStructurePage.esports": "Esports",
+      "clubStructurePage.deptLeader": "Leader:",
+      "clubStructurePage.deptVice": "Vice:",
       
       // Auth
       "auth.login": "Log In",
@@ -382,6 +385,9 @@ export const resources = {
       "clubStructurePage.programs": "إدارة البرامج والفعاليات",
       "clubStructurePage.organization": "التنظيم والاجتماعات",
       "clubStructurePage.media": "التقارير والإعلام",
+      "clubStructurePage.esports": "الرياضات الإلكترونية",
+      "clubStructurePage.deptLeader": "الليدر:",
+      "clubStructurePage.deptVice": "النائب:",
 
       // Auth
       "auth.login": "تسجيل الدخول",

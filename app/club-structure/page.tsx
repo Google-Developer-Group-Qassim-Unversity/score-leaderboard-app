@@ -24,53 +24,69 @@ export default function ClubStructurePage() {
     },
     departmentsSpecialized: [
       {
-        title: t('clubStructurePage.robotics'),
-        color: "yellow",
-        icon: Bot,
-        head: "شذى خالد الحربي",
-        members: [
-          "رهف علي الحربي",
-          "ريما صالح الاحمد",
-          "ابتهال مهدي العمري",
-          "مزنة صافي الدين عبدالقادر",
-          "رغد عبدالله العبيد"
-        ]
-      },
-      {
         title: t('clubStructurePage.ai'),
         color: "red",
         icon: Lightbulb,
-        head: "نوره إبراهيم النفيسة",
+        leader: "نادر علي الحربي",
+        vice: "لين عادل العقيل",
         members: [
-          "هديل مزعل الرشيدي",
-          "ميلاف عبدالله العبيدان",
-          "لين عادل العقيل",
-          "وتين عبدالمحسن السيف",
-          "نادر علي الحربي"
-        ]
-      },
-      {
-        title: t('clubStructurePage.entrepreneurship'),
-        color: "blue",
-        icon: Trophy,
-        head: "غادة الفايز",
-        members: [
-          "غادة حمد العمران",
-          "تالا صالح المزيني",
-          "عهد المطيري"
+          "يزن طلال البيضاني",
+          "جود عبدالرحمن الحربي",
+          "كادي عبدالعزيز العنزي",
+          "ديما عبدالله الفريدي"
         ]
       },
       {
         title: t('clubStructurePage.cybersecurity'),
         color: "green",
         icon: Shield,
-        head: "حاتم محمد الحسيني",
+        leader: "اثير سالم الحربي",
+        vice: "عاصم العقيل",
         members: [
-          "رغد صالح الحسين",
-          "عاصم أحمد العقيل",
-          "دانه عبدالعزيز الغريب",
-          "أثير سالم الحربي",
-          "جود ممدوح العنزي"
+          "وتين سليمان السكيتي",
+          "جود العنزي",
+          "دانه الغريب",
+          "احمد صلاح الدين"
+        ]
+      },
+      {
+        title: t('clubStructurePage.robotics'),
+        color: "yellow",
+        icon: Bot,
+        leader: "رغد عبدالله العبيد",
+        vice: "كيان صالح القفاري",
+        members: [
+          "رهف علي الحربي",
+          "شاهر محمد الحربي",
+          "منار عبد العزيز النقيدان",
+          "مها عادل المطرفي"
+        ]
+      },
+      {
+        title: t('clubStructurePage.entrepreneurship'),
+        color: "blue",
+        icon: Trophy,
+        leader: "ساره مبارك الرشيدي",
+        vice: "جنا علي عبدالعزيز الجبعان",
+        members: [
+          "نسيبة عبدالله الرياعي",
+          "فجر الصويان",
+          "رغداء صالح الشبل",
+          "اينال عبدالعزيز الفهيد"
+        ]
+      },
+      {
+        title: t('clubStructurePage.esports'),
+        color: "purple",
+        icon: Trophy,
+        leader: "محمد الزهراني",
+        vice: "بشار الحربي",
+        members: [
+          "يوسف الزهراني",
+          "غلا محمد الربيش",
+          "شمس عبدالله اللحيدان",
+          "عبدالرحمن خالد أسعد",
+          "خوله عبدالله السهلي"
         ]
       }
     ],
@@ -79,55 +95,56 @@ export default function ClubStructurePage() {
         title: t('clubStructurePage.development'),
         color: "blue",
         icon: Cog,
-        head: "عبدالاله عبدالعزيز البراك",
+        leader: "عبدالاله عبدالعزيز البراك",
+        vice: "إبراهيم سليمان السكيتي",
         members: [
-          "إبراهيم سليمان السكيتي",
-          "علي حسين الصابر",
-        ]
-      },
-      {
-        title: t('clubStructurePage.design'),
-        color: "green",
-        icon: Palette,
-        head: "أمل عبدالله الرحيمي",
-        members: [
-          "لمار ماجد الفوزان",
-          "جنى إبراهيم الضبيبان",
-          "أسماء حامد الطريفي",
-          "أثير عبدالله غزواني"
+          "علي حسين الصابر"
         ]
       },
       {
         title: t('clubStructurePage.programs'),
         color: "orange",
         icon: Calendar,
-        head: "غادة مجاهد المطيري",
+        leader: "أروى فهد المرزوق",
+        vice: "ريم الرشودي",
         members: [
-          "وتين سليمان السكيتي",
-          "جواهر صالح الحربي",
-          "ثناء عبدالعزيز الدخيل",
-          "يارا عبدالكريم الصايغ"
+          "لميس الراشد",
+          "بانا التويجري",
+          "يارا الصايغ"
         ]
       },
       {
         title: t('clubStructurePage.organization'),
         color: "red",
         icon: Users,
-        head_male: "عبدالملك غازي المطيري",
-        head_female: "ياسمين حمود التويجري",
-        members_male: [
-          "أحمد فيصل الحجيلان",
-        ],
-        members_female: [
-          "خولة سعود البشري",
-          "أميرة عيد المطيري"
+        leader: "ياسمين التويجري",
+        vice: "عبدالملك المطيري",
+        members: [
+          "أحمد الحجيلان",
+          "أميرة المطيري",
+          "خولة البشري",
+          "زياد العنزي"
+        ]
+      },
+      {
+        title: t('clubStructurePage.design'),
+        color: "green",
+        icon: Palette,
+        leader: "أمل عبدالله الرحيمي",
+        vice: "لينة حماد المهيلب",
+        members: [
+          "أسماء حامد المطيري",
+          "ديالى محمد العمرو",
+          "بتول صالح الخليفة",
+          "أمل يوسف الدخيّل"
         ]
       },
       {
         title: t('clubStructurePage.media'),
         color: "blue",
         icon: Megaphone,
-        head: "كادي عبدالله السبيعي",
+        leader: "كادي عبدالله السبيعي",
+        vice: "",
         members: [
           "جود عبدالرحمن الحربي",
           "أسامة محمد الحضيف",
@@ -229,15 +246,22 @@ export default function ClubStructurePage() {
                         dept.color === 'blue' ? 'bg-blue-500' :
                         dept.color === 'yellow' ? 'bg-yellow-500' :
                         dept.color === 'orange' ? 'bg-orange-500' :
+                        dept.color === 'purple' ? 'bg-purple-500' :
                         'bg-red-500'
                       }`}>
                         <dept.icon className="h-5 w-5 text-white" />
                       </div>
                       {dept.title}
                     </CardTitle>
-                    <div className="rounded-lg px-4 py-3 mt-3 border bg-slate-50 border-slate-200">
-                      <p className="text-slate-600 font-medium text-sm text-center">{t('clubStructurePage.deptHead')}</p>
-                      <p className="text-slate-900 font-semibold text-base mt-1 text-center">{dept.head}</p>
+                    <div className="space-y-2 mt-3">
+                      <div className="rounded-lg px-4 py-3 border bg-slate-50 border-slate-200">
+                        <p className="text-slate-600 font-medium text-sm text-center">{t('clubStructurePage.deptLeader')}</p>
+                        <p className="text-slate-900 font-semibold text-base mt-1 text-center">{dept.leader}</p>
+                      </div>
+                      <div className="rounded-lg px-4 py-3 border bg-slate-50 border-slate-200">
+                        <p className="text-slate-600 font-medium text-sm text-center">{t('clubStructurePage.deptVice')}</p>
+                        <p className="text-slate-900 font-semibold text-base mt-1 text-center">{dept.vice}</p>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-2 pb-6">
@@ -271,82 +295,48 @@ export default function ClubStructurePage() {
               <p className="text-slate-600 mt-2">{t('clubStructurePage.administrativeDesc')}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {clubData.departmentsAdministrative.map((dept, index) => {
-                // Check if department has two heads (male and female)
-                const hasTwoHeads = 'head_male' in dept && 'head_female' in dept;
-                
-                return (
-                  <Card key={index} className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                    <CardHeader className="pb-4">
-                      <CardTitle className="text-slate-900 flex items-center gap-3 text-lg font-bold">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                          dept.color === 'green' ? 'bg-green-500' :
-                          dept.color === 'blue' ? 'bg-blue-500' :
-                          dept.color === 'yellow' ? 'bg-yellow-500' :
-                          dept.color === 'orange' ? 'bg-orange-500' :
-                          'bg-red-500'
-                        }`}>
-                          <dept.icon className="h-5 w-5 text-white" />
+              {clubData.departmentsAdministrative.map((dept, index) => (
+                <Card key={index} className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-slate-900 flex items-center gap-3 text-lg font-bold">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                        dept.color === 'green' ? 'bg-green-500' :
+                        dept.color === 'blue' ? 'bg-blue-500' :
+                        dept.color === 'yellow' ? 'bg-yellow-500' :
+                        dept.color === 'orange' ? 'bg-orange-500' :
+                        dept.color === 'purple' ? 'bg-purple-500' :
+                        'bg-red-500'
+                      }`}>
+                        <dept.icon className="h-5 w-5 text-white" />
+                      </div>
+                      {dept.title}
+                    </CardTitle>
+                    <div className="space-y-2 mt-3">
+                      <div className="rounded-lg px-4 py-3 border bg-slate-50 border-slate-200">
+                        <p className="text-slate-600 font-medium text-sm text-center">{t('clubStructurePage.deptLeader')}</p>
+                        <p className="text-slate-900 font-semibold text-base mt-1 text-center">{dept.leader}</p>
+                      </div>
+                      <div className="rounded-lg px-4 py-3 border bg-slate-50 border-slate-200">
+                        <p className="text-slate-600 font-medium text-sm text-center">{t('clubStructurePage.deptVice')}</p>
+                        <p className="text-slate-900 font-semibold text-base mt-1 text-center">{dept.vice}</p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2 pb-6">
+                    <p className="text-slate-700 font-semibold text-sm mb-3 flex items-center gap-2">
+                      <Users className="h-4 w-4" />
+                      {t('clubStructurePage.deptMembers')}
+                    </p>
+                    {dept.members.map((member, memberIndex) => (
+                      <div key={memberIndex} className="bg-slate-50 rounded-lg px-4 py-2 border border-slate-200">
+                        <div className="text-slate-700 font-medium text-sm text-center">
+                          {member}
                         </div>
-                        {dept.title}
-                      </CardTitle>
-                      {hasTwoHeads ? (
-                        // Render two heads in the same card
-                        <div className="space-y-2 mt-3">
-                          <div className="rounded-lg px-4 py-3 border bg-slate-50 border-slate-200">
-                            <p className="text-slate-600 font-medium text-sm text-center">{t('clubStructurePage.deptHeadMale')}</p>
-                            <p className="text-slate-900 font-semibold text-base mt-1 text-center">{dept.head_male}</p>
-                          </div>
-                          <div className="rounded-lg px-4 py-3 border bg-slate-50 border-slate-200">
-                            <p className="text-slate-600 font-medium text-sm text-center">{t('clubStructurePage.deptHeadFemale')}</p>
-                            <p className="text-slate-900 font-semibold text-base mt-1 text-center">{dept.head_female}</p>
-                          </div>
-                        </div>
-                      ) : (
-                        // Render single head
-                        <div className="rounded-lg px-4 py-3 mt-3 border bg-slate-50 border-slate-200">
-                          <p className="text-slate-600 font-medium text-sm text-center">{t('clubStructurePage.deptHead')}</p>
-                          <p className="text-slate-900 font-semibold text-base mt-1 text-center">{dept.head}</p>
-                        </div>
-                      )}
-                    </CardHeader>
-                    <CardContent className="space-y-2 pb-6">
-                      <p className="text-slate-700 font-semibold text-sm mb-3 flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        {t('clubStructurePage.deptMembers')}
-                      </p>
-                      {hasTwoHeads ? (
-                        // Render all members in a flat list
-                        <>
-                          {dept.members_male && dept.members_male.map((member, memberIndex) => (
-                            <div key={`male-${memberIndex}`} className="bg-slate-50 rounded-lg px-4 py-2 border border-slate-200">
-                              <div className="text-slate-700 font-medium text-sm text-center">
-                                {member}
-                              </div>
-                            </div>
-                          ))}
-                          {dept.members_female && dept.members_female.map((member, memberIndex) => (
-                            <div key={`female-${memberIndex}`} className="bg-slate-50 rounded-lg px-4 py-2 border border-slate-200">
-                              <div className="text-slate-700 font-medium text-sm text-center">
-                                {member}
-                              </div>
-                            </div>
-                          ))}
-                        </>
-                      ) : (
-                        // Render regular members list
-                        dept.members.map((member, memberIndex) => (
-                          <div key={memberIndex} className="bg-slate-50 rounded-lg px-4 py-2 border border-slate-200">
-                            <div className="text-slate-700 font-medium text-sm text-center">
-                              {member}
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </div>
