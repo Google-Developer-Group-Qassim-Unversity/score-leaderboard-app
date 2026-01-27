@@ -61,7 +61,7 @@ export function MagazineCard({ magazine }: MagazineCardProps) {
           </Badge>
           <Badge variant="outline" className="text-xs border-slate-300">
             <Calendar className={`h-3 w-3 ${rtl ? 'ml-1' : 'mr-1'}`} />
-            {formatMagazineDate(magazine.publishDate, i18n.language as 'en' | 'ar')}
+            {magazine.publishDate}
           </Badge>
         </div>
         

@@ -48,7 +48,7 @@ export default async function MembersLeaderboard() {
         <div className="mb-12">
           <Link href="/" className="inline-block mb-6">
             <Button variant="outline" size="sm" className="border-slate-300 text-slate-700">
-              <ArrowLeft className={`h-4 w-4 ${rtl ? 'ml-2' : 'mr-2'}`} />
+              <ArrowLeft className={`h-4 w-4 ${rtl ? 'mr-2 rotate-180' : 'ml-2'}`} />
               {t('members.backButton')}
             </Button>
           </Link>

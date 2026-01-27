@@ -108,7 +108,7 @@ export async function LeaderboardSection() {
                     {practicalDepartments.length > 0 ? (
                       practicalDepartments.map((department, index) => ( 
                         <div key={department.department_id} className="w-full max-w-full min-w-0">
-                          <LeaderboardCard id={department.department_id.toString()} name={department.department_name} rank={index + 1} points={department.total_points} type="department"/> 
+                          <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department"/> 
                         </div>
                       ))
                     ) : (
@@ -124,7 +124,7 @@ export async function LeaderboardSection() {
                     {administrativeDepartments.length > 0 ? (
                       administrativeDepartments.map((department, index) => (
                         <div key={department.department_id} className="w-full max-w-full min-w-0">
-                          <LeaderboardCard id={department.department_id.toString()} name={department.department_name} rank={index + 1} points={department.total_points} type="department"/>
+                          <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department"/>
                         </div>
                       ))
                     ) : (

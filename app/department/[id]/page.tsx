@@ -34,7 +34,7 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
           <div className="flex items-center gap-3">
             <Building2 className="h-8 w-8 text-green-600" />
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{departmentData.department.department_name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{lang === 'ar' ? departmentData.department.ar_department_name : departmentData.department.department_name}</h1>
               <p className="text-gray-600 dark:text-gray-300">{t("departmentDetail.detailedLog")}</p>
             </div>
           </div>
@@ -56,7 +56,7 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
                     <Building2 className="h-10 w-10 text-green-600" />
                   </div>
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                    {departmentData.department.department_name}
+                    {lang === 'ar' ? departmentData.department.ar_department_name : departmentData.department.department_name}
                   </h2>
                   <p className="text-gray-500">{t("departmentDetail.department")}</p>
                 </div>

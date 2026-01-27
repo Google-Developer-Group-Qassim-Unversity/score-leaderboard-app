@@ -1,17 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LeaderboardCard } from "@/components/leaderboard-card"
 import { LucideIcon } from "lucide-react"
-
-interface Department {
-  department_id: number
-  department_name: string
-  total_points: number
-}
+import { ApiDepartmentPoints } from "@/lib/api-types"
+import { getLanguageFromCookies } from "@/lib/server-i18n"
 
 interface DepartmentTypeCardProps {
   title: string
   description: string
-  departments: Department[]
+  departments: ApiDepartmentPoints[]
   icon: LucideIcon
   gradientColors: {
     from: string
@@ -19,13 +15,14 @@ interface DepartmentTypeCardProps {
   }
 }
 
-export function DepartmentTypeCard({ 
+export async function DepartmentTypeCard({ 
   title, 
   description, 
   departments, 
   icon: Icon,
   gradientColors
 }: DepartmentTypeCardProps) {
+  const lang = await getLanguageFromCookies()
   return (
     <Card className="bg-white border border-slate-200 rounded-lg">
       <CardHeader className="border-b border-slate-200">
@@ -43,7 +40,7 @@ export function DepartmentTypeCard({
             <LeaderboardCard
               key={department.department_id}
               id={department.department_id.toString()}
-              name={department.department_name}
+              name={lang === 'ar' ? department.ar_department_name : department.department_name}
               rank={index + 1}
               points={department.total_points}
               type="department"

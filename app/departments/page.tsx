@@ -29,7 +29,7 @@ export default async function DepartmentsLeaderboard() {
         <div className="mb-12">
           <Link href="/" className="inline-block mb-6">
             <Button variant="outline" size="sm" className="border-slate-300 text-slate-700">
-              <ArrowLeft className={`h-4 w-4 ${rtl ? 'ml-2' : 'mr-2'}`} />
+              <ArrowLeft className={`h-4 w-4 ${rtl ? 'mr-2 rotate-180' : 'ml-2'}`} />
               {t('departments.backButton')}
             </Button>
           </Link>
@@ -44,6 +44,14 @@ export default async function DepartmentsLeaderboard() {
 
         {/* Department Type Leaderboards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Specialized Departments */}
+          <DepartmentTypeCard
+            title={t('departments.specialized')}
+            description={t('departments.specializedDesc')}
+            departments={practicalDepartments}
+            icon={Wrench}
+            gradientColors={{ from: "from-green-500", to: "to-green-600" }}
+          />
           {/* Administrative Departments */}
           <DepartmentTypeCard
             title={t('departments.administrative')}
@@ -53,14 +61,6 @@ export default async function DepartmentsLeaderboard() {
             gradientColors={{ from: "from-blue-500", to: "to-blue-600" }}
           />
 
-          {/* Specialized Departments */}
-          <DepartmentTypeCard
-            title={t('departments.specialized')}
-            description={t('departments.specializedDesc')}
-            departments={practicalDepartments}
-            icon={Wrench}
-            gradientColors={{ from: "from-green-500", to: "to-green-600" }}
-          />
         </div>
         </div>
       </div>
