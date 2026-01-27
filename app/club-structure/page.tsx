@@ -141,16 +141,8 @@ export default function ClubStructurePage() {
   }
 
   return (
-    <div dir={rtl ? 'rtl' : 'ltr'} className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Back Button */}
-        <Link href="/" className="inline-block mb-6">
-          <Button variant="outline" size="sm" className="border-slate-300 text-slate-700">
-            <ArrowLeft className={`h-4 w-4 ${rtl ? 'ml-2 rotate-180' : 'mr-2'}`} />
-            Back to Dashboard
-          </Button>
-        </Link>
-
+    <div className={`min-h-screen bg-white text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>
+      <div className="container max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center flex-col md:flex-row gap-4 mb-6">

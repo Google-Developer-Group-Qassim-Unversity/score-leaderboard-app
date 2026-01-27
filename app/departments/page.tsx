@@ -24,16 +24,9 @@ export default async function DepartmentsLeaderboard() {
     <div className={`min-h-screen bg-white text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>
       {/* Content */}
       <div className="">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-12">
-          <Link href="/" className="inline-block mb-6">
-            <Button variant="outline" size="sm" className="border-slate-300 text-slate-700">
-              <ArrowLeft className={`h-4 w-4 ${rtl ? 'mr-2 rotate-180' : 'ml-2'}`} />
-              {t('departments.backButton')}
-            </Button>
-          </Link>
-          
           <PageHeader 
             icon={Building2}
             iconColor="green"

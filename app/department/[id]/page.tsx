@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, Award, TrendingUp, Building2, BookOpen } from "lucide-react"
 import { fetchDepartmentById } from "@/lib/api"
 import { notFound } from "next/navigation"
-import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
+import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -15,22 +15,16 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
   const departmentData = await fetchDepartmentById(id)
   const lang = await getLanguageFromCookies()
   const t = (key: string) => getTranslation(lang, key)
-
+  const rtl = isRTL(lang)
   if (!departmentData) {
     notFound()
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="container mx-auto px-4 py-8">
+    <div className={`min-h-screen bg-white text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>
+      <div className="container max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex flex-col gap-4 mb-8">
-          <Link href="/departments">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2 rtl:rotate-180" />
-              {t("departmentDetail.backToDepartments")}
-            </Button>
-          </Link>
           <div className="flex items-center gap-3">
             <Building2 className="h-8 w-8 text-green-600" />
             <div>
