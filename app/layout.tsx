@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
+import { Footer } from "@/components/footer"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import Script from "next/script"
@@ -66,6 +67,7 @@ export default async function RootLayout({
           <ClientDashboardWrapper>
               <Navigation />
               {children}
+              <Footer />
               <Analytics />
               <Toaster />
           </ClientDashboardWrapper>

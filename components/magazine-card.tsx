@@ -27,7 +27,7 @@ export function MagazineCard({ magazine }: MagazineCardProps) {
     >
       {/* Magazine Cover */}
       <div className="relative overflow-hidden">
-        <div className="aspect-[3/4] relative bg-slate-100">
+        <div className="relative bg-slate-100">
           <Image
             src={magazine.coverImage}
             alt={`${magazine.title} cover`}

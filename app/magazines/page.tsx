@@ -20,12 +20,7 @@ export default function MagazinesPage() {
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="mb-12">
-            <Link href="/" className="inline-block mb-6">
-              <Button variant="outline" size="sm" className="border-slate-300 text-slate-700">
-                <ArrowLeft className={`h-4 w-4 ${rtl ? 'ml-2' : 'mr-2'}`} />
-                {t('magazines.backButton')}
-              </Button>
-            </Link>
+     
             
             <div className="text-center">
               <div className="flex items-center justify-center flex-col md:flex-row gap-4 mb-6">

@@ -198,6 +198,24 @@ export const resources = {
       "departmentDetail.points": "points",
       "departmentDetail.noHistory": "No points history available for this department.",
 
+      // Footer
+      "footer.about.title": "About GDG Qassim",
+      "footer.about.description": "Google Developer Groups at Qassim University is a student-led community fostering innovation and technical skills through workshops, events, and collaborative projects.",
+      "footer.quickLinks.title": "Quick Links",
+      "footer.connect.title": "Connect With Us",
+      "footer.developers.title": "Developers",
+      "footer.developers.builtWith": "Built with ❤️ by",
+      "footer.social.joinUs": "Join Our Community",
+      "footer.social.telegram": "Telegram Group",
+      "footer.social.discord": "Discord Server",
+      "footer.social.twitter": "Twitter",
+      "footer.social.hashtag": "Our Twitter Hashtag",
+      "footer.social.tiktok": "TikTok",
+      "footer.social.email": "Contact Us",
+      "footer.social.gdgSite": "Official GDG Site",
+      "footer.copyright": "© GDG-Q 2026",
+      "footer.lastUpdated": "Last updated",
+
       // Common
       "version": "2.0"
     }
@@ -397,6 +415,24 @@ export const resources = {
       "departmentDetail.detailedLog": "سجل تفصيلي لجميع النقاط المكتسبة للقسم",
       "departmentDetail.points": "نقاط",
       "departmentDetail.noHistory": "ما فيه سجل نقاط متاح لهذا القسم.",
+
+      // Footer
+      "footer.about.title": "عن GDG القصيم",
+      "footer.about.description": "مجموعة قوقل للطلبة المطورين في جامعة القصيم مجتمع طلابي يسعى لبناء مجتمع تقني مبتكر من خلال ورش العمل والفعاليات والمشاريع الجماعية.",
+      "footer.quickLinks.title": "روابط سريعة",
+      "footer.connect.title": "تواصل معنا",
+      "footer.developers.title": "المطورين",
+      "footer.developers.builtWith": "تم بناء الموقع بـ ❤️ من",
+      "footer.social.joinUs": "انضم لمجتمعنا",
+      "footer.social.telegram": "مجموعة التلقرام",
+      "footer.social.discord": "سيرفر الديسكورد",
+      "footer.social.twitter": "Twitter",
+      "footer.social.hashtag": "هاشتاقنا على تويتر",
+      "footer.social.tiktok": "تيك توك",
+      "footer.social.email": "تواصل معنا",
+      "footer.social.gdgSite": "موقع GDG الرسمي",
+      "footer.copyright": "© GDG-Q 2026",
+      "footer.lastUpdated": "آخر تحديث",
 
       // Common
       "version": "2.0"
