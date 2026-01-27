@@ -1,21 +1,34 @@
 import { clerkMiddleware } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
-export default clerkMiddleware(async (auth, req) => {
-  const { sessionClaims } = await auth()
-  
-  // Allow access to onboarding page itself
-  if (req.nextUrl.pathname === '/onboarding') {
-    return NextResponse.next()
+declare global {
+  interface CustomJwtSessionClaims {
+    metadata: {
+      onboardingComplete?: boolean
+      uni_id?: string
+      fullArabicName?: string
+      saudiPhone?: string
+      gender?: 'male' | 'female'
+      personalEmail?: string
+      uniLevel?: number
+      uniCollege?: string
+    }
   }
-  
+}
+
+
+export default clerkMiddleware(async (auth, req) => {
+  const { userId, sessionClaims } = await auth()
+  const authUrl = process.env.NEXT_PUBLIC_AUTH_URL
+
+  if (!authUrl) {
+    return NextResponse.redirect(new URL('/', req.nextUrl.origin))
+  }
   // Check if user is authenticated and has not completed onboarding
-  const metadata = sessionClaims?.metadata as { onboardingComplete?: boolean } | undefined
-  if (sessionClaims?.userId && !metadata?.onboardingComplete) {
-    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || req.nextUrl.origin
+  if (userId && !sessionClaims?.metadata?.onboardingComplete) {
+    console.log(`User ${userId} is not onboarded, redirecting to onboarding page: ${authUrl}/onboarding`);
     return NextResponse.redirect(new URL('/onboarding', authUrl))
   }
-  
   return NextResponse.next()
 })
 
