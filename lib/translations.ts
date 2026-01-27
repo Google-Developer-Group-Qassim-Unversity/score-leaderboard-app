@@ -225,8 +225,8 @@ export const resources = {
     translation: {
       // Hero Section
       "hero.title.performance": "للحين ندور عبارة تليق ",
-      "hero.title.leaderboard": "الجميع",
-      "hero.subtitle": "تابع إنجازاتك وتحدى أصدقائك واحتفل بالنجاح مع مجتمعنا السعودي. تصنيفات مباشرة ونتائج لحظية!",
+      "hero.title.leaderboard": "",
+      "hero.subtitle": "تابع إنجازاتك وتحدى أصدقائك واحتفل بالنجاح مع مجتمعنا. تصنيفات مباشرة ونتائج لحظية!",
       "hero.viewAllMembers": "شوف كل الأعضاء",
       "hero.viewDepartments": "شوف الأقسام",
 
