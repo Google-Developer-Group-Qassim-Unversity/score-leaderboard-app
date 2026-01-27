@@ -5,11 +5,34 @@ import { Button } from "@/components/ui/button"
 import { Users, Crown, Shield, Cog, Palette, Bot, Calendar, Megaphone, Lightbulb, Trophy, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
 import '@/lib/i18n-client'
 
 export default function ClubStructurePage() {
   const { t, i18n } = useTranslation()
   const rtl = i18n.language === 'ar'
+  const [highlightedCard, setHighlightedCard] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Check if there's a hash in the URL
+    if (window.location.hash) {
+      const hash = window.location.hash.substring(1) // Remove the #
+      
+      // Small delay to ensure the page has loaded
+      setTimeout(() => {
+        const element = document.getElementById(hash)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          setHighlightedCard(hash)
+          
+          // Remove highlight after animation
+          setTimeout(() => {
+            setHighlightedCard(null)
+          }, 600)
+        }
+      }, 100)
+    }
+  }, [])
   const clubData = {
     president: {
       title: t('clubStructurePage.presidents'),
@@ -225,7 +248,7 @@ export default function ClubStructurePage() {
           </div>
 
           {/* Specialized Departments Section */}
-          <div className="bg-white rounded-lg p-8 border border-slate-200">
+          <div id="specialized-departments" className="bg-white rounded-lg p-8 border border-slate-200">
             {/* Section Title */}
             <div className="mb-8 text-center">
               <h2 className="text-2xl font-bold text-slate-900 inline-flex items-center gap-3">
@@ -238,10 +261,16 @@ export default function ClubStructurePage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {clubData.departmentsSpecialized.map((dept, index) => (
-                <Card key={index} className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                <Card 
+                  key={index} 
+                  id={`dept-${index}`} 
+                  className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow scroll-mt-20"
+                >
                   <CardHeader className="pb-4">
                     <CardTitle className="text-slate-900 flex items-center gap-3 text-lg font-bold">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                        highlightedCard === `dept-${index}` ? 'animate-[scale_0.6s_ease-in-out]' : ''
+                      } ${
                         dept.color === 'green' ? 'bg-green-500' :
                         dept.color === 'blue' ? 'bg-blue-500' :
                         dept.color === 'yellow' ? 'bg-yellow-500' :
@@ -283,7 +312,7 @@ export default function ClubStructurePage() {
           </div>
 
           {/* Administrative Departments Section */}
-          <div className="bg-white rounded-lg p-8 border border-slate-200">
+          <div id="administrative-departments" className="bg-white rounded-lg p-8 border border-slate-200">
             {/* Section Title */}
             <div className="mb-8 text-center">
               <h2 className="text-2xl font-bold text-slate-900 inline-flex items-center gap-3">
@@ -296,10 +325,16 @@ export default function ClubStructurePage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {clubData.departmentsAdministrative.map((dept, index) => (
-                <Card key={index} className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                <Card 
+                  key={index} 
+                  id={`admin-dept-${index}`} 
+                  className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow scroll-mt-20"
+                >
                   <CardHeader className="pb-4">
                     <CardTitle className="text-slate-900 flex items-center gap-3 text-lg font-bold">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                        highlightedCard === `admin-dept-${index}` ? 'animate-[scale_0.6s_ease-in-out]' : ''
+                      } ${
                         dept.color === 'green' ? 'bg-green-500' :
                         dept.color === 'blue' ? 'bg-blue-500' :
                         dept.color === 'yellow' ? 'bg-yellow-500' :

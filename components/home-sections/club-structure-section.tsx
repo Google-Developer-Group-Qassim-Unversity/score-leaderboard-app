@@ -16,16 +16,16 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
   // Department data matching club-structure page
   const departments = {
     specialized: [
-      { icon: Bot, color: "bg-yellow-500", name: "Robotics" },
-      { icon: Lightbulb, color: "bg-red-500", name: "AI & Data" },
-      { icon: Trophy, color: "bg-blue-500", name: "Entrepreneurship" },
-      { icon: Shield, color: "bg-green-500", name: "Cybersecurity" },
+      { icon: Lightbulb, color: "bg-red-500", name: "AI & Data", id: "dept-0" },
+      { icon: Shield, color: "bg-green-500", name: "Cybersecurity", id: "dept-1" },
+      { icon: Bot, color: "bg-yellow-500", name: "Robotics", id: "dept-2" },
+      { icon: Trophy, color: "bg-blue-500", name: "Entrepreneurship", id: "dept-3" },
     ],
     administrative: [
-      { icon: Cog, color: "bg-blue-500", name: "Development" },
-      { icon: Palette, color: "bg-green-500", name: "Design" },
-      { icon: Calendar, color: "bg-orange-500", name: "Events" },
-      { icon: Megaphone, color: "bg-blue-500", name: "Media" },
+      { icon: Cog, color: "bg-blue-500", name: "Development", id: "admin-dept-0" },
+      { icon: Calendar, color: "bg-orange-500", name: "Events", id: "admin-dept-1" },
+      { icon: Users, color: "bg-red-500", name: "Organization", id: "admin-dept-2" },
+      { icon: Palette, color: "bg-green-500", name: "Design", id: "admin-dept-3" },
     ]
   }
 
@@ -108,13 +108,13 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                 </p>
                 <div className="grid grid-cols-4 gap-3">
                   {departments.specialized.map((dept, idx) => (
-                    <div key={idx} className="flex flex-col items-center gap-1">
+                    <Link key={idx} href={`/club-structure#${dept.id}`} className="flex flex-col items-center gap-1">
                       <div
-                        className={`w-12 h-12 ${dept.color} rounded-lg flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200`}
+                        className={`w-12 h-12 ${dept.color} rounded-lg flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200 cursor-pointer`}
                       >
                         <dept.icon className="h-6 w-6 text-white" />
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -127,13 +127,13 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                 </p>
                 <div className="grid grid-cols-4 gap-3">
                   {departments.administrative.map((dept, idx) => (
-                    <div key={idx} className="flex flex-col items-center gap-1">
+                    <Link key={idx} href={`/club-structure#${dept.id}`} className="flex flex-col items-center gap-1">
                       <div
-                        className={`w-12 h-12 ${dept.color} rounded-lg flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200`}
+                        className={`w-12 h-12 ${dept.color} rounded-lg flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200 cursor-pointer`}
                       >
                         <dept.icon className="h-6 w-6 text-white" />
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
