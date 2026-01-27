@@ -22,6 +22,7 @@ import {
   Globe,
   Linkedin,
   Github,
+  MessageSquare,
 } from "lucide-react"
 
 const navItems = [
@@ -39,6 +40,11 @@ const socialLinks = [
     href: "https://forms.gle/yFwt3DZKpgzuUiQE7",
     labelKey: "footer.social.joinUs",
     icon: UserPlus,
+  },
+  {
+    href: "https://forms.google.com",
+    labelKey: "feedback.card.title",
+    icon: MessageSquare,
   },
   {
     href: "https://t.me/+2UZ1nUuGh29iYjM0",

@@ -243,6 +243,13 @@ export const resources = {
       "footer.copyright": "© GDG-Q 2026",
       "footer.lastUpdated": "Last updated",
 
+      // Feedback Section
+      "feedback.section.title": "Your Opinion Matters",
+      "feedback.section.subtitle": "Help us improve by sharing your thoughts and ideas",
+      "feedback.card.title": "رأيك يهمنا",
+      "feedback.card.description": "Share your thoughts, suggestions, and ideas to help us create better experiences for everyone.",
+      "feedback.card.button": "Share Your Feedback",
+
       // Common
       "version": "2.0"
     }
@@ -487,6 +494,13 @@ export const resources = {
       "footer.social.gdgSite": "موقع GDG الرسمي",
       "footer.copyright": "© GDG-Q 2026",
       "footer.lastUpdated": "آخر تحديث",
+
+      // Feedback Section
+      "feedback.section.title": "رأيك يهمنا",
+      "feedback.section.subtitle": "ساعدنا نتطور بمشاركة أفكارك واقتراحاتك",
+      "feedback.card.title": "رأيك يهمنا",
+      "feedback.card.description": "شارك أفكارك واقتراحاتك وآرائك عشان نقدر نسوي تجارب أفضل للجميع.",
+      "feedback.card.button": "شارك رأيك",
 
       // Common
       "version": "2.0"
