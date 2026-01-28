@@ -191,7 +191,7 @@ export function Footer() {
                   className="flex items-center gap-3 px-4 py-3 rounded-xl bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all active:scale-95 min-h-[48px] w-full"
                   title={t(link.labelKey)}
                 >
-                  <link.icon className="h-5 w-5 flex-shrink-0" />
+                  <link.icon className="h-5 w-5 shrink-0" />
                   <span className="text-sm font-medium leading-tight">{t(link.labelKey)}</span>
                 </a>
               ))}
@@ -208,7 +208,7 @@ export function Footer() {
                   href={item.href}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all w-full"
                 >
-                  <item.icon className="h-5 w-5 flex-shrink-0" />
+                  <item.icon className="h-5 w-5 shrink-0" />
                   <span className="text-sm font-medium">{t(item.labelKey)}</span>
                 </Link>
               ))}

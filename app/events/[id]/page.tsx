@@ -160,7 +160,7 @@ export default async function EventDetailPage({
         href="/events"
         className="inline-flex items-center text-sm text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 mb-6 transition-colors"
       >
-        <ChevronLeft className="h-4 w-4 ltr:mr-1 rtl:ml-1" />
+        <ChevronLeft className="h-4 w-4 ltr:mr-1 rtl:rotate-180" />
         {t("eventDetail.backToEvents")}
       </Link>
 
@@ -203,9 +203,6 @@ export default async function EventDetailPage({
             >
               {getStatusLabel()}
             </Badge>
-            {openEvent && (
-              <EventSignupButton event={openEvent} />
-            )}
           </div>
 
           {/* Date & Time */}
@@ -258,6 +255,9 @@ export default async function EventDetailPage({
           )}
 
           <Separator />
+            {openEvent && (
+              <EventSignupButton event={openEvent} />
+            )}
 
           {/* Description Section */}
           <Card>

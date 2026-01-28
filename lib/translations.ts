@@ -441,9 +441,9 @@ export const resources = {
 
       // Event Detail Page
       "eventDetail.backToEvents": "العودة للفعاليات",
-      "eventDetail.status.open": "مفتوح",
-      "eventDetail.status.active": "جارية",
-      "eventDetail.status.closed": "مغلق",
+      "eventDetail.status.open": "مفتوح للتسجيل",
+      "eventDetail.status.active": "جاري",
+      "eventDetail.status.closed": "منتهي",
       "eventDetail.locationType.online": "فعالية أونلاين",
       "eventDetail.locationType.onsite": "فعالية حضورية",
       "eventDetail.locationType.none": "بدون موقع",
