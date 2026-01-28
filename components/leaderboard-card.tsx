@@ -67,7 +67,7 @@ const getDisplayName = (fullName: string): string => {
 export function LeaderboardCard({ id, name, rank, points, type }: LeaderboardCardProps) {
   const { t } = useTranslation()
   const styles = getPodiumStyles(rank, type)
-  const detailsUrl = type === "member" ? `/member/${id}` : `/department/${id}`
+  const detailsUrl = type === "member" ? `/members/${id}` : `/departments/${id}`
   const displayName = type === "member" ? getDisplayName(name) : name
 
   return (

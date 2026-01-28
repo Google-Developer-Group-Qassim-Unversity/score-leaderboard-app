@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     default: "GDG",
     template: "%s - GDG",
   },
-  description: "Track scores for members and departments GDG-Q ",
+  description: "",
   icons: {
     icon: "/favicon.ico",
   },
