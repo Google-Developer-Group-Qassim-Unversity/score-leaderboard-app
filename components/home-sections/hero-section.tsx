@@ -20,8 +20,8 @@ export function HeroSection({ lang }: HeroSectionProps) {
             <Image
               src="/gdg.png"
               alt="GDG Logo"
-              width={80}
-              height={80}
+              width={512}
+              height={512}
               className="w-16 h-16 md:w-20 md:h-20 object-contain"
             />
             {/* Simple Version 2.0 Badge */}

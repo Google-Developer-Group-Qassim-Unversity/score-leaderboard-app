@@ -27,7 +27,7 @@ interface EventSignupButtonProps {
   className?: string
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST || "http://178.128.205.239:8000"
+const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST 
 
 // Delay before showing partial status (2 minutes in ms)
 const PARTIAL_DELAY_MS = 1 * 60 * 1000

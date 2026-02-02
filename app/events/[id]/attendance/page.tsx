@@ -16,9 +16,10 @@ interface AttendanceResult {
   message: string
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST || "http://178.128.205.239:8000"
+const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST
 
 function AttendanceContent() {
+
   const { t, i18n } = useTranslation()
   const rtl = i18n.language === 'ar'
   const searchParams = useSearchParams()

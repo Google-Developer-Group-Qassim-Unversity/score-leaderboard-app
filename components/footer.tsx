@@ -118,7 +118,7 @@ export function Footer() {
           {/* Logo and Description */}
           <div className="text-center space-y-3">
             <Link href="/" className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <Image src="/gdg.png" alt="GDG Logo" width={40} height={40} className="rounded" />
+              <Image src="/gdg.png" alt="GDG Logo" width={32} height={32} className="rounded" />
               <span className="font-bold text-lg">GDG Qassim</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto">
@@ -221,7 +221,7 @@ export function Footer() {
           {/* About Column */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity w-fit">
-              <Image src="/gdg.png" alt="GDG Logo" width={40} height={40} className="rounded" />
+              <Image src="/gdg.png" alt="GDG Logo" width={32} height={32} className="rounded" />
               <span className="font-bold text-lg">GDG Qassim</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
