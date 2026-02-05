@@ -43,6 +43,14 @@ export default function ClubStructurePage() {
         ],
         vicePresident: "أحمد الحربي"
       },
+      Directors: {
+        title: "مجلس الإدارة",
+        icon: Sparkles,
+        members: [
+          "ريما الأحمد",
+          "غادة الفايز"
+        ]
+      },
       creative: {
         title: "قسم الابتكار",
         icon: Sparkles,
@@ -244,6 +252,25 @@ export default function ClubStructurePage() {
                     <p className="text-slate-600 font-medium text-sm text-center mb-1">{t('clubStructurePage.vicePresident')}:</p>
                     <p className="text-slate-900 font-semibold text-base text-center">{clubData.leadership.president.vicePresident}</p>
                   </div>
+                </CardContent>
+              </Card>
+              
+              {/* Board of Directors - مجلس الإدارة */}
+              <Card className="bg-white border border-slate-200 rounded-lg shadow-sm">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-slate-900 flex items-center gap-3 justify-center text-lg font-bold">
+                    <div className="w-8 h-8 flex items-center justify-center">
+                      <Sparkles className="h-4 w-4 text-purple-500" />
+                    </div>
+                    {clubData.leadership.Directors.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 pb-6">
+                  {clubData.leadership.Directors.members.map((member, index) => (
+                    <div key={index} className="bg-slate-50 rounded-lg px-6 py-3 border border-slate-200">
+                      <p className="text-slate-900 font-semibold text-base text-center">{member}</p>
+                    </div>
+                  ))}
                 </CardContent>
               </Card>
 
