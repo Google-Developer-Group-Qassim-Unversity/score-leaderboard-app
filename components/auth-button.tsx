@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { LogIn, UserPlus } from "lucide-react"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
+import { getFullCurrentUrl } from '@/lib/utils'
 
 export function AuthButton() {
   const { isLoaded, isSignedIn } = useUser()
@@ -38,8 +39,8 @@ export function AuthButton() {
 
   // Not signed in - show sign up and log in buttons
   const authUrl = process.env.NEXT_PUBLIC_AUTH_URL
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL
-  const redirectParam = appUrl ? `?redirect_url=${encodeURIComponent(appUrl)}` : ''
+  const currentUrl = getFullCurrentUrl()
+  const redirectParam = currentUrl ? `?redirect_url=${encodeURIComponent(currentUrl)}` : ''
   
   const signInUrl = `${authUrl}/sign-in${redirectParam}`
   const signUpUrl = `${authUrl}/sign-up${redirectParam}`

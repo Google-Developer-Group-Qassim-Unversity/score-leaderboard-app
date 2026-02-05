@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { LogIn, UserPlus } from "lucide-react"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
+import { getFullCurrentUrl } from '@/lib/utils'
 
 interface AuthRequiredDialogProps {
   open: boolean
@@ -29,8 +30,8 @@ export function AuthRequiredDialog({
 }: AuthRequiredDialogProps) {
   const { t } = useTranslation()
   const authUrl = process.env.NEXT_PUBLIC_AUTH_URL
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL
-  const redirectParam = appUrl ? `?redirect_url=${encodeURIComponent(appUrl)}` : ''
+  const currentUrl = getFullCurrentUrl()
+  const redirectParam = currentUrl ? `?redirect_url=${encodeURIComponent(currentUrl)}` : ''
   
   const signInUrl = `${authUrl}/sign-in${redirectParam}`
   const signUpUrl = `${authUrl}/sign-up${redirectParam}`
