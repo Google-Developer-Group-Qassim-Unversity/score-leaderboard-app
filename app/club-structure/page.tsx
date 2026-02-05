@@ -134,7 +134,7 @@ export default function ClubStructurePage() {
         title: t('clubStructurePage.development'),
         color: "blue",
         icon: Cog,
-        leader: "عبدالاله عبدالعزيز البراك",
+        leader: "Albrrak773",
         vice: "إبراهيم سليمان السكيتي",
         members: [
           "علي حسين الصابر",
