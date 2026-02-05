@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, Crown, Shield, Cog, Palette, Bot, Calendar, Megaphone, Lightbulb, Trophy, ArrowLeft } from "lucide-react"
+import { Users, Crown, Shield, Cog, Palette, Bot, Calendar, Megaphone, Lightbulb, Trophy, ArrowLeft, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
@@ -17,14 +17,14 @@ export default function ClubStructurePage() {
     // Check if there's a hash in the URL
     if (window.location.hash) {
       const hash = window.location.hash.substring(1) // Remove the #
-      
+
       // Small delay to ensure the page has loaded
       setTimeout(() => {
         const element = document.getElementById(hash)
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' })
           setHighlightedCard(hash)
-          
+
           // Remove highlight after animation
           setTimeout(() => {
             setHighlightedCard(null)
@@ -34,16 +34,23 @@ export default function ClubStructurePage() {
     }
   }, [])
   const clubData = {
-    president: {
-      title: t('clubStructurePage.presidents'),
-      members: [
-        "عزام خالد الخضيري",
-        "جود سعود الفرم"
-      ]
-    },
-    vicePresident: {
-      title: t('clubStructurePage.vicePresident'),
-      members: ["أحمد الحربي"]
+    leadership: {
+      president: {
+        title: t('clubStructurePage.presidents'),
+        members: [
+          "عزام خالد الخضيري",
+          "جود سعود الفرم"
+        ],
+        vicePresident: "أحمد الحربي"
+      },
+      creative: {
+        title: "قسم الابتكار",
+        icon: Sparkles,
+        members: [
+          "أفنان السليم",
+          "سنا البيطار"
+        ]
+      }
     },
     departmentsSpecialized: [
       {
@@ -82,7 +89,8 @@ export default function ClubStructurePage() {
           "رهف علي الحربي",
           "شاهر محمد الحربي",
           "منار عبد العزيز النقيدان",
-          "مها عادل المطرفي"
+          "مها عادل المطرفي",
+          "بدر الدخيل الله" // <-- new member
         ]
       },
       {
@@ -121,7 +129,10 @@ export default function ClubStructurePage() {
         leader: "عبدالاله عبدالعزيز البراك",
         vice: "إبراهيم سليمان السكيتي",
         members: [
-          "علي حسين الصابر"
+          "علي حسين الصابر",
+          "أحمد سامح", // <-- new member
+          "عمر إدلبي", // <-- new member
+          "بسام الحبيب" // <-- new member
         ]
       },
       {
@@ -146,15 +157,16 @@ export default function ClubStructurePage() {
           "أحمد الحجيلان",
           "أميرة المطيري",
           "خولة البشري",
-          "زياد العنزي"
+          "زياد العنزي",
+          "أسامة الحصيف" // <-- new member
         ]
       },
       {
         title: t('clubStructurePage.design'),
         color: "green",
         icon: Palette,
-        leader: "أمل عبدالله الرحيمي",
-        vice: "لينة حماد المهيلب",
+        leader: "لينة حماد المهيلب", // <-- changed
+        vice: "أمل عبدالله الرحيمي", // <-- changed
         members: [
           "أسماء حامد المطيري",
           "ديالى محمد العمرو",
@@ -167,14 +179,14 @@ export default function ClubStructurePage() {
         color: "blue",
         icon: Megaphone,
         leader: "كادي عبدالله السبيعي",
-        vice: "",
+        vice: "شذى خالد الثبيتي", // <-- changed
         members: [
-          "جود عبدالرحمن الحربي",
-          "أسامة محمد الحضيف",
-          "سلمان محمد عكروت",
-          "سارة رميح الرميح",
-          "شذى خالد الثبيتي",
-          "كادي عبدالعزيز العنزي"
+          "رولا العثيم", // <-- new member
+          "ثناء الدخيل", // <-- new member
+          "أميرة الحربي", // <-- new member
+          "دالي الوابلي", // <-- new member
+          "سارة رميح الرميح", // <-- new member
+          "نورة الطاسان" // <-- new member
         ]
       }
     ]
@@ -213,35 +225,44 @@ export default function ClubStructurePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-              {/* Presidents Section */}
+              {/* Presidents & Vice President Section */}
               <Card className="bg-white border border-slate-200 rounded-lg shadow-sm">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-slate-900 flex items-center gap-3 justify-center text-lg font-bold">
                     <Crown className="h-5 w-5 text-blue-600" />
-                    {clubData.president.title}
+                    {clubData.leadership.president.title}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 pb-6">
-                  {clubData.president.members.map((member, index) => (
+                  {clubData.leadership.president.members.map((member, index) => (
                     <div key={index} className="bg-slate-50 rounded-lg px-6 py-3 border border-slate-200">
                       <p className="text-slate-900 font-semibold text-base text-center">{member}</p>
                     </div>
                   ))}
+                  {/* Vice President */}
+                  <div className="bg-slate-50 rounded-lg px-6 py-3 border border-green-200 mt-4">
+                    <p className="text-slate-600 font-medium text-sm text-center mb-1">{t('clubStructurePage.vicePresident')}:</p>
+                    <p className="text-slate-900 font-semibold text-base text-center">{clubData.leadership.president.vicePresident}</p>
+                  </div>
                 </CardContent>
               </Card>
 
-              {/* Vice President */}
+              {/* Creative Section - قسم الابتكار */}
               <Card className="bg-white border border-slate-200 rounded-lg shadow-sm">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-slate-900 flex items-center gap-3 justify-center text-lg font-bold">
-                    <Shield className="h-5 w-5 text-green-600" />
-                    {clubData.vicePresident.title}
+                    <div className="w-8 h-8 flex items-center justify-center">
+                      <Sparkles className="h-4 w-4 text-purple-500" />
+                    </div>
+                    {clubData.leadership.creative.title}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="pb-6">
-                  <div className="bg-slate-50 rounded-lg px-6 py-3 border border-slate-200 text-center">
-                    <p className="text-slate-900 font-semibold text-base text-center">{clubData.vicePresident.members[0]}</p>
-                  </div>
+                <CardContent className="space-y-3 pb-6">
+                  {clubData.leadership.creative.members.map((member, index) => (
+                    <div key={index} className="bg-slate-50 rounded-lg px-6 py-3 border border-slate-200">
+                      <p className="text-slate-900 font-semibold text-base text-center">{member}</p>
+                    </div>
+                  ))}
                 </CardContent>
               </Card>
             </div>
@@ -261,23 +282,21 @@ export default function ClubStructurePage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {clubData.departmentsSpecialized.map((dept, index) => (
-                <Card 
-                  key={index} 
-                  id={`dept-${index}`} 
+                <Card
+                  key={index}
+                  id={`dept-${index}`}
                   className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow scroll-mt-20"
                 >
                   <CardHeader className="pb-4">
                     <CardTitle className="text-slate-900 flex items-center gap-3 text-lg font-bold">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        highlightedCard === `dept-${index}` ? 'animate-[scale_0.6s_ease-in-out]' : ''
-                      } ${
-                        dept.color === 'green' ? 'bg-green-500' :
-                        dept.color === 'blue' ? 'bg-blue-500' :
-                        dept.color === 'yellow' ? 'bg-yellow-500' :
-                        dept.color === 'orange' ? 'bg-orange-500' :
-                        dept.color === 'purple' ? 'bg-purple-500' :
-                        'bg-red-500'
-                      }`}>
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${highlightedCard === `dept-${index}` ? 'animate-[scale_0.6s_ease-in-out]' : ''
+                        } ${dept.color === 'green' ? 'bg-green-500' :
+                          dept.color === 'blue' ? 'bg-blue-500' :
+                            dept.color === 'yellow' ? 'bg-yellow-500' :
+                              dept.color === 'orange' ? 'bg-orange-500' :
+                                dept.color === 'purple' ? 'bg-purple-500' :
+                                  'bg-red-500'
+                        }`}>
                         <dept.icon className="h-5 w-5 text-white" />
                       </div>
                       {dept.title}
@@ -325,23 +344,21 @@ export default function ClubStructurePage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {clubData.departmentsAdministrative.map((dept, index) => (
-                <Card 
-                  key={index} 
-                  id={`admin-dept-${index}`} 
+                <Card
+                  key={index}
+                  id={`admin-dept-${index}`}
                   className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow scroll-mt-20"
                 >
                   <CardHeader className="pb-4">
                     <CardTitle className="text-slate-900 flex items-center gap-3 text-lg font-bold">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        highlightedCard === `admin-dept-${index}` ? 'animate-[scale_0.6s_ease-in-out]' : ''
-                      } ${
-                        dept.color === 'green' ? 'bg-green-500' :
-                        dept.color === 'blue' ? 'bg-blue-500' :
-                        dept.color === 'yellow' ? 'bg-yellow-500' :
-                        dept.color === 'orange' ? 'bg-orange-500' :
-                        dept.color === 'purple' ? 'bg-purple-500' :
-                        'bg-red-500'
-                      }`}>
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${highlightedCard === `admin-dept-${index}` ? 'animate-[scale_0.6s_ease-in-out]' : ''
+                        } ${dept.color === 'green' ? 'bg-green-500' :
+                          dept.color === 'blue' ? 'bg-blue-500' :
+                            dept.color === 'yellow' ? 'bg-yellow-500' :
+                              dept.color === 'orange' ? 'bg-orange-500' :
+                                dept.color === 'purple' ? 'bg-purple-500' :
+                                  'bg-red-500'
+                        }`}>
                         <dept.icon className="h-5 w-5 text-white" />
                       </div>
                       {dept.title}
