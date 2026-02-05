@@ -53,8 +53,8 @@ export default async function EventDetailPage({
 
   // Fetch both regular events and open events (for signup button)
   const [events, openEvents] = await Promise.all([
-    fetchEvents(),
-    fetchOpenEvents(),
+    fetchEvents(false),
+    fetchOpenEvents(false),
   ]);
 
   // Filter to only valid statuses (open, active, closed)

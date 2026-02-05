@@ -64,6 +64,15 @@ const options = {
   },
   next: { revalidate: 86400 },
 };
+// very ugly, very temporary
+const noCacheOptions = {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    "Cache-Control": "no-cache",
+  },
+  next: { revalidate: 0 },
+}
 
 export async function fetchMembers(): Promise<ApiMembersPointsResponse> {
   try {
@@ -151,10 +160,10 @@ export async function fetchDepartmentById(id: string): Promise<ApiDepartmentPoin
   }
 }
 
-export async function fetchEvents(): Promise<ApiEventsResponse> {
+export async function fetchEvents(cached: boolean = true): Promise<ApiEventsResponse> {
   try {
     console.log("🔍 Fetching events from API...")
-    const response = await fetch(`${API_BASE_URL}/events`, options)
+    const response = await fetch(`${API_BASE_URL}/events`, cached ? options : noCacheOptions)
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
@@ -174,10 +183,10 @@ export async function fetchEvents(): Promise<ApiEventsResponse> {
   }
 }
 
-export async function fetchOpenEvents(): Promise<ApiOpenEventsResponse> {
+export async function fetchOpenEvents(cached: boolean = true): Promise<ApiOpenEventsResponse> {
   try {
     console.log("🔍 Fetching open events from API...")
-    const response = await fetch(`${API_BASE_URL}/events/open`, options)
+    const response = await fetch(`${API_BASE_URL}/events/open`, cached ? options : noCacheOptions)
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)

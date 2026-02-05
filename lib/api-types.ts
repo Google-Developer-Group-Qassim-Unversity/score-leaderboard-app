@@ -26,6 +26,7 @@ export interface ApiDepartmentsPointsResponse {
   practical: ApiDepartmentPoints[]
 }
 
+
 // Event Model (for points history)
 export interface ApiPointsEvent {
   event_name: string
