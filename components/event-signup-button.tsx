@@ -48,18 +48,25 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>(false)
   const [isCheckingStatus, setIsCheckingStatus] = useState(false)
+  const [statusCheckError, setStatusCheckError] = useState(false)
 
   useEffect(() => {
     async function checkStatus() {
       if (isSignedIn && isLoaded) {
         setIsCheckingStatus(true)
+        setStatusCheckError(false)
         try {
           const token = await getToken()
           if (token) {
             const response = await checkSubmissionStatus(event.form_id, token)
             
-            // If partial, check if enough time has passed to show the partial state
-            if (response.submission_status === 'partial' && response.submission_timestamp) {
+            // Check if the API call actually failed (returns false without other data)
+            if (response.submission_status === false && !response.submission_timestamp) {
+              // This indicates an error occurred in the API call
+              setStatusCheckError(true)
+              setSubmissionStatus(false)
+            } else if (response.submission_status === 'partial' && response.submission_timestamp) {
+              // If partial, check if enough time has passed to show the partial state
               const submissionTime = new Date(response.submission_timestamp).getTime()
               const now = Date.now()
               const elapsed = now - submissionTime
@@ -77,6 +84,7 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
           }
         } catch (err) {
           console.error("Failed to check submission status:", err)
+          setStatusCheckError(true)
         } finally {
           setIsCheckingStatus(false)
         }
@@ -148,9 +156,12 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
   // Determine button state and appearance
   const isCompleted = submissionStatus === true
   const isPartial = submissionStatus === 'partial'
-  const isDisabled = !isLoaded || isCheckingStatus || isCompleted
+  const isDisabled = !isLoaded || isCheckingStatus || isCompleted || statusCheckError
 
   const getButtonContent = () => {
+    if (statusCheckError) {
+      return t('eventSignup.somethingWentWrong')
+    }
     if (isCompleted) {
       return (
         <>
@@ -170,20 +181,17 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
     return t('eventSignup.signUp')
   }
 
-  const getButtonStyle = () => {
+  const getButtonClassName = () => {
+    if (statusCheckError) {
+      return "bg-orange-500 text-white cursor-not-allowed hover:bg-red-500"
+    }
     if (isCompleted) {
-      return {
-        backgroundColor: 'rgb(34, 197, 94)',
-        color: 'white',
-      }
+      return "bg-green-500 text-white hover:bg-green-500"
     }
     if (isPartial) {
-      return {
-        backgroundColor: 'rgb(251, 191, 36)',
-        color: 'rgb(0, 0, 0)',
-      }
+      return "bg-amber-400 text-black hover:bg-amber-400"
     }
-    return undefined
+    return ""
   }
 
   return (
@@ -197,10 +205,9 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
       
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
         <Button 
-          className={className} 
+          className={`${className} ${getButtonClassName()}`} 
           onClick={handleButtonClick}
           disabled={isDisabled}
-          style={getButtonStyle()}
         >
           {getButtonContent()}
         </Button>

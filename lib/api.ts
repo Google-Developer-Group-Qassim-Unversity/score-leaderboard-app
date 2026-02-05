@@ -211,6 +211,7 @@ export async function checkSubmissionStatus(formId: number, token: string): Prom
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       },
+      next: { revalidate: 0 }, // Always fetch fresh status
     })
 
     if (!response.ok) {
