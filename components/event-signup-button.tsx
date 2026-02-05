@@ -60,9 +60,8 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
           if (token) {
             const response = await checkSubmissionStatus(event.form_id, token)
             
-            // Check if the API call actually failed (returns false without other data)
-            if (response.submission_status === false && !response.submission_timestamp) {
-              // This indicates an error occurred in the API call
+            // Check if the API call failed (returns null)
+            if (response === null) {
               setStatusCheckError(true)
               setSubmissionStatus(false)
             } else if (response.submission_status === 'partial' && response.submission_timestamp) {
@@ -79,6 +78,7 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
                 setSubmissionStatus('partial')
               }
             } else {
+              // Normal case: false (not signed up) or true (signed up)
               setSubmissionStatus(response.submission_status)
             }
           }

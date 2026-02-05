@@ -202,7 +202,7 @@ export async function fetchOpenEvents(cached: boolean = true): Promise<ApiOpenEv
   }
 }
 
-export async function checkSubmissionStatus(formId: number, token: string): Promise<ApiSubmissionResponse> {
+export async function checkSubmissionStatus(formId: number, token: string): Promise<ApiSubmissionResponse | null> {
   try {
     console.log(`🔍 Checking submission status for form ${formId}...`)
     const response = await fetch(`${API_BASE_URL}/submissions/${formId}`, {
@@ -224,7 +224,7 @@ export async function checkSubmissionStatus(formId: number, token: string): Prom
 
   } catch (error) {
     console.error(`❌ Failed to check submission status for form ${formId}:`, error)
-    return { submission_status: false }
+    return null
   }
 }
 
