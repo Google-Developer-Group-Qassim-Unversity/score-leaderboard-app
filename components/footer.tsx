@@ -85,9 +85,9 @@ const socialLinks = [
 
 const developers = [
   {
-    name: "Albrrk773",
+    name: "Albrrak773",
     twitter: "https://x.com/albrrak773",
-    twitterHandle: "@albrrk773",
+    twitterHandle: "@albrrak773",
     linkedin: null,
     github: "https://github.com/albrrak773",
   },

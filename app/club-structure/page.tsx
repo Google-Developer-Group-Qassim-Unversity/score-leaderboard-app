@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, Crown, Shield, Cog, Palette, Bot, Calendar, Megaphone, Lightbulb, Trophy, ArrowLeft, Sparkles } from "lucide-react"
+import { Users, Crown, Shield, Cog, Palette, Bot, Calendar, Megaphone, Lightbulb, Trophy, ArrowLeft, Sparkles, Gamepad2} from "lucide-react"
 import Link from "next/link"
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
@@ -44,7 +44,7 @@ export default function ClubStructurePage() {
         vicePresident: "أحمد الحربي"
       },
       Directors: {
-        title: "مجلس الإدارة",
+        title: t('clubStructurePage.boardDirectors'),
         icon: Sparkles,
         members: [
           "ريما الأحمد",
@@ -52,7 +52,7 @@ export default function ClubStructurePage() {
         ]
       },
       creative: {
-        title: "قسم الابتكار",
+        title: t('clubStructurePage.innovation'),
         icon: Sparkles,
         members: [
           "أفنان السليم",
@@ -117,7 +117,7 @@ export default function ClubStructurePage() {
       {
         title: t('clubStructurePage.esports'),
         color: "purple",
-        icon: Trophy,
+        icon: Gamepad2,
         leader: "محمد الزهراني",
         vice: "بشار الحربي",
         members: [
