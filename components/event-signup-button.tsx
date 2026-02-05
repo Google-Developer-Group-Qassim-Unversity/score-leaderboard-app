@@ -137,8 +137,8 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
 
       // Handle based on form type
       if (event.form_type === "google" && event.google_responders_url) {
-        // Set to partial and redirect to Google Form - no toast since they still need to fill it
-        setSubmissionStatus('partial')
+        // Don't set to partial immediately - let the useEffect handle it after the delay
+        // This ensures the 2-minute delay logic is respected
         router.push(`/events/${event.id}/form?formUrl=${encodeURIComponent(event.google_responders_url)}`)
       } else {
         // Completed signup for non-google forms
