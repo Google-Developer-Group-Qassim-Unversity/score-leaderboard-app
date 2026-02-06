@@ -139,7 +139,7 @@ export default function ClubStructurePage() {
         members: [
           "علي حسين الصابر",
           "أحمد سامح", // <-- new member
-          "عمر إدلبي", // <-- new member
+          "عمر الادلبي", // <-- new member
           "بسام الحبيب" // <-- new member
         ]
       },
