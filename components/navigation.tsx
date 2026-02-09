@@ -54,8 +54,7 @@ function NavLink({ href, labelKey, icon: Icon, isActive }: { href: string; label
 }
 
 function MobileNavLink({ href, labelKey, icon: Icon, isActive, onClick }: { href: string; labelKey: string; icon: LucideIcon; isActive: boolean; onClick: () => void }) {
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
+  const { t } = useTranslation();
   
   return (
     <Link
@@ -63,7 +62,6 @@ function MobileNavLink({ href, labelKey, icon: Icon, isActive, onClick }: { href
       onClick={onClick}
       className={cn(
         "flex items-center gap-3 px-3 py-3 rounded-md font-semibold transition-colors text-base",
-        isRTL && "flex-row-reverse",
         isActive ? "bg-foreground text-background" : "text-foreground/70 hover:text-foreground hover:bg-accent"
       )}
     >
