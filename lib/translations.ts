@@ -305,7 +305,7 @@ export const resources = {
       "nav.departments": "الأقسام",
       "nav.events": "الفعاليات",
       "nav.magazines": "المجلات",
-      "nav.structure": "الهيكل",
+      "nav.structure": "الهيكلة",
       "nav.howItWorks": "نظام النقاط",
 
       // Footer CTA
