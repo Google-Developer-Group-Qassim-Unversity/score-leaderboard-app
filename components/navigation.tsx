@@ -35,13 +35,15 @@ const navItems = [
 ]
 
 function NavLink({ href, labelKey, icon: Icon, isActive }: { href: string; labelKey: string; icon: LucideIcon; isActive: boolean }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   
   return (
     <Link
       href={href}
       className={cn(
         "flex items-center gap-2 px-3 py-2 rounded-md font-semibold transition-colors",
+        isRTL && "flex-row-reverse",
         isActive ? "bg-foreground text-background" : "text-foreground/70 hover:text-foreground hover:bg-accent"
       )}
     >
