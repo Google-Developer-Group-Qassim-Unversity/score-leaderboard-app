@@ -41,14 +41,13 @@ export function EventCard({ event, hideSignup = false }: EventCardProps) {
       </CardHeader>
       <CardContent className="flex-1">
         {event.image_url && (
-          <div className="relative w-full aspect-3/4 overflow-hidden rounded-md">
+          <div className="relative w-full h-[400px] flex items-center justify-center rounded-md overflow-hidden">
             <Image
               src={IMAGE_SOURCE + event.image_url}
               alt={event.name}
-              width={300}
-              height={400}
+              fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover"
+              className="object-contain"
             />
           </div>
         )}
