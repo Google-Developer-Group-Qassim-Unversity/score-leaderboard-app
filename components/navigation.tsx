@@ -22,7 +22,7 @@ import {
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
-import { AuthButton } from "@/components/auth-button"
+import { AuthButton, AuthButtonMobile } from "@/components/auth-button"
 
 const navItems = [
   { href: "/", labelKey: "nav.home", icon: Home },
@@ -190,6 +190,11 @@ export function Navigation() {
                         {currentLang === 'en' ? 'العربية' : 'English'}
                       </span>
                     </Button>
+                  </div>
+                  
+                  {/* Auth Section in Mobile Menu */}
+                  <div className="mt-4 px-3 pt-4 border-t">
+                    <AuthButtonMobile />
                   </div>
                 </div>
               </div>

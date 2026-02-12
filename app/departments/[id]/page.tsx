@@ -92,7 +92,19 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
                             <p className="text-sm text-gray-600 dark:text-gray-400">
                               {lang === 'ar' && event.ar_action_name ? event.ar_action_name : event.action_name}
                             </p>
-                            <p className="text-sm text-gray-500">{new Date(event.start_datetime).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
+                            <p className="text-sm text-gray-500">
+                              {(() => {
+                                const startDate = new Date(event.start_datetime)
+                                const endDate = new Date(event.end_datetime)
+                                const isSameDay = startDate.toDateString() === endDate.toDateString()
+                                
+                                if (isSameDay) {
+                                  return startDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+                                } else {
+                                  return `${startDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })} - ${endDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
+                                }
+                              })()}
+                            </p>
                           </div>
                         </div>
                         <div className="text-right">

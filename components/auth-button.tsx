@@ -16,10 +16,7 @@ export function AuthButton() {
   // Loading state
   if (!isLoaded) {
     return (
-      <div className="flex gap-2">
-        <Skeleton className="h-9 w-20 sm:w-24" />
-        <Skeleton className="h-9 w-20 sm:w-24" />
-      </div>
+      <Skeleton className="h-8 w-8 rounded-full" />
     )
   }
 
@@ -67,6 +64,56 @@ export function AuthButton() {
         <a href={signUpUrl} aria-label={t('auth.signupAria')}>
           <UserPlus className="h-4 w-4" />
           <span className="hidden sm:inline">{t('auth.signup')}</span>
+        </a>
+      </Button>
+    </div>
+  )
+}
+
+export function AuthButtonMobile() {
+  const { isLoaded, isSignedIn } = useUser()
+  const { t } = useTranslation()
+
+  // Loading state
+  if (!isLoaded) {
+    return (
+      <Skeleton className="h-10 w-full rounded-md" />
+    )
+  }
+
+  // Don't show anything if signed in
+  if (isSignedIn) {
+    return null
+  }
+
+  // Not signed in - show sign up and log in buttons stacked
+  const authUrl = process.env.NEXT_PUBLIC_AUTH_URL
+  const currentUrl = getFullCurrentUrl()
+  const redirectParam = currentUrl ? `?redirect_url=${encodeURIComponent(currentUrl)}` : ''
+  
+  const signInUrl = `${authUrl}/sign-in${redirectParam}`
+  const signUpUrl = `${authUrl}/sign-up${redirectParam}`
+
+  return (
+    <div className="flex flex-col gap-2">
+      <Button
+        variant="default"
+        asChild
+        className="w-full gap-3 py-3"
+      >
+        <a href={signUpUrl} aria-label={t('auth.signupAria')}>
+          <UserPlus className="h-5 w-5" />
+          <span className="font-semibold text-base">{t('auth.signup')}</span>
+        </a>
+      </Button>
+      <Button
+        variant="outline"
+        asChild
+        className="w-full gap-3 py-3"
+      >
+        <a href={signInUrl} aria-label={t('auth.loginAria')}>
+          <LogIn className="h-5 w-5" />
+          <span className="font-semibold text-base">{t('auth.login')}</span>
         </a>
       </Button>
     </div>
