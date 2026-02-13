@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   Calendar,
+  CalendarPlus,
   Clock,
   MapPin,
   Globe,
@@ -35,13 +36,13 @@ const VALID_STATUSES: ApiEventItem["status"][] = ["open", "active", "closed"];
 const getStatusVariant = (status: ApiEventItem["status"]) => {
   switch (status) {
     case "open":
-      return "default" as const;
+      return "outline" as const;
     case "active":
-      return "secondary" as const;
+      return "outline" as const;
     case "closed":
       return "outline" as const;
     default:
-      return "secondary" as const;
+      return "outline" as const;
   }
 };
 
@@ -256,7 +257,7 @@ export default async function EventDetailPage({
 
           <Separator />
             {openEvent && (
-              <EventSignupButton event={openEvent} />
+              <EventSignupButton event={openEvent} className="w-full" />
             )}
 
           {/* Description Section */}
