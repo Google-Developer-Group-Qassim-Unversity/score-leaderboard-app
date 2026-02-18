@@ -16,6 +16,8 @@ export default function PointsSystemPage() {
     { action: "حضور دورة حضورية", points: "6" },
     { action: "حضور دورة أونلاين", points: "4" },
     { action: "حضور معسكر (لكل يوم)", points: "10" },
+    { action: "حضور معسكر أونلاين (لكل يوم)", points: "6" },
+    { action: "حضور حدث ضخم (300+ حضور)", points: "15" },
     { action: "حضور لقاء تقني/جلسة", points: "3" },
     { action: "المشاركة في مسابقة خارجية", points: "6" },
     { action: "التأهل/المراكز المتقدمة في مسابقة", points: "12" },
@@ -29,9 +31,12 @@ export default function PointsSystemPage() {
   ];
 
   const departmentPoints = [
-    { type: "دورة حضورية (≥ 2 ساعات)", description: "تدريب وجاهي داخل الكلية/الجامعة", points: "15" },
-    { type: "دورة أونلاين (≥ 1.5 ساعة)", description: "تدريب عن بُعد", points: "9" },
-    { type: "معسكر تدريبي", description: "لكل يوم فعلي تدريبي (6 ساعات فأكثر)", points: "20/يوم" },
+    { type: "دورة حضورية", description: "تنظيم دورة حضورية", points: "15" },
+    { type: "دورة أونلاين", description: "تنظيم دورة عن بُعد", points: "9" },
+    { type: "معسكر تدريبي", description: "معسكر حضوري (لكل يوم)", points: "20/يوم" },
+    { type: "معسكر أونلاين", description: "معسكر تدريبي عن بُعد (لكل يوم)", points: "13/يوم" },
+    { type: "حدث ضخم (300+ حضور)", description: "فعالية كبيرة بحضور 300 شخص أو أكثر", points: "50+" },
+    { type: "مساحة تويتر", description: "استضافة مساحة صوتية على تويتر", points: "7" },
     { type: "لقاء تقني/جلسة شهرية", description: "جلسة تبادل معرفة/نقاش", points: "6" },
     { type: "مسابقة داخلية (تنظيم)", description: "مسابقة ينظمها القسم", points: "12" },
     { type: "مشاركة بمسابقة خارجية", description: "يُحتسب للقسم مرة واحدة لكل فريق ممثل", points: "10" },

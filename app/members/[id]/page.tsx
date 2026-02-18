@@ -1,6 +1,4 @@
-import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, Award, TrendingUp, Users, BookOpen } from "lucide-react"
 import { fetchMemberById } from "@/lib/api"
 import { notFound } from "next/navigation"
@@ -9,7 +7,6 @@ import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n
 interface PageProps {
   params: Promise<{ id: string }>
 }
-
 export default async function MemberDetailPage({ params }: PageProps) {
   const { id } = await params
   const memberData = await fetchMemberById(id)

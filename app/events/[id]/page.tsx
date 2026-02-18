@@ -130,6 +130,10 @@ export default async function EventDetailPage({
   const getStatusLabel = () => {
     switch (event.status) {
       case "open":
+        // Check if form_type is 'none' for events without registration
+        if (openEvent?.form_type === 'none') {
+          return t("eventDetail.status.openToJoin");
+        }
         return t("eventDetail.status.open");
       case "active":
         return t("eventDetail.status.active");

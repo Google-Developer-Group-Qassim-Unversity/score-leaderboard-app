@@ -199,6 +199,7 @@ export const resources = {
       // Event Detail Page
       "eventDetail.backToEvents": "Back to Events",
       "eventDetail.status.open": "Open",
+      "eventDetail.status.openToJoin": "Open to Join",
       "eventDetail.status.active": "Active",
       "eventDetail.status.closed": "Closed",
       "eventDetail.locationType.online": "Online Event",
@@ -452,6 +453,7 @@ export const resources = {
       // Event Detail Page
       "eventDetail.backToEvents": "العودة للفعاليات",
       "eventDetail.status.open": "مفتوح للتسجيل",
+      "eventDetail.status.openToJoin": "مفتوح للدخول",
       "eventDetail.status.active": "جاري",
       "eventDetail.status.closed": "منتهي",
       "eventDetail.locationType.online": "فعالية أونلاين",
