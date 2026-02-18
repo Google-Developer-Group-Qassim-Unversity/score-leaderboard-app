@@ -430,7 +430,7 @@ export const resources = {
       "eventSignup.successToast": "تم تسجيلك بنجاح في",
       
       // Event Card
-      "eventCard.viewEvent": "اعرف الفعالية",
+      "eventCard.viewEvent": "التفاصيل",
       "eventCard.viewDetails": " التفاصيل",
 
       // Attendance Page

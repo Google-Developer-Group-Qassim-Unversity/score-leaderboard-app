@@ -80,24 +80,36 @@ export default async function EventDetailPage({
   // Get location icon based on location type
   const LocationIcon = event.location_type === "online" ? Globe : MapPin;
 
-  // Format date only (keeping as-is, no localization)
+  // Format date with proper localization
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    const locale = lang === "ar" ? "ar-SA" : "en-US";
+    return date.toLocaleDateString(locale, {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
+      numberingSystem: "latn", // Use Western numerals
     });
   };
 
-  // Format time only (keeping as-is, no localization)
+  // Format time with proper localization and Arabic AM/PM
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString("en-US", {
+    const locale = lang === "ar" ? "ar-SA" : "en-US";
+    let timeString = date.toLocaleTimeString(locale, {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: true,
+      numberingSystem: "latn", // Use Western numerals
     });
+    
+    // Replace English AM/PM with Arabic equivalents
+    if (lang === "ar") {
+      timeString = timeString.replace(/AM/gi, "صباحاً").replace(/PM/gi, "مساءً");
+    }
+    
+    return timeString;
   };
 
   const startDate = formatDate(event.start_datetime);
@@ -163,10 +175,12 @@ export default async function EventDetailPage({
       {/* Back Button */}
       <Link
         href="/events"
-        className="inline-flex items-center text-sm text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 mb-6 transition-colors"
+        className="inline-flex items-center gap-2 text-base font-medium text-foreground hover:text-primary mb-6 transition-all hover:gap-3 group"
       >
-        <ChevronLeft className="h-4 w-4 ltr:mr-1 rtl:rotate-180" />
-        {t("eventDetail.backToEvents")}
+        <div className="flex items-center justify-center h-8 w-8 rounded-full bg-secondary group-hover:bg-primary/10 transition-colors">
+          <ChevronLeft className="h-5 w-5 ltr:group-hover:-translate-x-0.5 rtl:rotate-180 rtl:group-hover:translate-x-0.5 transition-transform" />
+        </div>
+        <span>{t("eventDetail.backToEvents")}</span>
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-start">
@@ -179,7 +193,7 @@ export default async function EventDetailPage({
                 alt={event.name}
                 width={600}
                 height={200}
-                className="rounded-xl max-w-full lg:max-w-md xl:max-w-lg h-auto max-h-150 object-contain"
+                className="rounded-xl border border-border shadow-lg max-w-full lg:max-w-md xl:max-w-lg h-auto max-h-150 object-contain"
                 priority
               />
             </ImageZoom>
@@ -214,7 +228,7 @@ export default async function EventDetailPage({
           <div className="space-y-3">
             <div className="flex items-start gap-2 text-muted-foreground">
               <Calendar className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-              <div className="flex-1">
+              <div className="flex-1" dir="auto">
                 {isSameDay ? (
                   <span className="font-medium text-foreground text-base sm:text-lg">
                     {startDate}
@@ -239,7 +253,7 @@ export default async function EventDetailPage({
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="h-5 w-5 text-primary shrink-0" />
-              <span className="font-medium text-foreground">
+              <span className="font-medium text-foreground" dir="auto">
                 {dailyStartTime} - {dailyEndTime}
               </span>
               {!isSameDay && (
