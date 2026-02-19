@@ -46,6 +46,35 @@ const getStatusVariant = (status: ApiEventItem["status"]) => {
   }
 };
 
+function linkify(text: string) {
+  const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/g;
+
+  const parts = text.split(urlRegex);
+
+  return parts
+    .filter(Boolean)
+    .map((part, i) => {
+      const isUrl =
+        /^https?:\/\//i.test(part) || /^www\./i.test(part);
+
+      if (!isUrl) return <span key={i}>{part}</span>;
+
+      const href = /^https?:\/\//i.test(part) ? part : `https://${part}`;
+
+      return (
+        <a
+          key={i}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          className="text-blue-600 dark:text-blue-400 underline underline-offset-2 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+        >
+          {part}
+        </a>
+      );
+    });
+}
+
 export default async function EventDetailPage({
   params,
 }: EventDetailPageProps) {
@@ -292,7 +321,7 @@ export default async function EventDetailPage({
                   className="text-muted-foreground leading-relaxed whitespace-pre-wrap"
                   dir="auto"
                 >
-                  {event.description}
+                  {linkify(event.description)}
                 </p>
               ) : (
                 <p className="text-muted-foreground italic">
