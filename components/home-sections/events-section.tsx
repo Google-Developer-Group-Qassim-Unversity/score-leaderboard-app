@@ -51,7 +51,7 @@ async function EventsScroll() {
   if (events.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-slate-500">{t('events.empty')}</p>
+        <p className="text-slate-500 cursor-default">{t('events.empty')}</p>
       </div>
     )
   }
@@ -98,7 +98,7 @@ export async function EventsSection() {
                 <span className="wrap-break-word leading-tight">{t('events.title')}</span>
               </CardTitle>
               <Link href="/events">
-                <Button variant="outline" size="default" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0">
+                <Button variant="outline" size="default" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                   {t('events.viewAll')}
                   <MoveRight className="h-3 w-3 sm:h-4 sm:w-4 ms-1.5 rtl:rotate-180" />
                 </Button>

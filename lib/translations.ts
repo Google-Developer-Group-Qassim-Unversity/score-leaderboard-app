@@ -4,18 +4,18 @@ export const resources = {
   en: {
     translation: {
       // Hero Section
-      "hero.title.performance": "Performance",
-      "hero.title.leaderboard": "Leaderboard",
-      "hero.subtitle": "Track, compete, and celebrate achievements across our community. Real-time rankings and comprehensive performance metrics.",
+      "hero.title.performance": "GDG on Campus",
+      "hero.title.leaderboard": "",
+      "hero.subtitle": "Join our events, track your points, and climb to the top of the leaderboard! 🏆",
       "hero.viewAllMembers": "View All Members",
       "hero.viewDepartments": "View Departments",
-      
+
       // Stats Cards
       "stats.members.title": "Members",
       "stats.members.description": "Competing participants",
       "stats.members.badge": "Active",
-      "stats.departments.title": "Departments", 
-      "stats.departments.description": "Active teams",
+      "stats.departments.title": "Departments",
+      "stats.departments.description": "Our Strong Teams",
       "stats.departments.badge": "Teams",
       "stats.points.title": "Points",
       "stats.points.description": "Points earned",
@@ -23,11 +23,11 @@ export const resources = {
       "stats.events.title": "Events",
       "stats.events.description": "Total events",
       "stats.events.badge": "Active",
-      
+
       // Leaderboard Section
       "leaderboard.badge": "Live Rankings",
       "leaderboard.title": "Current Leaders",
-      "leaderboard.subtitle": "Top performers across all categories, updated in real-time",
+      "leaderboard.subtitle": "Check out the top competitors across members and departments. Updated in real-time!",
       "leaderboard.topMembers": "Top Members",
       "leaderboard.topDepartments": "Top Departments",
       "leaderboard.viewAll": "View All",
@@ -36,20 +36,23 @@ export const resources = {
       "leaderboard.points": "Points",
       "leaderboard.viewDetails": "View Details",
       "leaderboard.details": "Details",
-      
+      "leaderboard.noMembersData": "No members data available",
+      "leaderboard.noSpecializedDeptsData": "No specialized departments data available",
+      "leaderboard.noAdministrativeDeptsData": "No administrative departments data available",
+
       // Footer CTA
       "footer.title": "Ready to Climb the Ranks?",
       "footer.subtitle": "Join events, earn points, and see your name rise on the leaderboard",
       "footer.button": "View Upcoming Events",
-      
+
       // Events Section
       "events.badge": "Open Events",
       "events.title": "Join Our Events",
-      "events.subtitle": "Participate in exciting events and earn points to climb the leaderboard",
+      "events.subtitle": "Experience the excitement: Join, earn points, and lead the board!",
       "events.loading": "Loading events...",
-      "events.empty": "No open events at the moment",
+      "events.empty": "No events are currently available, but stay tuned — we have plenty on the way! 😉",
       "events.viewAll": "View All Events",
-      
+
       // Navigation
       "nav.home": "Home",
       "nav.members": "Members",
@@ -57,8 +60,8 @@ export const resources = {
       "nav.events": "Events",
       "nav.magazines": "Magazines",
       "nav.structure": "Structure",
-      "nav.howItWorks": "How It Works",
-      
+      "nav.howItWorks": "Points System",
+
       // Members Page
       "members.backButton": "Back to Dashboard",
       "members.heading": "Members Leaderboard",
@@ -73,7 +76,7 @@ export const resources = {
       "members.noResults": "No members found matching",
       "members.clearSearch": "Clear Search",
       "members.noMembers": "No members available",
-      
+
       // Events Page
       "events.heading": "Events",
       "events.subHeading": "Discover upcoming events, sign up for open registrations, and explore past events",
@@ -81,7 +84,9 @@ export const resources = {
       "events.pastEvents": "Past Events",
       "events.noOpenEvents": "There are currently no events available for signups. Check back soon!",
       "events.noPastEvents": "Past events will appear here once they are completed.",
-      
+      "events.SearchEvents": "Search events...",
+      "events.noResults": "No events match your search.",
+
       // Departments Page
       "departments.backButton": "Back to Dashboard",
       "departments.heading": "Departments Leaderboard",
@@ -90,7 +95,7 @@ export const resources = {
       "departments.administrativeDesc": "Support and management teams",
       "departments.specialized": "Specialized Departments",
       "departments.specializedDesc": "Hands-on and technical teams",
-      
+
       // Magazines Page
       "magazines.backButton": "Back to Dashboard",
       "magazines.heading": "GDG Magazines",
@@ -98,13 +103,17 @@ export const resources = {
       "magazines.noMagazines.desc": "Check back soon for new magazine releases featuring the latest in technology and development.",
       "magazines.pages": "pages",
       "magazines.readPDF": "Read PDF",
-      
+      "magazines.reader.backToMagazines": "Back to Magazines",
+      "magazines.reader.title": "Magazine Reader",
+      "magazines.reader.loading": "Loading reader...",
+      "magazines.reader.notFound": "Magazine not found",
+
       // Magazines Section (Home)
       "magazines.section.title": "Latest Magazines",
       "magazines.section.subtitle": "Explore our latest publications and stay updated with the community",
       "magazines.section.viewAll": "View All",
       "magazines.section.empty": "No magazines available yet",
-      
+
       // Club Structure Section
       "clubStructure.title": "Our Club Structure",
       "clubStructure.subtitle": "Meet our leadership team and explore the departments driving our community",
@@ -116,7 +125,7 @@ export const resources = {
       "clubStructure.specialized": "Specialized",
       "clubStructure.administrative": "Administrative",
       "clubStructure.viewFullStructure": "View Full Structure",
-      
+
       // Club Structure Page
       "clubStructurePage.title": "Club Structure",
       "clubStructurePage.subtitle": "Learn about the organizational structure of the Google Developers Club and its different departments",
@@ -147,7 +156,7 @@ export const resources = {
       "clubStructurePage.programsShort": "Events Management",
       "clubStructurePage.boardDirectors": "Board of Directors",
       "clubStructurePage.innovation": "Innovation Department",
-      
+
       // Auth
       "auth.login": "Log In",
       "auth.signup": "Sign Up",
@@ -155,11 +164,11 @@ export const resources = {
       "auth.signupAria": "Create a new account",
       "auth.signIn": "Sign In",
       "auth.cancel": "Cancel",
-      
+
       // Auth Required Dialog
       "authDialog.defaultTitle": "Sign In Required",
       "authDialog.defaultDescription": "You need to sign in or create an account to continue.",
-      
+
       // Event Signup
       "eventSignup.signUp": "Sign Up",
       "eventSignup.signedUp": "Signed Up",
@@ -174,11 +183,11 @@ export const resources = {
       "eventSignup.confirmAndFillForm": "Confirm Sign Up and Fill Form",
       "eventSignup.confirm": "Confirm Sign Up",
       "eventSignup.successToast": "Successfully signed up for",
-      
+
       // Event Card
       "eventCard.viewEvent": "View Event",
       "eventCard.viewDetails": "View Details",
-      
+
       // Attendance Page
       "attendance.processing": "Processing...",
       "attendance.markingAttendance": "Marking attendance...",
@@ -195,7 +204,7 @@ export const resources = {
       "attendance.connectionError": "Failed to connect to the server. Please check your internet connection and try again.",
       "attendance.dialog.title": "Sign In Required",
       "attendance.dialog.description": "You need to sign in or create an account to mark your attendance.",
-      
+
       // Event Detail Page
       "eventDetail.backToEvents": "Back to Events",
       "eventDetail.status.open": "Open",
@@ -210,7 +219,7 @@ export const resources = {
       "eventDetail.description": "Description",
       "eventDetail.noDescription": "No description provided for this event.",
       "eventDetail.noImage": "No event image",
-      
+
       // Member Detail Page
       "memberDetail.backToMembers": "Back to Members",
       "memberDetail.memberProfile": "Member Profile",
@@ -290,6 +299,9 @@ export const resources = {
       "leaderboard.points": "نقاط",
       "leaderboard.viewDetails": "التفاصيل",
       "leaderboard.details": "التفاصيل",
+      "leaderboard.noMembersData": "ما فيه بيانات للأعضاء",
+      "leaderboard.noSpecializedDeptsData": "ما فيه بيانات للأقسام التخصصية",
+      "leaderboard.noAdministrativeDeptsData": "ما فيه بيانات للأقسام الإدارية",
 
       // Events Section
       "events.badge": "فعاليات مفتوحة",
@@ -312,7 +324,7 @@ export const resources = {
       "footer.title": "جاهز تتصدر؟",
       "footer.subtitle": "شارك في الفعاليات، اجمع النقاط، وخلك دايم في القمة!",
       "footer.button": "شوف الفعاليات الجاية",
-      
+
       // Members Page
       "members.backButton": "العودة للوحة التحكم",
       "members.heading": "قائمة الأعضاء",
@@ -326,7 +338,7 @@ export const resources = {
       "members.noResults": "ما لقينا أعضاء يطابقون",
       "members.clearSearch": "امسح البحث",
       "members.noMembers": "ما فيه أعضاء متاحين",
-      
+
       // Events Page
       "events.heading": "الفعاليات",
       "events.subHeading": "اكتشف الفعاليات القادمة، سجل في الفعاليات المفتوحة، واستكشف الفعاليات السابقة",
@@ -334,7 +346,9 @@ export const resources = {
       "events.pastEvents": "الفعاليات السابقة",
       "events.noOpenEvents": "ما فيه فعاليات متاحة للتسجيل حالياً. ارجع بعدين!",
       "events.noPastEvents": "الفعاليات السابقة راح تظهر هنا بعد ما تنتهي.",
-      
+      "events.SearchEvents": "ابحث عن فعالية...",
+      "events.noResults": "ما لقينا الفعالية اللي تبحث عنها",
+
       // Departments Page
       "departments.backButton": "العودة للوحة التحكم",
       "departments.heading": "قائمة الأقسام",
@@ -343,7 +357,7 @@ export const resources = {
       "departments.administrativeDesc": "فرق الدعم والإدارة",
       "departments.specialized": "الأقسام التخصصية",
       "departments.specializedDesc": "الفرق العملية والتقنية",
-      
+
       // Magazines Page
       "magazines.backButton": "العودة للوحة التحكم",
       "magazines.heading": "مجلات GDG",
@@ -351,7 +365,11 @@ export const resources = {
       "magazines.noMagazines.desc": "ارجع بعدين لإصدارات المجلات الجديدة اللي تحتوي على آخر التقنيات والتطوير.",
       "magazines.pages": "صفحة",
       "magazines.readPDF": "اقرأ PDF",
-      
+      "magazines.reader.backToMagazines": "العودة للمجلات",
+      "magazines.reader.title": "قارئ المجلات",
+      "magazines.reader.loading": "جاري تحميل القارئ...",
+      "magazines.reader.notFound": "المجلة غير موجودة",
+
       // Magazines Section (Home)
       "magazines.section.title": "آخر المجلات",
       "magazines.section.subtitle": "اطلع على آخر إصداراتنا وخلك متابع مع المجتمع",
@@ -369,7 +387,7 @@ export const resources = {
       "clubStructure.specialized": "تخصصية",
       "clubStructure.administrative": "إدارية",
       "clubStructure.viewFullStructure": "شوف الهيكل الكامل",
-      
+
       // Club Structure Page
       "clubStructurePage.title": "هيكلة المجموعة",
       "clubStructurePage.subtitle": "تعرف على الهيكل التنظيمي لنادي مطوري قوقل والأقسام المختلفة",
@@ -408,11 +426,11 @@ export const resources = {
       "auth.signupAria": "أنشئ حساب جديد",
       "auth.signIn": "سجل دخول",
       "auth.cancel": "إلغاء",
-      
+
       // Auth Required Dialog
       "authDialog.defaultTitle": "تسجيل الدخول مطلوب",
       "authDialog.defaultDescription": "لازم تسجل دخول أو تسوي حساب عشان تكمل.",
-      
+
       // Event Signup
       "eventSignup.signUp": "سجل في الفعالية",
       "eventSignup.signedUp": "مسجل",
@@ -427,7 +445,7 @@ export const resources = {
       "eventSignup.confirmAndFillForm": "أكد التسجيل وعبي النموذج",
       "eventSignup.confirm": "أكد التسجيل",
       "eventSignup.successToast": "تم تسجيلك بنجاح في",
-      
+
       // Event Card
       "eventCard.viewEvent": "التفاصيل",
       "eventCard.viewDetails": " التفاصيل",

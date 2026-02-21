@@ -33,7 +33,7 @@ export function MagazinesSection() {
                 <span className="wrap-break-word leading-tight">{t('magazines.section.title')}</span>
               </CardTitle>
               <Link href="/magazines">
-                <Button variant="outline" size="default" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0">
+                <Button variant="outline" size="default" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                   {t('magazines.section.viewAll')}
                   <MoveRight className="h-3 w-3 sm:h-4 sm:w-4 ms-1.5 rtl:rotate-180" />
                 </Button>

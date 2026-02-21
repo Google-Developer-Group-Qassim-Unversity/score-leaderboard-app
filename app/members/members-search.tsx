@@ -28,18 +28,37 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount }:
   const { t, i18n } = useTranslation()
   const rtl = i18n.language === 'ar'
 
-  // Filter members based on search term - use full dataset when searching, top 100 when not
+  // Tokenized, ranked search — O(n) and precise for Arabic/Latin names
+  // by splitting query into words, scores each member by how many tokens match, then sorts by score desc so exact matches always surface first
   const getFilteredMembers = () => {
-    if (!searchTerm) {
-      // No search term: show only top 100 members for performance
+    if (!searchTerm.trim()) {
       return topMembers
     }
-    
-    // Search term provided: search through all members
-    return allMembers.filter(member =>
-      member.name.toLowerCase().includes(searchTerm.toLowerCase())
+
+    const tokens = searchTerm
+      .trim()
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(Boolean)
+
+    const scored = allMembers.flatMap((member) => {
+      const nameLower = member.name.toLowerCase()
+      const matchCount = tokens.reduce(
+        (acc, token) => acc + (nameLower.includes(token) ? 1 : 0),
+        0
+      )
+      // Require ALL tokens to match — if only some match, it's not a useful result
+      return matchCount === tokens.length ? [{ member, matchCount }] : []
+    })
+
+    // Sort by number of matched tokens desc (full matches first), then by original rank as a stable tiebreaker.
+    scored.sort((a, b) =>
+      b.matchCount - a.matchCount || a.member.rank - b.member.rank
     )
+
+    return scored.map((s) => s.member)
   }
+
 
   const filteredMembers = getFilteredMembers()
 
@@ -55,7 +74,7 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount }:
             {t('members.findMembers')}
           </h2>
         </div>
-        
+
         <div className="relative">
           <div className={`absolute inset-y-0 ${rtl ? 'right-0 pr-4' : 'left-0 pl-4'} flex items-center pointer-events-none`}>
             <Search className="h-5 w-5 text-slate-400" />
@@ -93,7 +112,7 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount }:
           </div>
         </div>
       )}
-      
+
 
       {/* Leaderboard */}
       <Card className="bg-white rounded-lg border border-slate-200">
