@@ -322,13 +322,6 @@ export function Footer() {
         <div className="pt-8 border-t">
           <div className="flex flex-col items-center justify-center gap-3 text-center">
             <span className="text-sm text-muted-foreground">{t('footer.copyright')}</span>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-              </span>
-              <span>{t('footer.lastUpdated')}: Jan 27, 2026</span>
-            </div>
           </div>
         </div>
       </div>

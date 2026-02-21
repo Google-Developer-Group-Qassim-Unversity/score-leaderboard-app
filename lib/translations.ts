@@ -199,7 +199,6 @@ export const resources = {
       // Event Detail Page
       "eventDetail.backToEvents": "Back to Events",
       "eventDetail.status.open": "Open",
-      "eventDetail.status.openToJoin": "Open to Join",
       "eventDetail.status.active": "Active",
       "eventDetail.status.closed": "Closed",
       "eventDetail.locationType.online": "Online Event",
@@ -247,7 +246,6 @@ export const resources = {
       "footer.social.email": "Contact Us",
       "footer.social.gdgSite": "Official GDG Site",
       "footer.copyright": "© GDG-Q 2026",
-      "footer.lastUpdated": "Last updated",
 
       // Feedback
       "feedback.card.title": "Your Feedback Matters",
@@ -430,7 +428,7 @@ export const resources = {
       "eventSignup.successToast": "تم تسجيلك بنجاح في",
       
       // Event Card
-      "eventCard.viewEvent": "التفاصيل",
+      "eventCard.viewEvent": "اعرف الفعالية",
       "eventCard.viewDetails": " التفاصيل",
 
       // Attendance Page
@@ -453,7 +451,6 @@ export const resources = {
       // Event Detail Page
       "eventDetail.backToEvents": "العودة للفعاليات",
       "eventDetail.status.open": "مفتوح للتسجيل",
-      "eventDetail.status.openToJoin": "مفتوح للدخول",
       "eventDetail.status.active": "جاري",
       "eventDetail.status.closed": "منتهي",
       "eventDetail.locationType.online": "فعالية أونلاين",
@@ -501,7 +498,6 @@ export const resources = {
       "footer.social.email": "تواصل معنا",
       "footer.social.gdgSite": "موقع GDG الرسمي",
       "footer.copyright": "© GDG-Q 2026",
-      "footer.lastUpdated": "آخر تحديث",
 
       // Feedback
       "feedback.card.title": "رأيك يهمنا",
