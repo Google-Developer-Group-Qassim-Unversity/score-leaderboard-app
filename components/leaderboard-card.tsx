@@ -93,7 +93,7 @@ export function LeaderboardCard({ id, name, rank, points, type }: LeaderboardCar
           <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5">{t('leaderboard.points')}</p>
         </div>
         <Link href={detailsUrl}>
-          <Button variant="outline" size="sm" className="bg-white hover:bg-slate-50 border-slate-200 text-slate-600 text-sm px-3 py-2 h-9 sm:h-10">
+          <Button variant="outline" size="sm" className="bg-white hover:bg-slate-50 border-slate-200 text-slate-600 text-sm px-3 py-2 h-9 sm:h-10 cursor-pointer">
             <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
             <span className="hidden sm:inline ms-1.5">{t('leaderboard.details')}</span>
           </Button>

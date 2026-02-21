@@ -232,7 +232,7 @@ export default function ClubStructurePage() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
               {/* Presidents & Vice President Section */}
               <Card className="bg-white border border-slate-200 rounded-lg shadow-sm">
                 <CardHeader className="pb-4">

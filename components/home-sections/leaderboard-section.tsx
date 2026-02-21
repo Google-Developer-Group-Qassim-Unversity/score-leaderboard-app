@@ -9,6 +9,7 @@ import { fetchMembers, fetchDepartments } from "@/lib/api"
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
 import type { ApiMemberPoints, ApiDepartmentPoints } from "@/lib/api-types"
 
+
 export async function LeaderboardSection() {
   const lang = await getLanguageFromCookies()
   const t = (key: string) => getTranslation(lang, key)
@@ -52,7 +53,7 @@ export async function LeaderboardSection() {
                   <span className="break-words leading-tight">{t('leaderboard.topMembers')}</span>
                 </CardTitle>
                 <Link href="/members">
-                  <Button variant="outline" size="default" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0">
+                  <Button variant="outline" size="default" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                     {t('leaderboard.viewAll')}
                     <MoveRight className="h-3 w-3 sm:h-4 sm:w-4 ms-1.5 rtl:rotate-180" />
                   </Button>
@@ -70,7 +71,7 @@ export async function LeaderboardSection() {
                         </div>
                       ))
                     ) : (
-                      <p className="text-slate-500 text-sm text-center py-4">No members data available</p>
+                      <p className="text-slate-500 text-sm text-center py-4">{t('leaderboard.noMembersData')}</p>
                     )}
                   </div>
                 </div>
@@ -91,7 +92,7 @@ export async function LeaderboardSection() {
                   <span className="wrap-break-word leading-tight">{t('leaderboard.topDepartments')}</span>
                 </CardTitle>
                 <Link href="/departments">
-                  <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0">
+                  <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                     {t('leaderboard.viewAll')}
                     <MoveRight className="h-3 w-3 sm:h-4 sm:w-4 ms-1.5 rtl:rotate-180" />
                   </Button>
@@ -112,7 +113,7 @@ export async function LeaderboardSection() {
                         </div>
                       ))
                     ) : (
-                      <p className="text-slate-500 text-sm text-center py-4">No specialized departments data available</p>
+                      <p className="text-slate-500 text-sm text-center py-4">{t('leaderboard.noSpecializedDeptsData')}</p>
                     )}
                   </div>
                 </div>
@@ -128,7 +129,7 @@ export async function LeaderboardSection() {
                         </div>
                       ))
                     ) : (
-                      <p className="text-slate-500 text-sm text-center py-4">No administrative departments data available</p>
+                      <p className="text-slate-500 text-sm text-center py-4">{t('leaderboard.noAdministrativeDeptsData')}</p>
                     )}
                   </div>
                 </div>

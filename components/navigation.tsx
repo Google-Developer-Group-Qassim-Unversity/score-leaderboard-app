@@ -136,7 +136,7 @@ export function Navigation() {
             onClick={toggleLanguage}
             variant="ghost"
             size="sm"
-            className="hidden md:flex text-foreground/70 hover:text-foreground hover:bg-accent"
+            className="hidden md:flex text-foreground/70 hover:text-foreground hover:bg-accent cursor-pointer"
           >
             <Globe className="w-4 h-4" />
             <span className="hidden sm:inline ml-2 text-sm font-medium">

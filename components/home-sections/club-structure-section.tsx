@@ -59,7 +59,7 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                   <Button
                     size="sm"
                     variant="outline"
-                    className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0"
+                    className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer"
                   >
                     {t("clubStructure.viewFullStructure")}
                     <MoveRight className="h-5 w-5 ms-2 rtl:rotate-180" />

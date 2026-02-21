@@ -63,7 +63,7 @@ export function EventCard({ event, hideSignup = false }: EventCardProps) {
         ) : (
           <>
             <Link href={`/events/${event.id}`} className={hideSignup ? "w-full" : "flex-1"}>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full cursor-pointer">
                 {t('eventCard.viewDetails')}
               </Button>
             </Link>
