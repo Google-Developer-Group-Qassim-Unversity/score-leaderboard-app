@@ -61,6 +61,9 @@ export const resources = {
       "nav.magazines": "Magazines",
       "nav.structure": "Structure",
       "nav.howItWorks": "Points System",
+      "nav.language": "Language",
+      "nav.english": "English",
+      "nav.arabic": "Arabic",
 
       // Members Page
       "members.backButton": "Back to Dashboard",
@@ -163,6 +166,7 @@ export const resources = {
       "auth.loginAria": "Sign in to your account",
       "auth.signupAria": "Create a new account",
       "auth.signIn": "Sign In",
+      "auth.joinUs": "Join Us",
       "auth.cancel": "Cancel",
 
       // Auth Required Dialog
@@ -319,6 +323,9 @@ export const resources = {
       "nav.magazines": "المجلات",
       "nav.structure": "الهيكلة",
       "nav.howItWorks": "نظام النقاط",
+      "nav.language": "اللغة",
+      "nav.english": "الإنجليزية",
+      "nav.arabic": "العربية",
 
       // Footer CTA
       "footer.title": "جاهز تتصدر؟",
@@ -425,6 +432,7 @@ export const resources = {
       "auth.loginAria": "سجل دخول لحسابك",
       "auth.signupAria": "أنشئ حساب جديد",
       "auth.signIn": "سجل دخول",
+      "auth.joinUs": "انضم إلينا",
       "auth.cancel": "إلغاء",
 
       // Auth Required Dialog

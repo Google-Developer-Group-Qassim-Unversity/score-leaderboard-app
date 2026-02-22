@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useTranslation } from 'react-i18next'
 import '../lib/i18n-client'
 import {
@@ -37,25 +37,25 @@ const navItems = [
 function NavLink({ href, labelKey, icon: Icon, isActive }: { href: string; labelKey: string; icon: LucideIcon; isActive: boolean }) {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-  
+
   return (
     <Link
       href={href}
       className={cn(
-        "flex items-center gap-2 px-3 py-2 rounded-md font-semibold transition-colors",
+        "flex items-center gap-1.5 px-2 lg:px-3 py-2 rounded-md font-semibold transition-colors",
         isRTL && "flex-row-reverse",
         isActive ? "bg-foreground text-background" : "text-foreground/70 hover:text-foreground hover:bg-accent"
       )}
     >
-      <Icon className="h-4 w-4" strokeWidth={2.5} />
-      <span className="hidden lg:inline text-sm">{t(labelKey)}</span>
+      <Icon className="h-4 w-4 shrink-0" strokeWidth={2.5} />
+      <span className="text-[13px] whitespace-nowrap">{t(labelKey)}</span>
     </Link>
   )
 }
 
 function MobileNavLink({ href, labelKey, icon: Icon, isActive, onClick }: { href: string; labelKey: string; icon: LucideIcon; isActive: boolean; onClick: () => void }) {
   const { t } = useTranslation();
-  
+
   return (
     <Link
       href={href}
@@ -85,6 +85,19 @@ export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const { i18n } = useTranslation()
   const [currentLang, setCurrentLang] = useState<'en' | 'ar'>('ar')
+  const [isLangOpen, setIsLangOpen] = useState(false)
+  const langMenuRef = useRef<HTMLDivElement>(null)
+
+  // Handle click outside to close language menu
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
+        setIsLangOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   // Sync with cookie on mount
   useEffect(() => {
@@ -95,19 +108,19 @@ export function Navigation() {
       i18n.changeLanguage(cookieLang);
     }
   }, [i18n]);
-  
-  const toggleLanguage = () => {
-    const newLang = currentLang === 'en' ? 'ar' : 'en';
-    
+
+  const handleLanguageChange = (newLang: 'en' | 'ar') => {
+    if (newLang === currentLang) return;
+
     // Set cookie with 1 year expiry
     document.cookie = `lang=${newLang}; path=/; max-age=31536000; SameSite=Lax`;
-    
+
     // Update i18n for client components
     i18n.changeLanguage(newLang);
-    
+
     // Refresh the page to trigger SSR with new language
     router.refresh();
-    
+
     // Force a full page reload to ensure SSR picks up the new cookie
     window.location.reload();
   };
@@ -123,7 +136,7 @@ export function Navigation() {
         </Link>
 
         {/* Desktop & Tablet Navigation - hidden on mobile */}
-        <div className="hidden md:flex items-center gap-1 flex-1 justify-center">
+        <div className="hidden md:flex items-center gap-0.5 lg:gap-1 flex-1 justify-center">
           {navItems.map((item) => (
             <NavLink key={item.href} {...item} isActive={pathname === item.href} />
           ))}
@@ -132,20 +145,43 @@ export function Navigation() {
         {/* Auth Button, Language Switcher & Mobile Menu */}
         <div className="flex items-center gap-2">
           {/* Language Switcher - Hidden on mobile */}
-          <Button
-            onClick={toggleLanguage}
-            variant="ghost"
-            size="sm"
-            className="hidden md:flex text-foreground/70 hover:text-foreground hover:bg-accent cursor-pointer"
-          >
-            <Globe className="w-4 h-4" />
-            <span className="hidden sm:inline ml-2 text-sm font-medium">
-              {currentLang === 'en' ? 'عربي' : 'EN'}
-            </span>
-          </Button>
-          
+          <div className="relative hidden md:block" ref={langMenuRef}>
+            <Button
+              onClick={() => setIsLangOpen(!isLangOpen)}
+              variant="ghost"
+              size="icon"
+              className="text-foreground/70 hover:text-foreground hover:bg-accent cursor-pointer"
+            >
+              <Globe className="w-4 h-4" />
+              <span className="sr-only">Toggle language</span>
+            </Button>
+
+            {isLangOpen && (
+              <div className="absolute right-0 top-full mt-1 w-32 rounded-md border bg-popover p-1 text-popover-foreground shadow-md z-[100]">
+                <button
+                  onClick={() => {
+                    handleLanguageChange('en');
+                    setIsLangOpen(false);
+                  }}
+                  className="w-full flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                >
+                  English
+                </button>
+                <button
+                  onClick={() => {
+                    handleLanguageChange('ar');
+                    setIsLangOpen(false);
+                  }}
+                  className="w-full flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                >
+                  العربية
+                </button>
+              </div>
+            )}
+          </div>
+
           <AuthButton />
-          
+
           {/* Mobile Menu - visible only on mobile */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
@@ -177,21 +213,30 @@ export function Navigation() {
                       <MobileNavLink key={item.href} {...item} isActive={pathname === item.href} onClick={() => setIsOpen(false)} />
                     ))}
                   </div>
-                  
+
                   {/* Language Switcher in Mobile Menu */}
-                  <div className="mt-4 px-3">
-                    <Button
-                      onClick={toggleLanguage}
-                      variant="outline"
-                      className="w-full justify-start gap-3 py-3"
-                    >
-                      <Globe className="w-5 h-5" />
-                      <span className="font-semibold text-base">
-                        {currentLang === 'en' ? 'العربية' : 'English'}
-                      </span>
-                    </Button>
+                  <div className="mt-4 px-3 flex flex-col gap-2">
+                    <p className="text-xs font-semibold text-foreground/50 px-3 uppercase tracking-wider">
+                      {i18n.language === 'ar' ? 'اللغة' : 'Language'}
+                    </p>
+                    <div className="flex flex-col gap-1">
+                      <Button
+                        onClick={() => handleLanguageChange('en')}
+                        variant={currentLang === 'en' ? "secondary" : "ghost"}
+                        className="w-full justify-start gap-3 py-3 h-auto"
+                      >
+                        <span className="font-medium">English</span>
+                      </Button>
+                      <Button
+                        onClick={() => handleLanguageChange('ar')}
+                        variant={currentLang === 'ar' ? "secondary" : "ghost"}
+                        className="w-full justify-start gap-3 py-3 h-auto"
+                      >
+                        <span className="font-medium">العربية</span>
+                      </Button>
+                    </div>
                   </div>
-                  
+
                   {/* Auth Section in Mobile Menu */}
                   <div className="mt-4 px-3 pt-4 border-t">
                     <AuthButtonMobile />

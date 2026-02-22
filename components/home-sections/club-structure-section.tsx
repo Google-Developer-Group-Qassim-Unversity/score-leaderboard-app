@@ -44,52 +44,6 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
       <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-300 max-w-6xl mx-auto mb-8">
         <CardContent className="p-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* LEFT: Leadership */}
-            <div className="space-y-6">
-              {/* Header */}
-              <div className="flex items-center gap-3 pb-4 border-b border-slate-200">
-                <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shadow-md shrink-0">
-                  <Crown className="h-4 w-4 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-slate-900">
-                  {t('clubStructure.leadership')}
-                </h3>
-
-                <Link href="/club-structure" className="sm:shrink-0">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer"
-                  >
-                    {t("clubStructure.viewFullStructure")}
-                    <MoveRight className="h-5 w-5 ms-2 rtl:rotate-180" />
-                  </Button>
-                </Link>
-              </div>
-
-              {/* Leadership Info */}
-              <div className="space-y-4">
-                {/* Presidents */}
-                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
-                  <p className="text-sm text-slate-600 mb-2 font-medium">
-                    {t('clubStructure.presidents')}
-                  </p>
-                  <div className="space-y-1">
-                    <p className="text-slate-900 font-semibold">عزام خالد الخضيري</p>
-                    <p className="text-slate-900 font-semibold">جود سعود الفرم</p>
-                  </div>
-                </div>
-
-                {/* Vice President */}
-                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
-                  <p className="text-sm text-slate-600 mb-2 font-medium">
-                    {t('clubStructure.vicePresident')}
-                  </p>
-                  <p className="text-slate-900 font-semibold">أحمد الحربي</p>
-                </div>
-              </div>
-            </div>
-
             {/* RIGHT: Departments */}
             <div className="space-y-6 lg:border-l lg:border-slate-200 lg:pl-8">
               {/* Header */}
@@ -139,6 +93,53 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                       <span className="text-xs text-center text-slate-700 font-medium">{dept.name}</span>
                     </Link>
                   ))}
+                </div>
+              </div>
+            </div>
+
+                        {/* LEFT: Leadership */}
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shadow-md shrink-0">
+                    <Crown className="h-4 w-4 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900">
+                    {t('clubStructure.leadership')}
+                  </h3>
+                </div>
+                <Link href="/club-structure" className="sm:shrink-0">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer"
+                  >
+                    {t("clubStructure.viewFullStructure")}
+                    <MoveRight className="h-5 w-5 ms-2 rtl:rotate-180" />
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Leadership Info */}
+              <div className="space-y-4">
+                {/* Presidents */}
+                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
+                  <p className="text-sm text-slate-600 mb-2 font-medium">
+                    {t('clubStructure.presidents')}
+                  </p>
+                  <div className="space-y-1">
+                    <p className="text-slate-900 font-semibold">عزام خالد الخضيري</p>
+                    <p className="text-slate-900 font-semibold">جود سعود الفرم</p>
+                  </div>
+                </div>
+
+                {/* Vice President */}
+                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
+                  <p className="text-sm text-slate-600 mb-2 font-medium">
+                    {t('clubStructure.vicePresident')}
+                  </p>
+                  <p className="text-slate-900 font-semibold">أحمد الحربي</p>
                 </div>
               </div>
             </div>
