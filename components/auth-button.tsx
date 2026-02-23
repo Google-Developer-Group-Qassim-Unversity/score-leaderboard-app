@@ -3,10 +3,11 @@
 import { UserButton, useUser } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { LogIn, UserPlus } from "lucide-react"
+import { LogIn, UserPlus, User } from "lucide-react"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
 import { getFullCurrentUrl } from '@/lib/utils'
+import { ProfileForm } from '@/components/profile-form'
 
 export function AuthButton() {
   const { isLoaded, isSignedIn } = useUser()
@@ -30,7 +31,15 @@ export function AuthButton() {
             userButtonPopoverCard: isRTL ? "rtl" : "",
           },
         }}
-      />
+      >
+        <UserButton.UserProfilePage
+          label="GDG-Profile"
+          url="profile"
+          labelIcon={<User className="w-4 h-4" />}
+        >
+          <ProfileForm />
+        </UserButton.UserProfilePage>
+      </UserButton>
     )
   }
 
