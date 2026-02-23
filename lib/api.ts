@@ -264,3 +264,94 @@ export async function markAttendance(eventId: number, attendanceToken: string, a
   }
 }
 
+export interface CurrentMember {
+  id: number
+  name: string
+  email: string
+  phone_number: string | null
+  uni_id: string
+  gender: "Male" | "Female"
+  uni_level: number
+  uni_college: string
+  created_at: string | null
+  updated_at: string | null
+  is_authenticated: boolean | null
+}
+
+export interface UpdateMemberData {
+  name?: string
+  email?: string
+  phone_number?: string
+  gender?: "Male" | "Female"
+  uni_level?: number
+  uni_college?: string
+}
+
+export async function getCurrentMember(token: string): Promise<CurrentMember | null> {
+  try {
+    console.log("🔍 Fetching current member from API...")
+    const response = await fetch(`${API_BASE_URL}/members/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      next: { revalidate: 0 },
+    })
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.warn("⚠️ Current member not found")
+        return null
+      }
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data: CurrentMember = await response.json()
+    console.log(`✅ Successfully fetched current member (id: ${data.id})`)
+    return data
+
+  } catch (error) {
+    console.error("❌ Failed to fetch current member:", error)
+    return null
+  }
+}
+
+export async function updateCurrentMember(data: UpdateMemberData, token: string): Promise<CurrentMember | null> {
+  try {
+    const url = `${API_BASE_URL}/members/me`
+    console.log("🔍 Updating current member...")
+    console.log("📡 API URL:", url)
+    console.log("📦 Data:", data)
+    
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    })
+
+    console.log("📥 Response status:", response.status)
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error("❌ Error response:", errorText)
+      if (response.status === 404) {
+        console.warn("⚠️ Current member not found")
+        return null
+      }
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const updatedMember: CurrentMember = await response.json()
+    console.log(`✅ Successfully updated current member (id: ${updatedMember.id})`)
+    return updatedMember
+
+  } catch (error) {
+    console.error("❌ Failed to update current member:", error)
+    return null
+  }
+}
+

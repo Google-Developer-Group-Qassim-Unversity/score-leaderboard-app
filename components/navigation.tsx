@@ -87,7 +87,6 @@ export function Navigation() {
   const [currentLang, setCurrentLang] = useState<'en' | 'ar'>('ar')
   const [isLangOpen, setIsLangOpen] = useState(false)
   const langMenuRef = useRef<HTMLDivElement>(null)
-
   // Handle click outside to close language menu
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
