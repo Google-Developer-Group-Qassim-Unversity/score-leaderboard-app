@@ -480,6 +480,7 @@ export const resources = {
       "eventDetail.status.open": "مفتوح للتسجيل",
       "eventDetail.status.active": "جاري",
       "eventDetail.status.closed": "منتهي",
+      "eventDetail.status.openToJoin": "مفتوح للدخول",
       "eventDetail.locationType.online": "فعالية أونلاين",
       "eventDetail.locationType.onsite": "فعالية حضورية",
       "eventDetail.locationType.none": "بدون موقع",
