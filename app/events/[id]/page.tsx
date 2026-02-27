@@ -147,13 +147,14 @@ export default async function EventDetailPage({
   const dailyEndTime = formatTime(event.end_datetime);
 
   // Check if start and end are on the same day
-  const isSameDay =
-    new Date(event.start_datetime).toDateString() ===
-    new Date(event.end_datetime).toDateString();
-
-  // Calculate duration in days
+  // Also treat events < 24 hours as same day (handles midnight crossover)
   const start = new Date(event.start_datetime);
   const end = new Date(event.end_datetime);
+  const durationHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+  const isSameDay =
+    start.toDateString() === end.toDateString() || durationHours < 24;
+
+  // Calculate duration in days
   const startDateOnly = new Date(
     start.getFullYear(),
     start.getMonth(),
