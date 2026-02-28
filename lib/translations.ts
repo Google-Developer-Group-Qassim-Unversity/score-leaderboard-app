@@ -79,6 +79,7 @@ export const resources = {
       "members.noResults": "No members found matching",
       "members.clearSearch": "Clear Search",
       "members.noMembers": "No members available",
+      "members.viewYourRank": "View Your Rank",
 
       // Events Page
       "events.heading": "Events",
@@ -345,6 +346,7 @@ export const resources = {
       "members.noResults": "ما لقينا أعضاء يطابقون",
       "members.clearSearch": "امسح البحث",
       "members.noMembers": "ما فيه أعضاء متاحين",
+      "members.viewYourRank": "شوف ترتيبك",
 
       // Events Page
       "events.heading": "الفعاليات",
