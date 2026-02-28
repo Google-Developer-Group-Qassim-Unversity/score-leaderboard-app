@@ -8,6 +8,7 @@ export interface ApiMemberPoints {
   member_id: number
   member_name: string
   total_points: number | null
+  uni_id: string
 }
 
 export type ApiMembersPointsResponse = ApiMemberPoints[]
@@ -98,7 +99,7 @@ export type ApiDepartmentDetail = ApiDepartmentPointsHistory
 
 // ===== Events Types =====
 
-export type EventStatus = "draft" | "open" | "active" |"closed"
+export type EventStatus = "draft" | "open" | "active" | "closed"
 
 export interface ApiEventItem {
   id: number

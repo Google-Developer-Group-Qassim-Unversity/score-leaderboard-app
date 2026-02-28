@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Trophy, Users, Search, ArrowUp } from "lucide-react"
 import { LeaderboardCard } from "@/components/leaderboard-card"
+import { UserRankCard } from "@/components/user-rank-card"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
 
@@ -23,41 +24,64 @@ interface MembersSearchProps {
   allMembers: Member[]
   membersCount: number
   currentUniId?: string
+  currentUserName?: string
 }
 
-export function MembersSearch({ members: topMembers, allMembers, membersCount, currentUniId }: MembersSearchProps) {
+export function MembersSearch({ members: topMembers, allMembers, membersCount, currentUniId, currentUserName }: MembersSearchProps) {
   const [searchTerm, setSearchTerm] = useState("")
-  const [currentUserInView, setCurrentUserInView] = useState(true)
+
+  // Priority matching: Try uni_id first (most reliable), then name fallback
+  const currentUser = allMembers.find(m => {
+    const mUniId = String(m.uni_id || "").trim()
+    const cUniId = String(currentUniId || "").trim()
+    if (cUniId && mUniId && mUniId === cUniId) return true
+
+    if (!currentUserName || !m.name) return false;
+    return m.name.toLowerCase() === currentUserName.toLowerCase();
+  })
+
+  // Rank 48 logic: It's definitely NOT in view initially (usually only top 10 rows fit)
+  const isInitiallyInView = currentUser ? (currentUser.rank <= 10) : true
+  const [currentUserInView, setCurrentUserInView] = useState(isInitiallyInView)
+
   const { t, i18n } = useTranslation()
   const rtl = i18n.language === 'ar'
 
-  const currentUser = allMembers.find(m => m.uni_id === currentUniId)
   const observerRef = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
-    if (!currentUniId || searchTerm) {
+    // Hide floating card if searching
+    if (searchTerm) {
       setCurrentUserInView(true)
       return
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setCurrentUserInView(entry.isIntersecting)
-      },
-      { threshold: 0.1 }
-    )
+    // Small delay to ensure the row is rendered before observing
+    const timeoutId = setTimeout(() => {
+      if (!currentUser) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          setCurrentUserInView(entry.isIntersecting)
+        },
+        {
+          threshold: 0.5,
+          rootMargin: '-10px 0px'
+        }
+      )
 
-    const userRow = document.getElementById(`member-row-${currentUser?.id}`)
-    if (userRow) {
-      observer.observe(userRow)
-    }
+      const userRow = document.getElementById(`member-row-${currentUser.id}`)
+      if (userRow) {
+        observer.observe(userRow)
+      }
 
-    observerRef.current = observer
+      observerRef.current = observer
+    }, 100)
 
     return () => {
-      if (observer) observer.disconnect()
+      clearTimeout(timeoutId)
+      if (observerRef.current) observerRef.current.disconnect()
     }
-  }, [currentUniId, searchTerm, currentUser?.id])
+  }, [searchTerm, currentUser?.id])
 
   // Tokenized, ranked search — O(n) and precise for Arabic/Latin names
   // by splitting query into words, scores each member by how many tokens match, then sorts by score desc so exact matches always surface first
@@ -199,26 +223,12 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount, c
       </Card>
 
       {/* Floating Current User Card */}
-      {currentUser && !searchTerm && !currentUserInView && (
-        <div className="fixed bottom-6 left-0 right-0 z-50 px-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="container max-w-6xl mx-auto flex justify-center">
-            <div className="w-full max-w-4xl shadow-xl hover:shadow-2xl transition-all border-2 border-blue-400 rounded-xl overflow-hidden bg-white">
-              <div className="bg-blue-600 text-white text-[10px] font-bold py-0.5 px-3 flex items-center gap-1.5 justify-center">
-                <ArrowUp className="h-3 w-3" />
-                {t('members.viewYourRank')}
-              </div>
-              <div className="p-1">
-                <LeaderboardCard
-                  id={currentUser.id}
-                  name={currentUser.name}
-                  rank={currentUser.rank}
-                  points={currentUser.totalPoints}
-                  type="member"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+      {currentUser && (
+        <UserRankCard
+          user={currentUser}
+          isVisible={currentUserInView}
+          searchTerm={searchTerm}
+        />
       )}
     </>
   )

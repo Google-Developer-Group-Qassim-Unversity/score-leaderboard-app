@@ -13,8 +13,14 @@ export default async function MembersLeaderboard() {
   // TODO: needs to be checked if it affected the performance or no
   const user = await currentUser()
   const uniId = user?.publicMetadata?.uni_id as string | undefined
+  const fullArabicName = user?.publicMetadata?.fullArabicName as string | undefined
 
   const apiMembers = await fetchMembers()
+  const foundMember = apiMembers.find((m) => {
+    const sUniId = String(m.uni_id || "").trim()
+    const targetUniId = String(uniId || "").trim()
+    return sUniId && targetUniId && sUniId === targetUniId
+  })
 
   // Calculate count from array length
   const membersCount = apiMembers.length || 0
@@ -29,7 +35,8 @@ export default async function MembersLeaderboard() {
     name: m.member_name,
     rank: i + 1,
     totalPoints: m.total_points ?? 0,
-    departmentId: ""
+    departmentId: "",
+    uni_id: m.uni_id
   }))
 
   // Convert top 100 for initial display
@@ -39,7 +46,8 @@ export default async function MembersLeaderboard() {
     name: m.member_name,
     rank: i + 1,
     totalPoints: m.total_points ?? 0,
-    departmentId: ""
+    departmentId: "",
+    uni_id: m.uni_id
   }))
 
   return (
@@ -63,6 +71,7 @@ export default async function MembersLeaderboard() {
             allMembers={allMembersForSearch}
             membersCount={membersCount}
             currentUniId={uniId}
+            currentUserName={foundMember?.member_name || fullArabicName}
           />
         </div>
       </div>
