@@ -29,7 +29,7 @@ const getPodiumStyles = (rank: number, type: "member" | "department") => {
       badge: "bg-slate-400 text-white border-0",
     }
   }
-  
+
   // For members, use rank-based styling with solid colors
   switch (rank) {
     case 1:
@@ -71,34 +71,30 @@ export function LeaderboardCard({ id, name, rank, points, type }: LeaderboardCar
   const displayName = type === "member" ? getDisplayName(name) : name
 
   return (
-    <div
-      className={`flex items-center justify-between p-2.5 sm:p-3 rounded-lg transition-colors ${styles.container} w-full`}
+    <Link
+      href={detailsUrl}
+      className={`flex items-center justify-between p-2.5 sm:p-3 rounded-lg transition-all duration-200 ${styles.container} w-full hover:scale-[1.01] active:scale-[0.99] group cursor-pointer`}
+      id={`member-row-${id}`}
     >
       <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
         <Badge
           variant="default"
-          className={`w-8 h-8 sm:w-9 sm:h-9 rounded-md flex items-center justify-center font-bold text-xs sm:text-sm ${styles.badge} shrink-0`}
+          className={`w-8 h-8 sm:w-9 sm:h-9 rounded-md flex items-center justify-center font-bold text-xs sm:text-sm ${styles.badge} shrink-0 transition-transform group-hover:scale-110`}
         >
           {rank}
         </Badge>
-        <p className="font-semibold text-base sm:text-lg text-slate-800 truncate">
+        <p className="font-semibold text-base sm:text-lg text-slate-800 truncate group-hover:text-blue-600 transition-colors">
           {displayName}
         </p>
       </div>
       <div className="flex items-center gap-3 sm:gap-4 shrink-0">
         <div className="text-right">
-          <p className="font-bold text-base sm:text-lg leading-tight">
+          <p className="font-bold text-base sm:text-lg leading-tight group-hover:text-blue-600 transition-colors">
             {points}
           </p>
           <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5">{t('leaderboard.points')}</p>
         </div>
-        <Link href={detailsUrl}>
-          <Button variant="outline" size="sm" className="bg-white hover:bg-slate-50 border-slate-200 text-slate-600 text-sm px-3 py-2 h-9 sm:h-10 cursor-pointer">
-            <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
-            <span className="hidden sm:inline ms-1.5">{t('leaderboard.details')}</span>
-          </Button>
-        </Link>
       </div>
-    </div>
+    </Link>
   )
 }

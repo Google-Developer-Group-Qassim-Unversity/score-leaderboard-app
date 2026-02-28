@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Trophy, Users, Search } from "lucide-react"
+import { Trophy, Users, Search, ArrowUp } from "lucide-react"
 import { LeaderboardCard } from "@/components/leaderboard-card"
+import { UserRankCard } from "@/components/user-rank-card"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
 
@@ -15,18 +16,72 @@ interface Member {
   totalPoints: number
   rank: number
   departmentId: string
+  uni_id?: string // Add uni_id to the interface
 }
 
 interface MembersSearchProps {
   members: Member[]
   allMembers: Member[]
   membersCount: number
+  currentUniId?: string
+  currentUserName?: string
 }
 
-export function MembersSearch({ members: topMembers, allMembers, membersCount }: MembersSearchProps) {
+export function MembersSearch({ members: topMembers, allMembers, membersCount, currentUniId, currentUserName }: MembersSearchProps) {
   const [searchTerm, setSearchTerm] = useState("")
+
+  // Priority matching: Try uni_id first (most reliable), then name fallback
+  const currentUser = allMembers.find(m => {
+    const mUniId = String(m.uni_id || "").trim()
+    const cUniId = String(currentUniId || "").trim()
+    if (cUniId && mUniId && mUniId === cUniId) return true
+
+    if (!currentUserName || !m.name) return false;
+    return m.name.toLowerCase() === currentUserName.toLowerCase();
+  })
+
+  // Rank 48 logic: It's definitely NOT in view initially (usually only top 10 rows fit)
+  const isInitiallyInView = currentUser ? (currentUser.rank <= 10) : true
+  const [currentUserInView, setCurrentUserInView] = useState(isInitiallyInView)
+
   const { t, i18n } = useTranslation()
   const rtl = i18n.language === 'ar'
+
+  const observerRef = useRef<IntersectionObserver | null>(null)
+
+  useEffect(() => {
+    // Hide floating card if searching
+    if (searchTerm) {
+      setCurrentUserInView(true)
+      return
+    }
+
+    // Small delay to ensure the row is rendered before observing
+    const timeoutId = setTimeout(() => {
+      if (!currentUser) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          setCurrentUserInView(entry.isIntersecting)
+        },
+        {
+          threshold: 0.5,
+          rootMargin: '-10px 0px'
+        }
+      )
+
+      const userRow = document.getElementById(`member-row-${currentUser.id}`)
+      if (userRow) {
+        observer.observe(userRow)
+      }
+
+      observerRef.current = observer
+    }, 100)
+
+    return () => {
+      clearTimeout(timeoutId)
+      if (observerRef.current) observerRef.current.disconnect()
+    }
+  }, [searchTerm, currentUser?.id])
 
   // Tokenized, ranked search — O(n) and precise for Arabic/Latin names
   // by splitting query into words, scores each member by how many tokens match, then sorts by score desc so exact matches always surface first
@@ -166,6 +221,15 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount }:
           </CardContent>
         </div>
       </Card>
+
+      {/* Floating Current User Card */}
+      {currentUser && (
+        <UserRankCard
+          user={currentUser}
+          isVisible={currentUserInView}
+          searchTerm={searchTerm}
+        />
+      )}
     </>
   )
 }
