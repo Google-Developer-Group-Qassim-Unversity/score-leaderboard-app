@@ -60,7 +60,7 @@ function AttendanceContent() {
       try {
         const authToken = await getToken()
         
-        const response = await fetch(`${API_BASE_URL}/events/${eventId}/attend?token=${encodeURIComponent(token)}`, {
+        const response = await fetch(`${API_BASE_URL}/attendance/${eventId}?token=${encodeURIComponent(token)}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
