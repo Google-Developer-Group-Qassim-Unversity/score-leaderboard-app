@@ -237,7 +237,7 @@ export interface AttendanceResponse {
 export async function markAttendance(eventId: number, attendanceToken: string, authToken: string): Promise<AttendanceResponse> {
   try {
     console.log(`🔍 Marking attendance for event ${eventId}...`)
-    const response = await fetch(`${API_BASE_URL}/events/${eventId}/attend?token=${encodeURIComponent(attendanceToken)}`, {
+    const response = await fetch(`${API_BASE_URL}/attendance/${eventId}?token=${encodeURIComponent(attendanceToken)}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

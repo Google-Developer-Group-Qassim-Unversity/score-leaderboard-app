@@ -18,6 +18,7 @@ import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api-types";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n";
 import { EventSignupButton } from "@/components/event-signup-button";
+import { isSameDayOrOvernight, getEventDayCount, getEffectiveEndDate } from "@/lib/event-utils";
 
 export const dynamic = "force-dynamic";
 const IMAGE_SOURCE =
@@ -142,31 +143,14 @@ export default async function EventDetailPage({
   };
 
   const startDate = formatDate(event.start_datetime);
-  const endDate = formatDate(event.end_datetime);
-  const dailyStartTime = formatTime(event.start_datetime);
-  const dailyEndTime = formatTime(event.end_datetime);
-
-  // Check if start and end are on the same day
-  // Also treat events < 24 hours as same day (handles midnight crossover)
   const start = new Date(event.start_datetime);
   const end = new Date(event.end_datetime);
-  const durationHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
-  const isSameDay =
-    start.toDateString() === end.toDateString() || durationHours < 24;
-
-  // Calculate duration in days
-  const startDateOnly = new Date(
-    start.getFullYear(),
-    start.getMonth(),
-    start.getDate()
-  );
-  const endDateOnly = new Date(
-    end.getFullYear(),
-    end.getMonth(),
-    end.getDate()
-  );
-  const diffTime = Math.abs(endDateOnly.getTime() - startDateOnly.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  const isSameDay = isSameDayOrOvernight(start, end);
+  const effectiveEndDate = getEffectiveEndDate(start, end);
+  const endDate = isSameDay ? startDate : formatDate(effectiveEndDate.toISOString());
+  const diffDays = getEventDayCount(start, end);
+  const dailyStartTime = formatTime(event.start_datetime);
+  const dailyEndTime = formatTime(event.end_datetime);
 
   // Get translated status label
   const getStatusLabel = () => {
