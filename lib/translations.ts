@@ -265,6 +265,15 @@ export const resources = {
       // Feedback
       "feedback.card.title": "Your Feedback Matters",
 
+      // Not Found Pages
+      "notFound.pageTitle": "Page Not Found",
+      "notFound.pageDescription": "The page you're looking for doesn't exist or has been moved.",
+      "notFound.backHome": "Back to Home",
+      
+      "notFound.eventTitle": "Event Not Found",
+      "notFound.eventDescription": "The event you're looking for doesn't exist or may have been removed.",
+      "notFound.backToEvents": "Back to Events",
+
       // Common
       "version": "2.0"
     }
@@ -531,6 +540,15 @@ export const resources = {
 
       // Feedback
       "feedback.card.title": "رأيك يهمنا",
+
+      // Not Found Pages
+      "notFound.pageTitle": "الصفحة غير موجودة",
+      "notFound.pageDescription": "الصفحة اللي تدور عليها مو موجودة أو تم نقلها",
+      "notFound.backHome": "ارجع للرئيسية",
+      
+      "notFound.eventTitle": "الفعالية غير موجودة",
+      "notFound.eventDescription": "الفعالية اللي تدور عليها مو موجودة أو تم حذفها",
+      "notFound.backToEvents": "ارجع للفعاليات",
 
       // Common
       "version": "2.0"

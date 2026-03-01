@@ -1,36 +1,33 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { CalendarX, ChevronLeft } from "lucide-react"
+import { CalendarX } from "lucide-react"
+import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 
-export default function EventNotFound() {
+export default async function EventNotFound() {
+  const lang = await getLanguageFromCookies()
+  const t = (key: string) => getTranslation(lang, key)
+
   return (
-    <div className="container mx-auto px-4 py-16 max-w-2xl">
-      <div className="text-center">
-        <div className="flex justify-center mb-6">
-          <div className="bg-slate-100 rounded-full p-6">
-            <CalendarX className="h-16 w-16 text-slate-400" />
-          </div>
-        </div>
-        
-        <h1 className="text-4xl font-bold text-slate-900 mb-4">Event Not Found</h1>
-        <p className="text-lg text-slate-600 mb-8">
-          The event you're looking for doesn't exist or may have been removed.
-        </p>
-        
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <Empty className="max-w-md mx-auto border-2">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <CalendarX />
+          </EmptyMedia>
+          <EmptyTitle>{t("notFound.eventTitle")}</EmptyTitle>
+          <EmptyDescription>
+            {t("notFound.eventDescription")}
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
           <Link href="/events">
-            <Button size="lg" className="w-full sm:w-auto">
-              <ChevronLeft className="h-4 w-4 mr-2" />
-              Back to Events
+            <Button className="w-full">
+              {t("notFound.backToEvents")}
             </Button>
           </Link>
-          <Link href="/">
-            <Button size="lg" variant="outline" className="w-full sm:w-auto">
-              Go to Home
-            </Button>
-          </Link>
-        </div>
-      </div>
+        </EmptyContent>
+      </Empty>
     </div>
   )
 }
