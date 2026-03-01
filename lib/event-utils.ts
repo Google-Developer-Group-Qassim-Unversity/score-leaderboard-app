@@ -1,4 +1,26 @@
-import { differenceInDays, differenceInHours, format, isSameDay } from "date-fns"
+import { addDays, differenceInDays, differenceInHours, format, isSameDay as dateFnsIsSameDay } from "date-fns"
+
+export function isOvernightEvent(start: Date | undefined, end: Date | undefined): boolean {
+  if (!start || !end) return false;
+  if (dateFnsIsSameDay(start, end)) return false;
+  return differenceInHours(end, start) < 24;
+}
+
+export function isSameDayOrOvernight(start: Date | undefined, end: Date | undefined): boolean {
+  if (!start || !end) return true;
+  return dateFnsIsSameDay(start, end) || isOvernightEvent(start, end);
+}
+
+export function getEventDayCount(start: Date, end: Date): number {
+  const diffMs = end.getTime() - start.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  return Math.max(1, diffDays + 1);
+}
+
+export function getEffectiveEndDate(start: Date, end: Date): Date {
+  const dayCount = getEventDayCount(start, end);
+  return addDays(start, dayCount - 1);
+}
 
 export interface EventDuration {
   isSingleDay: boolean
@@ -20,10 +42,10 @@ export function calculateEventDuration(startDatetime: string, endDatetime: strin
   const startDate = new Date(startDatetime)
   const endDate = new Date(endDatetime)
   
-  const isSingleDay = isSameDay(startDate, endDate)
+  const isSingleDay = isSameDayOrOvernight(startDate, endDate)
   
-  // Calculate number of days (including partial days)
-  const numberOfDays = differenceInDays(endDate, startDate) + 1
+  const numberOfDays = getEventDayCount(startDate, endDate)
+  const effectiveEndDate = getEffectiveEndDate(startDate, endDate)
   
   // Calculate hours between start time and end time on a single day
   const startHour = startDate.getHours()
@@ -58,17 +80,16 @@ export function calculateEventDuration(startDatetime: string, endDatetime: strin
       fullDisplay = `${dateDisplay} • ${timeDisplay} (${minutes} minutes)`
     }
   } else {
-    // Multi-day event: "January 1 - 3, 2025"
     const startMonth = format(startDate, "MMMM")
-    const endMonth = format(endDate, "MMMM")
+    const endMonth = format(effectiveEndDate, "MMMM")
     const startDay = format(startDate, "dd")
-    const endDay = format(endDate, "dd")
-    const year = format(endDate, "yyyy")
+    const endDay = format(effectiveEndDate, "dd")
+    const year = format(effectiveEndDate, "yyyy")
     
     if (startMonth === endMonth) {
       dateDisplay = `${startMonth} ${startDay} - ${endDay}, ${year}`
     } else {
-      dateDisplay = `${format(startDate, "MMMM dd")} - ${format(endDate, "MMMM dd")}, ${year}`
+      dateDisplay = `${format(startDate, "MMMM dd")} - ${format(effectiveEndDate, "MMMM dd")}, ${year}`
     }
     
     timeDisplay = `${startTime} - ${endTime} daily`

@@ -3,6 +3,7 @@ import { ArrowLeft, Calendar, Award, TrendingUp, Users, BookOpen } from "lucide-
 import { fetchMemberById } from "@/lib/api"
 import { notFound } from "next/navigation"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
+import { isSameDayOrOvernight, getEffectiveEndDate } from "@/lib/event-utils"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -92,12 +93,13 @@ export default async function MemberDetailPage({ params }: PageProps) {
                               {(() => {
                                 const startDate = new Date(event.start_datetime)
                                 const endDate = new Date(event.end_datetime)
-                                const isSameDay = startDate.toDateString() === endDate.toDateString()
+                                const isSameDay = isSameDayOrOvernight(startDate, endDate)
+                                const effectiveEndDate = getEffectiveEndDate(startDate, endDate)
                                 
                                 if (isSameDay) {
                                   return startDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
                                 } else {
-                                  return `${startDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })} - ${endDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
+                                  return `${startDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })} - ${effectiveEndDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
                                 }
                               })()}
                             </p>
