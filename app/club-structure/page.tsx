@@ -38,8 +38,8 @@ export default function ClubStructurePage() {
       president: {
         title: t('clubStructurePage.presidents'),
         members: [
-          "عزام خالد الخضيري",
-          "جود سعود الفرم"
+          "عزام الخضيري",
+          "جود الفرم"
         ],
         vicePresident: "أحمد الحربي"
       },
@@ -65,23 +65,24 @@ export default function ClubStructurePage() {
         title: t('clubStructurePage.ai'),
         color: "red",
         icon: Lightbulb,
-        leader: "نادر علي الحربي",
-        vice: "لين عادل العقيل",
+        leader: "لين العقيل",
+        vice: "ديما الفريدي",
         members: [
-          "يزن طلال البيضاني",
-          "جود عبدالرحمن الحربي",
-          "كادي عبدالعزيز العنزي",
-          "ديما عبدالله الفريدي"
+          "يزن البيضاني",
+          "جود الحربي",
+          "كادي العنزي",
+          "صالح الحربي",
+          "سلمان العكروت"
         ]
       },
       {
         title: t('clubStructurePage.cybersecurity'),
         color: "green",
         icon: Shield,
-        leader: "اثير سالم الحربي",
+        leader: "اثير الحربي",
         vice: "عاصم العقيل",
         members: [
-          "وتين سليمان السكيتي",
+          "وتين السكيتي",
           "جود العنزي",
           "دانه الغريب",
           "احمد صلاح الدين"
@@ -91,27 +92,27 @@ export default function ClubStructurePage() {
         title: t('clubStructurePage.robotics'),
         color: "yellow",
         icon: Bot,
-        leader: "رغد عبدالله العبيد",
-        vice: "كيان صالح القفاري",
+        leader: "رغد العبيد",
+        vice: "كيان القفاري",
         members: [
-          "رهف علي الحربي",
-          "شاهر محمد الحربي",
-          "منار عبد العزيز النقيدان",
-          "مها عادل المطرفي",
-          "بدر الدخيل الله" // <-- new member
+          "رهف الحربي",
+          "شاهر الحربي",
+          "منار النقيدان",
+          "مها المطرفي",
+          "بدر الدخيل الله" 
         ]
       },
       {
         title: t('clubStructurePage.entrepreneurship'),
         color: "blue",
         icon: Trophy,
-        leader: "ساره مبارك الرشيدي",
-        vice: "جنا علي عبدالعزيز الجبعان",
+        leader: "ساره الرشيدي",
+        vice: "جنا الجبعان",
         members: [
-          "نسيبة عبدالله الرياعي",
+          "نسيبة الرياعي",
           "فجر الصويان",
-          "رغداء صالح الشبل",
-          "اينال عبدالعزيز الفهيد"
+          "رغداء الشبل",
+          "اينال الفهيد"
         ]
       },
       {
@@ -122,10 +123,10 @@ export default function ClubStructurePage() {
         vice: "بشار الحربي",
         members: [
           "يوسف الزهراني",
-          "غلا محمد الربيش",
-          "شمس عبدالله اللحيدان",
-          "عبدالرحمن خالد أسعد",
-          "خوله عبدالله السهلي"
+          "غلا الربيش",
+          "شمس اللحيدان",
+          "عبدالرحمن أسعد",
+          "خوله السهلي"
         ]
       }
     ],
@@ -135,19 +136,19 @@ export default function ClubStructurePage() {
         color: "blue",
         icon: Cog,
         leader: "Albrrak773",
-        vice: "إبراهيم سليمان السكيتي",
+        vice: "إبراهيم السكيتي",
         members: [
-          "علي حسين الصابر",
-          "أحمد سامح", // <-- new member
-          "عمر الادلبي", // <-- new member
-          "بسام الحبيب" // <-- new member
+          "علي الصابر",
+          "أحمد سامح", 
+          "عمر الادلبي", 
+          "بسام الحبيب" 
         ]
       },
       {
         title: t('clubStructurePage.programs'),
         color: "orange",
         icon: Calendar,
-        leader: "أروى فهد المرزوق",
+        leader: "أروى المرزوق",
         vice: "ريم الرشودي",
         members: [
           "لميس الراشد",
@@ -166,35 +167,35 @@ export default function ClubStructurePage() {
           "أميرة المطيري",
           "خولة البشري",
           "زياد العنزي",
-          "أسامة الحصيف" // <-- new member
+          "أسامة الحصيف" 
         ]
       },
       {
         title: t('clubStructurePage.design'),
         color: "green",
         icon: Palette,
-        leader: "لينة حماد المهيلب", // <-- changed
-        vice: "أمل عبدالله الرحيمي", // <-- changed
+        leader: "لينة المهيلب", 
+        vice: "أمل الرحيمي", 
         members: [
-          "أسماء حامد المطيري",
-          "ديالى محمد العمرو",
-          "بتول صالح الخليفة",
-          "أمل يوسف الدخيّل"
+          "أسماء المطيري",
+          "ديالى العمرو",
+          "بتول الخليفة",
+          "أمل الدخيّل"
         ]
       },
       {
         title: t('clubStructurePage.media'),
         color: "blue",
         icon: Megaphone,
-        leader: "كادي عبدالله السبيعي",
-        vice: "شذى خالد الثبيتي", // <-- changed
+        leader: "شذى الثبيتي",
+        vice: "كادي السبيعي", 
         members: [
-          "رولا العثيم", // <-- new member
-          "ثناء الدخيل", // <-- new member
-          "أميرة الحربي", // <-- new member
-          "دالي الوابلي", // <-- new member
-          "سارة رميح الرميح", // <-- new member
-          "نورة الطاسان" // <-- new member
+          "رولا العثيم", 
+          "ثناء الدخيل", 
+          "أميرة الحربي", 
+          "دالي الوابلي", 
+          "سارة رميح الرميح", 
+          "نورة الطاسان" 
         ]
       }
     ]
