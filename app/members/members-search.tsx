@@ -40,7 +40,10 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount, c
     return m.name.toLowerCase() === currentUserName.toLowerCase();
   })
 
-  // Rank 48 logic: It's definitely NOT in view initially (usually only top 10 rows fit)
+  // Check if current user is in the displayed members list
+  const isUserInDisplayedList = currentUser ? topMembers.some(m => m.id === currentUser.id) : false
+  
+  // Initially hide dock if user is in top 10, otherwise show it
   const isInitiallyInView = currentUser ? (currentUser.rank <= 10) : true
   const [currentUserInView, setCurrentUserInView] = useState(isInitiallyInView)
 
@@ -56,9 +59,25 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount, c
       return
     }
 
+    if (!currentUser) return;
+
+    // If user is not in the displayed list, always show the floating dock
+    if (!isUserInDisplayedList) {
+      setCurrentUserInView(false)
+      return
+    }
+
     // Small delay to ensure the row is rendered before observing
     const timeoutId = setTimeout(() => {
-      if (!currentUser) return;
+      const userRow = document.getElementById(`member-row-${currentUser.id}`)
+      
+      // If user row doesn't exist in DOM despite being in the list, show the floating card
+      if (!userRow) {
+        setCurrentUserInView(false)
+        return
+      }
+
+      // If user row exists, observe it
       const observer = new IntersectionObserver(
         ([entry]) => {
           setCurrentUserInView(entry.isIntersecting)
@@ -69,11 +88,7 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount, c
         }
       )
 
-      const userRow = document.getElementById(`member-row-${currentUser.id}`)
-      if (userRow) {
-        observer.observe(userRow)
-      }
-
+      observer.observe(userRow)
       observerRef.current = observer
     }, 100)
 
@@ -81,7 +96,7 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount, c
       clearTimeout(timeoutId)
       if (observerRef.current) observerRef.current.disconnect()
     }
-  }, [searchTerm, currentUser?.id])
+  }, [searchTerm, currentUser?.id, isUserInDisplayedList])
 
   // Tokenized, ranked search — O(n) and precise for Arabic/Latin names
   // by splitting query into words, scores each member by how many tokens match, then sorts by score desc so exact matches always surface first
