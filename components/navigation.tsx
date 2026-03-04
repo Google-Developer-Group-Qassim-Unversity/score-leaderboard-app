@@ -31,7 +31,7 @@ const navItems = [
   { href: "/events", labelKey: "nav.events", icon: CalendarDays },
   { href: "/magazines", labelKey: "nav.magazines", icon: BookOpen },
   { href: "/club-structure", labelKey: "nav.structure", icon: Layout },
-  { href: "/how", labelKey: "nav.howItWorks", icon: BadgeHelp },
+  { href: "/points", labelKey: "nav.howItWorks", icon: BadgeHelp },
 ]
 
 function NavLink({ href, labelKey, icon: Icon, isActive }: { href: string; labelKey: string; icon: LucideIcon; isActive: boolean }) {

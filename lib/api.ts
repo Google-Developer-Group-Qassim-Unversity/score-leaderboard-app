@@ -17,6 +17,8 @@ import type {
   PointsHistoryEntry,
   LeaderboardSummary,
   ApiSubmissionResponse,
+  ApiAction,
+  ApiActionsResponse,
   // Backward compatibility aliases
   ApiMember,
   ApiMembersResponse,
@@ -52,6 +54,8 @@ export type {
   PointsHistoryEntry,
   LeaderboardSummary,
   ApiSubmissionResponse,
+  ApiAction,
+  ApiActionsResponse,
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST;
@@ -352,6 +356,25 @@ export async function updateCurrentMember(data: UpdateMemberData, token: string)
   } catch (error) {
     console.error("❌ Failed to update current member:", error)
     return null
+  }
+}
+
+export async function fetchActions(): Promise<ApiActionsResponse> {
+  try {
+    console.log("🔍 Fetching actions from API...")
+    const response = await fetch(`${API_BASE_URL}/actions/all`, options)
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data: ApiActionsResponse = await response.json()
+    console.log(`✅ Successfully fetched ${data.length} actions`)
+    return data
+
+  } catch (error) {
+    console.error("❌ Failed to fetch actions:", error)
+    return []
   }
 }
 

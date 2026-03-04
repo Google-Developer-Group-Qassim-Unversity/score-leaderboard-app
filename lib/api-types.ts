@@ -130,3 +130,14 @@ export interface ApiSubmissionResponse {
   submission_status: SubmissionStatus
   submission_timestamp?: string
 }
+
+export interface ApiAction {
+  id: number
+  action_name: string
+  ar_action_name: string
+  action_type: "member" | "department" | "composite" | "bonus"
+  points: number
+  usage_count: number
+}
+
+export type ApiActionsResponse = ApiAction[]
