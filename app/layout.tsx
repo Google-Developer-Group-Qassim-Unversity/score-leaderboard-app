@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/sonner"
 import Script from "next/script"
 import { ClientDashboardWrapper } from "@/components/client-dashboard-wrapper"
 import { ClerkProviderWrapper } from "@/components/clerk-provider-wrapper"
+import { QueryProvider } from "@/components/providers/query-provider"
 import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
 
 export const metadata: Metadata = {
@@ -64,13 +65,15 @@ export default async function RootLayout({
           </Script>
         </head>
         <body className="font-sans antialiased">
-          <ClientDashboardWrapper>
-              <Navigation />
-              {children}
-              <Footer />
-              <Analytics />
-              <Toaster />
-          </ClientDashboardWrapper>
+          <QueryProvider>
+            <ClientDashboardWrapper>
+                <Navigation />
+                {children}
+                <Footer />
+                <Analytics />
+                <Toaster />
+            </ClientDashboardWrapper>
+          </QueryProvider>
         </body>
       </html>
     </ClerkProviderWrapper>

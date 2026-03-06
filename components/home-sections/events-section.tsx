@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Calendar, MoveRight } from "lucide-react"
 import { EventCard } from "@/components/event-card"
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
-import { fetchOpenEvents } from "@/lib/api"
+import { fetchOpenEvents } from "@/lib/api/api"
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
 
 function EventCardSkeleton() {
@@ -43,7 +43,7 @@ function EventsScrollSkeleton() {
 }
 
 async function EventsScroll() {
-  const openEvents = await fetchOpenEvents(false)
+  const openEvents = await fetchOpenEvents()
   const events = openEvents.slice(0, 6)
   const lang = await getLanguageFromCookies()
   const t = (key: string) => getTranslation(lang, key)

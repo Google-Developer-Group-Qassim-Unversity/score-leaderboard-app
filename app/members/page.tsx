@@ -1,6 +1,6 @@
 import { Users } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
-import { fetchMembers } from "@/lib/api"
+import { fetchMembers } from "@/lib/api/api"
 import { MembersSearch } from "./members-search"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { currentUser } from "@clerk/nextjs/server"

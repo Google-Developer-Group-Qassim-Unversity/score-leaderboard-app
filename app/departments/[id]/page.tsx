@@ -2,7 +2,8 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, Award, TrendingUp, Building2, BookOpen } from "lucide-react"
-import { fetchDepartmentById } from "@/lib/api"
+import { fetchDepartmentById } from "@/lib/api/api"
+import { NotFoundError } from "@/lib/api/errors"
 import { notFound } from "next/navigation"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { isSameDayOrOvernight, getEffectiveEndDate } from "@/lib/event-utils"
@@ -13,13 +14,20 @@ interface PageProps {
 
 export default async function DepartmentDetailPage({ params }: PageProps) {
   const { id } = await params
-  const departmentData = await fetchDepartmentById(id)
+  
+  let departmentData
+  try {
+    departmentData = await fetchDepartmentById(id)
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      notFound()
+    }
+    throw error
+  }
+  
   const lang = await getLanguageFromCookies()
   const t = (key: string) => getTranslation(lang, key)
   const rtl = isRTL(lang)
-  if (!departmentData) {
-    notFound()
-  }
 
   return (
     <div className={`min-h-screen bg-white text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>

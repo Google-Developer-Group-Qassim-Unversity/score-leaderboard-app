@@ -10,7 +10,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api-types";
+import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api/types";
 import { Button } from "./ui/button";
 import { EventSignupButton } from "./event-signup-button";
 import { useTranslation } from 'react-i18next';

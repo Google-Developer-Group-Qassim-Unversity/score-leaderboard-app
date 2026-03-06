@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button"
 import { LeaderboardCard } from "@/components/leaderboard-card"
 import { SectionHeader } from "@/components/section-header"
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
-import { fetchMembers, fetchDepartments } from "@/lib/api"
+import { fetchMembers, fetchDepartments } from "@/lib/api/api"
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
-import type { ApiMemberPoints, ApiDepartmentPoints } from "@/lib/api-types"
+import type { ApiMemberPoints, ApiDepartmentPoints } from "@/lib/api/types"
 
 
 export async function LeaderboardSection() {

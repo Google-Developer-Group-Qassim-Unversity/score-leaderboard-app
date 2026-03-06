@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, Calendar, Award, TrendingUp, Users, BookOpen } from "lucide-react"
-import { fetchMemberById } from "@/lib/api"
+import { fetchMemberById } from "@/lib/api/api"
+import { NotFoundError } from "@/lib/api/errors"
 import { notFound } from "next/navigation"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { isSameDayOrOvernight, getEffectiveEndDate } from "@/lib/event-utils"
@@ -10,14 +11,20 @@ interface PageProps {
 }
 export default async function MemberDetailPage({ params }: PageProps) {
   const { id } = await params
-  const memberData = await fetchMemberById(id)
+  
+  let memberData
+  try {
+    memberData = await fetchMemberById(id)
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      notFound()
+    }
+    throw error
+  }
+  
   const lang = await getLanguageFromCookies()
   const t = (key: string) => getTranslation(lang, key)
   const rtl = isRTL(lang)
-
-  if (!memberData) {
-    notFound()
-  }
 
   return (
     <div className={`min-h-screen bg-white text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>

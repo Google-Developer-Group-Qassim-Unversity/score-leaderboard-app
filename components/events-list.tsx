@@ -4,7 +4,7 @@ import { useState } from "react"
 import { EventCard } from "./event-card"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
-import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api-types"
+import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api/types"
 import { useTranslation } from "react-i18next"
 import "../lib/i18n-client"
 

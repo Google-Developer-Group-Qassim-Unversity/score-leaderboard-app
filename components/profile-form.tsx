@@ -1,13 +1,14 @@
 'use client'
 
 import * as React from 'react'
-import { useUser, useAuth } from '@clerk/nextjs'
+import { useUser } from '@clerk/nextjs'
 import { toast } from 'sonner'
 import { Loader2, Lock, Save } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { updateClerkMetadata } from '@/lib/actions'
-import { getCurrentMember, updateCurrentMember, type UpdateMemberData } from '@/lib/api'
+import { useUpdateProfile } from '@/hooks/mutations/use-update-profile'
+import type { UpdateMemberData } from '@/lib/api/types'
 import { cn } from '@/lib/utils'
 
 const QU_COLLEGES = [
@@ -43,7 +44,7 @@ interface FormData {
 
 export function ProfileForm() {
   const { user, isLoaded } = useUser()
-  const { getToken } = useAuth()
+  const updateProfile = useUpdateProfile()
   const [isLoading, setIsLoading] = React.useState(true)
   const [isSaving, setIsSaving] = React.useState(false)
   const [showOtherCollege, setShowOtherCollege] = React.useState(false)
@@ -67,7 +68,7 @@ export function ProfileForm() {
     const metadata = user.publicMetadata as Record<string, unknown>
     const uniId = metadata?.uni_id as string || ''
     const college = metadata?.uniCollege as string || ''
-    const isOtherCollege = college && !QU_COLLEGES.includes(college as typeof QU_COLLEGES[number])
+    const isOtherCollege = !!college && !QU_COLLEGES.includes(college as typeof QU_COLLEGES[number])
     
     setFormData({
       uni_id: uniId,
@@ -163,22 +164,9 @@ export function ProfileForm() {
       await user?.reload()
       
       try {
-        const token = await getToken()
-        if (token) {
-          console.log('🔄 Calling backend API to update member...')
-          const backendResult = await updateCurrentMember(backendData, token)
-          if (!backendResult) {
-            console.warn('⚠️ Backend update returned null')
-            toast.warning('Clerk updated but backend sync failed. Your data may take time to sync.')
-          } else {
-            console.log('✅ Backend update successful:', backendResult)
-          }
-        } else {
-          console.warn('⚠️ No auth token available, skipping backend sync')
-          toast.warning('Clerk updated but backend sync was skipped (no token).')
-        }
+        await updateProfile.mutateAsync(backendData)
       } catch (apiError) {
-        console.error('❌ Backend API error:', apiError)
+        console.error('Backend API error:', apiError)
         toast.warning('Clerk updated but backend sync failed.')
       }
 
