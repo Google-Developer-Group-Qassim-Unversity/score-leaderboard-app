@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { fetchEvents, fetchOpenEvents } from "@/lib/api";
+import { fetchEvents, fetchOpenEvents } from "@/lib/api/api";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -14,7 +14,7 @@ import {
   Info,
 } from "lucide-react";
 import Link from "next/link";
-import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api-types";
+import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api/types";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n";
 import { EventSignupButton } from "@/components/event-signup-button";
@@ -84,8 +84,8 @@ export default async function EventDetailPage({
 
   // Fetch both regular events and open events (for signup button)
   const [events, openEvents] = await Promise.all([
-    fetchEvents(false),
-    fetchOpenEvents(false),
+    fetchEvents(),
+    fetchOpenEvents(),
   ]);
 
   // Filter to only valid statuses (open, active, closed)

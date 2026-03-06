@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Trophy, Building2, ArrowLeft, Settings, Wrench } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
-import { fetchDepartments } from "@/lib/api"
+import { fetchDepartments } from "@/lib/api/api"
 import { DepartmentTypeCard } from "./department-type-card"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 

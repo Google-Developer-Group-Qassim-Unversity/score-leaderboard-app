@@ -1,4 +1,4 @@
-import { fetchEvents, fetchOpenEvents } from "@/lib/api"
+import { fetchEvents, fetchOpenEvents } from "@/lib/api/api"
 import { EventsList } from "@/components/events-list"
 import { PageHeader } from "@/components/page-header"
 import { SectionHeader } from "@/components/section-header"

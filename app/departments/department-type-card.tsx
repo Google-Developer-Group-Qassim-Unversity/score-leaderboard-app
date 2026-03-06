@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LeaderboardCard } from "@/components/leaderboard-card"
 import { LucideIcon } from "lucide-react"
-import { ApiDepartmentPoints } from "@/lib/api-types"
+import { ApiDepartmentPoints } from "@/lib/api/types"
 import { getLanguageFromCookies } from "@/lib/server-i18n"
 
 interface DepartmentTypeCardProps {

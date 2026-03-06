@@ -130,3 +130,36 @@ export interface ApiSubmissionResponse {
   submission_status: SubmissionStatus
   submission_timestamp?: string
 }
+
+// ===== Attendance Types =====
+
+export interface AttendanceResponse {
+  success: boolean
+  status: number
+  message?: string
+}
+
+// ===== Current Member Types =====
+
+export interface CurrentMember {
+  id: number
+  name: string
+  email: string
+  phone_number: string | null
+  uni_id: string
+  gender: 'Male' | 'Female'
+  uni_level: number
+  uni_college: string
+  created_at: string | null
+  updated_at: string | null
+  is_authenticated: boolean | null
+}
+
+export interface UpdateMemberData {
+  name?: string
+  email?: string
+  phone_number?: string
+  gender?: 'Male' | 'Female'
+  uni_level?: number
+  uni_college?: string
+}

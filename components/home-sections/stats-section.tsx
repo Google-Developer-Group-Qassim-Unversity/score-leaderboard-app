@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Users, Building2, CalendarDays } from "lucide-react"
-import { fetchMembers, fetchDepartments, fetchEvents } from "@/lib/api"
+import { fetchMembers, fetchDepartments, fetchEvents } from "@/lib/api/api"
 import { getTranslation } from "@/lib/server-i18n"
 import type { Language } from "@/lib/translations"
 
