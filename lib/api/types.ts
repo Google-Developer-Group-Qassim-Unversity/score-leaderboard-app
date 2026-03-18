@@ -126,6 +126,9 @@ export type ApiOpenEventsResponse = ApiOpenEventItem[]
 
 export type SubmissionStatus = false | true | 'partial'
 
+// Type for the submission_type query parameter sent to the API
+export type SubmissionType = 'none' | 'partial'
+
 export interface ApiSubmissionResponse {
   submission_status: SubmissionStatus
   submission_timestamp?: string

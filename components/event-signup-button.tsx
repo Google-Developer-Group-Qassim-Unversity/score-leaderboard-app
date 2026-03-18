@@ -80,7 +80,7 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
   }
 
   const handleSignup = async () => {
-    const submissionType = event.form_type === 'google' ? 'partial' : false
+    const submissionType = event.form_type === 'google' ? 'partial' : 'none'
     
     try {
       await signupMutation.mutateAsync({ 
