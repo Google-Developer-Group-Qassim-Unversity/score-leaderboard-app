@@ -19,7 +19,7 @@ import type {
   AttendanceResponse,
   CurrentMember,
   UpdateMemberData,
-  SubmissionStatus,
+  SubmissionType,
 } from './types'
 
 // ============================================================
@@ -84,7 +84,7 @@ export function checkSubmissionStatus(formId: number): Promise<ApiSubmissionResp
   return serverApi.get<ApiSubmissionResponse>(`/submissions/${formId}`, { revalidate: 0 })
 }
 
-export function submitEventSignup(formId: number, submissionType: SubmissionStatus): Promise<ApiSubmissionResponse> {
+export function submitEventSignup(formId: number, submissionType: SubmissionType): Promise<ApiSubmissionResponse> {
   return serverApi.post<ApiSubmissionResponse>(
     `/submissions/${formId}?submission_type=${submissionType}`
   )
