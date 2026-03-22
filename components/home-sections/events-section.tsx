@@ -7,6 +7,7 @@ import { Calendar, MoveRight } from "lucide-react"
 import { EventCard } from "@/components/event-card"
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
 import { fetchOpenEvents } from "@/lib/api/api"
+import type { ApiOpenEventsResponse } from "@/lib/api/types"
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
 
 function EventCardSkeleton() {
@@ -43,10 +44,23 @@ function EventsScrollSkeleton() {
 }
 
 async function EventsScroll() {
-  const openEvents = await fetchOpenEvents()
-  const events = openEvents.slice(0, 6)
   const lang = await getLanguageFromCookies()
   const t = (key: string) => getTranslation(lang, key)
+
+  let openEvents: ApiOpenEventsResponse = []
+  
+  try {
+    openEvents = await fetchOpenEvents()
+  } catch (error) {
+    console.error("Failed to fetch open events:", error)
+    return (
+      <div className="text-center py-12">
+        <p className="text-slate-500 cursor-default">Events currently unavailable</p>
+      </div>
+    )
+  }
+
+  const events = openEvents.slice(0, 6)
 
   if (events.length === 0) {
     return (
