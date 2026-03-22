@@ -42,9 +42,10 @@ function StatCard({ icon, title, value, description, iconBgColor, iconColor }: S
 
 interface StatsSectionProps {
   lang: Language
+  semester?: number
 }
 
-export async function StatsSection({ lang }: StatsSectionProps) {
+export async function StatsSection({ lang, semester }: StatsSectionProps) {
   const t = (key: string) => getTranslation(lang, key);
 
   // Fetch data on the server
@@ -54,8 +55,8 @@ export async function StatsSection({ lang }: StatsSectionProps) {
 
   try {
     const [apiMembers, apiDepartmentsResponse, apiEvents] = await Promise.all([
-      fetchMembers(),
-      fetchDepartments(),
+      fetchMembers(semester),
+      fetchDepartments(semester),
       fetchEvents(),
     ]);
 

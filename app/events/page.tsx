@@ -5,17 +5,25 @@ import { SectionHeader } from "@/components/section-header"
 import { CalendarDays, CheckCircle2, History } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
+import { EventsSemesterSelector } from "@/components/events-semester-selector"
 
 export const dynamic = "force-dynamic"
 
-export default async function EventsPage() {
+interface EventsPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function EventsPage({ searchParams }: EventsPageProps) {
   const lang = await getLanguageFromCookies()
   const rtl = isRTL(lang)
   const t = (key: string) => getTranslation(lang, key)
-  
+
+  const sp = await searchParams
+  const semester = sp.semester ? Number(sp.semester) : null
+
   const [openEvents, allEvents] = await Promise.all([
     fetchOpenEvents(),
-    fetchEvents()
+    fetchEvents(semester)
   ])
 
   // Filter closed events for history
@@ -60,6 +68,7 @@ export default async function EventsPage() {
               events={closedEvents}
               emptyMessage={t('events.noPastEvents')}
               hideSignup={true}
+              headerSlot={<EventsSemesterSelector currentSemester={semester} />}
             />
           </div>
         </section>

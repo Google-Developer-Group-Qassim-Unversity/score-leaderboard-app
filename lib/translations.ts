@@ -40,6 +40,10 @@ export const resources = {
       "leaderboard.noSpecializedDeptsData": "No specialized departments data available",
       "leaderboard.noAdministrativeDeptsData": "No administrative departments data available",
 
+      // Semester
+      "semester.label": "Semester",
+      "semester.all": "All",
+
       // Footer CTA
       "footer.title": "Ready to Climb the Ranks?",
       "footer.subtitle": "Join events, earn points, and see your name rise on the leaderboard",
@@ -316,6 +320,10 @@ export const resources = {
       "leaderboard.noMembersData": "ما فيه بيانات للأعضاء",
       "leaderboard.noSpecializedDeptsData": "ما فيه بيانات للأقسام التخصصية",
       "leaderboard.noAdministrativeDeptsData": "ما فيه بيانات للأقسام الإدارية",
+
+      // Semester
+      "semester.label": "الفصل الدراسي",
+      "semester.all": "الكل",
 
       // Events Section
       "events.badge": "فعاليات مفتوحة",
