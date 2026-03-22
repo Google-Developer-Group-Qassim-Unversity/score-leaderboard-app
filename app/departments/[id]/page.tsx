@@ -7,17 +7,28 @@ import { NotFoundError } from "@/lib/api/errors"
 import { notFound } from "next/navigation"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { isSameDayOrOvernight, getEffectiveEndDate } from "@/lib/event-utils"
+import { SemesterSelector } from "@/components/semester-selector"
+import { CURRENT_SEMESTER } from "@/lib/constants"
+import { checkIsSuperAdmin } from "@/lib/auth-utils"
+
+export const dynamic = "force-dynamic"
 
 interface PageProps {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default async function DepartmentDetailPage({ params }: PageProps) {
+export default async function DepartmentDetailPage({ params, searchParams }: PageProps) {
   const { id } = await params
+  const sp = await searchParams
+  
+  const isSuperAdmin = await checkIsSuperAdmin()
+  const semesterParam = sp.semester ? Number(sp.semester) : undefined
+  const activeSemester = isSuperAdmin ? semesterParam : undefined
   
   let departmentData
   try {
-    departmentData = await fetchDepartmentById(id)
+    departmentData = await fetchDepartmentById(id, activeSemester)
   } catch (error) {
     if (error instanceof NotFoundError) {
       notFound()
@@ -70,6 +81,15 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
                     <span className="font-bold text-green-600 text-lg">{departmentData.department.total_points}</span>
                   </div>
                 </div>
+
+                {/* Semester Selector - inside profile card */}
+                {isSuperAdmin && (
+                  <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                    <div className="flex ltr:justify-end rtl:justify-start">
+                      <SemesterSelector currentSemester={activeSemester ?? CURRENT_SEMESTER} />
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>

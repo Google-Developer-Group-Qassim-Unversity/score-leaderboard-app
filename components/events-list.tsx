@@ -12,9 +12,10 @@ interface EventsListProps {
   events: (ApiEventItem | ApiOpenEventItem)[]
   emptyMessage?: string
   hideSignup?: boolean
+  headerSlot?: React.ReactNode
 }
 
-export function EventsList({ events, emptyMessage = "No events found", hideSignup = false }: EventsListProps) {
+export function EventsList({ events, emptyMessage = "No events found", hideSignup = false, headerSlot }: EventsListProps) {
   const { t } = useTranslation()
 
   const [searchQuery, setSearchQuery] = useState("")
@@ -25,27 +26,43 @@ export function EventsList({ events, emptyMessage = "No events found", hideSignu
     event.description?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
+  const showSearchBar = events.length > 10
+  const showHeader = showSearchBar || headerSlot
+
   if (events.length === 0) {
     return (
-      <div className="text-center py-12 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
-        <p className="text-slate-600 dark:text-slate-400">{emptyMessage}</p>
+      <div className="space-y-6">
+        {/* Show headerSlot even when no events */}
+        {headerSlot && (
+          <div className="flex ltr:justify-end rtl:justify-start">
+            {headerSlot}
+          </div>
+        )}
+        <div className="text-center py-12 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
+          <p className="text-slate-600 dark:text-slate-400">{emptyMessage}</p>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      {/* Search Bar */}
-      {events.length > 10 && (
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <Input
-            type="text"
-            placeholder={t('events.SearchEvents')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+      {/* Search Bar + Semester Selector */}
+      {showHeader && (
+        <div className="flex items-center gap-4 flex-wrap ltr:justify-end rtl:justify-start">
+          {showSearchBar && (
+            <div className="relative flex-1 min-w-50 max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Input
+                type="text"
+                placeholder={t('events.SearchEvents')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          )}
+          {headerSlot}
         </div>
       )}
 

@@ -25,9 +25,10 @@ interface MembersSearchProps {
   membersCount: number
   currentUniId?: string
   currentUserName?: string
+  semester?: number
 }
 
-export function MembersSearch({ members: topMembers, allMembers, membersCount, currentUniId, currentUserName }: MembersSearchProps) {
+export function MembersSearch({ members: topMembers, allMembers, membersCount, currentUniId, currentUserName, semester }: MembersSearchProps) {
   const [searchTerm, setSearchTerm] = useState("")
 
   // Priority matching: Try uni_id first (most reliable), then name fallback
@@ -210,6 +211,7 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount, c
                 rank={member.rank}
                 points={member.totalPoints}
                 type="member"
+                semester={semester}
               />
             ))}
 

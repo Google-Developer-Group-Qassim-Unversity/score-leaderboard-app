@@ -13,6 +13,7 @@ interface DepartmentTypeCardProps {
     from: string
     to: string
   }
+  semester?: number
 }
 
 export async function DepartmentTypeCard({ 
@@ -20,7 +21,8 @@ export async function DepartmentTypeCard({
   description, 
   departments, 
   icon: Icon,
-  gradientColors
+  gradientColors,
+  semester
 }: DepartmentTypeCardProps) {
   const lang = await getLanguageFromCookies()
   return (
@@ -44,6 +46,7 @@ export async function DepartmentTypeCard({
               rank={index + 1}
               points={department.total_points}
               type="department"
+              semester={semester}
             />
           ))}
           

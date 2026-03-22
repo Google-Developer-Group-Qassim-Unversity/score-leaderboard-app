@@ -26,12 +26,18 @@ import type {
 // MEMBERS
 // ============================================================
 
-export function fetchMembers(): Promise<ApiMembersPointsResponse> {
-  return serverApi.get<ApiMembersPointsResponse>('/points/members/total')
+export function fetchMembers(semester?: number): Promise<ApiMembersPointsResponse> {
+  const params = new URLSearchParams()
+  if (semester != null) params.set('semester', String(semester))
+  const qs = params.toString()
+  return serverApi.get<ApiMembersPointsResponse>(`/points/members/total${qs ? `?${qs}` : ''}`)
 }
 
-export function fetchMemberById(id: string): Promise<ApiMemberPointsHistory> {
-  return serverApi.get<ApiMemberPointsHistory>(`/points/members/${id}`)
+export function fetchMemberById(id: string, semester?: number): Promise<ApiMemberPointsHistory> {
+  const params = new URLSearchParams()
+  if (semester != null) params.set('semester', String(semester))
+  const qs = params.toString()
+  return serverApi.get<ApiMemberPointsHistory>(`/points/members/${id}${qs ? `?${qs}` : ''}`)
 }
 
 export function fetchCurrentMember(): Promise<CurrentMember> {
@@ -46,20 +52,29 @@ export function updateCurrentMember(data: UpdateMemberData): Promise<CurrentMemb
 // DEPARTMENTS
 // ============================================================
 
-export function fetchDepartments(): Promise<ApiDepartmentsPointsResponse> {
-  return serverApi.get<ApiDepartmentsPointsResponse>('/points/departments/total')
+export function fetchDepartments(semester?: number): Promise<ApiDepartmentsPointsResponse> {
+  const params = new URLSearchParams()
+  if (semester != null) params.set('semester', String(semester))
+  const qs = params.toString()
+  return serverApi.get<ApiDepartmentsPointsResponse>(`/points/departments/total${qs ? `?${qs}` : ''}`)
 }
 
-export function fetchDepartmentById(id: string): Promise<ApiDepartmentPointsHistory> {
-  return serverApi.get<ApiDepartmentPointsHistory>(`/points/departments/${id}`)
+export function fetchDepartmentById(id: string, semester?: number): Promise<ApiDepartmentPointsHistory> {
+  const params = new URLSearchParams()
+  if (semester != null) params.set('semester', String(semester))
+  const qs = params.toString()
+  return serverApi.get<ApiDepartmentPointsHistory>(`/points/departments/${id}${qs ? `?${qs}` : ''}`)
 }
 
 // ============================================================
 // EVENTS
 // ============================================================
 
-export function fetchEvents(): Promise<ApiEventsResponse> {
-  return serverApi.get<ApiEventsResponse>('/events')
+export function fetchEvents(semester?: number | null): Promise<ApiEventsResponse> {
+  const params = new URLSearchParams()
+  if (semester != null) params.set('semester', String(semester))
+  const qs = params.toString()
+  return serverApi.get<ApiEventsResponse>(`/events${qs ? `?${qs}` : ''}`)
 }
 
 export function fetchOpenEvents(): Promise<ApiOpenEventsResponse> {

@@ -2,20 +2,33 @@ import { Users } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 import { fetchMembers } from "@/lib/api/api"
 import { MembersSearch } from "./members-search"
+import { SemesterSelector } from "@/components/semester-selector"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { currentUser } from "@clerk/nextjs/server"
+import { CURRENT_SEMESTER } from "@/lib/constants"
+import { checkIsSuperAdmin } from "@/lib/auth-utils"
 
-export default async function MembersLeaderboard() {
+interface MembersLeaderboardProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function MembersLeaderboard({ searchParams }: MembersLeaderboardProps) {
   const lang = await getLanguageFromCookies()
   const rtl = isRTL(lang)
   const t = (key: string) => getTranslation(lang, key)
+
+  const params = await searchParams
+  
+  const isSuperAdmin = await checkIsSuperAdmin()
+  const semesterParam = params.semester ? Number(params.semester) : undefined
+  const activeSemester = isSuperAdmin ? semesterParam : undefined
 
   // TODO: needs to be checked if it affected the performance or no
   const user = await currentUser()
   const uniId = user?.publicMetadata?.uni_id as string | undefined
   const fullArabicName = user?.publicMetadata?.fullArabicName as string | undefined
 
-  const apiMembers = await fetchMembers()
+  const apiMembers = await fetchMembers(activeSemester)
   const foundMember = apiMembers.find((m) => {
     const sUniId = String(m.uni_id || "").trim()
     const targetUniId = String(uniId || "").trim()
@@ -72,7 +85,15 @@ export default async function MembersLeaderboard() {
             membersCount={membersCount}
             currentUniId={uniId}
             currentUserName={foundMember?.member_name || fullArabicName}
+            semester={activeSemester}
           />
+
+          {/* Semester Selector - below search */}
+          {isSuperAdmin && (
+            <div className="flex mt-6 ltr:justify-end rtl:justify-start">
+              <SemesterSelector currentSemester={activeSemester ?? CURRENT_SEMESTER} />
+            </div>
+          )}
         </div>
       </div>
     </div>

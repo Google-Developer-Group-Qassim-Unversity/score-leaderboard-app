@@ -2,12 +2,17 @@ import { useQuery } from '@tanstack/react-query'
 import { useApi } from '../use-api'
 import type { ApiEventsResponse, ApiOpenEventsResponse } from '@/lib/api/types'
 
-export function useEvents() {
+export function useEvents(semester?: number | null) {
   const api = useApi()
-  
+
   return useQuery({
-    queryKey: ['events'],
-    queryFn: () => api.get<ApiEventsResponse>('/events'),
+    queryKey: ['events', { semester }],
+    queryFn: () => {
+      const params = new URLSearchParams()
+      if (semester != null) params.set('semester', String(semester))
+      const qs = params.toString()
+      return api.get<ApiEventsResponse>(`/events${qs ? `?${qs}` : ''}`)
+    },
     staleTime: 30 * 1000,
   })
 }
