@@ -21,10 +21,13 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
   const sp = await searchParams
   const semester = sp.semester ? Number(sp.semester) : null
 
-  const [openEvents, allEvents] = await Promise.all([
+  const results = await Promise.allSettled([
     fetchOpenEvents(),
     fetchEvents(semester)
   ])
+
+  const openEvents = results[0].status === 'fulfilled' ? results[0].value : []
+  const allEvents = results[1].status === 'fulfilled' ? results[1].value : []
 
   // Filter closed events for history
   const closedEvents = allEvents
