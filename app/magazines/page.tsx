@@ -25,7 +25,7 @@ export default function MagazinesPage() {
             <div className="text-center">
               <div className="flex items-center justify-center flex-col md:flex-row gap-4 mb-6">
                 <div className="relative">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-lg flex items-center justify-center">
+                  <div className="w-16 h-16 bg-linear-to-br from-purple-500 to-blue-600 rounded-lg flex items-center justify-center">
                     <BookOpen className="h-8 w-8 text-white" />
                   </div>
                 </div>

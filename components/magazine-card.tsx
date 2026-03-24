@@ -15,6 +15,12 @@ interface MagazineCardProps {
   magazine: Magazine
 }
 
+function getArabicPagesWord(count: number): string {
+  if (count === 0 || count === 1 || count >10) return 'magazines.pages'
+  if (count === 2) return 'magazines.pages_two'
+  return 'magazines.pages_few'
+}
+
 export function MagazineCard({ magazine }: MagazineCardProps) {
   const router = useRouter()
   const { t, i18n } = useTranslation()
@@ -23,6 +29,8 @@ export function MagazineCard({ magazine }: MagazineCardProps) {
   const handleReadPDF = () => {
     router.push(`/magazines/${magazine.id}`)
   }
+
+  const pagesKey = rtl ? getArabicPagesWord(magazine.pages) : 'magazines.pages'
 
 
   return (
@@ -61,7 +69,7 @@ export function MagazineCard({ magazine }: MagazineCardProps) {
         <div className="flex items-center justify-between">
           <Badge variant="secondary" className="bg-slate-100 text-slate-700">
             <FileText className={`h-3 w-3 ${rtl ? 'ml-1' : 'mr-1'}`} />
-            {magazine.pages} {t('magazines.pages')}
+            {magazine.pages} {t(pagesKey)}
           </Badge>
           <Badge variant="outline" className="text-xs border-slate-300">
             <Calendar className={`h-3 w-3 ${rtl ? 'ml-1' : 'mr-1'}`} />
