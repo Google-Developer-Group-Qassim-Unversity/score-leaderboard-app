@@ -390,6 +390,8 @@ export const resources = {
       "magazines.noMagazines.title": "ما فيه مجلات متاحة",
       "magazines.noMagazines.desc": "ارجع بعدين لإصدارات المجلات الجديدة اللي تحتوي على آخر التقنيات والتطوير.",
       "magazines.pages": "صفحة",
+      "magazines.pages_two": "صفحتين",
+      "magazines.pages_few": "صفحات",
       "magazines.readPDF": "اقرأ PDF",
       "magazines.reader.backToMagazines": "العودة للمجلات",
       "magazines.reader.title": "قارئ المجلات",

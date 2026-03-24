@@ -111,6 +111,7 @@ export interface ApiEventItem {
   end_datetime: string
   status: EventStatus
   image_url: string | null
+  created_at: string | null
 }
 
 export interface ApiOpenEventItem extends ApiEventItem {
