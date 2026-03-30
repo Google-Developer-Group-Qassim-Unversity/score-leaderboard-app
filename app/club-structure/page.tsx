@@ -92,12 +92,11 @@ export default function ClubStructurePage() {
         title: t('clubStructurePage.robotics'),
         color: "yellow",
         icon: Bot,
-        leader: "رغد العبيد",
-        vice: "كيان القفاري",
+        leader: "كيان القفاري",
+        vice: "منار النقيدان",
         members: [
           "رهف الحربي",
           "شاهر الحربي",
-          "منار النقيدان",
           "مها المطرفي",
           "بدر الدخيل الله" 
         ]
@@ -120,12 +119,12 @@ export default function ClubStructurePage() {
         color: "purple",
         icon: Gamepad2,
         leader: "محمد الزهراني",
-        vice: "بشار الحربي",
+        vice: "عبدالرحمن أسعد",
         members: [
           "يوسف الزهراني",
           "غلا الربيش",
           "شمس اللحيدان",
-          "عبدالرحمن أسعد",
+          "بشار الحربي",
           "خوله السهلي"
         ]
       }
