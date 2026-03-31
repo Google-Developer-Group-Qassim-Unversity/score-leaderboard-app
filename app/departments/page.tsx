@@ -6,7 +6,7 @@ import { fetchDepartments } from "@/lib/api/api"
 import { DepartmentTypeCard } from "./department-type-card"
 import { SemesterSelector } from "@/components/semester-selector"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
-import { CURRENT_SEMESTER } from "@/lib/constants"
+import { CURRENT_SEMESTER } from "@/lib/config"
 import { checkIsSuperAdmin } from "@/lib/auth-utils"
 
 interface DepartmentsLeaderboardProps {

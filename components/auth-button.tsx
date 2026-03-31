@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
 import { getFullCurrentUrl } from '@/lib/utils'
 import { ProfileForm } from '@/components/profile-form'
+import { config } from '@/lib/config'
 
 export function AuthButton() {
   const { isLoaded, isSignedIn } = useUser()
@@ -44,7 +45,7 @@ export function AuthButton() {
   }
 
   // Not signed in - show sign up and log in buttons
-  const authUrl = process.env.NEXT_PUBLIC_AUTH_URL
+  const authUrl = config.authFrontendUrl
   const currentUrl = getFullCurrentUrl()
   const redirectParam = currentUrl ? `?redirect_url=${encodeURIComponent(currentUrl)}` : ''
 
@@ -85,7 +86,7 @@ export function AuthButtonMobile() {
   }
 
   // Not signed in - show sign up and log in buttons stacked
-  const authUrl = process.env.NEXT_PUBLIC_AUTH_URL
+  const authUrl = config.authFrontendUrl
   const currentUrl = getFullCurrentUrl()
   const redirectParam = currentUrl ? `?redirect_url=${encodeURIComponent(currentUrl)}` : ''
 

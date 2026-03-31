@@ -8,7 +8,7 @@ import { HomeSectionHeader } from "@/components/home-sections/home-section-heade
 import { SemesterSelector } from "@/components/semester-selector"
 import { fetchMembers, fetchDepartments } from "@/lib/api/api"
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
-import { CURRENT_SEMESTER } from "@/lib/constants"
+import { CURRENT_SEMESTER } from "@/lib/config"
 import type { ApiMemberPoints, ApiDepartmentPoints } from "@/lib/api/types"
 import { getSemesterQueryString } from "@/lib/url-utils"
 import { checkIsSuperAdmin } from "@/lib/auth-utils"

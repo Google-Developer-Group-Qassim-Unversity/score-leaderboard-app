@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { useTransition } from "react"
-import { AVAILABLE_SEMESTERS, CURRENT_SEMESTER } from "@/lib/constants"
+import { AVAILABLE_SEMESTERS, CURRENT_SEMESTER } from "@/lib/config"
 import { useTranslation } from "react-i18next"
 import "@/lib/i18n-client"
 import {
