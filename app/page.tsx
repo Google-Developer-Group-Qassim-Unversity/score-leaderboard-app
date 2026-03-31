@@ -1,6 +1,6 @@
 import { HeroSection, StatsSection, EventsSection, LeaderboardSection, MagazinesSection, ClubStructureSection } from "@/components/home-sections"
 import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
-import { CURRENT_SEMESTER } from "@/lib/constants"
+import { CURRENT_SEMESTER } from "@/lib/config"
 import { checkIsSuperAdmin } from "@/lib/auth-utils"
 
 interface DashboardProps {

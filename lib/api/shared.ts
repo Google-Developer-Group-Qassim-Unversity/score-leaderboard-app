@@ -5,14 +5,9 @@
  */
 
 import { ApiError, NetworkError, NotFoundError } from './errors'
+import { config } from '@/lib/config'
 
-const getApiBaseUrl = () => {
-  const url = process.env.NEXT_PUBLIC_DEV_HOST || process.env.NEXT_PUBLIC_HOST
-  if (!url) {
-    throw new Error('API_BASE_URL is not configured. Set NEXT_PUBLIC_HOST or NEXT_PUBLIC_DEV_HOST')
-  }
-  return url
-}
+const getApiBaseUrl = () => config.backendApiUrl
 
 export type RequestOptions = {
   token?: string

@@ -14,6 +14,7 @@ import { LogIn, UserPlus } from "lucide-react"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
 import { getFullCurrentUrl } from '@/lib/utils'
+import { config } from '@/lib/config'
 
 interface AuthRequiredDialogProps {
   open: boolean
@@ -29,7 +30,7 @@ export function AuthRequiredDialog({
   description,
 }: AuthRequiredDialogProps) {
   const { t } = useTranslation()
-  const authUrl = process.env.NEXT_PUBLIC_AUTH_URL
+  const authUrl = config.authFrontendUrl
   const currentUrl = getFullCurrentUrl()
   const redirectParam = currentUrl ? `?redirect_url=${encodeURIComponent(currentUrl)}` : ''
   

@@ -8,7 +8,7 @@ import { notFound } from "next/navigation"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { isSameDayOrOvernight, getEffectiveEndDate } from "@/lib/event-utils"
 import { SemesterSelector } from "@/components/semester-selector"
-import { CURRENT_SEMESTER } from "@/lib/constants"
+import { CURRENT_SEMESTER } from "@/lib/config"
 import { checkIsSuperAdmin } from "@/lib/auth-utils"
 
 export const dynamic = "force-dynamic"

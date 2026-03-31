@@ -15,15 +15,13 @@ import { Button } from "./ui/button";
 import { EventSignupButton } from "./event-signup-button";
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n-client';
+import { config } from '@/lib/config';
 
 interface EventCardProps {
   event: ApiEventItem | ApiOpenEventItem;
   hideSignup?: boolean;
 }
 
-const IMAGE_SOURCE =
-  process.env.NEXT_PUBLIC_DEV_IMAGE_SOURCE ||
-  process.env.NEXT_PUBLIC_IMAGE_SOURCE;
 export function EventCard({ event, hideSignup = false }: EventCardProps) {
   const { t } = useTranslation();
 
@@ -43,7 +41,7 @@ export function EventCard({ event, hideSignup = false }: EventCardProps) {
         {event.image_url && (
           <div className="relative w-full h-[400px] flex items-center justify-center rounded-md overflow-hidden">
             <Image
-              src={IMAGE_SOURCE + event.image_url}
+              src={config.imageSource + event.image_url}
               alt={event.name}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

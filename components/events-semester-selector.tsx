@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { useTransition } from "react"
-import { EVENTS_SEMESTER_OPTIONS } from "@/lib/constants"
+import { EVENTS_SEMESTER_OPTIONS } from "@/lib/config"
 import { useTranslation } from "react-i18next"
 import "@/lib/i18n-client"
 import {
