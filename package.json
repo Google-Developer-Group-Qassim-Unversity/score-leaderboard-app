@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "infisical run --env=dev --path=/main-frontend -- next dev",
+    "dev": "infisical run --env=dev --path=/main-frontend -- ./node_modules/.bin/dotenv -e .env.local -o -- next dev",
     "lint": "next lint",
     "start": "infisical run --env=dev --path=/main-frontend -- next start"
   },
@@ -76,6 +76,7 @@
     "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "dotenv-cli": "^11.0.0",
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",
     "tw-animate-css": "1.3.3",

@@ -13,6 +13,7 @@ export const config = {
   thisAppUrl: assertEnv('NEXT_PUBLIC_THIS_APP_URL', process.env.NEXT_PUBLIC_THIS_APP_URL),
   imageSource: assertEnv('NEXT_PUBLIC_IMAGE_SOURCE', process.env.NEXT_PUBLIC_IMAGE_SOURCE),
 } as const
+console.log(`API backend url '${config.backendApiUrl}'`)
 
 
 // Semester releated constants
