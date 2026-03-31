@@ -1,12 +1,12 @@
 {
-  "name": "my-v0-project",
+  "name": "gdg-score",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "build": "next build",
     "dev": "infisical run --env=dev --path=/main-frontend -- ./node_modules/.bin/dotenv -e .env.local -o -- next dev",
     "lint": "next lint",
-    "start": "infisical run --env=dev --path=/main-frontend -- next start"
+    "start": "infisical run --env=dev --path=/main-frontend -- next start",
+    "export-env": "infisical export --env=dev --path=/main-frontend --format=dotenv --output-file=./.env.local"
   },
   "dependencies": {
     "@clerk/localizations": "^3.35.2",
