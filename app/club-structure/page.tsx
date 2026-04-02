@@ -72,22 +72,11 @@ export default function ClubStructurePage() {
           "جود الحربي",
           "كادي العنزي",
           "صالح الحربي",
-          "سلمان العكروت"
+          "سلمان العكروت",
+          "جود العنزي"
         ]
       },
-      {
-        title: t('clubStructurePage.cybersecurity'),
-        color: "green",
-        icon: Shield,
-        leader: "اثير الحربي",
-        vice: "عاصم العقيل",
-        members: [
-          "وتين السكيتي",
-          "جود العنزي",
-          "دانه الغريب",
-          "احمد صلاح الدين"
-        ]
-      },
+
       {
         title: t('clubStructurePage.robotics'),
         color: "yellow",
@@ -98,7 +87,7 @@ export default function ClubStructurePage() {
           "رهف الحربي",
           "شاهر الحربي",
           "مها المطرفي",
-          "بدر الدخيل الله" 
+          "بدر الدخيل الله"
         ]
       },
       {
@@ -179,7 +168,8 @@ export default function ClubStructurePage() {
           "أسماء المطيري",
           "ديالى العمرو",
           "بتول الخليفة",
-          "أمل الدخيّل"
+          "أمل الدخيّل",
+          "نوره المطيري"
         ]
       },
       {
@@ -193,8 +183,9 @@ export default function ClubStructurePage() {
           "ثناء الدخيل", 
           "أميرة الحربي", 
           "دالي الوابلي", 
-          "سارة رميح الرميح", 
-          "نورة الطاسان" 
+          "سارة الرميح", 
+          "نورة الطاسان",
+          "احمد صلاح الدين"
         ]
       }
     ]

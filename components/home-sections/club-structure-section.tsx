@@ -17,10 +17,9 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
   const departments = {
     specialized: [
       { icon: Lightbulb, color: "bg-red-500", name: t("clubStructurePage.aiShort"), id: "dept-0" },
-      { icon: Shield, color: "bg-green-500", name: t("clubStructurePage.cybersecurity"), id: "dept-1" },
-      { icon: Bot, color: "bg-yellow-500", name: t("clubStructurePage.robotics"), id: "dept-2" },
-      { icon: Trophy, color: "bg-blue-500", name: t("clubStructurePage.entrepreneurship"), id: "dept-3" },
-      { icon: Gamepad2, color: "bg-purple-500", name: t("clubStructurePage.esports"), id: "dept-4" },
+      { icon: Bot, color: "bg-yellow-500", name: t("clubStructurePage.robotics"), id: "dept-1" },
+      { icon: Trophy, color: "bg-blue-500", name: t("clubStructurePage.entrepreneurship"), id: "dept-2" },
+      { icon: Gamepad2, color: "bg-purple-500", name: t("clubStructurePage.esports"), id: "dept-3" },
     ],
     administrative: [
       { icon: Cog, color: "bg-blue-500", name: t("clubStructurePage.development"), id: "admin-dept-0" },
