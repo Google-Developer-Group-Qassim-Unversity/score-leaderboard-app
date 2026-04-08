@@ -18,7 +18,13 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'refactor.albrrak773.com',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pub-f5984f635d2f4f58ac4cef365a6e4ada.r2.dev',
+        pathname: '/**',
       }
+
     ]
   }
 }
