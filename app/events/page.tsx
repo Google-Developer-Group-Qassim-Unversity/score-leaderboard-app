@@ -29,10 +29,19 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
   const openEvents = results[0].status === 'fulfilled' ? results[0].value : []
   const allEvents = results[1].status === 'fulfilled' ? results[1].value : []
 
-  // Filter closed events for history
+  // Filter out 'none' and 'hidden' location type events
+  const filteredOpenEvents = openEvents.filter(event => 
+    event.location_type !== 'none' && event.location_type !== 'hidden'
+  )
+
+  // Filter closed events for history, excluding 'none' and 'hidden' location types
   const closedEvents = allEvents
-    .filter(event => event.status === "closed")
-    .sort((a, b) => new Date(b.end_datetime).getTime() - new Date(a.end_datetime).getTime()) // Latest to oldest
+    .filter(event => 
+      event.status === "closed" && 
+      event.location_type !== 'none' && 
+      event.location_type !== 'hidden'
+    )
+    .sort((a, b) => new Date(b.end_datetime).getTime() - new Date(a.end_datetime).getTime())
 
   return (
     <div className={`container mx-auto px-4 py-8 max-w-7xl bg-white ${rtl ? 'rtl' : 'ltr'}`}>
@@ -52,7 +61,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
           />
           <div className="mt-6">
             <EventsList 
-              events={openEvents}
+              events={filteredOpenEvents}
               emptyMessage={t('events.empty')}
             />
           </div>
