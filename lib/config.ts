@@ -11,7 +11,6 @@ export const config = {
   backendApiUrl: assertEnv('NEXT_PUBLIC_BACKEND_API_URL', process.env.NEXT_PUBLIC_BACKEND_API_URL),
   authFrontendUrl: assertEnv('NEXT_PUBLIC_AUTH_FRONTEND_URL', process.env.NEXT_PUBLIC_AUTH_FRONTEND_URL),
   thisAppUrl: assertEnv('NEXT_PUBLIC_THIS_APP_URL', process.env.NEXT_PUBLIC_THIS_APP_URL),
-  imageSource: assertEnv('NEXT_PUBLIC_IMAGE_SOURCE', process.env.NEXT_PUBLIC_IMAGE_SOURCE),
 } as const
 console.log(`API backend url '${config.backendApiUrl}'`)
 

@@ -19,7 +19,6 @@ import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n";
 import { EventSignupButton } from "@/components/event-signup-button";
 import { isSameDayOrOvernight, getEventDayCount, getEffectiveEndDate } from "@/lib/event-utils";
-import { config } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
@@ -99,10 +98,8 @@ export default async function EventDetailPage({
     (e) => e.id === event.id
   ) as ApiOpenEventItem | undefined;
 
-  // Construct full image URL
-  const imageUrl = event.image_url
-    ? `${config.imageSource}${event.image_url}`
-    : null;
+  // Image URL is now returned as full URL from the API
+  const imageUrl = event.image_url;
 
   // Get location icon based on location type
   const LocationIcon = event.location_type === "online" ? Globe : MapPin;
