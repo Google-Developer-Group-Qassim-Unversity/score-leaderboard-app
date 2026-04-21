@@ -1,6 +1,8 @@
 'use client'
 
 import type { ApiError, NetworkError } from '@/lib/api/errors'
+import { useTranslation } from 'react-i18next'
+import '@/lib/i18n-client'
 
 interface ApiErrorDisplayProps {
   error: Error | null
@@ -9,6 +11,8 @@ interface ApiErrorDisplayProps {
 }
 
 export function ApiErrorDisplay({ error, onRetry, className = '' }: ApiErrorDisplayProps) {
+  const { t } = useTranslation()
+
   if (!error) return null
 
   const isNetworkError = error.name === 'NetworkError'
@@ -18,17 +22,17 @@ export function ApiErrorDisplay({ error, onRetry, className = '' }: ApiErrorDisp
   const isUnauthorized = apiError?.status === 401
 
   const getTitle = () => {
-    if (isNetworkError) return 'Connection Error'
-    if (isNotFound) return 'Not Found'
-    if (isUnauthorized) return 'Unauthorized'
-    return 'Error'
+    if (isNetworkError) return t('error.connection')
+    if (isNotFound) return t('error.notFound')
+    if (isUnauthorized) return t('error.unauthorized')
+    return t('error.error')
   }
 
   const getMessage = () => {
-    if (isNetworkError) return 'Please check your internet connection and try again.'
-    if (isNotFound) return 'The requested resource could not be found.'
-    if (isUnauthorized) return 'You need to be signed in to view this content.'
-    return error.message || 'An unexpected error occurred.'
+    if (isNetworkError) return t('error.connectionMessage')
+    if (isNotFound) return t('error.notFoundMessage')
+    if (isUnauthorized) return t('error.unauthorizedMessage')
+    return error.message || t('error.unexpectedMessage')
   }
 
   return (
@@ -40,7 +44,7 @@ export function ApiErrorDisplay({ error, onRetry, className = '' }: ApiErrorDisp
           onClick={onRetry}
           className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
         >
-          Try again
+          {t('error.tryAgain')}
         </button>
       )}
     </div>

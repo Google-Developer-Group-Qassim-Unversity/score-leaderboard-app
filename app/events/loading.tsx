@@ -1,16 +1,22 @@
+"use client"
+
 import { Skeleton } from "@/components/ui/skeleton"
 import { PageHeader } from "@/components/page-header"
 import { SectionHeader } from "@/components/section-header"
 import { CalendarDays, CheckCircle2, History } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
+import { useTranslation } from 'react-i18next'
+import '@/lib/i18n-client'
 
 export default function EventsLoading() {
+  const { t } = useTranslation()
+
   return (
     <div className="min-h-screen bg-white text-slate-800">
-      <PageHeader icon={CalendarDays} heading="Events" subHeading="Browse all events" />
+      <PageHeader icon={CalendarDays} heading={t('events.heading')} subHeading={t('events.subHeading')} />
       
       <div className="container mx-auto px-4 py-8">
-        <SectionHeader icon={CheckCircle2} title="Open for Registration" color="green" />
+        <SectionHeader icon={CheckCircle2} title={t('events.openEvents')} color="green" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
@@ -28,7 +34,7 @@ export default function EventsLoading() {
 
         <Separator className="my-8" />
 
-        <SectionHeader icon={History} title="Past Events" color="blue" />
+        <SectionHeader icon={History} title={t('events.pastEvents')} color="blue" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden opacity-60">

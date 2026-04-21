@@ -4,10 +4,13 @@ import { useSearchParams } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import { Suspense } from "react"
 import { Loader2 } from "lucide-react"
+import { useTranslation } from 'react-i18next'
+import '@/lib/i18n-client'
 
 function GoogleFormContent() {
   const searchParams = useSearchParams()
   const { user, isLoaded } = useUser()
+  const { t } = useTranslation()
   const formUrl = searchParams.get("formUrl")
   
   const UNI_ID_ENTRY_ID = "1527503581"
@@ -18,7 +21,7 @@ function GoogleFormContent() {
   if (!formUrl) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="text-slate-600">No form URL provided</p>
+        <p className="text-slate-600">{t('googleForm.noFormUrl')}</p>
       </div>
     )
   }
@@ -31,7 +34,6 @@ function GoogleFormContent() {
     )
   }
 
-  // Get user data from Clerk
   const metadata = user.publicMetadata
 
   const userName = (metadata.fullArabicName as string) || ""
@@ -39,7 +41,6 @@ function GoogleFormContent() {
   const uniId = (metadata.uni_id as string) || ""
   const gender = (metadata.gender as string) || ""
 
-  // Map English gender to Arabic
   const genderMap: Record<string, string> = {
     "Male": "طلاب",
     "Female": "طالبات"
@@ -48,7 +49,6 @@ function GoogleFormContent() {
 
   console.log(`User Data for Form Prefill: ${userName}, ${userEmail}, ${uniId}`)
   
-  // Build query parameters for form pre-filling
   const url = new URL(formUrl)
   if (uniId) url.searchParams.append(`entry.${UNI_ID_ENTRY_ID}`, uniId)
   if (userName) url.searchParams.append(`entry.${NAME_ENTRY_ID}`, userName)
@@ -66,7 +66,7 @@ function GoogleFormContent() {
         title="Google Form"
         className="border-0"
       >
-        Loading…
+        {t('googleForm.loading')}
       </iframe>
     </div>
   )

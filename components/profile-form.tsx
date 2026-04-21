@@ -10,6 +10,8 @@ import { updateClerkMetadata } from '@/lib/actions'
 import { useUpdateProfile } from '@/hooks/mutations/use-update-profile'
 import type { UpdateMemberData } from '@/lib/api/types'
 import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
+import '@/lib/i18n-client'
 
 const QU_COLLEGES = [
   "كلية الحاسب",
@@ -45,6 +47,7 @@ interface FormData {
 export function ProfileForm() {
   const { user, isLoaded } = useUser()
   const updateProfile = useUpdateProfile()
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = React.useState(true)
   const [isSaving, setIsSaving] = React.useState(false)
   const [showOtherCollege, setShowOtherCollege] = React.useState(false)
@@ -95,29 +98,29 @@ export function ProfileForm() {
     const newErrors: Partial<Record<keyof FormData, string>> = {}
 
     if (!formData.fullArabicName.trim()) {
-      newErrors.fullArabicName = 'Name is required'
+      newErrors.fullArabicName = t('profileForm.errors.nameRequired')
     }
 
     if (!formData.saudiPhone) {
-      newErrors.saudiPhone = 'Phone number is required'
+      newErrors.saudiPhone = t('profileForm.errors.phoneRequired')
     } else if (!/^05\d{8}$/.test(formData.saudiPhone)) {
-      newErrors.saudiPhone = 'Phone must start with 05 and be 10 digits'
+      newErrors.saudiPhone = t('profileForm.errors.phoneInvalid')
     }
 
     if (!formData.uniCollege) {
-      newErrors.uniCollege = 'Please select a college'
+      newErrors.uniCollege = t('profileForm.errors.collegeRequired')
     }
 
     if (formData.uniCollege === 'أخرى' && !formData.uniCollegeOther.trim()) {
-      newErrors.uniCollegeOther = 'Please enter your college name'
+      newErrors.uniCollegeOther = t('profileForm.errors.collegeOtherRequired')
     }
 
     if (!formData.personalEmail) {
-      newErrors.personalEmail = 'Email is required'
+      newErrors.personalEmail = t('profileForm.errors.emailRequired')
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.personalEmail)) {
-      newErrors.personalEmail = 'Invalid email address'
+      newErrors.personalEmail = t('profileForm.errors.emailInvalid')
     } else if (formData.personalEmail.endsWith('@qu.edu.sa')) {
-      newErrors.personalEmail = 'Personal email cannot be a @qu.edu.sa address'
+      newErrors.personalEmail = t('profileForm.errors.emailUniversity')
     }
 
     setErrors(newErrors)
@@ -167,13 +170,13 @@ export function ProfileForm() {
         await updateProfile.mutateAsync(backendData)
       } catch (apiError) {
         console.error('Backend API error:', apiError)
-        toast.warning('Clerk updated but backend sync failed.')
+        toast.warning(t('profileForm.toast.clerkUpdatedBackendFailed'))
       }
 
-      toast.success('Profile updated successfully!')
+      toast.success(t('profileForm.toast.success'))
     } catch (error) {
       console.error('Error updating profile:', error)
-      toast.error('An unexpected error occurred. Please try again.')
+      toast.error(t('profileForm.toast.error'))
     } finally {
       setIsSaving(false)
     }
@@ -190,7 +193,7 @@ export function ProfileForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-md">
       <div className="space-y-2">
-        <label className="text-sm font-medium" dir="rtl">الرقم الجامعي</label>
+        <label className="text-sm font-medium" dir="rtl">{t('profileForm.uniId')}</label>
         <div className="relative">
           <Input
             value={formData.uni_id}
@@ -200,17 +203,17 @@ export function ProfileForm() {
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-muted-foreground bg-background px-2 py-0.5 rounded border">
             <Lock className="h-3 w-3" />
-            <span>Locked</span>
+            <span>{t('profileForm.locked')}</span>
           </div>
         </div>
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium" dir="rtl">الاسم</label>
+        <label className="text-sm font-medium" dir="rtl">{t('profileForm.name')}</label>
         <Input
           value={formData.fullArabicName}
           onChange={(e) => handleChange('fullArabicName', e.target.value)}
-          placeholder="مثال: ابراهيم محمد بسام الحربي"
+          placeholder={t('profileForm.name.placeholder')}
           dir="rtl"
           disabled={isSaving}
           className={cn(errors.fullArabicName && 'border-destructive')}
@@ -221,7 +224,7 @@ export function ProfileForm() {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium" dir="rtl">رقم الجوال</label>
+        <label className="text-sm font-medium" dir="rtl">{t('profileForm.phone')}</label>
         <Input
           value={formData.saudiPhone}
           onChange={(e) => handleChange('saudiPhone', e.target.value.slice(0, 10))}
@@ -236,7 +239,7 @@ export function ProfileForm() {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium" dir="rtl">القسم</label>
+        <label className="text-sm font-medium" dir="rtl">{t('profileForm.gender')}</label>
         <div className="flex gap-4" dir="rtl">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -248,7 +251,7 @@ export function ProfileForm() {
               disabled={isSaving}
               className="h-4 w-4"
             />
-            <span className="text-sm">طلاب</span>
+            <span className="text-sm">{t('profileForm.gender.male')}</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -260,13 +263,13 @@ export function ProfileForm() {
               disabled={isSaving}
               className="h-4 w-4"
             />
-            <span className="text-sm">طالبات</span>
+            <span className="text-sm">{t('profileForm.gender.female')}</span>
           </label>
         </div>
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium" dir="rtl">المستوى الدراسي</label>
+        <label className="text-sm font-medium" dir="rtl">{t('profileForm.level')}</label>
         <select
           value={formData.uniLevel}
           onChange={(e) => handleChange('uniLevel', Number(e.target.value))}
@@ -274,7 +277,7 @@ export function ProfileForm() {
           className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
           dir="rtl"
         >
-          <option value="" disabled>اختر المستوى</option>
+          <option value="" disabled>{t('profileForm.level.placeholder')}</option>
           {UNI_LEVELS.map((level) => (
             <option key={level} value={level}>{level}</option>
           ))}
@@ -282,7 +285,7 @@ export function ProfileForm() {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium" dir="rtl">الكلية</label>
+        <label className="text-sm font-medium" dir="rtl">{t('profileForm.college')}</label>
         <select
           value={formData.uniCollege}
           onChange={(e) => {
@@ -296,7 +299,7 @@ export function ProfileForm() {
           )}
           dir="rtl"
         >
-          <option value="" disabled>اختر الكلية</option>
+          <option value="" disabled>{t('profileForm.college.placeholder')}</option>
           {QU_COLLEGES.map((college) => (
             <option key={college} value={college}>{college}</option>
           ))}
@@ -308,11 +311,11 @@ export function ProfileForm() {
 
       {showOtherCollege && (
         <div className="space-y-2">
-          <label className="text-sm font-medium" dir="rtl">اسم الكلية</label>
+          <label className="text-sm font-medium" dir="rtl">{t('profileForm.collegeOther')}</label>
           <Input
             value={formData.uniCollegeOther}
             onChange={(e) => handleChange('uniCollegeOther', e.target.value)}
-            placeholder="أدخل اسم كليتك"
+            placeholder={t('profileForm.collegeOther.placeholder')}
             dir="rtl"
             disabled={isSaving}
             className={cn(errors.uniCollegeOther && 'border-destructive')}
@@ -324,7 +327,7 @@ export function ProfileForm() {
       )}
 
       <div className="space-y-2">
-        <label className="text-sm font-medium" dir="rtl">البريد الشخصي</label>
+        <label className="text-sm font-medium" dir="rtl">{t('profileForm.email')}</label>
         <Input
           type="email"
           value={formData.personalEmail}
@@ -335,7 +338,7 @@ export function ProfileForm() {
           className={cn(errors.personalEmail && 'border-destructive')}
         />
         <p className="text-xs text-muted-foreground" dir="rtl">
-          البريد الشخصي وليس المنتهي بـ qu.edu.sa@
+          {t('profileForm.email.hint')}
         </p>
         {errors.personalEmail && (
           <p className="text-xs text-destructive">{errors.personalEmail}</p>
@@ -346,12 +349,12 @@ export function ProfileForm() {
         {isSaving ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            جاري الحفظ...
+            {t('profileForm.saving')}
           </>
         ) : (
           <>
             <Save className="mr-2 h-4 w-4" />
-            حفظ التغييرات
+            {t('profileForm.save')}
           </>
         )}
       </Button>
