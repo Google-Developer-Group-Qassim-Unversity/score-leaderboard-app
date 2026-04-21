@@ -2,6 +2,7 @@
 
 import { Component, type ReactNode } from 'react'
 import { ApiError, NetworkError } from '@/lib/api/errors'
+import i18n from '@/lib/i18n-client'
 
 interface Props {
   children: ReactNode
@@ -50,23 +51,23 @@ export class ErrorBoundary extends Component<Props, State> {
           </div>
           <h2 className="text-xl font-semibold mb-2">
             {isNetworkError
-              ? 'Connection Error'
+              ? i18n.t('error.connection')
               : status === 404
-                ? 'Not Found'
-                : 'Something went wrong'}
+                ? i18n.t('error.notFound')
+                : i18n.t('error.somethingWentWrong')}
           </h2>
           <p className="text-muted-foreground mb-4 max-w-md">
             {isNetworkError
-              ? 'Please check your internet connection and try again.'
+              ? i18n.t('error.connectionMessage')
               : status === 404
-                ? 'The requested resource could not be found.'
-                : this.state.error.message || 'An unexpected error occurred.'}
+                ? i18n.t('error.notFoundMessage')
+                : this.state.error.message || i18n.t('error.unexpectedMessage')}
           </p>
           <button
             onClick={this.reset}
             className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
           >
-            Try again
+            {i18n.t('error.tryAgain')}
           </button>
         </div>
       )

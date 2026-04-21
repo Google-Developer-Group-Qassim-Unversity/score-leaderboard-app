@@ -36,8 +36,6 @@ export function HeroSection({ lang }: HeroSectionProps) {
         {/* Main Heading */}
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900">
           {t('hero.title.performance')}
-          <br />
-          {t('hero.title.leaderboard')}
         </h1>
 
         {/* Subheading */}

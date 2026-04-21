@@ -9,41 +9,41 @@ import { useTranslation } from 'react-i18next';
 import '@/lib/i18n-client';
 
 export default function PointsSystemPage() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const rtl = i18n.language === 'ar';
 
   const memberPoints = [
-    { action: "حضور دورة حضورية", points: "6" },
-    { action: "حضور دورة أونلاين", points: "4" },
-    { action: "حضور معسكر (لكل يوم)", points: "10" },
-    { action: "حضور معسكر أونلاين (لكل يوم)", points: "6" },
-    { action: "حضور حدث ضخم (300+ حضور)", points: "15" },
-    { action: "حضور لقاء تقني/جلسة", points: "3" },
-    { action: "المشاركة في مسابقة خارجية", points: "6" },
-    { action: "التأهل/المراكز المتقدمة في مسابقة", points: "12" },
-    { action: "الفوز/المركز الأول خارجياً", points: "18" },
-    { action: "تقديم جلسة قصيرة (≤ 20 دقيقة)", points: "8" },
-    { action: "تقديم دورة كاملة", points: "20" },
-    { action: "تنظيم/تطوع في حدث (شِفت)", points: "5/شفت" },
-    { action: "المساهمة في تصميم معتمد", points: "6" },
-    { action: "كتابة مقال/فيديو تعليمي معتمد", points: "10" },
-    { action: "المشاركة في مشروع عملي مُعلن", points: "10" },
+    { actionKey: "how.memberAction.0", points: "6" },
+    { actionKey: "how.memberAction.1", points: "4" },
+    { actionKey: "how.memberAction.2", points: "10" },
+    { actionKey: "how.memberAction.3", points: "6" },
+    { actionKey: "how.memberAction.4", points: "15" },
+    { actionKey: "how.memberAction.5", points: "3" },
+    { actionKey: "how.memberAction.6", points: "6" },
+    { actionKey: "how.memberAction.7", points: "12" },
+    { actionKey: "how.memberAction.8", points: "18" },
+    { actionKey: "how.memberAction.9", points: "8" },
+    { actionKey: "how.memberAction.10", points: "20" },
+    { actionKey: "how.memberAction.11", points: "5/شفت" },
+    { actionKey: "how.memberAction.12", points: "6" },
+    { actionKey: "how.memberAction.13", points: "10" },
+    { actionKey: "how.memberAction.14", points: "10" },
   ];
 
   const departmentPoints = [
-    { type: "دورة حضورية", description: "تنظيم دورة حضورية", points: "15" },
-    { type: "دورة أونلاين", description: "تنظيم دورة عن بُعد", points: "9" },
-    { type: "معسكر تدريبي", description: "معسكر حضوري (لكل يوم)", points: "20/يوم" },
-    { type: "معسكر أونلاين", description: "معسكر تدريبي عن بُعد (لكل يوم)", points: "13/يوم" },
-    { type: "حدث ضخم (300+ حضور)", description: "فعالية كبيرة بحضور 300 شخص أو أكثر", points: "50+" },
-    { type: "مساحة تويتر", description: "استضافة مساحة صوتية على تويتر", points: "7" },
-    { type: "لقاء تقني/جلسة شهرية", description: "جلسة تبادل معرفة/نقاش", points: "6" },
-    { type: "مسابقة داخلية (تنظيم)", description: "مسابقة ينظمها القسم", points: "12" },
-    { type: "مشاركة بمسابقة خارجية", description: "يُحتسب للقسم مرة واحدة لكل فريق ممثل", points: "10" },
-    { type: "مشروع عملي/منتج", description: "تسليم مشروع مع مستودع عام + عرض", points: "20" },
-    { type: "فعالية تعريفية/جناح", description: "ركن/تعريف بالنادي داخل الجامعة", points: "8" },
-    { type: "شراكة/رعاية", description: "اتفاق يدعم نشاط/جوائز/مكان", points: "15-30" },
-    { type: "محتوى تعليمي منشور", description: "مقال/فيديو تحت هوية النادي", points: "10" },
+    { typeKey: "how.deptType.0", descKey: "how.deptDesc.0", points: "15" },
+    { typeKey: "how.deptType.1", descKey: "how.deptDesc.1", points: "9" },
+    { typeKey: "how.deptType.2", descKey: "how.deptDesc.2", points: "20/يوم" },
+    { typeKey: "how.deptType.3", descKey: "how.deptDesc.3", points: "13/يوم" },
+    { typeKey: "how.deptType.4", descKey: "how.deptDesc.4", points: "50+" },
+    { typeKey: "how.deptType.5", descKey: "how.deptDesc.5", points: "7" },
+    { typeKey: "how.deptType.6", descKey: "how.deptDesc.6", points: "6" },
+    { typeKey: "how.deptType.7", descKey: "how.deptDesc.7", points: "12" },
+    { typeKey: "how.deptType.8", descKey: "how.deptDesc.8", points: "10" },
+    { typeKey: "how.deptType.9", descKey: "how.deptDesc.9", points: "20" },
+    { typeKey: "how.deptType.10", descKey: "how.deptDesc.10", points: "8" },
+    { typeKey: "how.deptType.11", descKey: "how.deptDesc.11", points: "15-30" },
+    { typeKey: "how.deptType.12", descKey: "how.deptDesc.12", points: "10" },
   ];
 
   return (
@@ -56,11 +56,11 @@ export default function PointsSystemPage() {
               <Award className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900">
-              نظام التقييم والمتابعة للنقاط
+              {t('how.title')}
             </h1>
           </div>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            لمجموعة قوقل للطلبة المطورين
+            {t('how.subtitle')}
           </p>
         </div>
 
@@ -71,12 +71,12 @@ export default function PointsSystemPage() {
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                 <Star className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
               </div>
-              الفكرة العامة
+              {t('how.generalIdea')}
             </h2>
           </div>
 
           <p className="text-slate-600 text-base leading-relaxed text-center mb-8 max-w-3xl mx-auto">
-            نقاط قوقل تعكس مساهمات الأعضاء والأقسام، حيث يتم تقدير كل جهد وإنجاز بشكل واضح وملموس. مشاركتك معنا تصنع الفرق، وكل عضو له دور فريد وبصمة خاصة.
+            {t('how.generalIdea.desc')}
           </p>
 
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-8">
@@ -86,16 +86,16 @@ export default function PointsSystemPage() {
                 <CardTitle className={`text-slate-900 flex items-center gap-3 text-lg font-bold justify-center ${!rtl ? 'flex-row-reverse' : ''}`}>
                   <span className="flex items-center gap-2 justify-center w-full">
                     <Calendar className="h-5 w-5 text-blue-600" />
-                    <span className="text-center">شهرياً</span>
+                    <span className="text-center">{t('how.monthly')}</span>
                   </span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="bg-slate-50 rounded-lg px-4 py-3 border border-slate-200">
-                  <p className="text-slate-700 text-sm text-center">ثلاث أعضاء الشهر المميزين</p>
+                  <p className="text-slate-700 text-sm text-center">{t('how.monthly.topMembers')}</p>
                 </div>
                 <div className="bg-slate-50 rounded-lg px-4 py-3 border border-slate-200">
-                  <p className="text-slate-700 text-sm text-center">قسم الشهر المبدع</p>
+                  <p className="text-slate-700 text-sm text-center">{t('how.monthly.topDept')}</p>
                 </div>
               </CardContent>
             </Card>
@@ -106,19 +106,19 @@ export default function PointsSystemPage() {
                 <CardTitle className={`text-slate-900 flex items-center gap-3 text-lg font-bold justify-center ${!rtl ? 'flex-row-reverse' : ''}`}>
                   <span className="flex items-center gap-2 justify-center w-full">
                     <Star className="h-5 w-5 text-yellow-600" />
-                    <span className="text-center">نهاية الفصل</span>
+                    <span className="text-center">{t('how.endOfTerm')}</span>
                   </span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="bg-slate-50 rounded-lg px-4 py-3 border border-slate-200">
-                  <p className="text-slate-700 text-sm text-center">تكريم أفضل 5 أعضاء (قابلة للزيادة إلى 10)</p>
+                  <p className="text-slate-700 text-sm text-center">{t('how.endOfTerm.top5')}</p>
                 </div>
                 <div className="bg-slate-50 rounded-lg px-4 py-3 border border-slate-200">
-                  <p className="text-slate-700 text-sm text-center">تكريم القسم التخصصي المتميز</p>
+                  <p className="text-slate-700 text-sm text-center">{t('how.endOfTerm.specialized')}</p>
                 </div>
                 <div className="bg-slate-50 rounded-lg px-4 py-3 border border-slate-200">
-                  <p className="text-slate-700 text-sm text-center">تكريم القسم الإداري المتميز</p>
+                  <p className="text-slate-700 text-sm text-center">{t('how.endOfTerm.administrative')}</p>
                 </div>
               </CardContent>
             </Card>
@@ -129,13 +129,13 @@ export default function PointsSystemPage() {
               <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
                 <Check className="h-3 w-3 text-white" />
               </div>
-              <span className="text-slate-700 text-sm">كل نشاط له نقاط أساسية + مضاعفات (حسب الحضور والجودة والتزام الوقت… إلخ).</span>
+              <span className="text-slate-700 text-sm">{t('how.note.multipliers')}</span>
             </div>
             <div className="flex items-center gap-3 bg-slate-50 rounded-lg px-4 py-3 border border-slate-200">
               <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
                 <Check className="h-3 w-3 text-white" />
               </div>
-              <span className="text-slate-700 text-sm">فيه نقاط للأقسام (نقاط قسم) وفيه نقاط للأعضاء (نقاط عضو).</span>
+              <span className="text-slate-700 text-sm">{t('how.note.bothTypes')}</span>
             </div>
           </div>
         </div>
@@ -147,16 +147,16 @@ export default function PointsSystemPage() {
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-lg flex items-center justify-center">
                 <Users className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
               </div>
-              نقاط الأعضاء
+              {t('how.memberPoints')}
             </h2>
-            <p className="text-slate-600 mt-2 text-sm sm:text-base">حضور / مشاركة / تنظيم</p>
+            <p className="text-slate-600 mt-2 text-sm sm:text-base">{t('how.memberPoints.subtitle')}</p>
           </div>
 
           {/* Mobile: Card layout */}
           <div className="sm:hidden space-y-3">
             {memberPoints.map((item, index) => (
               <div key={index} className="bg-slate-50 rounded-lg p-4 border border-slate-200 flex items-center justify-between gap-3">
-                <span className="text-slate-700 text-sm flex-1">{item.action}</span>
+                <span className="text-slate-700 text-sm flex-1">{t(item.actionKey)}</span>
                 <span className="inline-flex items-center justify-center px-3 py-1 bg-green-100 text-green-800 font-bold text-sm rounded-lg min-w-[50px]">
                   {item.points}
                 </span>
@@ -169,14 +169,14 @@ export default function PointsSystemPage() {
             <table className="min-w-full">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 text-right">الفعل</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 text-center">النقاط</th>
+                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 text-right">{t('how.tableHeader.action')}</th>
+                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 text-center">{t('how.tableHeader.points')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {memberPoints.map((item, index) => (
                   <tr key={index} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4 text-slate-700 text-sm">{item.action}</td>
+                    <td className="px-6 py-4 text-slate-700 text-sm">{t(item.actionKey)}</td>
                     <td className="px-6 py-4 text-center">
                       <span className="inline-flex items-center justify-center px-3 py-1 bg-green-100 text-green-800 font-bold text-sm rounded-lg min-w-[60px]">
                         {item.points}
@@ -196,9 +196,9 @@ export default function PointsSystemPage() {
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-500 rounded-lg flex items-center justify-center">
                 <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
               </div>
-              نقاط الأقسام
+              {t('how.deptPoints')}
             </h2>
-            <p className="text-slate-600 mt-2 text-sm sm:text-base">أنواع الأنشطة والنقاط الأساسية</p>
+            <p className="text-slate-600 mt-2 text-sm sm:text-base">{t('how.deptPoints.subtitle')}</p>
           </div>
 
           {/* Mobile: Card layout */}
@@ -206,12 +206,12 @@ export default function PointsSystemPage() {
             {departmentPoints.map((item, index) => (
               <div key={index} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
                 <div className="flex items-start justify-between gap-3 mb-2">
-                  <span className="text-slate-900 text-sm font-medium flex-1">{item.type}</span>
+                  <span className="text-slate-900 text-sm font-medium flex-1">{t(item.typeKey)}</span>
                   <span className="inline-flex items-center justify-center px-3 py-1 bg-yellow-100 text-yellow-800 font-bold text-sm rounded-lg min-w-[50px]">
                     {item.points}
                   </span>
                 </div>
-                <p className="text-slate-500 text-xs">{item.description}</p>
+                <p className="text-slate-500 text-xs">{t(item.descKey)}</p>
               </div>
             ))}
           </div>
@@ -221,16 +221,16 @@ export default function PointsSystemPage() {
             <table className="min-w-full">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 text-right">النوع</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 text-right">التعريف</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 text-center">النقاط</th>
+                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 text-right">{t('how.tableHeader.type')}</th>
+                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 text-right">{t('how.tableHeader.definition')}</th>
+                  <th className="px-6 py-4 text-sm font-semibold text-slate-700 text-center">{t('how.tableHeader.points')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {departmentPoints.map((item, index) => (
                   <tr key={index} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4 text-slate-700 text-sm font-medium whitespace-nowrap">{item.type}</td>
-                    <td className="px-6 py-4 text-slate-500 text-sm">{item.description}</td>
+                    <td className="px-6 py-4 text-slate-700 text-sm font-medium whitespace-nowrap">{t(item.typeKey)}</td>
+                    <td className="px-6 py-4 text-slate-500 text-sm">{t(item.descKey)}</td>
                     <td className="px-6 py-4 text-center">
                       <span className="inline-flex items-center justify-center px-3 py-1 bg-yellow-100 text-yellow-800 font-bold text-sm rounded-lg min-w-[60px]">
                         {item.points}
