@@ -6,6 +6,13 @@ import { toast } from 'sonner'
 import { Loader2, Lock, Save } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { updateClerkMetadata } from '@/lib/actions'
 import { useUpdateProfile } from '@/hooks/mutations/use-update-profile'
 import type { UpdateMemberData } from '@/lib/api/types'
@@ -44,6 +51,17 @@ interface FormData {
   personalEmail: string
 }
 
+const DEFAULT_FORM: FormData = {
+  uni_id: '',
+  fullArabicName: '',
+  saudiPhone: '',
+  gender: 'Male',
+  uniLevel: 1,
+  uniCollege: '',
+  uniCollegeOther: '',
+  personalEmail: '',
+}
+
 export function ProfileForm() {
   const { user, isLoaded } = useUser()
   const updateProfile = useUpdateProfile()
@@ -51,39 +69,37 @@ export function ProfileForm() {
   const [isLoading, setIsLoading] = React.useState(true)
   const [isSaving, setIsSaving] = React.useState(false)
   const [showOtherCollege, setShowOtherCollege] = React.useState(false)
-  
-  const [formData, setFormData] = React.useState<FormData>({
-    uni_id: '',
-    fullArabicName: '',
-    saudiPhone: '',
-    gender: 'Male',
-    uniLevel: 1,
-    uniCollege: '',
-    uniCollegeOther: '',
-    personalEmail: '',
-  })
 
+  const [formData, setFormData] = React.useState<FormData>(DEFAULT_FORM)
+  const [initialData, setInitialData] = React.useState<FormData | null>(null)
   const [errors, setErrors] = React.useState<Partial<Record<keyof FormData, string>>>({})
+
+  const isDirty = React.useMemo(() => {
+    if (!initialData) return false
+    return JSON.stringify(formData) !== JSON.stringify(initialData)
+  }, [formData, initialData])
 
   React.useEffect(() => {
     if (!isLoaded || !user) return
-    
+
     const metadata = user.publicMetadata as Record<string, unknown>
-    const uniId = metadata?.uni_id as string || ''
-    const college = metadata?.uniCollege as string || ''
-    const isOtherCollege = !!college && !QU_COLLEGES.includes(college as typeof QU_COLLEGES[number])
-    
-    setFormData({
-      uni_id: uniId,
+    const college = (metadata?.uniCollege as string) || ''
+    const isOther = !!college && !QU_COLLEGES.includes(college as typeof QU_COLLEGES[number])
+
+    const data: FormData = {
+      uni_id: (metadata?.uni_id as string) || '',
       fullArabicName: (metadata?.fullArabicName as string) || '',
       saudiPhone: (metadata?.saudiPhone as string) || '',
-      gender: (metadata?.gender as 'Male' | 'Female') || 'Male',
+      gender: (metadata?.gender as FormData['gender']) || 'Male',
       uniLevel: (metadata?.uniLevel as number) || 1,
-      uniCollege: isOtherCollege ? 'أخرى' : college,
-      uniCollegeOther: isOtherCollege ? college : '',
+      uniCollege: isOther ? 'أخرى' : college,
+      uniCollegeOther: isOther ? college : '',
       personalEmail: (metadata?.personalEmail as string) || '',
-    })
-    setShowOtherCollege(isOtherCollege)
+    }
+
+    setFormData(data)
+    setInitialData(data)
+    setShowOtherCollege(isOther)
     setIsLoading(false)
   }, [isLoaded, user])
 
@@ -129,14 +145,13 @@ export function ProfileForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    if (!validateForm()) return
-    
+    if (!isDirty || !validateForm()) return
+
     setIsSaving(true)
-    
+
     try {
       const college = formData.uniCollege === 'أخرى' ? formData.uniCollegeOther : formData.uniCollege
-      
+
       const clerkData = {
         uni_id: formData.uni_id,
         fullArabicName: formData.fullArabicName,
@@ -157,7 +172,7 @@ export function ProfileForm() {
       }
 
       const clerkResult = await updateClerkMetadata(clerkData)
-      
+
       if (clerkResult.error) {
         toast.error(clerkResult.error)
         setIsSaving(false)
@@ -165,7 +180,7 @@ export function ProfileForm() {
       }
 
       await user?.reload()
-      
+
       try {
         await updateProfile.mutateAsync(backendData)
       } catch (apiError) {
@@ -173,6 +188,7 @@ export function ProfileForm() {
         toast.warning(t('profileForm.toast.clerkUpdatedBackendFailed'))
       }
 
+      setInitialData({ ...formData })
       toast.success(t('profileForm.toast.success'))
     } catch (error) {
       console.error('Error updating profile:', error)
@@ -270,40 +286,43 @@ export function ProfileForm() {
 
       <div className="space-y-2">
         <label className="text-sm font-medium" dir="rtl">{t('profileForm.level')}</label>
-        <select
-          value={formData.uniLevel}
-          onChange={(e) => handleChange('uniLevel', Number(e.target.value))}
+        <Select
+          value={String(formData.uniLevel)}
+          onValueChange={(v) => handleChange('uniLevel', Number(v))}
           disabled={isSaving}
-          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
           dir="rtl"
         >
-          <option value="" disabled>{t('profileForm.level.placeholder')}</option>
-          {UNI_LEVELS.map((level) => (
-            <option key={level} value={level}>{level}</option>
-          ))}
-        </select>
+          <SelectTrigger className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {UNI_LEVELS.map((level) => (
+              <SelectItem key={level} value={String(level)}>{level}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-2">
         <label className="text-sm font-medium" dir="rtl">{t('profileForm.college')}</label>
-        <select
+        <Select
           value={formData.uniCollege}
-          onChange={(e) => {
-            handleChange('uniCollege', e.target.value)
-            setShowOtherCollege(e.target.value === 'أخرى')
+          onValueChange={(v) => {
+            handleChange('uniCollege', v)
+            setShowOtherCollege(v === 'أخرى')
           }}
           disabled={isSaving}
-          className={cn(
-            "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-            errors.uniCollege && 'border-destructive'
-          )}
           dir="rtl"
         >
-          <option value="" disabled>{t('profileForm.college.placeholder')}</option>
-          {QU_COLLEGES.map((college) => (
-            <option key={college} value={college}>{college}</option>
-          ))}
-        </select>
+          <SelectTrigger className={cn("w-full", errors.uniCollege && 'border-destructive')}>
+            <SelectValue placeholder={t('profileForm.college.placeholder')} />
+          </SelectTrigger>
+          <SelectContent>
+            {QU_COLLEGES.map((college) => (
+              <SelectItem key={college} value={college}>{college}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         {errors.uniCollege && (
           <p className="text-xs text-destructive">{errors.uniCollege}</p>
         )}
@@ -345,7 +364,7 @@ export function ProfileForm() {
         )}
       </div>
 
-      <Button type="submit" className="w-full" disabled={isSaving}>
+      <Button type="submit" className="w-full" disabled={!isDirty || isSaving}>
         {isSaving ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

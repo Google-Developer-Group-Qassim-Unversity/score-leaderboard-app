@@ -70,6 +70,7 @@ export const resources = {
       "nav.profile": "Profile",
 
       // Profile Page
+      "profile.pageTitle": "Profile Center",
       "profile.gdgProfile": "GDG Profile",
       "profile.accountManagement": "Account Management",
       "profile.eventsFeed": "Events Feed",
@@ -493,6 +494,7 @@ export const resources = {
       "nav.profile": "الملف الشخصي",
 
       // Profile Page
+      "profile.pageTitle": "الملف الشخصي",
       "profile.gdgProfile": "بيانات GDG",
       "profile.accountManagement": "إدارة الحساب",
       "profile.eventsFeed": "سجل الفعاليات",
