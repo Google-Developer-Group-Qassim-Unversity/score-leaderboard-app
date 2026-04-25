@@ -2,23 +2,38 @@
 
 import { ClerkProvider } from '@clerk/nextjs';
 import { arSA } from '@clerk/localizations';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n-client';
 
+const arSAFixed = {
+  ...arSA,
+  formFieldInputPlaceholder__confirmDeletionUserAccount: 'حذف الحساب',
+  userProfile: {
+    ...arSA.userProfile,
+    deletePage: {
+      ...arSA.userProfile?.deletePage,
+      actionDescription: 'اكتب "حذف الحساب" بالأسفل للمتابعة.',
+      confirm: 'حذف الحساب',
+    },
+  },
+};
+
 export function ClerkProviderWrapper({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation();
-  const [localization, setLocalization] = useState(i18n.language === 'ar' ? arSA : undefined);
-
-  useEffect(() => {
-    // Update Clerk localization when language changes
-    setLocalization(i18n.language === 'ar' ? arSA : undefined);
-  }, [i18n.language]);
+  const isArabic = i18n.language === 'ar';
 
   return (
     <ClerkProvider
-      localization={localization}
-      appearance={{ cssLayerName: 'clerk' }}
+      localization={isArabic ? arSAFixed : undefined}
+      appearance={{
+        cssLayerName: 'clerk',
+        elements: {
+          avatarBox: 'overflow-hidden',
+          userButtonAvatarBox: 'overflow-hidden',
+          avatarImage: 'h-full w-full object-cover',
+          userButtonPopoverCard: isArabic ? '[direction:rtl] [text-align:right]' : '',
+        },
+      }}
     >
       {children}
     </ClerkProvider>
