@@ -3,11 +3,10 @@
 import { UserButton, useUser } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { LogIn, UserPlus, User } from "lucide-react"
+import { UserPlus, User } from "lucide-react"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
 import { getFullCurrentUrl } from '@/lib/utils'
-import { ProfileForm } from '@/components/profile-form'
 import { config } from '@/lib/config'
 
 export function AuthButton() {
@@ -15,14 +14,12 @@ export function AuthButton() {
   const { t, i18n } = useTranslation()
   const isRTL = i18n.language === 'ar'
 
-  // Loading state
   if (!isLoaded) {
     return (
       <Skeleton className="h-8 w-8 rounded-full" />
     )
   }
 
-  // Signed in state - show user button
   if (isSignedIn) {
     return (
       <UserButton
@@ -33,13 +30,15 @@ export function AuthButton() {
           },
         }}
       >
-        <UserButton.UserProfilePage
-          label="GDG-Profile"
-          url="profile"
-          labelIcon={<User className="w-4 h-4" />}
-        >
-          <ProfileForm />
-        </UserButton.UserProfilePage>
+        <UserButton.MenuItems>
+          <UserButton.Link
+            label={t('nav.profile')}
+            labelIcon={<User className="w-4 h-4" />}
+            href="/profile"
+          />
+          <UserButton.Action label="manageAccount" />
+          <UserButton.Action label="signOut" />
+        </UserButton.MenuItems>
       </UserButton>
     )
   }

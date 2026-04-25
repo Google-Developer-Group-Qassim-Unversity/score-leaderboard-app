@@ -16,7 +16,10 @@ export function ClerkProviderWrapper({ children }: { children: React.ReactNode }
   }, [i18n.language]);
 
   return (
-    <ClerkProvider localization={localization}>
+    <ClerkProvider
+      localization={localization}
+      appearance={{ cssLayerName: 'clerk' }}
+    >
       {children}
     </ClerkProvider>
   );

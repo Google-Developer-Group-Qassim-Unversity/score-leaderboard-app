@@ -167,3 +167,18 @@ export interface UpdateMemberData {
   uni_level?: number
   uni_college?: string
 }
+
+export interface AttendanceDate {
+  date: string
+  attended: boolean
+}
+
+export interface ApiMyEventItem extends ApiEventItem {
+  is_official: number
+  attendance_dates: AttendanceDate[]
+}
+
+export interface ApiMyEventsResponse {
+  attended: ApiMyEventItem[]
+  participated: ApiMyEventItem[]
+}
