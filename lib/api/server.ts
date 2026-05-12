@@ -15,6 +15,12 @@ async function getAuthToken(): Promise<string | undefined> {
   return token ?? undefined
 }
 
+export const publicServerApi = {
+  async get<T>(path: string, options?: Omit<RequestOptions, 'token'>): Promise<T> {
+    return api.get<T>(path, options)
+  },
+}
+
 export const serverApi = {
   async get<T>(path: string, options?: Omit<RequestOptions, 'token'>): Promise<T> {
     const token = await getAuthToken()

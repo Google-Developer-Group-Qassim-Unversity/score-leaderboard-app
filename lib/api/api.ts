@@ -7,7 +7,7 @@
  * For client components, use hooks from hooks/queries/* instead.
  */
 
-import { serverApi } from './server'
+import { publicServerApi, serverApi } from './server'
 import type {
   ApiMembersPointsResponse,
   ApiMemberPointsHistory,
@@ -30,14 +30,14 @@ export function fetchMembers(semester?: number): Promise<ApiMembersPointsRespons
   const params = new URLSearchParams()
   if (semester != null) params.set('semester', String(semester))
   const qs = params.toString()
-  return serverApi.get<ApiMembersPointsResponse>(`/points/members/total${qs ? `?${qs}` : ''}`)
+  return publicServerApi.get<ApiMembersPointsResponse>(`/points/members/total${qs ? `?${qs}` : ''}`)
 }
 
 export function fetchMemberById(id: string, semester?: number): Promise<ApiMemberPointsHistory> {
   const params = new URLSearchParams()
   if (semester != null) params.set('semester', String(semester))
   const qs = params.toString()
-  return serverApi.get<ApiMemberPointsHistory>(`/points/members/${id}${qs ? `?${qs}` : ''}`)
+  return publicServerApi.get<ApiMemberPointsHistory>(`/points/members/${id}${qs ? `?${qs}` : ''}`)
 }
 
 export function fetchCurrentMember(): Promise<CurrentMember> {
@@ -56,14 +56,14 @@ export function fetchDepartments(semester?: number): Promise<ApiDepartmentsPoint
   const params = new URLSearchParams()
   if (semester != null) params.set('semester', String(semester))
   const qs = params.toString()
-  return serverApi.get<ApiDepartmentsPointsResponse>(`/points/departments/total${qs ? `?${qs}` : ''}`)
+  return publicServerApi.get<ApiDepartmentsPointsResponse>(`/points/departments/total${qs ? `?${qs}` : ''}`)
 }
 
 export function fetchDepartmentById(id: string, semester?: number): Promise<ApiDepartmentPointsHistory> {
   const params = new URLSearchParams()
   if (semester != null) params.set('semester', String(semester))
   const qs = params.toString()
-  return serverApi.get<ApiDepartmentPointsHistory>(`/points/departments/${id}${qs ? `?${qs}` : ''}`)
+  return publicServerApi.get<ApiDepartmentPointsHistory>(`/points/departments/${id}${qs ? `?${qs}` : ''}`)
 }
 
 // ============================================================
@@ -74,11 +74,11 @@ export function fetchEvents(semester?: number | null): Promise<ApiEventsResponse
   const params = new URLSearchParams()
   if (semester != null) params.set('semester', String(semester))
   const qs = params.toString()
-  return serverApi.get<ApiEventsResponse>(`/events${qs ? `?${qs}` : ''}`)
+  return publicServerApi.get<ApiEventsResponse>(`/events${qs ? `?${qs}` : ''}`)
 }
 
 export function fetchOpenEvents(): Promise<ApiOpenEventsResponse> {
-  return serverApi.get<ApiOpenEventsResponse>('/events/open')
+  return publicServerApi.get<ApiOpenEventsResponse>('/events/open')
 }
 
 // ============================================================
