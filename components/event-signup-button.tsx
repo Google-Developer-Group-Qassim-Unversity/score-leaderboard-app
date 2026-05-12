@@ -158,11 +158,11 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
         >
           {getButtonContent()}
         </Button>
-        <AlertDialogContent>
+        <AlertDialogContent >
           <AlertDialogHeader>
             <AlertDialogTitle>{t('eventSignup.confirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t('eventSignup.confirmDescription')} {event.name}?
+              {t('eventSignup.confirmDescription')} {event.name}
             </AlertDialogDescription>
           </AlertDialogHeader>
           {signupMutation.error && (

@@ -30,6 +30,10 @@ const nextConfig = {
         pathname: '/**',
       }
     ]
+  },
+  devIndicators: {
+    buildActivity: true,
+    buildActivityPosition: 'bottom-left',
   }
 }
 

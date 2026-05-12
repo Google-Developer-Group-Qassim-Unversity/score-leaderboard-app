@@ -38,6 +38,10 @@ export const resources = {
       "leaderboard.noMembersData": "No members data available",
       "leaderboard.noSpecializedDeptsData": "No specialized departments data available",
       "leaderboard.noAdministrativeDeptsData": "No administrative departments data available",
+      "leaderboard.showDetails": "Show Details",
+      "leaderboard.hideDetails": "Hide Details",
+      "leaderboard.show": "Show",
+      "leaderboard.hide": "Hide",
 
       // Semester
       "semester.label": "Semester",
@@ -467,6 +471,10 @@ export const resources = {
       "leaderboard.noMembersData": "ما فيه بيانات للأعضاء",
       "leaderboard.noSpecializedDeptsData": "ما فيه بيانات للأقسام التخصصية",
       "leaderboard.noAdministrativeDeptsData": "ما فيه بيانات للأقسام الإدارية",
+      "leaderboard.showDetails": "إظهار التفاصيل",
+      "leaderboard.hideDetails": "إخفاء التفاصيل",
+      "leaderboard.show": "إظهار",
+      "leaderboard.hide": "إخفاء",
 
       // Semester
       "semester.label": "الفصل الدراسي",
