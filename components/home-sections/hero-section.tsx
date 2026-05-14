@@ -23,6 +23,7 @@ export function HeroSection({ lang }: HeroSectionProps) {
               width={512}
               height={512}
               className="w-16 h-16 md:w-20 md:h-20 object-contain"
+              unoptimized
             />
             {/* Simple Version 2.0 Badge */}
             <div className="absolute -top-1 -right-1">

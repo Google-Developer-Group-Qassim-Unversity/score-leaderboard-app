@@ -28,6 +28,7 @@ export function PageHeader({ icon, iconColor = "blue", heading, subHeading }: Pa
         width={16}
         height={16}
         className="w-full h-full object-contain"
+        unoptimized
       />
     );
   } else if (icon) {

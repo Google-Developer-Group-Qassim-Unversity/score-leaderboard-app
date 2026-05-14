@@ -129,7 +129,7 @@ export function Navigation() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4 gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <Image src="/gdg.png" alt="GDG Logo" width={32} height={32} className="rounded" />
+          <Image src="/gdg.png" alt="GDG Logo" width={32} height={32} className="rounded" unoptimized />
           <span className="font-bold text-lg hidden sm:block">GDG Qassim</span>
           <span className="font-bold text-lg sm:hidden">GDG</span>
         </Link>
@@ -194,7 +194,7 @@ export function Navigation() {
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b">
                   <Link href="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
-                    <Image src="/gdg.png" alt="GDG Logo" width={32} height={32} className="rounded" />
+                    <Image src="/gdg.png" alt="GDG Logo" width={32} height={32} className="rounded" unoptimized />
                     <span className="font-bold">GDG-Qassim</span>
                   </Link>
                   <SheetClose asChild>
