@@ -1,74 +1,96 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import Image from "next/image"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
 
-const TARGET_DATE = new Date("2026-05-20T10:00:00+03:00")
-
-function calculateTimeLeft() {
-  const now = new Date()
-  const difference = TARGET_DATE.getTime() - now.getTime()
-
-  if (difference <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 }
-
-  return {
-    days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-    hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-    minutes: Math.floor((difference / (1000 * 60)) % 60),
-    seconds: Math.floor((difference / 1000) % 60),
-  }
-}
+const GRADUATION_URL = "https://graduation.gdg-q.com/"
 
 export function CountdownTimer() {
-  const { t } = useTranslation()
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft)
-
-  useEffect(() => {
-    const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 1000)
-    return () => clearInterval(timer)
-  }, [])
+  const { t, i18n } = useTranslation()
+  const isArabic = i18n.language === 'ar'
 
   return (
-    <div className="mb-8 text-center px-4">
-      <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-4 sm:p-8 max-w-2xl mx-auto">
-        <p className="text-xl sm:text-2xl font-bold text-slate-800 mb-4 sm:mb-6" style={{ direction: 'rtl' }}>
-          {t('countdown.comingSoon')}
-        </p>
-        <p className="text-lg sm:text-2xl font-bold text-slate-800 mb-4 sm:mb-6 leading-relaxed" style={{ direction: 'rtl' }}>
-          {t('countdown.subtitle')}
-        </p>
-        
-        <div className="flex justify-center gap-2 sm:gap-4 mb-4 sm:mb-6" dir="ltr">
-          <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-2 sm:p-4 min-w-[60px] sm:min-w-[80px] flex-1 max-w-[80px] sm:max-w-none">
-            <div className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-              {timeLeft.days}
-            </div>
-            <div className="text-xs font-semibold mt-1 text-slate-600">{t('countdown.days')}</div>
-          </div>
-          <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-2 sm:p-4 min-w-[60px] sm:min-w-[80px] flex-1 max-w-[80px] sm:max-w-none">
-            <div className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-              {timeLeft.hours}
-            </div>
-            <div className="text-xs font-semibold mt-1 text-slate-600">{t('countdown.hours')}</div>
-          </div>
-          <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-2 sm:p-4 min-w-[60px] sm:min-w-[80px] flex-1 max-w-[80px] sm:max-w-none">
-            <div className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-              {timeLeft.minutes}
-            </div>
-            <div className="text-xs font-semibold mt-1 text-slate-600">{t('countdown.minutes')}</div>
-          </div>
-          <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-2 sm:p-4 min-w-[60px] sm:min-w-[80px] flex-1 max-w-[80px] sm:max-w-none">
-            <div className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-              {timeLeft.seconds}
-            </div>
-            <div className="text-xs font-semibold mt-1 text-slate-600">{t('countdown.seconds')}</div>
-          </div>
-        </div>
+    <div className="mb-8 px-4 py-8 sm:py-12">
+      <div className="relative mx-auto max-w-2xl overflow-hidden rounded-3xl bg-[#12326f] p-6 text-white shadow-2xl sm:p-10" style={{ boxShadow: '0 25px 80px -12px rgba(0,151,167,0.35), 0 18px 50px -8px rgba(66,133,244,0.3), 0 8px 24px -4px rgba(13,43,107,0.4), inset 0 1px 0 rgba(255,255,255,0.12)' }}>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#4285f4]/20 via-transparent to-[#0097a7]/25" />
+        <Image
+          src="/supergraphic.png"
+          alt=""
+          fill
+          aria-hidden
+          className="pointer-events-none object-cover object-left-bottom opacity-35 mix-blend-screen"
+          sizes="(max-width: 640px) 100vw, 672px"
+        />
 
-        <p className="text-lg sm:text-xl font-bold text-slate-700 mb-4 sm:mb-6" style={{ direction: 'rtl' }}>
-          {t('countdown.stayTuned')}
-        </p>
+        <div className="relative z-10 flex min-h-64 flex-col items-center justify-between gap-8 text-center">
+          <div className="space-y-3">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-lg font-bold text-white backdrop-blur-sm">
+              ⏳
+            </span>
+            <p className="font-heading text-2xl font-black leading-tight sm:text-3xl" dir="rtl">
+              {isArabic ? (
+                <>تحديث النقاط متوقف مؤقتًا…</>
+              ) : (
+                <>Points update is temporarily paused...</>
+              )}
+            </p>
+            <p className="font-heading text-2xl font-black leading-tight sm:text-3xl" dir="rtl">
+              {isArabic ? (
+                <>
+                  ترقبوا{' '}
+                  <a
+                    href={GRADUATION_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-[#8edce6] decoration-2 underline-offset-4 transition-colors hover:text-[#8edce6]"
+                  >
+                    الحدث الكبير
+                  </a>
+                  !
+                </>
+              ) : (
+                <>
+                  Stay tuned for{' '}
+                  <a
+                    href={GRADUATION_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-[#8edce6] decoration-2 underline-offset-4 transition-colors hover:text-[#8edce6]"
+                  >
+                    the big event
+                  </a>
+                  !
+                </>
+              )}
+            </p>
+          </div>
+
+          <div className="grid w-full grid-cols-4 gap-3" dir="ltr">
+            {[
+              { value: '??', label: t('countdown.days') },
+              { value: '??', label: t('countdown.hours') },
+              { value: '??', label: t('countdown.minutes') },
+              { value: '??', label: t('countdown.seconds') },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border border-white/15 bg-white/10 p-3 text-center backdrop-blur sm:p-4"
+              >
+                <div className="font-heading text-2xl font-black tabular-nums sm:text-4xl">
+                  {item.value}
+                </div>
+                <div className="mt-1 text-[10px] font-bold text-white/72 sm:text-xs">
+                  {item.label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="font-heading text-base font-bold sm:text-lg" dir="rtl">
+            {t('countdown.stayTuned')}
+          </p>
+        </div>
       </div>
     </div>
   )
