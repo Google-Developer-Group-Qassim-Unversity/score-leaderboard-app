@@ -7,7 +7,6 @@ import { DepartmentTypeCard } from "./department-type-card"
 import { SemesterSelector } from "@/components/semester-selector"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { CURRENT_SEMESTER } from "@/lib/config"
-import { checkIsSuperAdmin } from "@/lib/auth-utils"
 
 interface DepartmentsLeaderboardProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -20,11 +19,9 @@ export default async function DepartmentsLeaderboard({ searchParams }: Departmen
   
   const params = await searchParams
   
-  const isSuperAdmin = await checkIsSuperAdmin()
   const semesterParam = params.semester ? Number(params.semester) : undefined
-  const activeSemester = isSuperAdmin ? semesterParam : undefined
 
-  const apiDepartmentsResponse = await fetchDepartments(activeSemester)
+  const apiDepartmentsResponse = await fetchDepartments(semesterParam)
   
   // Calculate count from array lengths
   const departmentsCount = (apiDepartmentsResponse.administrative?.length || 0) + (apiDepartmentsResponse.practical?.length || 0)
@@ -49,11 +46,9 @@ export default async function DepartmentsLeaderboard({ searchParams }: Departmen
         </div>
 
         {/* Semester Selector - flush with cards */}
-        {isSuperAdmin && (
-          <div className="flex mb-4 ltr:justify-end rtl:justify-start">
-            <SemesterSelector currentSemester={activeSemester ?? CURRENT_SEMESTER} />
-          </div>
-        )}
+        <div className="flex mb-4 ltr:justify-end rtl:justify-start">
+          <SemesterSelector currentSemester={semesterParam ?? CURRENT_SEMESTER} />
+        </div>
 
         {/* Department Type Leaderboards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -64,7 +59,7 @@ export default async function DepartmentsLeaderboard({ searchParams }: Departmen
             departments={practicalDepartments}
             icon={Wrench}
             gradientColors={{ from: "from-green-500", to: "to-green-600" }}
-            semester={activeSemester}
+            semester={semesterParam}
           />
           {/* Administrative Departments */}
           <DepartmentTypeCard
@@ -73,7 +68,7 @@ export default async function DepartmentsLeaderboard({ searchParams }: Departmen
             departments={administrativeDepartments}
             icon={Settings}
             gradientColors={{ from: "from-blue-500", to: "to-blue-600" }}
-            semester={activeSemester}
+            semester={semesterParam}
           />
 
         </div>

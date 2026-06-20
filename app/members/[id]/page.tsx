@@ -7,7 +7,6 @@ import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n
 import { isSameDayOrOvernight, getEffectiveEndDate } from "@/lib/event-utils"
 import { SemesterSelector } from "@/components/semester-selector"
 import { CURRENT_SEMESTER } from "@/lib/config"
-import { checkIsSuperAdmin } from "@/lib/auth-utils"
 
 export const dynamic = "force-dynamic"
 
@@ -19,13 +18,11 @@ export default async function MemberDetailPage({ params, searchParams }: PagePro
   const { id } = await params
   const sp = await searchParams
   
-  const isSuperAdmin = await checkIsSuperAdmin()
   const semesterParam = sp.semester ? Number(sp.semester) : undefined
-  const activeSemester = isSuperAdmin ? semesterParam : undefined
   
   let memberData
   try {
-    memberData = await fetchMemberById(id, activeSemester)
+    memberData = await fetchMemberById(id, semesterParam)
   } catch (error) {
     if (error instanceof NotFoundError) {
       notFound()
@@ -78,13 +75,11 @@ export default async function MemberDetailPage({ params, searchParams }: PagePro
                 </div>
 
                 {/* Semester Selector - inside profile card */}
-                {isSuperAdmin && (
-                  <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-                    <div className="flex ltr:justify-end rtl:justify-start">
-                      <SemesterSelector currentSemester={activeSemester ?? CURRENT_SEMESTER} />
-                    </div>
+                <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex ltr:justify-end rtl:justify-start">
+                    <SemesterSelector currentSemester={semesterParam ?? CURRENT_SEMESTER} />
                   </div>
-                )}
+                </div>
               </CardContent>
             </Card>
           </div>

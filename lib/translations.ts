@@ -406,15 +406,6 @@ export const resources = {
       "profileForm.toast.success": "Profile updated successfully!",
       "profileForm.toast.error": "An unexpected error occurred. Please try again.",
 
-      // Countdown Timer
-      "countdown.comingSoon": "Coming Soon ⏳",
-      "countdown.subtitle": "Points update is temporarily paused... Stay tuned for the big event!",
-      "countdown.days": "DAYS",
-      "countdown.hours": "HOURS",
-      "countdown.minutes": "MINUTES",
-      "countdown.seconds": "SECONDS",
-      "countdown.stayTuned": "Stay tuned...",
-
       // Error Display
       "error.connection": "Connection Error",
       "error.notFound": "Not Found",
@@ -871,15 +862,6 @@ export const resources = {
       "profileForm.toast.clerkUpdatedBackendFailed": "تم تحديث البيانات بس صارت مشكلة في المزامنة",
       "profileForm.toast.success": "تم تحديث الملف الشخصي بنجاح!",
       "profileForm.toast.error": "صار خطأ غير متوقع. جرب مرة ثانية.",
-
-      // Countdown Timer
-      "countdown.comingSoon": "⏳ قريبًا",
-      "countdown.subtitle": "تحديث النقاط متوقف مؤقتًا… ترقبوا الحدث الكبير!",
-      "countdown.days": "أيام",
-      "countdown.hours": "ساعات",
-      "countdown.minutes": "دقائق",
-      "countdown.seconds": "ثواني",
-      "countdown.stayTuned": "انتظرونا...",
 
       // Error Display
       "error.connection": "خطأ في الاتصال",

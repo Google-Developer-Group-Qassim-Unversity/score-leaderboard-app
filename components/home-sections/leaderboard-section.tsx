@@ -1,19 +1,17 @@
 import { Trophy, Building2, Wrench, Users, MoveRight } from "lucide-react"
 import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { LeaderboardCard } from "@/components/leaderboard-card"
 import { SectionHeader } from "@/components/section-header"
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
 import { SemesterSelector } from "@/components/semester-selector"
 import { LeaderboardWrapper } from "@/components/leaderboard-wrapper"
-import { BlurToggleButton, BlurOverlay } from "@/components/leaderboard-blur"
 import { fetchMembers, fetchDepartments } from "@/lib/api/api"
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
 import { CURRENT_SEMESTER } from "@/lib/config"
 import type { ApiMemberPoints, ApiDepartmentPoints } from "@/lib/api/types"
 import { getSemesterQueryString } from "@/lib/url-utils"
-import { checkIsSuperAdmin } from "@/lib/auth-utils"
 
 interface LeaderboardSectionProps {
   semester?: number
@@ -22,7 +20,6 @@ interface LeaderboardSectionProps {
 export async function LeaderboardSection({ semester }: LeaderboardSectionProps) {
   const lang = await getLanguageFromCookies()
   const t = (key: string) => getTranslation(lang, key)
-  const isSuperAdmin = await checkIsSuperAdmin()
 
   let topMembers: ApiMemberPoints[] = []
   let practicalDepartments: ApiDepartmentPoints[] = []
@@ -49,11 +46,9 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
         subtitle={t('leaderboard.subtitle')}
       />
 
-      {isSuperAdmin && (
-        <div className="flex mb-4 ltr:justify-end rtl:justify-start">
-          <SemesterSelector currentSemester={semester ?? CURRENT_SEMESTER} />
-        </div>
-      )}
+      <div className="flex mb-4 ltr:justify-end rtl:justify-start">
+        <SemesterSelector currentSemester={semester ?? CURRENT_SEMESTER} />
+      </div>
 
       <LeaderboardWrapper>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 w-full max-w-full">
@@ -69,7 +64,6 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                     <span className="break-words leading-tight">{t('leaderboard.topMembers')}</span>
                   </CardTitle>
                   <div className="flex items-center gap-2 shrink-0">
-                    <BlurToggleButton target="members" />
                     <Link href={getSemesterQueryString("/members", semester)}>
                       <Button variant="outline" size="default" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                         {t('leaderboard.viewAll')}
@@ -80,23 +74,21 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                 </div>
               </CardHeader>
               <CardContent className="relative px-3 sm:px-6">
-                <BlurOverlay target="members">
-                  <div className="space-y-6 transition-all duration-500">
-                    <div className="w-full max-w-full min-w-0 overflow-hidden">
-                      <div className="space-y-3">
-                        {topMembers.length > 0 ? (
-                          topMembers.map((member, index) => (
-                            <div key={member.member_id} className="w-full max-w-full min-w-0">
-                              <LeaderboardCard id={member.member_id.toString()} name={member.member_name} rank={index + 1} points={member.total_points ?? 0} type="member" semester={semester} />
-                            </div>
-                          ))
-                        ) : (
-                          <p className="text-slate-500 text-sm text-center py-4">{t('leaderboard.noMembersData')}</p>
-                        )}
-                      </div>
+                <div className="space-y-6 transition-all duration-500">
+                  <div className="w-full max-w-full min-w-0 overflow-hidden">
+                    <div className="space-y-3">
+                      {topMembers.length > 0 ? (
+                        topMembers.map((member, index) => (
+                          <div key={member.member_id} className="w-full max-w-full min-w-0">
+                            <LeaderboardCard id={member.member_id.toString()} name={member.member_name} rank={index + 1} points={member.total_points ?? 0} type="member" semester={semester} />
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-slate-500 text-sm text-center py-4">{t('leaderboard.noMembersData')}</p>
+                      )}
                     </div>
                   </div>
-                </BlurOverlay>
+                </div>
               </CardContent>
             </div>
           </Card>
@@ -113,7 +105,6 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                     <span className="wrap-break-word leading-tight">{t('leaderboard.topDepartments')}</span>
                   </CardTitle>
                   <div className="flex items-center gap-2 shrink-0">
-                    <BlurToggleButton target="departments" />
                     <Link href={getSemesterQueryString("/departments", semester)}>
                       <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                         {t('leaderboard.viewAll')}
@@ -125,41 +116,39 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
               </CardHeader>
 
               <CardContent className="relative px-3 sm:px-6">
-                <BlurOverlay target="departments">
-                  <div className="space-y-6 transition-all duration-500">
-                    {/* Practical Departments */}
-                    <div className="w-full max-w-full min-w-0">
-                    <SectionHeader icon={Wrench} title={t('leaderboard.specializedDepts')} color="green"/>
-                      <div className="space-y-3 w-full max-w-full">
-                        {practicalDepartments.length > 0 ? (
-                          practicalDepartments.map((department, index) => ( 
-                            <div key={department.department_id} className="w-full max-w-full min-w-0">
-                              <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department" semester={semester}/> 
-                            </div>
-                          ))
-                        ) : (
-                          <p className="text-slate-500 text-sm text-center py-4">{t('leaderboard.noSpecializedDeptsData')}</p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Administrative Departments */}
-                    <div className="w-full max-w-full min-w-0">
-                      <SectionHeader icon={Building2} title={t('leaderboard.administrativeDepts')} color="blue"/>
-                      <div className="space-y-3 w-full max-w-full">
-                        {administrativeDepartments.length > 0 ? (
-                          administrativeDepartments.map((department, index) => (
-                            <div key={department.department_id} className="w-full max-w-full min-w-0">
-                              <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department" semester={semester}/>
-                            </div>
-                          ))
-                        ) : (
-                          <p className="text-slate-500 text-sm text-center py-4">{t('leaderboard.noAdministrativeDeptsData')}</p>
-                        )}
-                      </div>
+                <div className="space-y-6 transition-all duration-500">
+                  {/* Practical Departments */}
+                  <div className="w-full max-w-full min-w-0">
+                  <SectionHeader icon={Wrench} title={t('leaderboard.specializedDepts')} color="green"/>
+                    <div className="space-y-3 w-full max-w-full">
+                      {practicalDepartments.length > 0 ? (
+                        practicalDepartments.map((department, index) => ( 
+                          <div key={department.department_id} className="w-full max-w-full min-w-0">
+                            <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department" semester={semester}/> 
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-slate-500 text-sm text-center py-4">{t('leaderboard.noSpecializedDeptsData')}</p>
+                      )}
                     </div>
                   </div>
-                </BlurOverlay>
+
+                  {/* Administrative Departments */}
+                  <div className="w-full max-w-full min-w-0">
+                    <SectionHeader icon={Building2} title={t('leaderboard.administrativeDepts')} color="blue"/>
+                    <div className="space-y-3 w-full max-w-full">
+                      {administrativeDepartments.length > 0 ? (
+                        administrativeDepartments.map((department, index) => (
+                          <div key={department.department_id} className="w-full max-w-full min-w-0">
+                            <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department" semester={semester}/>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-slate-500 text-sm text-center py-4">{t('leaderboard.noAdministrativeDeptsData')}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </div>
           </Card>

@@ -76,7 +76,7 @@ export function LeaderboardCard({ id, name, rank, points, type, semester }: Lead
   return (
     <Link
       href={detailsUrl}
-      className={`flex items-center justify-between p-2.5 sm:p-3 rounded-lg transition-all duration-200 ${styles.container} w-full hover:scale-[1.01] active:scale-[0.99] group cursor-pointer`}
+      className={`flex items-center justify-between p-2.5 sm:p-3 rounded-lg transition-all duration-200 ${styles.container} w-full active:scale-[0.99] group cursor-pointer`}
       id={`member-row-${id}`}
     >
       <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">

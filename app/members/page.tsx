@@ -6,7 +6,6 @@ import { SemesterSelector } from "@/components/semester-selector"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { currentUser } from "@clerk/nextjs/server"
 import { CURRENT_SEMESTER } from "@/lib/config"
-import { checkIsSuperAdmin } from "@/lib/auth-utils"
 
 interface MembersLeaderboardProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -19,16 +18,14 @@ export default async function MembersLeaderboard({ searchParams }: MembersLeader
 
   const params = await searchParams
   
-  const isSuperAdmin = await checkIsSuperAdmin()
   const semesterParam = params.semester ? Number(params.semester) : undefined
-  const activeSemester = isSuperAdmin ? semesterParam : undefined
 
   // TODO: needs to be checked if it affected the performance or no
   const user = await currentUser()
   const uniId = user?.publicMetadata?.uni_id as string | undefined
   const fullArabicName = user?.publicMetadata?.fullArabicName as string | undefined
 
-  const apiMembers = await fetchMembers(activeSemester)
+  const apiMembers = await fetchMembers(semesterParam)
   const foundMember = apiMembers.find((m) => {
     const sUniId = String(m.uni_id || "").trim()
     const targetUniId = String(uniId || "").trim()
@@ -78,6 +75,11 @@ export default async function MembersLeaderboard({ searchParams }: MembersLeader
             />
           </div>
 
+          {/* Semester Selector */}
+          <div className="flex mb-6 ltr:justify-end rtl:justify-start">
+            <SemesterSelector currentSemester={semesterParam ?? CURRENT_SEMESTER} />
+          </div>
+
           {/* Search Component */}
           <MembersSearch
             members={topMembersForDisplay}
@@ -85,15 +87,8 @@ export default async function MembersLeaderboard({ searchParams }: MembersLeader
             membersCount={membersCount}
             currentUniId={uniId}
             currentUserName={foundMember?.member_name || fullArabicName}
-            semester={activeSemester}
+            semester={semesterParam}
           />
-
-          {/* Semester Selector - below search */}
-          {isSuperAdmin && (
-            <div className="flex mt-6 ltr:justify-end rtl:justify-start">
-              <SemesterSelector currentSemester={activeSemester ?? CURRENT_SEMESTER} />
-            </div>
-          )}
         </div>
       </div>
     </div>
