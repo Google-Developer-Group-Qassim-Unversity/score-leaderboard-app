@@ -6,7 +6,7 @@ import { fetchDepartments } from "@/lib/api/api"
 import { DepartmentTypeCard } from "./department-type-card"
 import { SemesterSelector } from "@/components/semester-selector"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
-import { CURRENT_SEMESTER } from "@/lib/config"
+import { getSemesters } from "@/lib/semesters"
 
 interface DepartmentsLeaderboardProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -20,6 +20,7 @@ export default async function DepartmentsLeaderboard({ searchParams }: Departmen
   const params = await searchParams
   
   const semesterParam = params.semester ? Number(params.semester) : undefined
+  const { current_semester, semesters } = await getSemesters()
 
   const apiDepartmentsResponse = await fetchDepartments(semesterParam)
   
@@ -47,7 +48,11 @@ export default async function DepartmentsLeaderboard({ searchParams }: Departmen
 
         {/* Semester Selector - flush with cards */}
         <div className="flex mb-4 ltr:justify-end rtl:justify-start">
-          <SemesterSelector currentSemester={semesterParam ?? CURRENT_SEMESTER} />
+          <SemesterSelector
+            currentSemester={semesterParam ?? current_semester}
+            defaultSemester={current_semester}
+            availableSemesters={semesters}
+          />
         </div>
 
         {/* Department Type Leaderboards */}
@@ -60,6 +65,7 @@ export default async function DepartmentsLeaderboard({ searchParams }: Departmen
             icon={Wrench}
             gradientColors={{ from: "from-green-500", to: "to-green-600" }}
             semester={semesterParam}
+            defaultSemester={current_semester}
           />
           {/* Administrative Departments */}
           <DepartmentTypeCard
@@ -69,6 +75,7 @@ export default async function DepartmentsLeaderboard({ searchParams }: Departmen
             icon={Settings}
             gradientColors={{ from: "from-blue-500", to: "to-blue-600" }}
             semester={semesterParam}
+            defaultSemester={current_semester}
           />
 
         </div>

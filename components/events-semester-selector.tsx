@@ -2,7 +2,6 @@
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { useTransition } from "react"
-import { EVENTS_SEMESTER_OPTIONS } from "@/lib/config"
 import { useTranslation } from "react-i18next"
 import "@/lib/i18n-client"
 import {
@@ -15,15 +14,21 @@ import {
 
 interface EventsSemesterSelectorProps {
   currentSemester: number | null
+  availableSemesters: number[]
 }
 
-export function EventsSemesterSelector({ currentSemester }: EventsSemesterSelectorProps) {
+export function EventsSemesterSelector({ currentSemester, availableSemesters }: EventsSemesterSelectorProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
   const { t, i18n } = useTranslation()
   const rtl = i18n.language === "ar"
+
+  const options = [
+    { value: null as number | null, labelKey: "semester.all" },
+    ...availableSemesters.map((sem) => ({ value: sem as number | null, labelKey: String(sem) })),
+  ]
 
   const handleChange = (value: string) => {
     const semester = value === "all" ? null : Number(value)
@@ -58,7 +63,7 @@ export function EventsSemesterSelector({ currentSemester }: EventsSemesterSelect
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {EVENTS_SEMESTER_OPTIONS.map((option) => (
+          {options.map((option) => (
             <SelectItem
               key={option.labelKey}
               value={option.value === null ? "all" : String(option.value)}

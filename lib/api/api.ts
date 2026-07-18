@@ -16,11 +16,20 @@ import type {
   ApiEventsResponse,
   ApiOpenEventsResponse,
   ApiSubmissionResponse,
+  ApiSemestersResponse,
   AttendanceResponse,
   CurrentMember,
   UpdateMemberData,
   SubmissionType,
 } from './types'
+
+// ============================================================
+// SEMESTERS
+// ============================================================
+
+export function fetchSemesters(): Promise<ApiSemestersResponse> {
+  return publicServerApi.get<ApiSemestersResponse>('/points/semesters', { revalidate: 300 })
+}
 
 // ============================================================
 // MEMBERS

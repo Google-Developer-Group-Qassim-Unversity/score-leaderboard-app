@@ -2,7 +2,6 @@
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { useTransition } from "react"
-import { AVAILABLE_SEMESTERS, CURRENT_SEMESTER } from "@/lib/config"
 import { useTranslation } from "react-i18next"
 import "@/lib/i18n-client"
 import {
@@ -15,9 +14,11 @@ import {
 
 interface SemesterSelectorProps {
   currentSemester: number
+  defaultSemester: number
+  availableSemesters: number[]
 }
 
-export function SemesterSelector({ currentSemester }: SemesterSelectorProps) {
+export function SemesterSelector({ currentSemester, defaultSemester, availableSemesters }: SemesterSelectorProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -29,7 +30,7 @@ export function SemesterSelector({ currentSemester }: SemesterSelectorProps) {
     const semester = Number(value)
     const params = new URLSearchParams(searchParams.toString())
 
-    if (semester === CURRENT_SEMESTER) {
+    if (semester === defaultSemester) {
       params.delete("semester")
     } else {
       params.set("semester", String(semester))
@@ -56,7 +57,7 @@ export function SemesterSelector({ currentSemester }: SemesterSelectorProps) {
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {AVAILABLE_SEMESTERS.map((sem) => (
+          {availableSemesters.map((sem) => (
             <SelectItem key={sem} value={String(sem)}>
               {sem}
             </SelectItem>

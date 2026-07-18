@@ -15,6 +15,7 @@ interface LeaderboardCardProps {
   points: number
   type: "member" | "department"
   semester?: number
+  defaultSemester: number
 }
 
 const getPodiumStyles = (rank: number, type: "member" | "department") => {
@@ -66,11 +67,11 @@ const getDisplayName = (fullName: string): string => {
   return `${nameParts[0]} ${nameParts[nameParts.length - 1]}`
 }
 
-export function LeaderboardCard({ id, name, rank, points, type, semester }: LeaderboardCardProps) {
+export function LeaderboardCard({ id, name, rank, points, type, semester, defaultSemester }: LeaderboardCardProps) {
   const { t } = useTranslation()
   const styles = getPodiumStyles(rank, type)
   const basePath = type === "member" ? `/members/${id}` : `/departments/${id}`
-  const detailsUrl = getSemesterQueryString(basePath, semester)
+  const detailsUrl = getSemesterQueryString(basePath, semester, defaultSemester)
   const displayName = type === "member" ? getDisplayName(name) : name
 
   return (
