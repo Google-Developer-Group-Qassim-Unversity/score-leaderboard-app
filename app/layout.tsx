@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Analytics } from "@vercel/analytics/next"
+import { Tajawal } from "next/font/google"
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
@@ -11,6 +12,13 @@ import { ClientDashboardWrapper } from "@/components/client-dashboard-wrapper"
 import { ClerkProviderWrapper } from "@/components/clerk-provider-wrapper"
 import { QueryProvider } from "@/components/providers/query-provider"
 import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
+
+const tajawal = Tajawal({
+  subsets: ["arabic"],
+  weight: ["200", "300", "400", "500", "700", "800", "900"],
+  variable: "--font-arabic",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: {
@@ -43,14 +51,8 @@ export default async function RootLayout({
 
   return (
     <ClerkProviderWrapper>
-      <html lang={lang} dir={rtl ? 'rtl' : 'ltr'} suppressHydrationWarning>
+      <html lang={lang} dir={rtl ? 'rtl' : 'ltr'} suppressHydrationWarning className={tajawal.variable}>
         <head>
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap"
-            rel="stylesheet"
-          />
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=G-Z62ENW3LFQ"
             strategy="afterInteractive"

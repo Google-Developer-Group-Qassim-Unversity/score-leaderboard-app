@@ -66,7 +66,7 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                     <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shadow-md shrink-0">
                       <Users className="h-4 w-4 text-white" />
                     </div>
-                    <span className="break-words leading-tight">{t('leaderboard.topMembers')}</span>
+                    <span className="break-words">{t('leaderboard.topMembers')}</span>
                   </CardTitle>
                   <div className="flex items-center gap-2 shrink-0">
                     <Link href={getSemesterQueryString("/members", semester, current_semester)}>
@@ -107,7 +107,7 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                     <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center shadow-md shrink-0">
                       <Building2 className="h-4 w-4 text-white" />
                     </div>
-                    <span className="wrap-break-word leading-tight">{t('leaderboard.topDepartments')}</span>
+                    <span className="wrap-break-word">{t('leaderboard.topDepartments')}</span>
                   </CardTitle>
                   <div className="flex items-center gap-2 shrink-0">
                     <Link href={getSemesterQueryString("/departments", semester, current_semester)}>
