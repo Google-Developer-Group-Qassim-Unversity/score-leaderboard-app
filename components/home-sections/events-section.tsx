@@ -8,7 +8,8 @@ import { EventCard } from "@/components/event-card"
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
 import { fetchOpenEvents } from "@/lib/api/api"
 import type { ApiOpenEventsResponse } from "@/lib/api/types"
-import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
+import { getTranslation } from "@/lib/server-i18n"
+import type { Language } from "@/lib/translations"
 
 function EventCardSkeleton() {
   return (
@@ -44,7 +45,7 @@ function EventsScrollSkeleton() {
 }
 
 async function EventsScroll() {
-  const lang = await getLanguageFromCookies()
+  const lang: Language = 'ar'
   const t = (key: string) => getTranslation(lang, key)
 
   let openEvents: ApiOpenEventsResponse = []
@@ -90,7 +91,7 @@ async function EventsScroll() {
 }
 
 export async function EventsSection() {
-  const lang = await getLanguageFromCookies()
+  const lang: Language = 'ar'
   const t = (key: string) => getTranslation(lang, key)
 
   return (

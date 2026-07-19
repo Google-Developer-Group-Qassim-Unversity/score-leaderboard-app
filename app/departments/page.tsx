@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/page-header"
 import { fetchDepartments } from "@/lib/api/api"
 import { DepartmentTypeCard } from "./department-type-card"
 import { SemesterSelector } from "@/components/semester-selector"
-import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
+import { getTranslation } from "@/lib/server-i18n"
 import { getSemesters } from "@/lib/semesters"
 
 interface DepartmentsLeaderboardProps {
@@ -13,9 +13,7 @@ interface DepartmentsLeaderboardProps {
 }
 
 export default async function DepartmentsLeaderboard({ searchParams }: DepartmentsLeaderboardProps) {
-  const lang = await getLanguageFromCookies()
-  const rtl = isRTL(lang)
-  const t = (key: string) => getTranslation(lang, key)
+  const t = (key: string) => getTranslation('ar', key)
   
   const params = await searchParams
   
@@ -32,7 +30,7 @@ export default async function DepartmentsLeaderboard({ searchParams }: Departmen
   const practicalDepartments = apiDepartmentsResponse.practical || []
 
   return (
-    <div className={`min-h-screen bg-white text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>
+    <div className="min-h-screen bg-white text-slate-800">
       {/* Content */}
       <div className="">
         <div className="container max-w-6xl mx-auto px-4 py-8">
@@ -47,7 +45,7 @@ export default async function DepartmentsLeaderboard({ searchParams }: Departmen
         </div>
 
         {/* Semester Selector - flush with cards */}
-        <div className="flex mb-4 ltr:justify-end rtl:justify-start">
+        <div className="flex mb-4 justify-end">
           <SemesterSelector
             currentSemester={semesterParam ?? current_semester}
             defaultSemester={current_semester}

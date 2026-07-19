@@ -3,7 +3,7 @@ import Link from "next/link"
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getMagazineById } from "@/lib/magazines"
-import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
+import { getTranslation } from "@/lib/server-i18n"
 
 interface MagazineReaderPageProps {
     params: {
@@ -19,9 +19,7 @@ export default async function MagazineReaderPage({ params }: MagazineReaderPageP
         notFound()
     }
 
-    const lang = await getLanguageFromCookies()
-    const rtl = isRTL(lang)
-    const t = (key: string) => getTranslation(lang, key)
+    const t = (key: string) => getTranslation('ar', key)
 
     return (
         <div className="relative flex flex-col h-screen bg-slate-900 overflow-hidden">

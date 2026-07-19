@@ -4,11 +4,7 @@ import { UserProfile } from "@clerk/nextjs";
 import { ProfileForm } from "@/components/profile-form";
 import { EventsFeed } from "@/components/profile/events-feed";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  getLanguageFromCookies,
-  getTranslation,
-  isRTL,
-} from "@/lib/server-i18n";
+import { getTranslation } from "@/lib/server-i18n";
 import { User } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -23,15 +19,10 @@ export default async function ProfilePage() {
     redirect("/");
   }
 
-  const lang = await getLanguageFromCookies();
-  const rtl = isRTL(lang);
-  const t = (key: string) => getTranslation(lang, key);
+  const t = (key: string) => getTranslation('ar', key);
 
   return (
-    <div
-      className="container mx-auto px-4 py-8 max-w-7xl"
-      dir={rtl ? "rtl" : "ltr"}
-    >
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
       <h1 className="lg:hidden text-2xl font-semibold text-center mb-8">
         {t("profile.pageTitle")}
       </h1>

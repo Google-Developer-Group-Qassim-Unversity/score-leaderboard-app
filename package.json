@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "build": "next build",
+    "build:dev": "infisical run --env=dev --path=/main-frontend -- ./node_modules/.bin/dotenv -e .env.local -o -- next build",
     "dev": "infisical run --env=dev --path=/main-frontend -- ./node_modules/.bin/dotenv -e .env.local -o -- next dev",
     "lint": "next lint",
     "start": "infisical run --env=dev --path=/main-frontend -- next start",

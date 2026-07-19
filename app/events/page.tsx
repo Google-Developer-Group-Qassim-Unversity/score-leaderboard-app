@@ -4,20 +4,16 @@ import { PageHeader } from "@/components/page-header"
 import { SectionHeader } from "@/components/section-header"
 import { CalendarDays, CheckCircle2, History } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
-import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
+import { getTranslation } from "@/lib/server-i18n"
 import { EventsSemesterSelector } from "@/components/events-semester-selector"
 import { getSemesters } from "@/lib/semesters"
-
-export const dynamic = "force-dynamic"
 
 interface EventsPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export default async function EventsPage({ searchParams }: EventsPageProps) {
-  const lang = await getLanguageFromCookies()
-  const rtl = isRTL(lang)
-  const t = (key: string) => getTranslation(lang, key)
+  const t = (key: string) => getTranslation('ar', key)
 
   const sp = await searchParams
   const semester = sp.semester ? Number(sp.semester) : null
@@ -46,7 +42,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
     .sort((a, b) => new Date(b.end_datetime).getTime() - new Date(a.end_datetime).getTime())
 
   return (
-    <div className={`container mx-auto px-4 py-8 max-w-7xl bg-white ${rtl ? 'rtl' : 'ltr'}`}>
+    <div className="container mx-auto px-4 py-8 max-w-7xl bg-white">
       <PageHeader
         heading={t('events.heading')}
         subHeading={t('events.subHeading')}

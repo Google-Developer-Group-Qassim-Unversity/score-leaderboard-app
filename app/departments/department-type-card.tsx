@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LeaderboardCard } from "@/components/leaderboard-card"
 import { LucideIcon } from "lucide-react"
 import { ApiDepartmentPoints } from "@/lib/api/types"
-import { getLanguageFromCookies } from "@/lib/server-i18n"
+import type { Language } from "@/lib/translations"
 
 interface DepartmentTypeCardProps {
   title: string
@@ -26,7 +26,7 @@ export async function DepartmentTypeCard({
   semester,
   defaultSemester
 }: DepartmentTypeCardProps) {
-  const lang = await getLanguageFromCookies()
+  const lang: Language = 'ar'
   return (
     <Card className="bg-white border border-slate-200 rounded-lg">
       <CardHeader className="border-b border-slate-200">

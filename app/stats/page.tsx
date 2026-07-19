@@ -1,5 +1,5 @@
-import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
 import { StatsPageContent } from "@/components/stats-sections/stats-page-content"
+import type { Language } from "@/lib/translations"
 
 export const metadata = {
   title: "Season in Review | GDG on Campus",
@@ -7,11 +7,10 @@ export const metadata = {
 }
 
 export default async function StatsPage() {
-  const lang = await getLanguageFromCookies()
-  const rtl = isRTL(lang)
+  const lang: Language = 'ar'
 
   return (
-    <div className={`min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 text-slate-800">
       <StatsPageContent lang={lang} />
     </div>
   )

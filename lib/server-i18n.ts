@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import i18n from 'i18next';
 import { resources, type Language } from './translations';
 
@@ -13,22 +12,6 @@ serverI18n.init({
     escapeValue: false,
   },
 });
-
-/**
- * Get the current language from cookies (server-side)
- * Default language is 'ar' (Arabic)
- */
-export async function getLanguageFromCookies(): Promise<Language> {
-  const cookieStore = await cookies();
-  const langCookie = cookieStore.get('lang');
-  const lang = langCookie?.value;
-  
-  if (lang === 'en' || lang === 'ar') {
-    return lang;
-  }
-  
-  return 'ar'; // Default to Arabic
-}
 
 /**
  * Get a specific translation by key for a given language

@@ -3,7 +3,7 @@ import { ArrowLeft, Calendar, Award, TrendingUp, Users, BookOpen } from "lucide-
 import { fetchMemberById } from "@/lib/api/api"
 import { NotFoundError } from "@/lib/api/errors"
 import { notFound } from "next/navigation"
-import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
+import { getTranslation } from "@/lib/server-i18n"
 import { isSameDayOrOvernight, getEffectiveEndDate } from "@/lib/event-utils"
 import { SemesterSelector } from "@/components/semester-selector"
 import { getSemesters } from "@/lib/semesters"
@@ -31,12 +31,10 @@ export default async function MemberDetailPage({ params, searchParams }: PagePro
     throw error
   }
   
-  const lang = await getLanguageFromCookies()
-  const t = (key: string) => getTranslation(lang, key)
-  const rtl = isRTL(lang)
+  const t = (key: string) => getTranslation('ar', key)
 
   return (
-    <div className={`min-h-screen bg-white text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>
+    <div className="min-h-screen bg-white text-slate-800">
       <div className="container max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex flex-col gap-4 mb-8">

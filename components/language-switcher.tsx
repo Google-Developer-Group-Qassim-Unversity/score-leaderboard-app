@@ -5,17 +5,16 @@ import '@/lib/i18n-client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Globe } from 'lucide-react';
+import { useLanguageCookie } from '@/components/language-provider';
+import type { Language } from '@/lib/translations';
 
 export function LanguageSwitcher() {
   const { i18n } = useTranslation();
+  const { setLanguage } = useLanguageCookie();
   
   const toggleLanguage = () => {
-    const newLang = i18n.language === 'en' ? 'ar' : 'en';
-    i18n.changeLanguage(newLang);
-    
-    // Update HTML direction for Arabic
-    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = newLang;
+    const newLang: Language = i18n.language === 'en' ? 'ar' : 'en';
+    setLanguage(newLang);
   };
 
   return (

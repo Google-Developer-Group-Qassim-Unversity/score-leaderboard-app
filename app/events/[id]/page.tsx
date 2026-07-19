@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api/types";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
-import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n";
+import { getTranslation } from "@/lib/server-i18n";
 import { EventSignupButton } from "@/components/event-signup-button";
 import { isSameDayOrOvernight, getEventDayCount, getEffectiveEndDate } from "@/lib/event-utils";
 
@@ -76,8 +76,7 @@ function linkify(text: string) {
 export default async function EventDetailPage({
   params,
 }: EventDetailPageProps) {
-  const lang = await getLanguageFromCookies();
-  const t = (key: string) => getTranslation(lang, key);
+  const t = (key: string) => getTranslation('ar', key);
 
   // Fetch both regular events and open events (for signup button)
   const [events, openEvents] = await Promise.all([

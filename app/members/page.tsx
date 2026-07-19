@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/page-header"
 import { fetchMembers } from "@/lib/api/api"
 import { MembersSearch } from "./members-search"
 import { SemesterSelector } from "@/components/semester-selector"
-import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
+import { getTranslation } from "@/lib/server-i18n"
 import { currentUser } from "@clerk/nextjs/server"
 import { getSemesters } from "@/lib/semesters"
 
@@ -12,9 +12,7 @@ interface MembersLeaderboardProps {
 }
 
 export default async function MembersLeaderboard({ searchParams }: MembersLeaderboardProps) {
-  const lang = await getLanguageFromCookies()
-  const rtl = isRTL(lang)
-  const t = (key: string) => getTranslation(lang, key)
+  const t = (key: string) => getTranslation('ar', key)
 
   const params = await searchParams
   
@@ -62,7 +60,7 @@ export default async function MembersLeaderboard({ searchParams }: MembersLeader
   }))
 
   return (
-    <div className={`min-h-screen bg-white text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>
+    <div className="min-h-screen bg-white text-slate-800">
       {/* Content */}
       <div className="">
         <div className="container max-w-6xl mx-auto px-4 py-8 pb-32">
@@ -77,7 +75,7 @@ export default async function MembersLeaderboard({ searchParams }: MembersLeader
           </div>
 
           {/* Semester Selector */}
-          <div className="flex mb-6 ltr:justify-end rtl:justify-start">
+          <div className="flex mb-6 justify-end">
             <SemesterSelector
               currentSemester={semesterParam ?? current_semester}
               defaultSemester={current_semester}

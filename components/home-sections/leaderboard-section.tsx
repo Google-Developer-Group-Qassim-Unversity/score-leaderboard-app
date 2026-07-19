@@ -8,17 +8,18 @@ import { HomeSectionHeader } from "@/components/home-sections/home-section-heade
 import { SemesterSelector } from "@/components/semester-selector"
 import { LeaderboardWrapper } from "@/components/leaderboard-wrapper"
 import { fetchMembers, fetchDepartments } from "@/lib/api/api"
-import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
+import { getTranslation } from "@/lib/server-i18n"
 import { getSemesters } from "@/lib/semesters"
 import type { ApiMemberPoints, ApiDepartmentPoints } from "@/lib/api/types"
 import { getSemesterQueryString } from "@/lib/url-utils"
+import type { Language } from "@/lib/translations"
 
 interface LeaderboardSectionProps {
   semester?: number
 }
 
 export async function LeaderboardSection({ semester }: LeaderboardSectionProps) {
-  const lang = await getLanguageFromCookies()
+  const lang: Language = 'ar'
   const t = (key: string) => getTranslation(lang, key)
   const { current_semester, semesters } = await getSemesters()
 

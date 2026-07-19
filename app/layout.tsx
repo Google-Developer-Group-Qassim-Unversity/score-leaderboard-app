@@ -11,7 +11,7 @@ import Script from "next/script"
 import { ClientDashboardWrapper } from "@/components/client-dashboard-wrapper"
 import { ClerkProviderWrapper } from "@/components/clerk-provider-wrapper"
 import { QueryProvider } from "@/components/providers/query-provider"
-import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
+import { LanguageProvider } from "@/components/language-provider"
 
 const tajawal = Tajawal({
   subsets: ["arabic"],
@@ -41,17 +41,14 @@ export const viewport: Viewport = {
   ],
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const lang = await getLanguageFromCookies();
-  const rtl = isRTL(lang);
-
   return (
     <ClerkProviderWrapper>
-      <html lang={lang} dir={rtl ? 'rtl' : 'ltr'} suppressHydrationWarning className={tajawal.variable}>
+      <html lang="ar" dir="rtl" suppressHydrationWarning className={tajawal.variable}>
         <head>
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=G-Z62ENW3LFQ"
@@ -69,11 +66,13 @@ export default async function RootLayout({
         <body className="font-sans antialiased">
           <QueryProvider>
             <ClientDashboardWrapper>
+              <LanguageProvider>
                 <Navigation />
                 {children}
                 <Footer />
                 <Analytics />
                 <Toaster />
+              </LanguageProvider>
             </ClientDashboardWrapper>
           </QueryProvider>
         </body>

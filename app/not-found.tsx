@@ -1,12 +1,11 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Home, Search } from "lucide-react"
-import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
+import { getTranslation } from "@/lib/server-i18n"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 
 export default async function NotFound() {
-  const lang = await getLanguageFromCookies()
-  const t = (key: string) => getTranslation(lang, key)
+  const t = (key: string) => getTranslation('ar', key)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
