@@ -14,15 +14,17 @@ interface DepartmentTypeCardProps {
     to: string
   }
   semester?: number
+  defaultSemester: number
 }
 
-export async function DepartmentTypeCard({ 
-  title, 
-  description, 
-  departments, 
+export async function DepartmentTypeCard({
+  title,
+  description,
+  departments,
   icon: Icon,
   gradientColors,
-  semester
+  semester,
+  defaultSemester
 }: DepartmentTypeCardProps) {
   const lang = await getLanguageFromCookies()
   return (
@@ -47,6 +49,7 @@ export async function DepartmentTypeCard({
               points={department.total_points}
               type="department"
               semester={semester}
+              defaultSemester={defaultSemester}
             />
           ))}
           

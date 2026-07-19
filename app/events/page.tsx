@@ -6,6 +6,7 @@ import { CalendarDays, CheckCircle2, History } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { EventsSemesterSelector } from "@/components/events-semester-selector"
+import { getSemesters } from "@/lib/semesters"
 
 export const dynamic = "force-dynamic"
 
@@ -20,6 +21,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
 
   const sp = await searchParams
   const semester = sp.semester ? Number(sp.semester) : null
+  const { semesters } = await getSemesters()
 
   const results = await Promise.allSettled([
     fetchOpenEvents(),
@@ -80,7 +82,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
               events={closedEvents}
               emptyMessage={t('events.noPastEvents')}
               hideSignup={true}
-              headerSlot={<EventsSemesterSelector currentSemester={semester} />}
+              headerSlot={<EventsSemesterSelector currentSemester={semester} availableSemesters={semesters} />}
             />
           </div>
         </section>

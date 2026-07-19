@@ -135,6 +135,13 @@ export interface ApiSubmissionResponse {
   submission_timestamp?: string
 }
 
+// ===== Semesters Types =====
+
+export interface ApiSemestersResponse {
+  current_semester: number
+  semesters: number[]
+}
+
 // ===== Attendance Types =====
 
 export interface AttendanceResponse {

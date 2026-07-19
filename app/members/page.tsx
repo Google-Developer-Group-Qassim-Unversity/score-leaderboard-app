@@ -5,7 +5,7 @@ import { MembersSearch } from "./members-search"
 import { SemesterSelector } from "@/components/semester-selector"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { currentUser } from "@clerk/nextjs/server"
-import { CURRENT_SEMESTER } from "@/lib/config"
+import { getSemesters } from "@/lib/semesters"
 
 interface MembersLeaderboardProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -19,6 +19,7 @@ export default async function MembersLeaderboard({ searchParams }: MembersLeader
   const params = await searchParams
   
   const semesterParam = params.semester ? Number(params.semester) : undefined
+  const { current_semester, semesters } = await getSemesters()
 
   // TODO: needs to be checked if it affected the performance or no
   const user = await currentUser()
@@ -77,7 +78,11 @@ export default async function MembersLeaderboard({ searchParams }: MembersLeader
 
           {/* Semester Selector */}
           <div className="flex mb-6 ltr:justify-end rtl:justify-start">
-            <SemesterSelector currentSemester={semesterParam ?? CURRENT_SEMESTER} />
+            <SemesterSelector
+              currentSemester={semesterParam ?? current_semester}
+              defaultSemester={current_semester}
+              availableSemesters={semesters}
+            />
           </div>
 
           {/* Search Component */}
@@ -88,6 +93,7 @@ export default async function MembersLeaderboard({ searchParams }: MembersLeader
             currentUniId={uniId}
             currentUserName={foundMember?.member_name || fullArabicName}
             semester={semesterParam}
+            defaultSemester={current_semester}
           />
         </div>
       </div>

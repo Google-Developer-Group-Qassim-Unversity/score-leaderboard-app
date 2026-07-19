@@ -9,7 +9,7 @@ import { SemesterSelector } from "@/components/semester-selector"
 import { LeaderboardWrapper } from "@/components/leaderboard-wrapper"
 import { fetchMembers, fetchDepartments } from "@/lib/api/api"
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
-import { CURRENT_SEMESTER } from "@/lib/config"
+import { getSemesters } from "@/lib/semesters"
 import type { ApiMemberPoints, ApiDepartmentPoints } from "@/lib/api/types"
 import { getSemesterQueryString } from "@/lib/url-utils"
 
@@ -20,6 +20,7 @@ interface LeaderboardSectionProps {
 export async function LeaderboardSection({ semester }: LeaderboardSectionProps) {
   const lang = await getLanguageFromCookies()
   const t = (key: string) => getTranslation(lang, key)
+  const { current_semester, semesters } = await getSemesters()
 
   let topMembers: ApiMemberPoints[] = []
   let practicalDepartments: ApiDepartmentPoints[] = []
@@ -47,7 +48,11 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
       />
 
       <div className="flex mb-4 ltr:justify-end rtl:justify-start">
-        <SemesterSelector currentSemester={semester ?? CURRENT_SEMESTER} />
+        <SemesterSelector
+          currentSemester={semester ?? current_semester}
+          defaultSemester={current_semester}
+          availableSemesters={semesters}
+        />
       </div>
 
       <LeaderboardWrapper>
@@ -64,7 +69,7 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                     <span className="break-words leading-tight">{t('leaderboard.topMembers')}</span>
                   </CardTitle>
                   <div className="flex items-center gap-2 shrink-0">
-                    <Link href={getSemesterQueryString("/members", semester)}>
+                    <Link href={getSemesterQueryString("/members", semester, current_semester)}>
                       <Button variant="outline" size="default" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                         {t('leaderboard.viewAll')}
                         <MoveRight className="h-3 w-3 sm:h-4 sm:w-4 ms-1.5 rtl:rotate-180" />
@@ -80,7 +85,7 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                       {topMembers.length > 0 ? (
                         topMembers.map((member, index) => (
                           <div key={member.member_id} className="w-full max-w-full min-w-0">
-                            <LeaderboardCard id={member.member_id.toString()} name={member.member_name} rank={index + 1} points={member.total_points ?? 0} type="member" semester={semester} />
+                            <LeaderboardCard id={member.member_id.toString()} name={member.member_name} rank={index + 1} points={member.total_points ?? 0} type="member" semester={semester} defaultSemester={current_semester} />
                           </div>
                         ))
                       ) : (
@@ -105,7 +110,7 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                     <span className="wrap-break-word leading-tight">{t('leaderboard.topDepartments')}</span>
                   </CardTitle>
                   <div className="flex items-center gap-2 shrink-0">
-                    <Link href={getSemesterQueryString("/departments", semester)}>
+                    <Link href={getSemesterQueryString("/departments", semester, current_semester)}>
                       <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                         {t('leaderboard.viewAll')}
                         <MoveRight className="h-3 w-3 sm:h-4 sm:w-4 ms-1.5 rtl:rotate-180" />
@@ -124,7 +129,7 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                       {practicalDepartments.length > 0 ? (
                         practicalDepartments.map((department, index) => ( 
                           <div key={department.department_id} className="w-full max-w-full min-w-0">
-                            <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department" semester={semester}/> 
+                            <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department" semester={semester} defaultSemester={current_semester}/> 
                           </div>
                         ))
                       ) : (
@@ -140,7 +145,7 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                       {administrativeDepartments.length > 0 ? (
                         administrativeDepartments.map((department, index) => (
                           <div key={department.department_id} className="w-full max-w-full min-w-0">
-                            <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department" semester={semester}/>
+                            <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department" semester={semester} defaultSemester={current_semester}/>
                           </div>
                         ))
                       ) : (

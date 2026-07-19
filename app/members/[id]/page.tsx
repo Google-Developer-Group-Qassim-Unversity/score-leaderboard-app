@@ -6,7 +6,7 @@ import { notFound } from "next/navigation"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { isSameDayOrOvernight, getEffectiveEndDate } from "@/lib/event-utils"
 import { SemesterSelector } from "@/components/semester-selector"
-import { CURRENT_SEMESTER } from "@/lib/config"
+import { getSemesters } from "@/lib/semesters"
 
 export const dynamic = "force-dynamic"
 
@@ -19,7 +19,8 @@ export default async function MemberDetailPage({ params, searchParams }: PagePro
   const sp = await searchParams
   
   const semesterParam = sp.semester ? Number(sp.semester) : undefined
-  
+  const { current_semester, semesters } = await getSemesters()
+
   let memberData
   try {
     memberData = await fetchMemberById(id, semesterParam)
@@ -77,7 +78,11 @@ export default async function MemberDetailPage({ params, searchParams }: PagePro
                 {/* Semester Selector - inside profile card */}
                 <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
                   <div className="flex ltr:justify-end rtl:justify-start">
-                    <SemesterSelector currentSemester={semesterParam ?? CURRENT_SEMESTER} />
+                    <SemesterSelector
+                      currentSemester={semesterParam ?? current_semester}
+                      defaultSemester={current_semester}
+                      availableSemesters={semesters}
+                    />
                   </div>
                 </div>
               </CardContent>
