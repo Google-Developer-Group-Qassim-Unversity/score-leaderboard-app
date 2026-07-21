@@ -182,15 +182,25 @@ export const resources = {
       "clubStructurePage.deptMembers": "Department Members:",
       "clubStructurePage.presidents": "Club Presidents",
       "clubStructurePage.vicePresident": "Vice President",
+
+      // OLD specialized Departments
       "clubStructurePage.robotics": "Robotics",
       "clubStructurePage.ai": "Artificial Intelligence and Data Analysis",
       "clubStructurePage.entrepreneurship": "Entrepreneurship",
+      "clubStructurePage.esports": "Esports",
+
+      // NEW specialized Departments
+      "clubStructurePage.blue": "Blue",
+      "clubStructurePage.green": "Green",
+      "clubStructurePage.yellow": "Yellow",
+
+      // Administrative Departments
       "clubStructurePage.development": "Development",
       "clubStructurePage.design": "Design",
       "clubStructurePage.programs": "Programs and Events Management",
       "clubStructurePage.organization": "Organization and Meetings",
       "clubStructurePage.media": "Reports and Media",
-      "clubStructurePage.esports": "Esports",
+      
       "clubStructurePage.deptLeader": "Leader:",
       "clubStructurePage.deptVice": "Vice:",
       "clubStructurePage.aiShort": "AI & Data",
@@ -639,15 +649,25 @@ export const resources = {
       "clubStructurePage.deptMembers": "أعضاء القسم:",
       "clubStructurePage.presidents": "رؤساء النادي",
       "clubStructurePage.vicePresident": "نائب الرئيس",
+
+      // OLD specialized Departments
       "clubStructurePage.robotics": "الروبوتات",
       "clubStructurePage.ai": "الذكاء الاصطناعي وتحليل البيانات",
       "clubStructurePage.entrepreneurship": "ريادة الأعمال",
+      "clubStructurePage.esports": "الرياضات الإلكترونية",
+
+      // NEW specialized Departments
+      "clubStructurePage.blue": "الأزرق",
+      "clubStructurePage.green": "الأخضر",
+      "clubStructurePage.yellow": "الأصفر",
+      
+      // administrative Departments
       "clubStructurePage.development": "التطوير",
-      "clubStructurePage.design": "التصميم",
       "clubStructurePage.programs": "إدارة البرامج والفعاليات",
       "clubStructurePage.organization": "التنظيم والاجتماعات",
+      "clubStructurePage.design": "التصميم",
       "clubStructurePage.media": "التقارير والإعلام",
-      "clubStructurePage.esports": "الرياضات الإلكترونية",
+
       "clubStructurePage.deptLeader": "الليدر:",
       "clubStructurePage.deptVice": "النائب:",
       "clubStructurePage.boardDirectors": "مجلس الإدارة",

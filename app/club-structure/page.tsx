@@ -61,62 +61,101 @@ export default function ClubStructurePage() {
       }
     },
     departmentsSpecialized: [
+      // these are the old departments name
+      // {
+      //   title: t('clubStructurePage.ai'),
+      //   color: "red",
+      //   icon: Lightbulb,
+      //   leader: "لين العقيل",
+      //   vice: "ديما الفريدي",
+      //   members: [
+      //     "يزن البيضاني",
+      //     "جود الحربي",
+      //     "كادي العنزي",
+      //     "صالح الحربي",
+      //     "سلمان العكروت",
+      //     "جود العنزي"
+      //   ]
+      // },
+      // {
+      //   title: t('clubStructurePage.robotics'),
+      //   color: "yellow",
+      //   icon: Bot,
+      //   leader: "كيان القفاري",
+      //   vice: "منار النقيدان",
+      //   members: [
+      //     "رهف الحربي",
+      //     "شاهر الحربي",
+      //     "مها المطرفي",
+      //     "بدر الدخيل الله"
+      //   ]
+      // },
+      // {
+      //   title: t('clubStructurePage.entrepreneurship'),
+      //   color: "blue",
+      //   icon: Trophy,
+      //   leader: "ساره الرشيدي",
+      //   vice: "جنا الجبعان",
+      //   members: [
+      //     "نسيبة الرياعي",
+      //     "فجر الصويان",
+      //     "رغداء الشبل",
+      //     "اينال الفهيد"
+      //   ]
+      // },
+      // {
+      //   title: t('clubStructurePage.esports'),
+      //   color: "purple",
+      //   icon: Gamepad2,
+      //   leader: "محمد الزهراني",
+      //   vice: "عبدالرحمن أسعد",
+      //   members: [
+      //     "يوسف الزهراني",
+      //     "غلا الربيش",
+      //     "شمس اللحيدان",
+      //     "بشار الحربي",
+      //     "خوله السهلي"
+      //   ]
+      // },
       {
-        title: t('clubStructurePage.ai'),
-        color: "red",
-        icon: Lightbulb,
-        leader: "لين العقيل",
-        vice: "ديما الفريدي",
-        members: [
-          "يزن البيضاني",
-          "جود الحربي",
-          "كادي العنزي",
-          "صالح الحربي",
-          "سلمان العكروت",
-          "جود العنزي"
-        ]
-      },
-
-      {
-        title: t('clubStructurePage.robotics'),
-        color: "yellow",
-        icon: Bot,
-        leader: "كيان القفاري",
-        vice: "منار النقيدان",
-        members: [
-          "رهف الحربي",
-          "شاهر الحربي",
-          "مها المطرفي",
-          "بدر الدخيل الله"
-        ]
-      },
-      {
-        title: t('clubStructurePage.entrepreneurship'),
+        title: t('clubStructurePage.blue'),
         color: "blue",
-        icon: Trophy,
-        leader: "ساره الرشيدي",
-        vice: "جنا الجبعان",
+        icon: Lightbulb,
         members: [
-          "نسيبة الرياعي",
-          "فجر الصويان",
-          "رغداء الشبل",
-          "اينال الفهيد"
+          "كيان القفاري",
+          "ساره الرشيدي",
+          "عبدالرحمن أسعد",
+          "اميرة الحربي",
+          "اسامة الحصيف",
+          "أمل الدخيل",
         ]
       },
       {
-        title: t('clubStructurePage.esports'),
-        color: "purple",
-        icon: Gamepad2,
-        leader: "محمد الزهراني",
-        vice: "عبدالرحمن أسعد",
+        title: t('clubStructurePage.green'),
+        color: "green",
+        icon: Lightbulb,
         members: [
-          "يوسف الزهراني",
-          "غلا الربيش",
+          "ريم الرشودي",
+          "بدر الدخيل",
+          "دالي الوابلي",
+          "جنى الضبيبان",
           "شمس اللحيدان",
-          "بشار الحربي",
-          "خوله السهلي"
+          "رولا العثيم",
         ]
-      }
+      },
+      {
+        title: t('clubStructurePage.yellow'),
+        color: "yellow",
+        icon: Lightbulb,
+        members: [
+          "مها المطرفي",
+          "العنود العريني",
+          "عبدالملك المطيري",
+          "بانا التويجري",
+          "ابراهيم السكيتي",
+          "نورة المطيري",
+        ]
+      },
     ],
     departmentsAdministrative: [
       {
