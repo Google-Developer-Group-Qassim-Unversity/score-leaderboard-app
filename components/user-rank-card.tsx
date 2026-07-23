@@ -15,11 +15,9 @@ interface UserRankCardProps {
     }
     isVisible: boolean
     searchTerm: string
-    semester?: number
-    defaultSemester: number
 }
 
-export function UserRankCard({ user, isVisible, searchTerm, semester, defaultSemester }: UserRankCardProps) {
+export function UserRankCard({ user, isVisible, searchTerm }: UserRankCardProps) {
     const { t } = useTranslation()
 
     // Transitions: 
@@ -50,8 +48,6 @@ export function UserRankCard({ user, isVisible, searchTerm, semester, defaultSem
                             rank={user.rank}
                             points={user.totalPoints}
                             type="member"
-                            semester={semester}
-                            defaultSemester={defaultSemester}
                         />
                     </div>
                 </div>

@@ -2,31 +2,20 @@ import { Users } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 import { fetchMembers } from "@/lib/api/api"
 import { MembersSearch } from "./members-search"
-import { SemesterSelector } from "@/components/semester-selector"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { currentUser } from "@clerk/nextjs/server"
-import { getSemesters } from "@/lib/semesters"
 
-interface MembersLeaderboardProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}
-
-export default async function MembersLeaderboard({ searchParams }: MembersLeaderboardProps) {
+export default async function MembersLeaderboard() {
   const lang = await getLanguageFromCookies()
   const rtl = isRTL(lang)
   const t = (key: string) => getTranslation(lang, key)
-
-  const params = await searchParams
-  
-  const semesterParam = params.semester ? Number(params.semester) : undefined
-  const { current_semester, semesters } = await getSemesters()
 
   // TODO: needs to be checked if it affected the performance or no
   const user = await currentUser()
   const uniId = user?.publicMetadata?.uni_id as string | undefined
   const fullArabicName = user?.publicMetadata?.fullArabicName as string | undefined
 
-  const apiMembers = await fetchMembers(semesterParam)
+  const apiMembers = await fetchMembers()
   const foundMember = apiMembers.find((m) => {
     const sUniId = String(m.uni_id || "").trim()
     const targetUniId = String(uniId || "").trim()
@@ -76,15 +65,6 @@ export default async function MembersLeaderboard({ searchParams }: MembersLeader
             />
           </div>
 
-          {/* Semester Selector */}
-          <div className="flex mb-6 ltr:justify-end rtl:justify-start">
-            <SemesterSelector
-              currentSemester={semesterParam ?? current_semester}
-              defaultSemester={current_semester}
-              availableSemesters={semesters}
-            />
-          </div>
-
           {/* Search Component */}
           <MembersSearch
             members={topMembersForDisplay}
@@ -92,8 +72,6 @@ export default async function MembersLeaderboard({ searchParams }: MembersLeader
             membersCount={membersCount}
             currentUniId={uniId}
             currentUserName={foundMember?.member_name || fullArabicName}
-            semester={semesterParam}
-            defaultSemester={current_semester}
           />
         </div>
       </div>

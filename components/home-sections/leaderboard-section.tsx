@@ -5,22 +5,14 @@ import { Button } from "@/components/ui/button"
 import { LeaderboardCard } from "@/components/leaderboard-card"
 import { SectionHeader } from "@/components/section-header"
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
-import { SemesterSelector } from "@/components/semester-selector"
 import { LeaderboardWrapper } from "@/components/leaderboard-wrapper"
 import { fetchMembers, fetchDepartments } from "@/lib/api/api"
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
-import { getSemesters } from "@/lib/semesters"
 import type { ApiMemberPoints, ApiDepartmentPoints } from "@/lib/api/types"
-import { getSemesterQueryString } from "@/lib/url-utils"
 
-interface LeaderboardSectionProps {
-  semester?: number
-}
-
-export async function LeaderboardSection({ semester }: LeaderboardSectionProps) {
+export async function LeaderboardSection() {
   const lang = await getLanguageFromCookies()
   const t = (key: string) => getTranslation(lang, key)
-  const { current_semester, semesters } = await getSemesters()
 
   let topMembers: ApiMemberPoints[] = []
   let practicalDepartments: ApiDepartmentPoints[] = []
@@ -28,8 +20,8 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
 
   try {
     const [apiMembers, apiDepartmentsResponse] = await Promise.all([
-      fetchMembers(semester),
-      fetchDepartments(semester),
+      fetchMembers(),
+      fetchDepartments(),
     ])
 
     topMembers = (apiMembers ?? []).slice(0, 5)
@@ -47,14 +39,6 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
         subtitle={t('leaderboard.subtitle')}
       />
 
-      <div className="flex mb-4 ltr:justify-end rtl:justify-start">
-        <SemesterSelector
-          currentSemester={semester ?? current_semester}
-          defaultSemester={current_semester}
-          availableSemesters={semesters}
-        />
-      </div>
-
       <LeaderboardWrapper>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 w-full max-w-full">
           {/* Top Members Preview */}
@@ -69,7 +53,7 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                     <span className="break-words leading-tight">{t('leaderboard.topMembers')}</span>
                   </CardTitle>
                   <div className="flex items-center gap-2 shrink-0">
-                    <Link href={getSemesterQueryString("/members", semester, current_semester)}>
+                    <Link href="/members">
                       <Button variant="outline" size="default" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                         {t('leaderboard.viewAll')}
                         <MoveRight className="h-3 w-3 sm:h-4 sm:w-4 ms-1.5 rtl:rotate-180" />
@@ -85,7 +69,7 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                       {topMembers.length > 0 ? (
                         topMembers.map((member, index) => (
                           <div key={member.member_id} className="w-full max-w-full min-w-0">
-                            <LeaderboardCard id={member.member_id.toString()} name={member.member_name} rank={index + 1} points={member.total_points ?? 0} type="member" semester={semester} defaultSemester={current_semester} />
+                            <LeaderboardCard id={member.member_id.toString()} name={member.member_name} rank={index + 1} points={member.total_points ?? 0} type="member" />
                           </div>
                         ))
                       ) : (
@@ -110,7 +94,7 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                     <span className="wrap-break-word leading-tight">{t('leaderboard.topDepartments')}</span>
                   </CardTitle>
                   <div className="flex items-center gap-2 shrink-0">
-                    <Link href={getSemesterQueryString("/departments", semester, current_semester)}>
+                    <Link href="/departments">
                       <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                         {t('leaderboard.viewAll')}
                         <MoveRight className="h-3 w-3 sm:h-4 sm:w-4 ms-1.5 rtl:rotate-180" />
@@ -127,9 +111,9 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                   <SectionHeader icon={Wrench} title={t('leaderboard.specializedDepts')} color="green"/>
                     <div className="space-y-3 w-full max-w-full">
                       {practicalDepartments.length > 0 ? (
-                        practicalDepartments.map((department, index) => ( 
+                        practicalDepartments.map((department, index) => (
                           <div key={department.department_id} className="w-full max-w-full min-w-0">
-                            <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department" semester={semester} defaultSemester={current_semester}/> 
+                            <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department" />
                           </div>
                         ))
                       ) : (
@@ -145,7 +129,7 @@ export async function LeaderboardSection({ semester }: LeaderboardSectionProps) 
                       {administrativeDepartments.length > 0 ? (
                         administrativeDepartments.map((department, index) => (
                           <div key={department.department_id} className="w-full max-w-full min-w-0">
-                            <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department" semester={semester} defaultSemester={current_semester}/>
+                            <LeaderboardCard id={department.department_id.toString()} name={lang === 'ar' ? department.ar_department_name : department.department_name} rank={index + 1} points={department.total_points} type="department" />
                           </div>
                         ))
                       ) : (

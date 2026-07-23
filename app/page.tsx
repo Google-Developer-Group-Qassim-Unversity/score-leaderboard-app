@@ -1,16 +1,9 @@
 import { HeroSection, StatsSection, EventsSection, LeaderboardSection, MagazinesSection, ClubStructureSection } from "@/components/home-sections"
 import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
 
-interface DashboardProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}
-
-export default async function Dashboard({ searchParams }: DashboardProps) {
+export default async function Dashboard() {
   const lang = await getLanguageFromCookies();
   const rtl = isRTL(lang);
-  const params = await searchParams
-  
-  const semesterParam = params.semester ? Number(params.semester) : undefined
 
   return (
     <div className={`min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-100 text-slate-800 relative overflow-x-hidden ${rtl ? 'rtl' : 'ltr'}`}>
@@ -22,9 +15,9 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
       </div>
       <div className="relative max-w-7xl mx-auto">
         <HeroSection lang={lang} />
-        <StatsSection lang={lang} semester={semesterParam} />
+        <StatsSection lang={lang} />
         <EventsSection />
-        <LeaderboardSection semester={semesterParam} />
+        <LeaderboardSection />
         <MagazinesSection />
         <ClubStructureSection lang={lang} />
       </div>
