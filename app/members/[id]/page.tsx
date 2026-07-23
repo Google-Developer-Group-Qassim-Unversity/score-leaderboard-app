@@ -5,25 +5,18 @@ import { NotFoundError } from "@/lib/api/errors"
 import { notFound } from "next/navigation"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { isSameDayOrOvernight, getEffectiveEndDate } from "@/lib/event-utils"
-import { SemesterSelector } from "@/components/semester-selector"
-import { getSemesters } from "@/lib/semesters"
 
 export const dynamic = "force-dynamic"
 
 interface PageProps {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
-export default async function MemberDetailPage({ params, searchParams }: PageProps) {
+export default async function MemberDetailPage({ params }: PageProps) {
   const { id } = await params
-  const sp = await searchParams
-  
-  const semesterParam = sp.semester ? Number(sp.semester) : undefined
-  const { current_semester, semesters } = await getSemesters()
 
   let memberData
   try {
-    memberData = await fetchMemberById(id, semesterParam)
+    memberData = await fetchMemberById(id)
   } catch (error) {
     if (error instanceof NotFoundError) {
       notFound()
@@ -72,17 +65,6 @@ export default async function MemberDetailPage({ params, searchParams }: PagePro
                   <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{t("memberDetail.totalPoints")}</span>
                     <span className="font-bold text-blue-600 text-lg">{memberData.member.total_points ?? 0}</span>
-                  </div>
-                </div>
-
-                {/* Semester Selector - inside profile card */}
-                <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-                  <div className="flex ltr:justify-end rtl:justify-start">
-                    <SemesterSelector
-                      currentSemester={semesterParam ?? current_semester}
-                      defaultSemester={current_semester}
-                      availableSemesters={semesters}
-                    />
                   </div>
                 </div>
               </CardContent>

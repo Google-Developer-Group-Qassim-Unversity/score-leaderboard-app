@@ -6,7 +6,6 @@ import '@/lib/i18n-client'
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Eye } from "lucide-react"
-import { getSemesterQueryString } from "@/lib/url-utils"
 
 interface LeaderboardCardProps {
   id: string
@@ -14,8 +13,6 @@ interface LeaderboardCardProps {
   rank: number
   points: number
   type: "member" | "department"
-  semester?: number
-  defaultSemester: number
 }
 
 const getPodiumStyles = (rank: number, type: "member" | "department") => {
@@ -67,16 +64,15 @@ const getDisplayName = (fullName: string): string => {
   return `${nameParts[0]} ${nameParts[nameParts.length - 1]}`
 }
 
-export function LeaderboardCard({ id, name, rank, points, type, semester, defaultSemester }: LeaderboardCardProps) {
+export function LeaderboardCard({ id, name, rank, points, type }: LeaderboardCardProps) {
   const { t } = useTranslation()
   const styles = getPodiumStyles(rank, type)
   const basePath = type === "member" ? `/members/${id}` : `/departments/${id}`
-  const detailsUrl = getSemesterQueryString(basePath, semester, defaultSemester)
   const displayName = type === "member" ? getDisplayName(name) : name
 
   return (
     <Link
-      href={detailsUrl}
+      href={basePath}
       className={`flex items-center justify-between p-2.5 sm:p-3 rounded-lg transition-all duration-200 ${styles.container} w-full active:scale-[0.99] group cursor-pointer`}
       id={`member-row-${id}`}
     >

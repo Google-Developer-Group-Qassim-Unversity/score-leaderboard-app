@@ -25,11 +25,9 @@ interface MembersSearchProps {
   membersCount: number
   currentUniId?: string
   currentUserName?: string
-  semester?: number
-  defaultSemester: number
 }
 
-export function MembersSearch({ members: topMembers, allMembers, membersCount, currentUniId, currentUserName, semester, defaultSemester }: MembersSearchProps) {
+export function MembersSearch({ members: topMembers, allMembers, membersCount, currentUniId, currentUserName }: MembersSearchProps) {
   const [searchTerm, setSearchTerm] = useState("")
 
   // Priority matching: Try uni_id first (most reliable), then name fallback
@@ -212,8 +210,6 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount, c
                 rank={member.rank}
                 points={member.totalPoints}
                 type="member"
-                semester={semester}
-                defaultSemester={defaultSemester}
               />
             ))}
 
@@ -247,8 +243,6 @@ export function MembersSearch({ members: topMembers, allMembers, membersCount, c
           user={currentUser}
           isVisible={currentUserInView}
           searchTerm={searchTerm}
-          semester={semester}
-          defaultSemester={defaultSemester}
         />
       )}
     </>
