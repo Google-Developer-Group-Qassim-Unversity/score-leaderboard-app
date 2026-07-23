@@ -5,9 +5,13 @@
 
 ARG NODE_VERSION=18-alpine
 
+ARG PNPM_VERSION=10.23.0
+
 # --- deps ---
 FROM node:${NODE_VERSION} AS deps
-RUN apk add --no-cache libc6-compat && corepack enable
+RUN apk add --no-cache libc6-compat \
+ && corepack enable \
+ && corepack prepare pnpm@${PNPM_VERSION} --activate
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
@@ -15,7 +19,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 
 # --- builder ---
 FROM node:${NODE_VERSION} AS builder
-RUN corepack enable
+RUN corepack enable \
+ && corepack prepare pnpm@${PNPM_VERSION} --activate
 WORKDIR /app
 
 # Public env (baked into client bundle during next build)
