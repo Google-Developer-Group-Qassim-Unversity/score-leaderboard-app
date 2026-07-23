@@ -10,17 +10,16 @@ ARG PNPM_VERSION=10.23.0
 # --- deps ---
 FROM node:${NODE_VERSION} AS deps
 RUN apk add --no-cache libc6-compat \
- && corepack enable \
- && corepack prepare pnpm@${PNPM_VERSION} --activate
+ && npm install -g pnpm@${PNPM_VERSION}
+ENV PNPM_HOME=/usr/local/share/pnpm
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+RUN --mount=type=cache,id=pnpm,target=/usr/local/share/pnpm/store \
     pnpm install --frozen-lockfile
 
 # --- builder ---
 FROM node:${NODE_VERSION} AS builder
-RUN corepack enable \
- && corepack prepare pnpm@${PNPM_VERSION} --activate
+RUN npm install -g pnpm@${PNPM_VERSION}
 WORKDIR /app
 
 # Public env (baked into client bundle during next build)
