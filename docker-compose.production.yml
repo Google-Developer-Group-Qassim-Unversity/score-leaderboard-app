@@ -1,0 +1,43 @@
+# Production compose for self-hosted Next.js (standalone) on the VPS.
+# Secrets are NOT in git. On every deploy the CD writes .env.production to this
+# directory via Infisical machine identity, then runs compose with --env-file.
+#
+# Routing: reuses Coolify's traefik (coolify-proxy, Traefik v3) on the external
+# `coolify` network. No host port is published -> no collisions with other apps.
+
+services:
+  web:
+    image: gdg-score-web
+    container_name: gdg-score-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_BACKEND_API_URL: ${NEXT_PUBLIC_BACKEND_API_URL}
+        NEXT_PUBLIC_AUTH_FRONTEND_URL: ${NEXT_PUBLIC_AUTH_FRONTEND_URL}
+        NEXT_PUBLIC_THIS_APP_URL: ${NEXT_PUBLIC_THIS_APP_URL}
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+    env_file:
+      - .env.production
+    restart: unless-st
+    networks:
+      - coolify
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=coolify
+      - traefik.http.routers.gdg-q.rule=Host(`gdg-q.albrrak773.com`)
+      - traefik.http.routers.gdg-q.entrypoints=https
+      - traefik.http.routers.gdg-q.tls=true
+      - traefik.http.routers.gdg-q.tls.certresolver=letsencrypt
+      - traefik.http.routers.gdg-q.service=gdg-q
+      - traefik.http.services.gdg-q.loadbalancer.server.port=3000
+      # HTTP -> HTTPS redirect
+      - traefik.http.routers.gdg-q-http.rule=Host(`gdg-q.albrrak773.com`)
+      - traefik.http.routers.gdg-q-http.entrypoints=http
+      - traefik.http.routers.gdg-q-http.middlewares=gdg-q-redirect
+      - traefik.http.middlewares.gdg-q-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.gdg-q-redirect.redirectscheme.permanent=true
+
+networks:
+  coolify:
+    external: true
