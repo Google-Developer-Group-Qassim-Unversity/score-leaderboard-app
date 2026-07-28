@@ -1,5 +1,9 @@
 import { addDays, differenceInDays, differenceInHours, format, isSameDay as dateFnsIsSameDay } from "date-fns"
 
+export function isEventPast(event: { end_datetime: string }, now: number = Date.now()): boolean {
+  return new Date(event.end_datetime).getTime() < now
+}
+
 export function isOvernightEvent(start: Date | undefined, end: Date | undefined): boolean {
   if (!start || !end) return false;
   if (dateFnsIsSameDay(start, end)) return false;

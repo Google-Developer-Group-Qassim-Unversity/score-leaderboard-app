@@ -1,4 +1,5 @@
 import { fetchEvents, fetchOpenEvents } from "@/lib/api/api"
+import { isEventPast } from "@/lib/event-utils"
 import { EventsList } from "@/components/events-list"
 import { PageHeader } from "@/components/page-header"
 import { SectionHeader } from "@/components/section-header"
@@ -31,9 +32,11 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
   const openEvents = results[0].status === 'fulfilled' ? results[0].value : []
   const allEvents = results[1].status === 'fulfilled' ? results[1].value : []
 
-  // Filter out 'none' and 'hidden' location type events
-  const filteredOpenEvents = openEvents.filter(event => 
-    event.location_type !== 'none' && event.location_type !== 'hidden'
+  // Filter out 'none' and 'hidden' location type events, and hide past (done) events
+  const filteredOpenEvents = openEvents.filter(event =>
+    event.location_type !== 'none' &&
+    event.location_type !== 'hidden' &&
+    !isEventPast(event)
   )
 
   // Filter closed events for history, excluding 'none' and 'hidden' location types
