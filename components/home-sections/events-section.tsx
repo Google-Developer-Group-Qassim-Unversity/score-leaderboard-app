@@ -7,6 +7,7 @@ import { Calendar, MoveRight } from "lucide-react"
 import { EventCard } from "@/components/event-card"
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
 import { fetchOpenEvents } from "@/lib/api/api"
+import { isEventPast } from "@/lib/event-utils"
 import type { ApiOpenEventsResponse } from "@/lib/api/types"
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
 
@@ -60,7 +61,9 @@ async function EventsScroll() {
     )
   }
 
-  const events = openEvents.slice(0, 6)
+  const events = openEvents
+    .filter(event => !isEventPast(event))
+    .slice(0, 6)
 
   if (events.length === 0) {
     return (
