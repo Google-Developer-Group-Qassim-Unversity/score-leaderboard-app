@@ -1,0 +1,4 @@
+allowBuilds:
+  '@clerk/shared': true
+  core-js: true
+  sharp: true

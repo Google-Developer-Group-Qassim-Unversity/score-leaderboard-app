@@ -8,7 +8,7 @@ export interface ApiMemberPoints {
   member_id: number
   member_name: string
   total_points: number | null
-  uni_id: string
+  uni_id: string | null
 }
 
 export type ApiMembersPointsResponse = ApiMemberPoints[]
@@ -157,7 +157,7 @@ export interface CurrentMember {
   name: string
   email: string
   phone_number: string | null
-  uni_id: string
+  uni_id: string | null
   gender: 'Male' | 'Female'
   uni_level: number
   uni_college: string

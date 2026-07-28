@@ -210,18 +210,24 @@ export function ProfileForm() {
     <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-md">
       <div className="space-y-2">
         <label className="text-sm font-medium" dir="rtl">{t('profileForm.uniId')}</label>
-        <div className="relative">
-          <Input
-            value={formData.uni_id}
-            disabled
-            className="bg-muted/60 cursor-not-allowed text-muted-foreground border-dashed opacity-70 pr-16"
-            dir="ltr"
-          />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-muted-foreground bg-background px-2 py-0.5 rounded border">
-            <Lock className="h-3 w-3" />
-            <span>{t('profileForm.locked')}</span>
+        {formData.uni_id ? (
+          <div className="relative">
+            <Input
+              value={formData.uni_id}
+              disabled
+              className="bg-muted/60 cursor-not-allowed text-muted-foreground border-dashed opacity-70 pr-16"
+              dir="ltr"
+            />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-muted-foreground bg-background px-2 py-0.5 rounded border">
+              <Lock className="h-3 w-3" />
+              <span>{t('profileForm.locked')}</span>
+            </div>
           </div>
-        </div>
+        ) : (
+          <p className="text-sm text-muted-foreground" dir="rtl">
+            {t('profileForm.uniId.notLinked')}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
