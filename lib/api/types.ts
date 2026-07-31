@@ -159,8 +159,8 @@ export interface CurrentMember {
   phone_number: string | null
   uni_id: string | null
   gender: 'Male' | 'Female'
-  uni_level: number
-  uni_college: string
+  uni_level: number | null
+  uni_college: string | null
   created_at: string | null
   updated_at: string | null
   is_authenticated: boolean | null
@@ -171,8 +171,8 @@ export interface UpdateMemberData {
   email?: string
   phone_number?: string
   gender?: 'Male' | 'Female'
-  uni_level?: number
-  uni_college?: string
+  uni_level?: number | null
+  uni_college?: string | null
 }
 
 export interface AttendanceDate {
