@@ -28,3 +28,11 @@ yarn-error.log*
 next-env.d.ts
 # clerk configuration (can include secrets)
 /.clerk/
+
+# Apple Wallet Certificates & Pass files
+/certificates/
+*.p12
+*.pem
+*.pkpass
+/tmp/
+
