@@ -58,7 +58,7 @@ export function WalletCard({ data, qrUrl, scale = 1 }: WalletCardProps) {
   const [qrReady, setQrReady] = useState(false)
   const theme = WALLET_THEMES[data.themeId] || WALLET_THEMES[DEFAULT_THEME_ID]
   const assets = themeAssets(theme.id)
-  const targetQrUrl = qrUrl || (data.uuid ? `https://gdg-q.com/wallet/${data.uuid}` : "https://gdg-q.com")
+  const targetQrUrl = qrUrl || (data.uuid ? `https://gdg-q.com/p/${data.uuid}` : "https://gdg-q.com")
 
   useEffect(() => {
     if (!canvasRef.current) return

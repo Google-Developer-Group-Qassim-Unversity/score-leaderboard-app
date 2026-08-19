@@ -19,7 +19,7 @@ export function WalletPassModal({ isOpen, onClose, data }: WalletPassModalProps)
   const [copied, setCopied] = useState(false)
   const [isGeneratingApplePass, setIsGeneratingApplePass] = useState(false)
 
-  const profilePath = `/wallet/${data.uuid}`
+  const profilePath = `/p/${data.uuid}`
   const fullProfileUrl = typeof window !== "undefined" ? `${window.location.origin}${profilePath}` : profilePath
 
   const handleCopyLink = () => {

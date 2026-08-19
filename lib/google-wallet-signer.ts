@@ -43,7 +43,7 @@ export function generateGoogleWalletSaveUrl(cardData: WalletCardData): string {
 
   const theme = WALLET_THEMES[cardData.themeId] || WALLET_THEMES[DEFAULT_THEME_ID]
   const qrTargetUrl = cardData.uuid
-    ? `https://gdg-q.com/wallet/${cardData.uuid}`
+    ? `https://gdg-q.com/p/${cardData.uuid}`
     : "https://gdg-q.com"
 
   const majorValue =
