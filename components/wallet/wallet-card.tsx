@@ -1,190 +1,121 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import QRCode from "qrcode"
-import { WALLET_THEMES, WalletCardData, DEFAULT_THEME_ID } from "@/lib/wallet-themes"
-import { QrCode as QrIcon } from "lucide-react"
+import { DEFAULT_THEME_ID, WALLET_THEMES, WalletCardData } from "@/lib/wallet-themes"
 
 interface WalletCardProps {
   data: WalletCardData
   qrUrl?: string
+  scale?: number
 }
 
-export function WalletCard({ data, qrUrl }: WalletCardProps) {
-  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("")
-  const theme = WALLET_THEMES[data.themeId] || WALLET_THEMES[DEFAULT_THEME_ID]
+const FIGMA_WIDTH = 535
+const FIGMA_HEIGHT = 746
+const DISPLAY_WIDTH = 340
+const DISPLAY_HEIGHT = (DISPLAY_WIDTH / FIGMA_WIDTH) * FIGMA_HEIGHT
 
-  const targetUrl =
-    qrUrl ||
-    (data.uuid
-      ? `${typeof window !== "undefined" ? window.location.origin : ""}/wallet/${data.uuid}`
-      : "https://gdg-q.com")
+function themeAssets(themeId: string) {
+  if (themeId === "gdg-gold-admin") return { artwork: "/wallet-figma/header-admin.svg", divider: "#fac93e", qrBorder: "#f9c23c" }
+  if (themeId === "gdg-red") return { artwork: "/wallet-figma/header-female.svg", divider: "#f24439", qrBorder: "#ff8179" }
+  return { artwork: "/wallet-figma/header-male.svg", divider: "#3e88f8", qrBorder: "#4187f6" }
+}
 
-  useEffect(() => {
-    QRCode.toDataURL(targetUrl, {
-      width: 280,
-      margin: 1,
-      color: {
-        dark: "#000000",
-        light: "#ffffff",
-      },
-    })
-      .then((url) => setQrCodeDataUrl(url))
-      .catch((err) => console.error("Error generating pass QR:", err))
-  }, [targetUrl])
+const badgeAsset = (variant: "male" | "female" | "admin", name: string) => `/wallet-figma/badge-${variant}/${name}.svg`
 
-  const serialNumber = data.uuid
-    ? `GDGQ-${data.uuid.slice(0, 8).toUpperCase()}`
-    : "GDGQ-PASS"
-
-  // Major / Specialization display
-  const majorLabel =
-    data.major ||
-    (data.educationLevel === "highschool" ? "المرحلة الثانوية" : "علوم حاسب")
-
-  const institutionLabel =
-    data.institution ||
-    (data.educationLevel === "highschool" ? "مدرسة ثانوية" : "جامعة القصيم")
-
-  const levelLabel =
-    data.studyYearOrLevel ||
-    (data.userStatus === "graduate" ? "خريج معتمد" : "عضو مجتمع GDG")
+// These layers are exported from Figma's "Badge / Male Student" node (8:652).
+// The badge is intentionally composed from the original exports, including its masks.
+function FigmaBadge({ themeId }: { themeId: string }) {
+  const variant = themeId === "gdg-gold-admin" ? "admin" : themeId === "gdg-red" ? "female" : "male"
+  const asset = (name: string) => badgeAsset(variant, name)
+  const mask = `url(${asset("imgMask1")})`
+  const masked = { maskImage: mask, WebkitMaskImage: mask, maskSize: "100% 100%", WebkitMaskSize: "100% 100%" }
 
   return (
-    <div className="w-full max-w-[340px] mx-auto select-none transition-all duration-300 transform-gpu hover:scale-[1.01]" dir="rtl">
-      {/* Authentic Vertical Apple Wallet Pass Card */}
+    <div className="absolute right-0 top-[20px] h-[104px] w-[104px]" aria-hidden="true">
+      <img className="absolute left-[20.7px] top-[16.1px] h-[71.9px] w-[63.3px]" src={asset("imgShadow")} alt="" />
+      <img className="absolute left-[39px] top-[54.9px] h-[46.3px] w-[25.2px]" src={asset("imgGroup52")} alt="" />
+      <img className="absolute left-[23.2px] top-[22.6px] h-[64.6px] w-[57.6px] mix-blend-multiply" src={asset("imgMask")} alt="" />
+      <img className="absolute left-[22.1px] top-[18.8px] h-[66.2px] w-[57.6px]" src={asset("imgMaskCopy32")} alt="" />
+      <img className="absolute left-[24.1px] top-[24px] h-[63.1px] w-[55px] mix-blend-multiply" style={masked} src={asset("imgMask2")} alt="" />
+      <img className="absolute left-[23.9px] top-[20.4px] h-[63px] w-[56.9px]" style={masked} src={asset("imgMaskCopy14")} alt="" />
+      <img className="absolute left-[23.9px] top-[20.4px] h-[44.5px] w-[56.9px]" style={masked} src={asset("imgMaskCopy15")} alt="" />
+      <img className="absolute left-[23.9px] top-[20.4px] h-[18px] w-[56.9px]" style={masked} src={asset("imgMaskCopy16")} alt="" />
+      <img className="absolute left-[38px] top-[20.4px] h-[7px] w-[16.5px]" style={masked} src={asset("imgMaskCopy17")} alt="" />
+      <img className="absolute left-[43.7px] top-[21.1px] h-[3.3px] w-[5.7px]" style={masked} src={asset("imgMaskCopy18")} alt="" />
+      <img className="absolute left-[28.9px] top-[29px] h-[47px] w-[46px]" src={asset("imgMask3")} alt="" />
+      <img className="absolute left-[28.9px] top-[28.9px] h-[46px] w-[46px] mix-blend-multiply" style={masked} src={asset("imgRectangle8")} alt="" />
+      <img className="absolute left-[33.8px] top-[30px] h-[10.2px] w-[33.8px]" style={masked} src={asset("imgMaskCopy27")} alt="" />
+      <img className="absolute left-[46.6px] top-[30.3px] h-[5px] w-[4.3px]" style={masked} src={asset("imgMaskCopy28")} alt="" />
+      <img className="absolute left-[42px] top-[38.8px] h-[24px] w-[20px]" src={asset("imgGroup")} alt="" />
+      <img className="absolute left-[28.9px] top-[37.6px] h-[32px] w-[46.2px]" src={asset("imgGroup46")} alt="" />
+    </div>
+  )
+}
+
+export function WalletCard({ data, qrUrl, scale = 1 }: WalletCardProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const [qrReady, setQrReady] = useState(false)
+  const theme = WALLET_THEMES[data.themeId] || WALLET_THEMES[DEFAULT_THEME_ID]
+  const assets = themeAssets(theme.id)
+  const targetQrUrl = qrUrl || (data.uuid ? `https://gdg-q.com/wallet/${data.uuid}` : "https://gdg-q.com")
+
+  useEffect(() => {
+    if (!canvasRef.current) return
+    setQrReady(false)
+    QRCode.toCanvas(canvasRef.current, targetQrUrl, {
+      width: 183,
+      margin: 0,
+      errorCorrectionLevel: "M",
+      color: { dark: "#000000", light: "#ffffff" },
+    }, (error) => {
+      if (error) console.error("QR code generation failed", error)
+      else setQrReady(true)
+    })
+  }, [targetQrUrl])
+
+  const englishName = data.fullName?.trim() || "GDG Member"
+  const arabicName = data.fullName?.trim() || "عضو GDG"
+
+  return (
+    <div className="relative select-none" style={{ width: `${DISPLAY_WIDTH * scale}px`, height: `${DISPLAY_HEIGHT * scale}px` }}>
       <div
-        className="relative overflow-hidden rounded-[22px] shadow-[0_24px_70px_rgba(0,0,0,0.38)] border border-white/10"
-        style={{
-          background: theme.gradient,
-          color: theme.textColor,
-        }}
+        className="absolute left-0 top-0 origin-top-left overflow-hidden rounded-[24px] bg-white shadow-xl"
+        style={{ width: FIGMA_WIDTH, height: FIGMA_HEIGHT, transform: `scale(${(DISPLAY_WIDTH / FIGMA_WIDTH) * scale})` }}
       >
-        {/* Pass Header */}
-        <div className="p-5 pb-3">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              {/* GDG Google Shape Icon */}
-              <div className="w-7 h-7 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center p-1 border border-white/20">
-                <svg viewBox="0 0 24 24" className="w-full h-full" fill="none">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z" fill="#4285F4" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-[10px] font-bold tracking-widest uppercase" style={{ color: theme.labelColor }}>
-                  GDG QASSIM
-                </div>
-                <div className="text-xs font-bold text-white/95">مجتمع المطورين بالقصيم</div>
-              </div>
-            </div>
+        <img alt="" aria-hidden="true" className="absolute left-0 top-[100px] h-[204px] w-[535px]" src={assets.artwork} />
 
-            {/* Pass Type Chip */}
-            <div
-              className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-white/10"
-              style={{ background: theme.badgeBg, color: theme.badgeText }}
-            >
-              {data.userStatus === "graduate" ? "خريج" : "عضوية رقمية"}
-            </div>
-          </div>
-
-          {/* Primary Field: الاسم */}
-          <div className="mt-5 text-right">
-            <div className="text-[9px] font-bold tracking-wider uppercase" style={{ color: theme.labelColor }}>
-              الاسم
-            </div>
-            <div className="text-xl sm:text-2xl font-black tracking-tight truncate leading-tight mt-0.5" style={{ color: theme.textColor }}>
-              {data.fullName || "اسمك يظهر هنا"}
-            </div>
-          </div>
-
-          {/* Secondary Fields Grid (2 Columns: التخصص | الصرح التعليمي) */}
-          <div className="mt-4 grid grid-cols-2 gap-3 text-right">
-            <div className="min-w-0">
-              <div className="text-[9px] font-bold tracking-wider uppercase" style={{ color: theme.labelColor }}>
-                التخصص
-              </div>
-              {data.major ? (
-                <div className="text-xs font-bold truncate mt-0.5" style={{ color: theme.textColor }}>
-                  {data.major}
-                </div>
-              ) : (
-                <div className="h-3 w-16 rounded-full mt-1.5 bg-white/20 animate-pulse" />
-              )}
-            </div>
-
-            <div className="min-w-0">
-              <div className="text-[9px] font-bold tracking-wider uppercase" style={{ color: theme.labelColor }}>
-                الصرح التعليمي
-              </div>
-              {data.institution ? (
-                <div className="text-xs font-bold truncate mt-0.5" style={{ color: theme.textColor }}>
-                  {data.institution}
-                </div>
-              ) : (
-                <div className="h-3 w-20 rounded-full mt-1.5 bg-white/20 animate-pulse" />
-              )}
-            </div>
-          </div>
-
-          {/* Auxiliary Fields Grid (2 Columns: المستوى / السنة | الجوال) */}
-          <div className="mt-3 grid grid-cols-2 gap-3 text-right">
-            <div className="min-w-0">
-              <div className="text-[9px] font-bold tracking-wider uppercase" style={{ color: theme.labelColor }}>
-                المستوى / المرحلة
-              </div>
-              {data.studyYearOrLevel ? (
-                <div className="text-xs font-bold truncate mt-0.5" style={{ color: theme.textColor }}>
-                  {data.studyYearOrLevel}
-                </div>
-              ) : (
-                <div className="h-3 w-16 rounded-full mt-1.5 bg-white/20 animate-pulse" />
-              )}
-            </div>
-
-            <div className="min-w-0">
-              <div className="text-[9px] font-bold tracking-wider uppercase" style={{ color: theme.labelColor }}>
-                الجوال
-              </div>
-              {data.phone ? (
-                <div className="text-xs font-mono font-bold truncate mt-0.5" dir="ltr" style={{ color: theme.textColor }}>
-                  {data.countryCode} {data.phone}
-                </div>
-              ) : (
-                <div className="h-3 w-20 rounded-full mt-1.5 bg-white/20 animate-pulse" />
-              )}
-            </div>
-          </div>
+        <div className="absolute left-[-25px] top-[33px] h-[44px] w-[103px] overflow-hidden">
+          <img alt="GDG Qassim" className="absolute left-[42px] top-[1px] h-[44px] w-[249px] max-w-none" src="/wallet-figma/gdg-q-logo.png" />
         </div>
+        <img alt="Google Developer Groups" className="absolute left-[83px] top-[45px] h-[11px] w-[134px]" src="/wallet-figma/gdg-wordmark.svg" />
+        <img alt="On Qassim University" className="absolute left-[86px] top-[60px] h-[8px] w-[86px]" src="/wallet-figma/university-subtitle.svg" />
 
-        {/* Decorative subtle pass perforation divider */}
-        <div className="relative py-2 flex items-center justify-between">
-          <div className="w-3 h-6 rounded-l-full bg-background -mr-1 shadow-inner" />
-          <div className="flex-1 border-t border-dashed border-white/20 mx-2" />
-          <div className="w-3 h-6 rounded-r-full bg-background -ml-1 shadow-inner" />
-        </div>
+        <FigmaBadge themeId={theme.id} />
 
-        {/* Barcode / QR Code Box */}
-        <div className="px-5 pb-5 pt-1 text-center">
-          <div className="w-full bg-white p-3 rounded-2xl shadow-inner flex flex-col items-center justify-center">
-            <div className="w-28 h-28 flex items-center justify-center">
-              {qrCodeDataUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={qrCodeDataUrl}
-                  alt="Apple Wallet Pass QR"
-                  className="w-full h-full object-contain"
-                />
-              ) : (
-                <QrIcon className="w-16 h-16 text-zinc-300 animate-pulse" />
-              )}
+        <div className="absolute left-0 top-[304px] h-[23px] w-[535px]" style={{ background: assets.divider }} />
+
+        <section className="absolute left-[20px] top-[343px] flex w-[497px] flex-col items-end gap-[31px] text-right" dir="rtl">
+          <p className="w-full text-[24px] font-medium leading-none text-black">{theme.roleTitle}</p>
+          <div className="flex w-full items-center justify-between" dir="ltr">
+            <div className="flex w-[190px] flex-col items-start gap-[10px]">
+              <p className="w-full text-[16px] leading-none text-black">Name</p>
+              <p className="w-full truncate text-[18px] font-medium leading-none text-[#979797]">{englishName}</p>
             </div>
-            <div className="text-[10px] font-mono font-bold text-zinc-700 tracking-wider mt-1">
-              {serialNumber}
+            <div className="flex w-[190px] flex-col items-end gap-[10px]" dir="rtl">
+              <p className="w-full text-[16px] leading-none text-right text-black">الاسم</p>
+              <p className="w-full truncate text-[18px] font-medium leading-none text-right text-[#979797]">{arabicName}</p>
             </div>
           </div>
+        </section>
 
-          <div className="mt-2.5 text-[9px] tracking-wide" style={{ color: theme.labelColor }}>
-            امسح الرمز للتحقق من العضوية
+        <div
+          className="absolute left-[175px] top-[517px] h-[191px] w-[191px] rounded-[5px] p-[4px]"
+          style={{ background: `linear-gradient(to bottom, ${assets.qrBorder} 0%, ${assets.qrBorder}99 48%, transparent 100%)` }}
+        >
+          <div className="relative h-full w-full bg-white">
+            <canvas ref={canvasRef} className="block h-[183px] w-[183px]" />
+            {!qrReady && <div className="absolute inset-0 grid place-items-center bg-white/80 text-xs text-slate-500">Loading…</div>}
           </div>
         </div>
       </div>

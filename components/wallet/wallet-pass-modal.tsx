@@ -67,11 +67,33 @@ export function WalletPassModal({ isOpen, onClose, data }: WalletPassModalProps)
     }
   }
 
-  const handleGoogleWallet = () => {
-    toast.success("تم تجهيز بطاقة Google Wallet!", {
-      description: "سيتم فتح بطاقة العضوية في محفظة قوقل.",
-    })
-    window.open(`https://pay.google.com/gp/v/save/${data.uuid || "demo"}`, "_blank")
+  const [isGeneratingGooglePass, setIsGeneratingGooglePass] = useState(false)
+
+  const handleGoogleWallet = async () => {
+    setIsGeneratingGooglePass(true)
+    try {
+      const res = await fetch("/api/wallet/google-pass", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+
+      if (!res.ok) {
+        throw new Error("Failed to generate Google Wallet Pass")
+      }
+
+      const result = await res.json()
+      if (result.saveUrl) {
+        toast.success("تم تجهيز بطاقة Google Wallet بنجاح! 🪪")
+        window.open(result.saveUrl, "_blank")
+      }
+    } catch (err: any) {
+      console.error("Google Wallet pass error:", err)
+      toast.error("حدث خطأ أثناء إنشاء بطاقة قوقل. سيتم المحاولة عبر الرابط المباشر.")
+      window.open(`https://pay.google.com/gp/v/save/${data.uuid || "demo"}`, "_blank")
+    } finally {
+      setIsGeneratingGooglePass(false)
+    }
   }
 
   return (

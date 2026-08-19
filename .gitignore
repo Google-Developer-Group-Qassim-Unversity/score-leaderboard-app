@@ -35,4 +35,5 @@ next-env.d.ts
 *.pem
 *.pkpass
 /tmp/
+infisical-secrets-helper.txt
 

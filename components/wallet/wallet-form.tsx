@@ -1,11 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { WALLET_THEMES, WalletCardData, DEFAULT_THEME_ID, UserStatus, EducationLevel } from "@/lib/wallet-themes"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Sparkles, Loader2, Check, GraduationCap, School, BookOpen } from "lucide-react"
+import { Sparkles, Loader2, Check, GraduationCap, School, ShieldCheck } from "lucide-react"
 
 interface WalletFormProps {
   data: WalletCardData
@@ -15,6 +16,9 @@ interface WalletFormProps {
 }
 
 export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: WalletFormProps) {
+  const searchParams = useSearchParams()
+  const isAdminParam = searchParams?.get("admin") === "true"
+
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
   const handleFieldChange = (field: keyof WalletCardData, value: any) => {
@@ -42,61 +46,77 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
     onChange({
       ...data,
       educationLevel: level,
-      institution: "",
+      institution: level === "university" ? "جامعة القصيم" : "",
       major: "",
       studyYearOrLevel: "",
     })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const validate = () => {
     const newErrors: { [key: string]: string } = {}
-
-    if (!data.fullName.trim()) {
-      newErrors.fullName = "الرجاء إدخال اسمك"
+    if (!data.fullName?.trim()) {
+      newErrors.fullName = "الرجاء إدخال الاسم الكامل"
     }
-    if (!data.phone.trim()) {
+    if (!data.email?.trim()) {
+      newErrors.email = "الرجاء إدخال البريد الإلكتروني"
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      newErrors.email = "صيغة البريد الإلكتروني غير صحيحة"
+    }
+    if (!data.phone?.trim()) {
       newErrors.phone = "الرجاء إدخال رقم الجوال"
     }
-    if (!data.email.trim() || !data.email.includes("@")) {
-      newErrors.email = "الرجاء إدخال بريد إلكتروني صحيح"
-    }
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
-    }
-
-    onSubmit()
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
   }
 
-  const themes = Object.values(WALLET_THEMES)
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (validate()) {
+      onSubmit()
+    }
+  }
 
-  const commonMajors = [
+  const popularMajors = [
     "علوم حاسب",
     "هندسة برمجيات",
     "ذكاء اصطناعي",
     "أمن سيبراني",
     "تقنية معلومات",
     "نظم معلومات",
-    "هندسة حاسب",
-    "إدارة أعمال",
   ]
 
+  const studyLevels = [
+    "المستوى 1",
+    "المستوى 2",
+    "المستوى 3",
+    "المستوى 4",
+    "المستوى 5",
+    "المستوى 6",
+    "المستوى 7",
+    "المستوى 8",
+    "المستوى 9",
+    "المستوى 10",
+  ]
+
+  const highSchoolGrades = ["أول ثانوي", "ثاني ثانوي", "ثالث ثانوي"]
+
+  // Only show public member themes (Blue & Red) by default.
+  // Gold Admin card is completely hidden unless ?admin=true is specified in URL.
+  const themes = Object.values(WALLET_THEMES).filter(
+    (t) => !t.isAdmin || isAdminParam
+  )
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-card border border-border/80 p-6 sm:p-8 rounded-3xl shadow-sm space-y-6 transition-all"
-      dir="rtl"
-    >
-      {/* 1. Full Name */}
+    <form onSubmit={handleSubmit} className="space-y-6" dir="rtl">
+      {/* 1. Full Name (الاسم) */}
       <div className="space-y-1.5">
         <Label htmlFor="fullName" className="text-xs font-bold text-foreground">
-          اسمك الكامل <span className="text-red-500">*</span>
+          الاسم الكامل <span className="text-red-500">*</span>
         </Label>
         <Input
           id="fullName"
-          placeholder="عزام الخضيري"
+          placeholder="مثال: بسام الحبيب"
           value={data.fullName}
           onChange={(e) => handleFieldChange("fullName", e.target.value)}
           className={`h-11 rounded-xl ${errors.fullName ? "border-red-500 ring-1 ring-red-500" : ""}`}
@@ -104,34 +124,37 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
         {errors.fullName && <p className="text-xs text-red-500">{errors.fullName}</p>}
       </div>
 
-      {/* 2. Phone Number */}
+      {/* 2. Mobile Phone (رقم الجوال) */}
       <div className="space-y-1.5">
         <Label htmlFor="phone" className="text-xs font-bold text-foreground">
           رقم الجوال <span className="text-red-500">*</span>
         </Label>
         <div className="flex gap-2" dir="ltr">
-          <div className="w-20 shrink-0 flex items-center justify-center bg-muted border border-input rounded-xl text-xs font-semibold text-muted-foreground">
+          <div className="w-24 h-11 rounded-xl border border-input bg-muted/40 flex items-center justify-center font-mono text-xs font-bold text-muted-foreground select-none shrink-0">
             🇸🇦 +966
           </div>
           <Input
             id="phone"
             type="tel"
-            placeholder="551234567"
+            placeholder="5XXXXXXXX"
             value={data.phone}
-            onChange={(e) => handleFieldChange("phone", e.target.value)}
-            className={`h-11 rounded-xl flex-1 ${errors.phone ? "border-red-500 ring-1 ring-red-500" : ""}`}
+            onChange={(e) => handleFieldChange("phone", e.target.value.replace(/\D/g, ""))}
+            maxLength={10}
+            className={`h-11 rounded-xl font-mono text-left ${
+              errors.phone ? "border-red-500 ring-1 ring-red-500" : ""
+            }`}
           />
         </div>
-        {errors.phone && <p className="text-xs text-red-500 text-right">{errors.phone}</p>}
+        {errors.phone && <p className="text-xs text-red-500">{errors.phone}</p>}
       </div>
 
-      {/* 3. Email Address */}
+      {/* 3. Email (البريد الإلكتروني) */}
       <div className="space-y-1.5">
         <Label htmlFor="email" className="text-xs font-bold text-foreground">
           البريد الإلكتروني <span className="text-red-500">*</span>
         </Label>
         <p className="text-[11px] text-muted-foreground">
-          سنرسل لك رابط بطاقتك وتعديلها متى شئت.
+          سنرسل لك رابط بطاقتك لتعديلها متى شئت.
         </p>
         <Input
           id="email"
@@ -202,7 +225,8 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
                       : "border-border bg-card hover:bg-accent text-muted-foreground"
                   }`}
                 >
-                  <span>جامعي 🎓</span>
+                  <GraduationCap className="w-4 h-4" />
+                  <span>جامعي</span>
                 </button>
 
                 <button
@@ -214,15 +238,15 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
                       : "border-border bg-card hover:bg-accent text-muted-foreground"
                   }`}
                 >
-                  <span>ثانوي 🎒</span>
+                  <School className="w-4 h-4" />
+                  <span>ثانوي</span>
                 </button>
               </div>
             </div>
 
-            {/* IF UNIVERSITY STUDENT */}
+            {/* University Fields */}
             {data.educationLevel === "university" && (
-              <div className="space-y-3.5 pt-2 animate-in fade-in-50 duration-300">
-                {/* الجامعة */}
+              <div className="space-y-3 pt-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="institution" className="text-xs font-bold text-foreground">
                     أي جامعة؟
@@ -234,87 +258,73 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
                     onChange={(e) => handleFieldChange("institution", e.target.value)}
                     className="h-10 text-xs rounded-xl bg-card"
                   />
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {["جامعة القصيم", "جامعة الملك سعود", "جامعة الإمام", "جامعة أخرى"].map((uni) => (
-                      <button
-                        key={uni}
-                        type="button"
-                        onClick={() => handleFieldChange("institution", uni === "جامعة أخرى" ? "" : uni)}
-                        className="text-[10px] px-2.5 py-1 rounded-lg border bg-card hover:bg-accent text-muted-foreground font-medium"
-                      >
-                        {uni}
-                      </button>
-                    ))}
-                  </div>
                 </div>
 
-                {/* التخصص */}
+                {/* Major (التخصص) */}
                 <div className="space-y-1.5">
                   <Label htmlFor="major" className="text-xs font-bold text-foreground">
-                    التخصص الدراسي
+                    التخصص
                   </Label>
                   <Input
                     id="major"
-                    placeholder="مثال: علوم حاسب / ذكاء اصطناعي"
+                    placeholder="اكتب تخصصك (مثلاً: علوم حاسب)"
                     value={data.major || ""}
                     onChange={(e) => handleFieldChange("major", e.target.value)}
                     className="h-10 text-xs rounded-xl bg-card"
                   />
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {commonMajors.map((mj) => (
+                    {popularMajors.map((m) => (
                       <button
-                        key={mj}
+                        key={m}
                         type="button"
-                        onClick={() => handleFieldChange("major", mj)}
-                        className={`text-[10px] px-2.5 py-1 rounded-lg border font-medium transition-all ${
-                          data.major === mj
-                            ? "border-primary bg-primary/10 text-primary font-bold"
-                            : "bg-card hover:bg-accent text-muted-foreground"
+                        onClick={() => handleFieldChange("major", m)}
+                        className={`text-[11px] px-2.5 py-1 rounded-lg border transition-all ${
+                          data.major === m
+                            ? "bg-primary text-primary-foreground border-primary font-bold"
+                            : "bg-card text-muted-foreground border-border hover:border-primary/50"
                         }`}
                       >
-                        {mj}
+                        {m}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* المستوى الدراسي */}
+                {/* Study Level (المستوى) */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="studyYearOrLevel" className="text-xs font-bold text-foreground">
-                    المستوى الدراسي
+                  <Label className="text-xs font-bold text-foreground">
+                    أي مستوى؟
                   </Label>
-                  <select
-                    id="studyYearOrLevel"
-                    value={data.studyYearOrLevel || ""}
-                    onChange={(e) => handleFieldChange("studyYearOrLevel", e.target.value)}
-                    className="w-full h-10 px-3 rounded-xl border border-input bg-card text-xs font-medium text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                  >
-                    <option value="">اختر المستوى</option>
-                    <option value="المستوى 1">المستوى 1</option>
-                    <option value="المستوى 2">المستوى 2</option>
-                    <option value="المستوى 3">المستوى 3</option>
-                    <option value="المستوى 4">المستوى 4</option>
-                    <option value="المستوى 5">المستوى 5</option>
-                    <option value="المستوى 6">المستوى 6</option>
-                    <option value="المستوى 7">المستوى 7</option>
-                    <option value="المستوى 8">المستوى 8</option>
-                    <option value="المستوى 9">المستوى 9</option>
-                    <option value="المستوى 10">المستوى 10</option>
-                  </select>
+                  <div className="grid grid-cols-5 gap-1.5">
+                    {studyLevels.map((lvl) => (
+                      <button
+                        key={lvl}
+                        type="button"
+                        onClick={() => handleFieldChange("studyYearOrLevel", lvl)}
+                        className={`h-9 rounded-lg border text-[11px] font-medium transition-all ${
+                          data.studyYearOrLevel === lvl
+                            ? "border-primary bg-primary/10 text-primary font-bold"
+                            : "border-border bg-card hover:bg-accent text-muted-foreground"
+                        }`}
+                      >
+                        {lvl}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* IF HIGH SCHOOL STUDENT */}
+            {/* High School Fields */}
             {data.educationLevel === "highschool" && (
-              <div className="space-y-3 pt-2 animate-in fade-in-50 duration-300">
+              <div className="space-y-3 pt-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="institution" className="text-xs font-bold text-foreground">
-                    اسم المدرسة؟
+                    أي مدرسة؟
                   </Label>
                   <Input
                     id="institution"
-                    placeholder="مثال: ثانوية الفهد"
+                    placeholder="اسم المدرسة الثانوية"
                     value={data.institution || ""}
                     onChange={(e) => handleFieldChange("institution", e.target.value)}
                     className="h-10 text-xs rounded-xl bg-card"
@@ -322,11 +332,11 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="studyYearOrLevel" className="text-xs font-bold text-foreground">
-                    أي سنة؟
+                  <Label className="text-xs font-bold text-foreground">
+                    أي مرحلة؟
                   </Label>
                   <div className="grid grid-cols-3 gap-2">
-                    {["أول ثانوي", "ثاني ثانوي", "ثالث ثانوي"].map((grade) => (
+                    {highSchoolGrades.map((grade) => (
                       <button
                         key={grade}
                         type="button"
@@ -347,7 +357,7 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
           </div>
         )}
 
-        {/* IF GRADUATE: University, Major & Graduation year */}
+        {/* IF GRADUATE: University & Major */}
         {data.userStatus === "graduate" && (
           <div className="space-y-3.5 pt-2 p-4 bg-muted/40 rounded-2xl border border-border/80 animate-in fade-in-50 duration-300">
             <div className="space-y-1.5">
@@ -365,7 +375,7 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
 
             <div className="space-y-1.5">
               <Label htmlFor="major" className="text-xs font-bold text-foreground">
-                التخصص الذي تخرجت منه
+                التخصص
               </Label>
               <Input
                 id="major"
@@ -375,48 +385,54 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
                 className="h-10 text-xs rounded-xl bg-card"
               />
             </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="studyYearOrLevel" className="text-xs font-bold text-foreground">
-                سنة التخرج (اختياري)
-              </Label>
-              <Input
-                id="studyYearOrLevel"
-                placeholder="مثال: 2024 / 2025"
-                value={data.studyYearOrLevel || ""}
-                onChange={(e) => handleFieldChange("studyYearOrLevel", e.target.value)}
-                className="h-10 text-xs rounded-xl bg-card"
-              />
-            </div>
           </div>
         )}
       </div>
 
-      {/* 5. Color Swatches (اختر لوناً) */}
-      <div className="space-y-2.5 pt-2 border-t border-border/60">
-        <Label className="text-xs font-bold text-foreground block">اختر لوناً</Label>
-        <div className="flex flex-wrap gap-3">
+      {/* ================= 4. PUBLIC MEMBER CARD THEME PICKER ================= */}
+      <div className="space-y-3 pt-2 border-t border-border/60">
+        <Label className="text-xs font-bold text-foreground block">اختر نوع البطاقة</Label>
+        
+        <div className={`grid gap-3 ${themes.length > 2 ? "grid-cols-3" : "grid-cols-2"}`}>
           {themes.map((theme) => {
             const isSelected = (data.themeId || DEFAULT_THEME_ID) === theme.id
             return (
               <button
                 key={theme.id}
                 type="button"
-                aria-label={theme.nameAr}
-                title={theme.nameAr}
                 onClick={() => handleFieldChange("themeId", theme.id)}
-                className={`h-11 w-11 rounded-full border-2 transition-all flex items-center justify-center shadow-xs ${
+                className={`p-3.5 rounded-2xl border text-center transition-all flex flex-col items-center justify-between gap-2.5 relative overflow-hidden ${
                   isSelected
-                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-110 border-white/40"
-                    : "border-border hover:scale-105"
+                    ? "border-primary bg-primary/10 ring-2 ring-primary shadow-sm"
+                    : "border-border hover:bg-accent bg-card"
                 }`}
-                style={{ background: theme.swatchHex }}
               >
-                {isSelected && <Check className="w-4 h-4 text-white stroke-[3]" />}
+                {/* Color Dot Indicator */}
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white shadow-xs"
+                  style={{ background: theme.swatchHex }}
+                >
+                  {isSelected && <Check className="w-4 h-4 stroke-[3]" />}
+                </div>
+
+                {/* Card Label */}
+                <div>
+                  <div className="text-xs font-bold text-foreground">{theme.nameAr}</div>
+                  <div className="text-[11px] text-muted-foreground font-medium">
+                    {theme.isAdmin ? "الإدارة" : theme.gender === "female" ? "بنات" : "شباب"}
+                  </div>
+                </div>
               </button>
             )
           })}
         </div>
+
+        {isAdminParam && (
+          <div className="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400">
+            <ShieldCheck className="w-4 h-4 shrink-0" />
+            <span>تم تفعيل وضع بطاقة الإدارة الذهبية عبر رابط الإدارة.</span>
+          </div>
+        )}
       </div>
 
       {/* Submit Button */}
