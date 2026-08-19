@@ -74,8 +74,10 @@ export function WalletCard({ data, qrUrl, scale = 1 }: WalletCardProps) {
     })
   }, [targetQrUrl])
 
-  const englishName = data.englishName?.trim() || data.fullName?.trim() || "GDG Member"
-  const arabicName = data.fullName?.trim() || "عضو GDG"
+  const memberName = data.fullName?.trim() || "عضو GDG"
+  const isEn = data.nameLanguage === "en"
+  const nameLabel = isEn ? "Name" : "الاسم"
+  const roleTitle = data.isAdmin || theme.isAdmin ? "إداري نادي قوقل للطلبة المطورين" : theme.roleTitle
 
   return (
     <div className="relative select-none" style={{ width: `${DISPLAY_WIDTH * scale}px`, height: `${DISPLAY_HEIGHT * scale}px` }}>
@@ -95,16 +97,12 @@ export function WalletCard({ data, qrUrl, scale = 1 }: WalletCardProps) {
 
         <div className="absolute left-0 top-[304px] h-[23px] w-[535px]" style={{ background: assets.divider }} />
 
-        <section className="absolute left-[20px] top-[343px] flex w-[497px] flex-col items-end gap-[31px] text-right" dir="rtl">
-          <p className="w-full text-[24px] font-medium leading-none text-black">{theme.roleTitle}</p>
-          <div className="flex w-full items-center justify-between" dir="ltr">
-            <div className="flex w-[190px] flex-col items-start gap-[10px]">
-              <p className="w-full text-[16px] leading-none text-black">Name</p>
-              <p className="w-full truncate text-[18px] font-medium leading-none text-[#979797]">{englishName}</p>
-            </div>
-            <div className="flex w-[190px] flex-col items-end gap-[10px]" dir="rtl">
-              <p className="w-full text-[16px] leading-none text-right text-black">الاسم</p>
-              <p className="w-full truncate text-[18px] font-medium leading-none text-right text-[#979797]">{arabicName}</p>
+        <section className="absolute left-[20px] top-[343px] flex w-[497px] flex-col items-end gap-[24px] text-right" dir="rtl">
+          <p className="w-full text-[24px] font-medium leading-none text-black">{roleTitle}</p>
+          <div className="flex w-full items-center justify-between" dir={isEn ? "ltr" : "rtl"}>
+            <div className={`flex flex-col gap-[10px] ${isEn ? "items-start text-left" : "items-end text-right"} w-full`}>
+              <p className="text-[16px] leading-none text-black font-semibold">{nameLabel}</p>
+              <p className="text-[22px] font-bold leading-none text-[#979797] truncate max-w-[460px]">{memberName}</p>
             </div>
           </div>
         </section>

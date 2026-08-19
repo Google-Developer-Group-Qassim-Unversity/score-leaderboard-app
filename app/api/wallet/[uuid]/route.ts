@@ -1,65 +1,61 @@
 import { NextResponse } from "next/server"
-import { WalletCardData } from "@/lib/wallet-themes"
 
-declare global {
-  // eslint-disable-next-line no-var
-  var __GDG_WALLET_CARDS__: Map<string, WalletCardData> | undefined
+function getBackendUrl(): string {
+  return process.env.API_BACKEND_URL || process.env.NEXT_PUBLIC_API_BACKEND_URL || "http://localhost:7001"
 }
 
 export async function GET(
   req: Request,
   { params }: { params: { uuid: string } }
 ) {
-  const { uuid } = params
-  const cards = globalThis.__GDG_WALLET_CARDS__
-
-  if (!cards || !cards.has(uuid)) {
-    return NextResponse.json(
-      { error: "البطاقة غير موجودة أو انتهت صلاحيتها" },
-      { status: 404 }
-    )
-  }
-
-  const card = cards.get(uuid)
-  return NextResponse.json({
-    success: true,
-    card,
-    profileUrl: `/wallet/${uuid}`,
-  })
-}
-
-export async function PUT(
-  req: Request,
-  { params }: { params: { uuid: string } }
-) {
   try {
     const { uuid } = params
-    const updatedData = (await req.json()) as WalletCardData
-    const cards = globalThis.__GDG_WALLET_CARDS__
+    const backendUrl = getBackendUrl()
 
-    if (!cards || !cards.has(uuid)) {
+    const res = await fetch(`${backendUrl}/wallet/${uuid}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    })
+
+    if (!res.ok) {
       return NextResponse.json(
-        { error: "البطاقة غير موجودة" },
-        { status: 404 }
+        { error: "البطاقة أو الملف الشخصي غير موجود" },
+        { status: res.status }
       )
     }
 
-    const existingCard = cards.get(uuid)!
-    const mergedCard: WalletCardData = {
-      ...existingCard,
-      ...updatedData,
-      uuid,
-      updatedAt: new Date().toISOString(),
-    }
-
-    cards.set(uuid, mergedCard)
-
+    const data = await res.json()
     return NextResponse.json({
       success: true,
-      card: mergedCard,
+      card: {
+        uuid: data.uuid,
+        fullName: data.name,
+        nameLanguage: data.name_language || "ar",
+        themeId: data.theme_id || "gdg-blue",
+        isAdmin: data.is_admin || false,
+        bio: data.bio || "",
+        socialLinks: data.social_links || [],
+        email: data.email || "",
+        phone: data.phone || "",
+        institution: data.uni_college || "جامعة القصيم",
+        major: data.uni_college || "جامعة القصيم",
+        studyYearOrLevel: data.uni_level ? `المستوى ${data.uni_level}` : "",
+        visibility: data.visibility || {
+          showPhone: false,
+          showEmail: false,
+          showAcademic: true,
+          showBio: true,
+        },
+        createdAt: data.created_at,
+      },
+      profileUrl: `/p/${uuid}`,
     })
-  } catch (error) {
-    console.error("Error updating wallet card:", error)
-    return NextResponse.json({ error: "فشل تحديث البطاقة" }, { status: 500 })
+  } catch (error: any) {
+    console.error("Error fetching wallet by uuid:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch profile", detail: error?.message },
+      { status: 500 }
+    )
   }
 }

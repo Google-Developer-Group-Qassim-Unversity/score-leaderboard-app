@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { useUser } from "@clerk/nextjs"
+import { useUser, useAuth } from "@clerk/nextjs"
 import {
   WalletCardData,
   ProfileSocialLink,
@@ -36,27 +36,25 @@ import {
   Send,
   MessageSquare,
   Save,
-  KeyRound
+  KeyRound,
+  ShieldCheck,
+  Languages
 } from "lucide-react"
 import { toast } from "sonner"
 
 export default function PublicProfilePage() {
   const params = useParams()
   const uuid = params?.uuid as string
-  const { user } = useUser()
+  const { user, isSignedIn } = useUser()
+  const { getToken } = useAuth()
 
   const [card, setCard] = useState<WalletCardData | null>(null)
   const [editFormData, setEditFormData] = useState<WalletCardData | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [loading, setLoading] = useState(true)
-  
-  // Verification modal / prompt for instant editing
-  const [showAuthPrompt, setShowAuthPrompt] = useState(false)
-  const [verifyInput, setVerifyInput] = useState("")
-  const [isVerified, setIsVerified] = useState(false)
 
-  // Fetch card data
+  // Fetch public card data
   useEffect(() => {
     if (!uuid) return
 
@@ -70,7 +68,6 @@ export default function PublicProfilePage() {
           const loadedCard: WalletCardData = {
             ...data.card,
             visibility: {
-              // Defaults: phone and email hidden by default for maximum privacy
               showPhone: data.card.visibility?.showPhone ?? false,
               showEmail: data.card.visibility?.showEmail ?? false,
               showAcademic: data.card.visibility?.showAcademic ?? true,
@@ -82,37 +79,8 @@ export default function PublicProfilePage() {
           setEditFormData(loadedCard)
         }
       })
-      .catch(() => {
-        if (uuid === "demo-uuid-gdg") {
-          const mockCard: WalletCardData = {
-            uuid: "demo-uuid-gdg",
-            fullName: "بسام الحبيب",
-            email: "451110085@qu.edu.sa",
-            countryCode: "+966",
-            phone: "534406689",
-            themeId: DEFAULT_THEME_ID,
-            userStatus: "student",
-            educationLevel: "university",
-            institution: "جامعة القصيم",
-            major: "علوم حاسب",
-            studyYearOrLevel: "المستوى 7",
-            bio: "مهتم بالذكاء الاصطناعي وتطوير الويب السحابي | عضو مجتمع GDG Qassim 🚀",
-            visibility: {
-              showPhone: false,
-              showEmail: false,
-              showAcademic: true,
-              showBio: true,
-            },
-            socialLinks: [
-              { id: "1", platform: "linkedin", url: "https://linkedin.com", label: "LinkedIn" },
-              { id: "2", platform: "github", url: "https://github.com", label: "GitHub" },
-              { id: "3", platform: "x", url: "https://x.com", label: "حساب X (تويتر)" },
-            ],
-            createdAt: new Date().toISOString(),
-          }
-          setCard(mockCard)
-          setEditFormData(mockCard)
-        }
+      .catch((err) => {
+        console.error("Error fetching profile:", err)
       })
       .finally(() => setLoading(false))
   }, [uuid])
@@ -120,35 +88,16 @@ export default function PublicProfilePage() {
   // Check if current user is owner via Clerk session
   const userEmail = user?.primaryEmailAddress?.emailAddress?.toLowerCase()
   const cardEmail = card?.email?.toLowerCase()
-  const isClerkOwner = Boolean(userEmail && cardEmail && userEmail === cardEmail)
-  const canEdit = isClerkOwner || isVerified
+  const isOwner = Boolean(isSignedIn && userEmail && cardEmail && userEmail === cardEmail)
 
   const handleOpenEdit = () => {
-    if (canEdit) {
-      setIsEditing(true)
-    } else {
-      setShowAuthPrompt(true)
+    if (!isSignedIn) {
+      toast.error("يرجى تسجيل الدخول بحسابك لتعديل بيانات ملفك الشخصي.")
+      return
     }
+    setIsEditing(true)
   }
 
-  const handleVerifyOwner = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!card) return
-    const inputClean = verifyInput.trim().toLowerCase()
-    const emailClean = card.email.trim().toLowerCase()
-    const phoneClean = card.phone.trim()
-
-    if (inputClean === emailClean || inputClean === phoneClean || (phoneClean.length >= 7 && inputClean.endsWith(phoneClean))) {
-      setIsVerified(true)
-      setShowAuthPrompt(false)
-      setIsEditing(true)
-      toast.success("تم التحقق من هويتك بنجاح! يمكنك الآن تعديل بياناتك. 🔓")
-    } else {
-      toast.error("البريد الإلكتروني أو رقم الجوال غير متطابق مع بيانات البطاقة.")
-    }
-  }
-
-  // Social Links management in Edit Mode
   const handleAddSocialLink = () => {
     if (!editFormData) return
     const newLink: ProfileSocialLink = {
@@ -193,26 +142,46 @@ export default function PublicProfilePage() {
   }
 
   const handleSaveEdit = async () => {
-    if (!editFormData || !uuid) return
+    if (!editFormData) return
     setIsSaving(true)
     try {
-      const res = await fetch(`/api/wallet/${uuid}`, {
+      const token = await getToken()
+      const res = await fetch("/api/wallet/me", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editFormData),
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          theme_id: editFormData.themeId,
+          name_language: editFormData.nameLanguage,
+          bio: editFormData.bio,
+          social_links: editFormData.socialLinks,
+          visibility: editFormData.visibility,
+        }),
       })
 
       if (!res.ok) {
-        throw new Error("Failed to update profile")
+        const err = await res.json()
+        throw new Error(err.detail || "Failed to update profile")
       }
 
       const result = await res.json()
-      setCard(result.card)
+      const updatedProfile = result.profile
+
+      setCard({
+        ...card!,
+        themeId: updatedProfile.theme_id,
+        nameLanguage: updatedProfile.name_language,
+        bio: updatedProfile.bio,
+        socialLinks: updatedProfile.social_links,
+        visibility: updatedProfile.visibility,
+      })
       setIsEditing(false)
-      toast.success("تم حفظ التعديلات وإعدادات الخصوصية بنجاح! ✨")
-    } catch (err) {
+      toast.success("تم حفظ التعديلات وإعدادات الخصوصية في قاعدة البيانات بنجاح! ✨")
+    } catch (err: any) {
       console.error(err)
-      toast.error("حدث خطأ أثناء حفظ التعديلات")
+      toast.error(err.message || "حدث خطأ أثناء حفظ التعديلات")
     } finally {
       setIsSaving(false)
     }
@@ -282,10 +251,10 @@ export default function PublicProfilePage() {
     )
   }
 
-  // Visibility flags (strictly respecting user privacy toggles)
+  // Visibility flags
   const showPhone = Boolean(card.visibility?.showPhone && card.phone)
   const showEmail = Boolean(card.visibility?.showEmail && card.email)
-  const showAcademic = card.visibility?.showAcademic !== false
+  const showAcademic = card.visibility?.showAcademic !== false && card.institution
   const showBio = Boolean(card.visibility?.showBio !== false && card.bio)
 
   const initials = card.fullName
@@ -304,63 +273,27 @@ export default function PublicProfilePage() {
             <span>صانع الهوية</span>
           </Link>
 
-          <Button
-            size="sm"
-            variant={isEditing ? "destructive" : "outline"}
-            onClick={isEditing ? () => setIsEditing(false) : handleOpenEdit}
-            className="h-8 text-xs gap-1.5 rounded-full font-bold shadow-xs"
-          >
-            {isEditing ? (
-              <>
-                <XCircle className="w-3.5 h-3.5" />
-                <span>إلغاء التعديل</span>
-              </>
-            ) : (
-              <>
-                <Edit3 className="w-3.5 h-3.5" />
-                <span>تعديل الملف والخصوصية</span>
-              </>
-            )}
-          </Button>
+          {isOwner && (
+            <Button
+              size="sm"
+              variant={isEditing ? "destructive" : "outline"}
+              onClick={isEditing ? () => setIsEditing(false) : handleOpenEdit}
+              className="h-8 text-xs gap-1.5 rounded-full font-bold shadow-xs"
+            >
+              {isEditing ? (
+                <>
+                  <XCircle className="w-3.5 h-3.5" />
+                  <span>إلغاء التعديل</span>
+                </>
+              ) : (
+                <>
+                  <Edit3 className="w-3.5 h-3.5" />
+                  <span>تعديل الملف والخصوصية</span>
+                </>
+              )}
+            </Button>
+          )}
         </div>
-
-        {/* ================= MODAL: QUICK IDENTITY VERIFICATION ================= */}
-        {showAuthPrompt && (
-          <div className="bg-card border border-primary/30 rounded-3xl p-6 shadow-2xl space-y-4 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center gap-2.5 text-primary">
-              <KeyRound className="w-5 h-5" />
-              <h3 className="text-sm font-bold text-foreground">التحقق من صاحب الملف</h3>
-            </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              للتعديل على هذا الملف، يرجى كتابة البريد الإلكتروني ({card.email.slice(0, 4)}***) أو رقم الجوال المسجل بالبطاقة:
-            </p>
-
-            <form onSubmit={handleVerifyOwner} className="space-y-3">
-              <Input
-                placeholder="أدخل بريدك الإلكتروني أو رقم جوالك"
-                value={verifyInput}
-                onChange={(e) => setVerifyInput(e.target.value)}
-                className="h-10 text-xs rounded-xl"
-                dir="ltr"
-                autoFocus
-              />
-              <div className="flex gap-2">
-                <Button type="submit" size="sm" className="flex-1 text-xs font-bold h-9 rounded-xl">
-                  تأكيد ودخول للتعديل 🔓
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowAuthPrompt(false)}
-                  className="text-xs h-9 rounded-xl"
-                >
-                  إلغاء
-                </Button>
-              </div>
-            </form>
-          </div>
-        )}
 
         {/* ================= EDIT MODE FORM ================= */}
         {isEditing && editFormData ? (
@@ -372,76 +305,57 @@ export default function PublicProfilePage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-foreground">تعديل الملف وإدارة الخصوصية</h3>
-                  <p className="text-[11px] text-muted-foreground">تحكم بالمعلومات الظاهرة وروابط التواصل</p>
+                  <p className="text-[11px] text-muted-foreground">بياناتك الأساسية موثقة في قاعدة بيانات النادي</p>
                 </div>
               </div>
             </div>
 
-            {/* Basic Info */}
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="edit-name" className="text-xs font-bold text-foreground">الاسم الكامل</Label>
-                <Input
-                  id="edit-name"
-                  value={editFormData.fullName}
-                  onChange={(e) => setEditFormData({ ...editFormData, fullName: e.target.value })}
-                  className="h-10 text-xs rounded-xl"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="edit-bio" className="text-xs font-bold text-foreground">نبذة شخصية (Bio)</Label>
-                <textarea
-                  id="edit-bio"
-                  rows={3}
-                  value={editFormData.bio || ""}
-                  placeholder="اكتب نبذة مختصرة عن اهتماماتك أو مهاراتك..."
-                  onChange={(e) => setEditFormData({ ...editFormData, bio: e.target.value })}
-                  className="w-full p-3 rounded-xl border border-input bg-card text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label htmlFor="edit-major" className="text-xs font-bold text-foreground">التخصص</Label>
-                  <Input
-                    id="edit-major"
-                    value={editFormData.major || ""}
-                    placeholder="علوم حاسب"
-                    onChange={(e) => setEditFormData({ ...editFormData, major: e.target.value })}
-                    className="h-10 text-xs rounded-xl"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="edit-institution" className="text-xs font-bold text-foreground">الجامعة / المدرسة</Label>
-                  <Input
-                    id="edit-institution"
-                    value={editFormData.institution || ""}
-                    placeholder="جامعة القصيم"
-                    onChange={(e) => setEditFormData({ ...editFormData, institution: e.target.value })}
-                    className="h-10 text-xs rounded-xl"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="edit-phone" className="text-xs font-bold text-foreground">رقم الجوال</Label>
-                <Input
-                  id="edit-phone"
-                  value={editFormData.phone || ""}
-                  onChange={(e) => setEditFormData({ ...editFormData, phone: e.target.value })}
-                  className="h-10 text-xs rounded-xl font-mono"
-                  dir="ltr"
-                />
+            {/* Language Selection */}
+            <div className="space-y-2">
+              <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                <Languages className="w-3.5 h-3.5 text-primary" />
+                <span>لغة عرض الاسم</span>
+              </Label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEditFormData({ ...editFormData, nameLanguage: "ar" })}
+                  className={`h-9 rounded-xl border text-xs font-bold ${
+                    editFormData.nameLanguage === "ar" ? "border-primary bg-primary/10 text-primary" : "border-border bg-card"
+                  }`}
+                >
+                  العربية (الاسم)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditFormData({ ...editFormData, nameLanguage: "en" })}
+                  className={`h-9 rounded-xl border text-xs font-bold ${
+                    editFormData.nameLanguage === "en" ? "border-primary bg-primary/10 text-primary" : "border-border bg-card"
+                  }`}
+                >
+                  English (Name)
+                </button>
               </div>
             </div>
 
-            {/* ================= PRIVACY TOGGLES (إعدادات الخصوصية والظهور) ================= */}
+            {/* Bio Info */}
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-bio" className="text-xs font-bold text-foreground">نبذة شخصية (Bio)</Label>
+              <textarea
+                id="edit-bio"
+                rows={3}
+                value={editFormData.bio || ""}
+                placeholder="اكتب نبذة مختصرة عن اهتماماتك أو مهاراتك..."
+                onChange={(e) => setEditFormData({ ...editFormData, bio: e.target.value })}
+                className="w-full p-3 rounded-xl border border-input bg-card text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+            </div>
+
+            {/* ================= PRIVACY TOGGLES ================= */}
             <div className="border-t pt-4 space-y-3">
               <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
                 <Lock className="w-3.5 h-3.5 text-primary" />
-                <span>إعدادات الخصوصية (إظهار / إخفاء)</span>
+                <span>إعدادات الخصوصية والظهور</span>
               </Label>
               <div className="bg-muted/40 p-4 rounded-2xl border space-y-3">
                 <div className="flex items-center justify-between">
@@ -468,7 +382,7 @@ export default function PublicProfilePage() {
 
                 <div className="flex items-center justify-between border-t pt-2.5">
                   <div>
-                    <div className="text-xs font-semibold text-foreground">إظهار التخصص والجامعة</div>
+                    <div className="text-xs font-semibold text-foreground">إظهار الكلية والمستوى</div>
                     <div className="text-[10px] text-muted-foreground">عرض بياناتك الأكاديمية أعلى الملف</div>
                   </div>
                   <Switch
@@ -561,7 +475,7 @@ export default function PublicProfilePage() {
                 className="w-full h-11 text-xs font-bold gap-2 rounded-xl shadow-md"
               >
                 {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                <span>حفظ التعديلات وإعدادات الخصوصية</span>
+                <span>حفظ التعديلات في قاعدة البيانات</span>
               </Button>
             </div>
           </div>
@@ -592,14 +506,14 @@ export default function PublicProfilePage() {
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted/60 text-xs font-semibold text-muted-foreground border">
                     <GraduationCap className="w-3.5 h-3.5 text-primary" />
                     <span>
-                      {card.major || "علوم حاسب"} · {card.institution || "جامعة القصيم"}
+                      {card.institution || "جامعة القصيم"}
                       {card.studyYearOrLevel ? ` · ${card.studyYearOrLevel}` : ""}
                     </span>
                   </div>
                 )}
               </div>
 
-              {/* Bio Description (Only if provided & visible) */}
+              {/* Bio Description */}
               {showBio && (
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md mx-auto pt-1 font-medium">
                   {card.bio}
@@ -607,7 +521,7 @@ export default function PublicProfilePage() {
               )}
             </div>
 
-            {/* Direct Contact Info (ONLY shown if user explicitly enabled showEmail or showPhone) */}
+            {/* Direct Contact Info */}
             {(showEmail || showPhone) && (
               <div className="space-y-2.5">
                 <div className="text-xs font-bold text-muted-foreground px-1">معلومات التواصل المباشرة</div>
@@ -691,7 +605,7 @@ export default function PublicProfilePage() {
                 <div className="p-6 bg-card border rounded-2xl text-center space-y-1">
                   <Globe className="w-6 h-6 text-muted-foreground mx-auto opacity-50" />
                   <div className="text-xs font-bold text-foreground">لا توجد روابط مضافة حالياً</div>
-                  <p className="text-[11px] text-muted-foreground">اضغط &quot;تعديل الملف والخصوصية&quot; في الأعلى لإضافة روابطك وحساباتك.</p>
+                  <p className="text-[11px] text-muted-foreground">صاحب هذا الملف لم يقم بإضافة روابط خارجية حتى الآن.</p>
                 </div>
               )}
             </div>

@@ -87,8 +87,10 @@ export interface ProfileVisibility {
 
 export interface WalletCardData {
   uuid?: string
-  englishName?: string
   fullName: string
+  nameLanguage?: 'ar' | 'en'
+  isAdmin?: boolean
+  uniId?: string
   countryCode: string
   phone: string
   email: string

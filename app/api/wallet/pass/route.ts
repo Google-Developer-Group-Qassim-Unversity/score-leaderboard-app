@@ -1,23 +1,20 @@
 import { NextRequest, NextResponse } from "next/server"
-import { WalletCardData } from "@/lib/wallet-themes"
 
 export async function POST(req: NextRequest) {
   try {
-    const cardData = (await req.json()) as WalletCardData
-
-    if (!cardData || !cardData.fullName) {
-      return NextResponse.json({ error: "Invalid card data" }, { status: 400 })
-    }
+    const authHeader = req.headers.get("authorization")
 
     const backendUrl =
-      process.env.BACKEND_API_URL ||
-      process.env.NEXT_PUBLIC_BACKEND_API_URL ||
+      process.env.API_BACKEND_URL ||
+      process.env.NEXT_PUBLIC_API_BACKEND_URL ||
       "http://localhost:7001"
 
     const backendRes = await fetch(`${backendUrl}/wallet/apple-pass`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(cardData),
+      headers: {
+        "Content-Type": "application/json",
+        ...(authHeader ? { Authorization: authHeader } : {}),
+      },
       cache: "no-store",
     })
 
@@ -35,7 +32,7 @@ export async function POST(req: NextRequest) {
       status: 200,
       headers: {
         "Content-Type": "application/vnd.apple.pkpass",
-        "Content-Disposition": `attachment; filename="GDG-${encodeURIComponent(cardData.fullName.trim())}.pkpass"`,
+        "Content-Disposition": `attachment; filename="GDG-Pass.pkpass"`,
         "Cache-Control": "no-store, max-age=0",
       },
     })
