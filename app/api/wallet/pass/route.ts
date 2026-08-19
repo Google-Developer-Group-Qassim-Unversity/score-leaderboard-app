@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-import { generateSignedPkpassBuffer } from "@/lib/apple-pass-signer"
 import { WalletCardData } from "@/lib/wallet-themes"
 
 export async function POST(req: NextRequest) {
@@ -10,9 +9,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid card data" }, { status: 400 })
     }
 
-    const pkpassBuffer = await generateSignedPkpassBuffer(cardData)
+    const backendUrl =
+      process.env.BACKEND_API_URL ||
+      process.env.NEXT_PUBLIC_BACKEND_API_URL ||
+      "http://localhost:7001"
 
-    return new NextResponse(pkpassBuffer, {
+    const backendRes = await fetch(`${backendUrl}/wallet/apple-pass`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cardData),
+      cache: "no-store",
+    })
+
+    if (!backendRes.ok) {
+      const errorData = await backendRes.text()
+      return NextResponse.json(
+        { error: "Backend failed to generate signed pass", details: errorData },
+        { status: backendRes.status }
+      )
+    }
+
+    const pkpassBuffer = await backendRes.arrayBuffer()
+
+    return new NextResponse(Buffer.from(pkpassBuffer), {
       status: 200,
       headers: {
         "Content-Type": "application/vnd.apple.pkpass",
@@ -21,10 +40,10 @@ export async function POST(req: NextRequest) {
       },
     })
   } catch (error: any) {
-    console.error("Error signing Apple Wallet pass:", error)
+    console.error("Error communicating with Backend Wallet API:", error)
     return NextResponse.json(
-      { error: "Failed to generate signed pass", details: error?.message },
-      { status: 500 }
+      { error: "Backend Wallet API is unreachable", details: error?.message },
+      { status: 502 }
     )
   }
 }

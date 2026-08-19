@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-import { generateSignedPkpassBuffer } from "@/lib/apple-pass-signer"
 import { WalletCardData, DEFAULT_THEME_ID } from "@/lib/wallet-themes"
 
 export async function GET(
@@ -11,7 +10,7 @@ export async function GET(
 
     // Fetch card data from API or memory
     const origin = req.nextUrl.origin
-    const cardRes = await fetch(`${origin}/api/wallet/${uuid}`)
+    const cardRes = await fetch(`${origin}/api/wallet/${uuid}`, { cache: "no-store" })
 
     let cardData: WalletCardData
 
@@ -19,13 +18,12 @@ export async function GET(
       const json = await cardRes.json()
       cardData = json.card
     } else {
-      // Fallback mock for demo
       cardData = {
         uuid,
         fullName: "عضو GDG",
         countryCode: "+966",
-        phone: "551234567",
-        email: "member@gdg-q.com",
+        phone: "",
+        email: "",
         themeId: DEFAULT_THEME_ID,
         userStatus: "student",
         educationLevel: "university",
@@ -35,9 +33,29 @@ export async function GET(
       }
     }
 
-    const pkpassBuffer = await generateSignedPkpassBuffer(cardData)
+    const backendUrl =
+      process.env.BACKEND_API_URL ||
+      process.env.NEXT_PUBLIC_BACKEND_API_URL ||
+      "http://localhost:7001"
 
-    return new NextResponse(pkpassBuffer, {
+    const backendRes = await fetch(`${backendUrl}/wallet/apple-pass`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cardData),
+      cache: "no-store",
+    })
+
+    if (!backendRes.ok) {
+      const errorText = await backendRes.text()
+      return NextResponse.json(
+        { error: "Backend failed to generate Apple Wallet pass", details: errorText },
+        { status: backendRes.status }
+      )
+    }
+
+    const pkpassBuffer = await backendRes.arrayBuffer()
+
+    return new NextResponse(Buffer.from(pkpassBuffer), {
       status: 200,
       headers: {
         "Content-Type": "application/vnd.apple.pkpass",
@@ -46,10 +64,10 @@ export async function GET(
       },
     })
   } catch (error: any) {
-    console.error("Error generating pass for uuid:", error)
+    console.error("Error generating pass for uuid via Backend:", error)
     return NextResponse.json(
-      { error: "Failed to generate pass", details: error?.message },
-      { status: 500 }
+      { error: "Failed to communicate with Backend Wallet API", details: error?.message },
+      { status: 502 }
     )
   }
 }

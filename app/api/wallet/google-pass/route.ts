@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-import { generateGoogleWalletSaveUrl } from "@/lib/google-wallet-signer"
 import { WalletCardData } from "@/lib/wallet-themes"
 
 export async function POST(req: NextRequest) {
@@ -10,14 +9,33 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    const saveUrl = generateGoogleWalletSaveUrl(cardData)
+    const backendUrl =
+      process.env.BACKEND_API_URL ||
+      process.env.NEXT_PUBLIC_BACKEND_API_URL ||
+      "http://localhost:7001"
 
-    return NextResponse.json({ saveUrl })
-  } catch (error) {
-    console.error("Error generating Google Wallet Save URL:", error)
+    const backendRes = await fetch(`${backendUrl}/wallet/google-pass`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cardData),
+      cache: "no-store",
+    })
+
+    if (!backendRes.ok) {
+      const errorData = await backendRes.text()
+      return NextResponse.json(
+        { error: "Backend failed to generate Google Wallet link", details: errorData },
+        { status: backendRes.status }
+      )
+    }
+
+    const data = await backendRes.json()
+    return NextResponse.json({ saveUrl: data.saveUrl })
+  } catch (error: any) {
+    console.error("Error communicating with Backend Google Wallet API:", error)
     return NextResponse.json(
-      { error: "Failed to generate Google Wallet Pass" },
-      { status: 500 }
+      { error: "Backend Google Wallet API is unreachable", details: error?.message },
+      { status: 502 }
     )
   }
 }
