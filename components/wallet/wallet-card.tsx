@@ -74,7 +74,7 @@ export function WalletCard({ data, qrUrl, scale = 1 }: WalletCardProps) {
     })
   }, [targetQrUrl])
 
-  const englishName = data.fullName?.trim() || "GDG Member"
+  const englishName = data.englishName?.trim() || data.fullName?.trim() || "GDG Member"
   const arabicName = data.fullName?.trim() || "عضو GDG"
 
   return (

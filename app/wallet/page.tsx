@@ -12,6 +12,7 @@ import { toast } from "sonner"
 export default function WalletPage() {
   const [cardData, setCardData] = useState<WalletCardData>({
     fullName: "",
+    englishName: "",
     countryCode: "+966",
     phone: "",
     email: "",

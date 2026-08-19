@@ -57,6 +57,9 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
     if (!data.fullName?.trim()) {
       newErrors.fullName = "الرجاء إدخال الاسم الكامل"
     }
+    if (!data.englishName?.trim()) {
+      newErrors.englishName = "الرجاء إدخال الاسم بالإنجليزية"
+    }
     if (!data.email?.trim()) {
       newErrors.email = "الرجاء إدخال البريد الإلكتروني"
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
@@ -109,10 +112,10 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" dir="rtl">
-      {/* 1. Full Name (الاسم) */}
+      {/* 1. Arabic name */}
       <div className="space-y-1.5">
         <Label htmlFor="fullName" className="text-xs font-bold text-foreground">
-          الاسم الكامل <span className="text-red-500">*</span>
+          الاسم بالعربية <span className="text-red-500">*</span>
         </Label>
         <Input
           id="fullName"
@@ -124,7 +127,23 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
         {errors.fullName && <p className="text-xs text-red-500">{errors.fullName}</p>}
       </div>
 
-      {/* 2. Mobile Phone (رقم الجوال) */}
+      {/* 2. English name */}
+      <div className="space-y-1.5">
+        <Label htmlFor="englishName" className="text-xs font-bold text-foreground">
+          الاسم بالإنجليزية <span className="text-red-500">*</span>
+        </Label>
+        <Input
+          id="englishName"
+          dir="ltr"
+          placeholder="Example: Bassam Alhabib"
+          value={data.englishName || ""}
+          onChange={(e) => handleFieldChange("englishName", e.target.value)}
+          className={`h-11 rounded-xl ${errors.englishName ? "border-red-500 ring-1 ring-red-500" : ""}`}
+        />
+        {errors.englishName && <p className="text-xs text-red-500">{errors.englishName}</p>}
+      </div>
+
+      {/* 3. Mobile Phone (رقم الجوال) */}
       <div className="space-y-1.5">
         <Label htmlFor="phone" className="text-xs font-bold text-foreground">
           رقم الجوال <span className="text-red-500">*</span>
