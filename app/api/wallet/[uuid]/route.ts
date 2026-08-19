@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server"
-
-function getBackendUrl(): string {
-  return process.env.API_BACKEND_URL || process.env.NEXT_PUBLIC_API_BACKEND_URL || "http://localhost:7001"
-}
+import { config } from "@/lib/config"
 
 export async function GET(
   req: Request,
@@ -10,7 +7,7 @@ export async function GET(
 ) {
   try {
     const { uuid } = params
-    const backendUrl = getBackendUrl()
+    const backendUrl = config.backendApiUrl || "http://localhost:7001"
 
     const res = await fetch(`${backendUrl}/wallet/${uuid}`, {
       method: "GET",

@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server"
-
-function getBackendUrl(): string {
-  return process.env.API_BACKEND_URL || process.env.NEXT_PUBLIC_API_BACKEND_URL || "http://localhost:7001"
-}
+import { config } from "@/lib/config"
 
 export async function GET(req: Request) {
   try {
-    const backendUrl = getBackendUrl()
+    const backendUrl = config.backendApiUrl || "http://localhost:7001"
     const authHeader = req.headers.get("authorization")
 
     const res = await fetch(`${backendUrl}/wallet/me`, {
@@ -14,6 +11,7 @@ export async function GET(req: Request) {
       headers: {
         ...(authHeader ? { Authorization: authHeader } : {}),
       },
+      cache: "no-store",
     })
 
     const data = await res.json()
@@ -29,7 +27,7 @@ export async function GET(req: Request) {
 
 export async function PUT(req: Request) {
   try {
-    const backendUrl = getBackendUrl()
+    const backendUrl = config.backendApiUrl || "http://localhost:7001"
     const authHeader = req.headers.get("authorization")
     const body = await req.json()
 

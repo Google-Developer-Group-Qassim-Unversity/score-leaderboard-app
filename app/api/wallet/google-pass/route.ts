@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
+import { config } from "@/lib/config"
 
 export async function POST(req: NextRequest) {
   try {
     const authHeader = req.headers.get("authorization")
-
-    const backendUrl =
-      process.env.API_BACKEND_URL ||
-      process.env.NEXT_PUBLIC_API_BACKEND_URL ||
-      "http://localhost:7001"
+    const backendUrl = config.backendApiUrl || "http://localhost:7001"
 
     const backendRes = await fetch(`${backendUrl}/wallet/google-pass`, {
       method: "POST",
