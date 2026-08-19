@@ -54,7 +54,11 @@ export default function WalletPage() {
       })
 
       setIsModalOpen(true)
-      toast.success("تم إنشاء بطاقة المحفظة بنجاح! 🪪")
+      if (result.isExistingProfile) {
+        toast.success("تم تحديث بطاقتك وربطها بملفك الشخصي المعتمد! 🪪✨")
+      } else {
+        toast.success("تم إنشاء بطاقتك وملفك الشخصي بنجاح! 🪪✨")
+      }
     } catch (err) {
       console.error(err)
       toast.error("حدث خطأ أثناء حفظ البطاقة. يرجى المحاولة مجدداً.")
