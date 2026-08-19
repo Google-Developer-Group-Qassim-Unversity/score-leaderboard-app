@@ -1,8 +1,10 @@
 import fs from "fs"
 import path from "path"
+import os from "os"
 import crypto from "crypto"
 import { execSync } from "child_process"
 import AdmZip from "adm-zip"
+import forge from "node-forge"
 import { WalletCardData, WALLET_THEMES, DEFAULT_THEME_ID } from "./wallet-themes"
 
 function hexToRgb(hex: string): string {
@@ -14,57 +16,131 @@ function hexToRgb(hex: string): string {
   return `rgb(${r}, ${g}, ${b})`
 }
 
-function getOpenSSLCommand(): string {
+function getOpenSSLCommand(): string | null {
   if (process.platform === "win32") {
     const gitOpenSSL = "C:\\Program Files\\Git\\usr\\bin\\openssl.exe"
     if (fs.existsSync(gitOpenSSL)) {
       return `"${gitOpenSSL}"`
     }
   }
-  return "openssl"
+  try {
+    execSync("openssl version", { stdio: "ignore" })
+    return "openssl"
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Pure JavaScript PKCS#7 detached signer using node-forge
+ * Works in Serverless (Vercel, AWS Lambda, Cloudflare) without OpenSSL binary
+ */
+function signManifestWithForge(
+  manifestBuffer: Buffer,
+  p12Buffer: Buffer,
+  p12Password: string,
+  wwdrBuffer: Buffer
+): Buffer {
+  // Parse PKCS#12 (.p12) certificate & private key
+  const p12Der = p12Buffer.toString("binary")
+  const p12Asn1 = forge.asn1.fromDer(p12Der)
+  const p12 = forge.pkcs12.pkcs12FromAsn1(p12Asn1, p12Password)
+
+  let signerCert: forge.pki.Certificate | null = null
+  let signerKey: forge.pki.PrivateKey | null = null
+
+  for (const sc of p12.safeContents) {
+    for (const sb of sc.safeBags) {
+      if (sb.cert && !signerCert) {
+        signerCert = sb.cert
+      }
+      if (sb.key && !signerKey) {
+        signerKey = sb.key
+      }
+    }
+  }
+
+  if (!signerCert || !signerKey) {
+    throw new Error("Could not extract certificate and private key from .p12 file")
+  }
+
+  // Parse Apple WWDR certificate
+  let wwdrCert: forge.pki.Certificate
+  try {
+    const wwdrDer = wwdrBuffer.toString("binary")
+    wwdrCert = forge.pki.certificateFromAsn1(forge.asn1.fromDer(wwdrDer))
+  } catch {
+    // If PEM format
+    wwdrCert = forge.pki.certificateFromPem(wwdrBuffer.toString("utf8"))
+  }
+
+  // Create PKCS#7 SignedData
+  const p7 = forge.pkcs7.createSignedData()
+  p7.content = forge.util.createBuffer(manifestBuffer.toString("utf8"), "utf8")
+
+  p7.addCertificate(signerCert)
+  p7.addCertificate(wwdrCert)
+
+  p7.addSigner({
+    key: signerKey,
+    certificate: signerCert,
+    digestAlgorithm: forge.pki.oids.sha1,
+    authenticatedAttributes: [
+      {
+        type: forge.pki.oids.contentType,
+        value: forge.pki.oids.data,
+      },
+      {
+        type: forge.pki.oids.signingTime,
+        value: new Date(),
+      },
+      {
+        type: forge.pki.oids.messageDigest,
+      },
+    ],
+  })
+
+  // Detached signature
+  p7.sign({ detached: true })
+
+  const asn1 = p7.toAsn1()
+  const der = forge.asn1.toDer(asn1).getBytes()
+  return Buffer.from(der, "binary")
 }
 
 export async function generateSignedPkpassBuffer(cardData: WalletCardData): Promise<Buffer> {
   const tmpId = `pass-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
-  const tempDir = path.join(process.cwd(), "tmp", tmpId)
+  // IMPORTANT: Use os.tmpdir() for writable temp directory in Vercel / Serverless (/tmp)
+  const tempDir = path.join(os.tmpdir(), tmpId)
   fs.mkdirSync(tempDir, { recursive: true })
 
   try {
     const passModelDir = path.join(process.cwd(), "passmodels", "gdg.pass")
     const certsDir = path.join(process.cwd(), "certificates")
-    const opensslCmd = getOpenSSLCommand()
 
-    // 1. Setup signer certs (from Infisical env vars or local certificates/ folder)
-    let signerCertPath = path.join(certsDir, "signerCert.pem")
-    let signerKeyPath = path.join(certsDir, "signerKey.pem")
-    let wwdrCertPath = path.join(certsDir, "wwdr.pem")
+    // 1. Resolve Certificate Buffers (from Infisical env vars or local certificates/ folder)
+    let p12Buffer: Buffer | null = null
+    let wwdrBuffer: Buffer | null = null
+    const p12Password = process.env.APPLE_P12_PASSWORD || "2shb+RY3692VMLkKO6vWWfl2"
 
-    // If PEM files are missing locally, extract from Infisical APPLE_P12_BASE64
-    if (!fs.existsSync(signerCertPath) || !fs.existsSync(signerKeyPath)) {
-      const p12Base64 = process.env.APPLE_P12_BASE64
-      const p12Password = process.env.APPLE_P12_PASSWORD || "2shb+RY3692VMLkKO6vWWfl2"
-      const wwdrBase64 = process.env.APPLE_WWDR_BASE64
-
-      if (p12Base64) {
-        const tempP12Path = path.join(tempDir, "temp-cert.p12")
-        fs.writeFileSync(tempP12Path, Buffer.from(p12Base64, "base64"))
-
-        signerCertPath = path.join(tempDir, "signerCert.pem")
-        signerKeyPath = path.join(tempDir, "signerKey.pem")
-
-        execSync(
-          `${opensslCmd} pkcs12 -in "${tempP12Path}" -clcerts -nokeys -out "${signerCertPath}" -passin pass:${p12Password}`
-        )
-        execSync(
-          `${opensslCmd} pkcs12 -in "${tempP12Path}" -nocerts -nodes -out "${signerKeyPath}" -passin pass:${p12Password}`
-        )
+    if (process.env.APPLE_P12_BASE64) {
+      p12Buffer = Buffer.from(process.env.APPLE_P12_BASE64, "base64")
+    } else {
+      const localP12 = path.join(certsDir, "apple-wallet-pass-certificate.p12")
+      if (fs.existsSync(localP12)) {
+        p12Buffer = fs.readFileSync(localP12)
       }
+    }
 
-      if (wwdrBase64 && !fs.existsSync(wwdrCertPath)) {
-        const tempWwdrCerPath = path.join(tempDir, "wwdr.cer")
-        fs.writeFileSync(tempWwdrCerPath, Buffer.from(wwdrBase64, "base64"))
-        wwdrCertPath = path.join(tempDir, "wwdr.pem")
-        execSync(`${opensslCmd} x509 -inform DER -in "${tempWwdrCerPath}" -out "${wwdrCertPath}"`)
+    if (process.env.APPLE_WWDR_BASE64) {
+      wwdrBuffer = Buffer.from(process.env.APPLE_WWDR_BASE64, "base64")
+    } else {
+      const localWwdr = path.join(certsDir, "AppleWWDRCAG4.cer")
+      const localWwdrPem = path.join(certsDir, "wwdr.pem")
+      if (fs.existsSync(localWwdr)) {
+        wwdrBuffer = fs.readFileSync(localWwdr)
+      } else if (fs.existsSync(localWwdrPem)) {
+        wwdrBuffer = fs.readFileSync(localWwdrPem)
       }
     }
 
@@ -90,10 +166,6 @@ export async function generateSignedPkpassBuffer(cardData: WalletCardData): Prom
 
     // 3. Select Theme Colors
     const theme = WALLET_THEMES[cardData.themeId] || WALLET_THEMES[DEFAULT_THEME_ID]
-    const backgroundColor = hexToRgb(theme.bgHex)
-    const foregroundColor = hexToRgb(theme.textColor)
-    const labelColor = hexToRgb(theme.labelColor)
-
     const passTypeId = process.env.APPLE_PASS_TYPE_ID || "pass.pass.com.gdg-q.wallet"
     const teamId = process.env.APPLE_TEAM_ID || "7NN7W24VXR"
 
@@ -217,12 +289,57 @@ export async function generateSignedPkpassBuffer(cardData: WalletCardData): Prom
     }
 
     const manifestPath = path.join(tempDir, "manifest.json")
-    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2))
+    const manifestBuffer = Buffer.from(JSON.stringify(manifest, null, 2))
+    fs.writeFileSync(manifestPath, manifestBuffer)
 
-    // 6. Sign with OpenSSL
+    // 6. Sign manifest (Pure JS with node-forge or OpenSSL fallback)
     const signaturePath = path.join(tempDir, "signature")
-    const signCommand = `${opensslCmd} smime -sign -signer "${signerCertPath}" -inkey "${signerKeyPath}" -certfile "${wwdrCertPath}" -in "${manifestPath}" -out "${signaturePath}" -outform DER -binary -nodetach`
-    execSync(signCommand)
+    let signatureBuffer: Buffer | null = null
+
+    // Method A: Pure JS Forge Signer (Serverless-friendly, 0 external binaries)
+    if (p12Buffer && wwdrBuffer) {
+      try {
+        signatureBuffer = signManifestWithForge(manifestBuffer, p12Buffer, p12Password, wwdrBuffer)
+        fs.writeFileSync(signaturePath, signatureBuffer)
+      } catch (forgeErr) {
+        console.warn("Forge signing failed, trying OpenSSL fallback:", forgeErr)
+      }
+    }
+
+    // Method B: OpenSSL CLI fallback
+    if (!signatureBuffer) {
+      const opensslCmd = getOpenSSLCommand()
+      if (!opensslCmd) {
+        throw new Error("No certificate signer available (OpenSSL not found and .p12 missing)")
+      }
+
+      let signerCertPath = path.join(certsDir, "signerCert.pem")
+      let signerKeyPath = path.join(certsDir, "signerKey.pem")
+      let wwdrCertPath = path.join(certsDir, "wwdr.pem")
+
+      if (!fs.existsSync(signerCertPath) && p12Buffer) {
+        const tempP12Path = path.join(tempDir, "temp-cert.p12")
+        fs.writeFileSync(tempP12Path, p12Buffer)
+        signerCertPath = path.join(tempDir, "signerCert.pem")
+        signerKeyPath = path.join(tempDir, "signerKey.pem")
+        execSync(
+          `${opensslCmd} pkcs12 -in "${tempP12Path}" -clcerts -nokeys -out "${signerCertPath}" -passin pass:${p12Password}`
+        )
+        execSync(
+          `${opensslCmd} pkcs12 -in "${tempP12Path}" -nocerts -nodes -out "${signerKeyPath}" -passin pass:${p12Password}`
+        )
+      }
+
+      if (!fs.existsSync(wwdrCertPath) && wwdrBuffer) {
+        const tempWwdrPath = path.join(tempDir, "wwdr.cer")
+        fs.writeFileSync(tempWwdrPath, wwdrBuffer)
+        wwdrCertPath = path.join(tempDir, "wwdr.pem")
+        execSync(`${opensslCmd} x509 -inform DER -in "${tempWwdrPath}" -out "${wwdrCertPath}"`)
+      }
+
+      const signCommand = `${opensslCmd} smime -sign -signer "${signerCertPath}" -inkey "${signerKeyPath}" -certfile "${wwdrCertPath}" -in "${manifestPath}" -out "${signaturePath}" -outform DER -binary -nodetach`
+      execSync(signCommand)
+    }
 
     // 7. Zip into .pkpass Buffer
     const zip = new AdmZip()
