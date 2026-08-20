@@ -8,7 +8,7 @@ import { WalletCard } from "@/components/wallet/wallet-card"
 import { WalletForm } from "@/components/wallet/wallet-form"
 import { WalletPassModal } from "@/components/wallet/wallet-pass-modal"
 import { Button } from "@/components/ui/button"
-import { Sparkles, CheckCircle2, ShieldCheck, LogIn, UserCheck } from "lucide-react"
+import { Sparkles, CheckCircle2, ShieldCheck, LogIn } from "lucide-react"
 import { toast } from "sonner"
 
 export default function WalletPage() {
@@ -175,14 +175,8 @@ export default function WalletPage() {
             صمم بطاقتك وأضفها إلى Apple Wallet و Google Wallet مع صفحة بروفايل خاصة بك.
           </p>
 
-          {/* Account status indicator */}
-          <div className="pt-1 flex items-center justify-center">
-            {isSignedIn ? (
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold">
-                <UserCheck className="w-3.5 h-3.5" />
-                <span>حسابك مسجل — يتم حفظ وتحديث بياناتك تلقائياً في ملفك الشخصي</span>
-              </div>
-            ) : (
+          {!isSignedIn && (
+            <div className="pt-1 flex items-center justify-center">
               <SignInButton mode="modal">
                 <button
                   type="button"
@@ -192,8 +186,8 @@ export default function WalletPage() {
                   <span>هل أنت مسجل بالنادي؟ اضغط لتسجيل الدخول وملء البيانات تلقائياً</span>
                 </button>
               </SignInButton>
-            )}
-          </div>
+            </div>
+          )}
         </section>
 
         {/* ================= WORKSPACE: LIVE PREVIEW & FULL FORM ================= */}
