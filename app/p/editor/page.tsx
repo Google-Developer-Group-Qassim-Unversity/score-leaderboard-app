@@ -439,12 +439,12 @@ export default function ProfileEditorPage() {
               {isSaving ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>جاري حفظ التعديلات...</span>
+                  <span>جاري الحفظ...</span>
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4" />
-                  <span>حفظ التعديلات في قاعدة البيانات ✨</span>
+                  <span>حفظ التعديلات</span>
                 </>
               )}
             </Button>
