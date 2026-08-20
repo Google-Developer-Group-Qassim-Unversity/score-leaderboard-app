@@ -17,8 +17,6 @@ import {
   ArrowRight,
   ExternalLink,
   Globe,
-  Mail,
-  Phone,
   Sparkles,
   Lock,
   Loader2,
@@ -29,8 +27,6 @@ import {
   Save,
   LogIn,
   ShieldCheck,
-  Download,
-  Languages,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -77,7 +73,7 @@ export default function ProfileEditorPage() {
         setProfileData({
           uuid: prof.uuid,
           fullName: data.name || user?.fullName || "عضو GDG",
-          nameLanguage: prof.name_language || "ar",
+          nameLanguage: "ar",
           isAdmin: Boolean(data.is_admin),
           uniId: data.uni_id,
           email: data.email || user?.primaryEmailAddress?.emailAddress || "",
@@ -165,7 +161,6 @@ export default function ProfileEditorPage() {
         body: JSON.stringify({
           custom_name: profileData.fullName,
           theme_id: profileData.themeId,
-          name_language: profileData.nameLanguage,
           user_status: profileData.userStatus,
           education_level: profileData.educationLevel,
           institution: profileData.institution,
@@ -210,7 +205,7 @@ export default function ProfileEditorPage() {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-4">
         <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
-        <p className="text-xs font-bold text-muted-foreground">جاري فتح لوحة التحكم المصغرة...</p>
+        <p className="text-xs font-bold text-muted-foreground">جاري فتح لوحة التحكم...</p>
       </div>
     )
   }
@@ -305,39 +300,7 @@ export default function ProfileEditorPage() {
 
         {/* Main Editor Card */}
         <div className="bg-card border border-border/80 rounded-3xl p-5 sm:p-7 shadow-md space-y-6">
-          {/* 1. Name Language */}
-          <div className="space-y-2">
-            <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-              <Languages className="w-3.5 h-3.5 text-primary" />
-              <span>لغة عرض الاسم على بطاقتك</span>
-            </Label>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => setProfileData({ ...profileData, nameLanguage: "ar" })}
-                className={`h-9 rounded-xl border text-xs font-bold transition-all ${
-                  profileData.nameLanguage === "ar"
-                    ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/20"
-                    : "border-border bg-card text-muted-foreground hover:bg-accent"
-                }`}
-              >
-                العربية (الاسم)
-              </button>
-              <button
-                type="button"
-                onClick={() => setProfileData({ ...profileData, nameLanguage: "en" })}
-                className={`h-9 rounded-xl border text-xs font-bold transition-all ${
-                  profileData.nameLanguage === "en"
-                    ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/20"
-                    : "border-border bg-card text-muted-foreground hover:bg-accent"
-                }`}
-              >
-                English (Name)
-              </button>
-            </div>
-          </div>
-
-          {/* 2. Bio */}
+          {/* 1. Bio */}
           <div className="space-y-1.5">
             <Label htmlFor="bio" className="text-xs font-bold text-foreground">نبذة شخصية (Bio)</Label>
             <textarea
@@ -350,13 +313,13 @@ export default function ProfileEditorPage() {
             />
           </div>
 
-          {/* 3. Privacy Settings */}
+          {/* 2. Privacy Settings */}
           <div className="border-t pt-4 space-y-3">
             <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
               <Lock className="w-3.5 h-3.5 text-primary" />
               <span>إعدادات الخصوصية والظهور</span>
             </Label>
-            <div className="bg-muted/40 p-4 rounded-2xl border space-y-3">
+            <div className="bg-muted/40 p-4 rounded-2xl border border-border/80 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-xs font-semibold text-foreground">إظهار رقم الجوال</div>
@@ -392,7 +355,7 @@ export default function ProfileEditorPage() {
             </div>
           </div>
 
-          {/* 4. Social Links */}
+          {/* 3. Social Links */}
           <div className="border-t pt-4 space-y-3">
             <div className="flex items-center justify-between">
               <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
@@ -404,9 +367,9 @@ export default function ProfileEditorPage() {
                 size="sm"
                 variant="outline"
                 onClick={handleAddSocialLink}
-                className="h-7 text-xs gap-1 rounded-lg"
+                className="h-8 text-xs font-bold gap-1 rounded-xl border-primary/40 text-primary hover:bg-primary/10"
               >
-                <Plus className="w-3 h-3" />
+                <Plus className="w-3.5 h-3.5" />
                 <span>إضافة رابط</span>
               </Button>
             </div>
@@ -418,12 +381,12 @@ export default function ProfileEditorPage() {
                 </p>
               ) : (
                 (profileData.socialLinks || []).map((link) => (
-                  <div key={link.id} className="p-3 bg-muted/40 rounded-2xl border space-y-2">
+                  <div key={link.id} className="p-3.5 bg-muted/40 rounded-2xl border space-y-2.5">
                     <div className="flex items-center justify-between gap-2">
                       <select
                         value={link.platform}
                         onChange={(e) => handleUpdateSocialLink(link.id, "platform", e.target.value as any)}
-                        className="h-8 px-2 rounded-lg border bg-card text-xs font-medium"
+                        className="h-9 px-2.5 rounded-xl border bg-card text-xs font-bold"
                       >
                         <option value="linkedin">LinkedIn</option>
                         <option value="github">GitHub</option>
@@ -438,7 +401,7 @@ export default function ProfileEditorPage() {
                         placeholder="عنوان الرابط (اختياري)"
                         value={link.label || ""}
                         onChange={(e) => handleUpdateSocialLink(link.id, "label", e.target.value)}
-                        className="h-8 text-xs rounded-lg flex-1"
+                        className="h-9 text-xs rounded-xl flex-1 font-medium bg-card"
                       />
 
                       <Button
@@ -446,9 +409,9 @@ export default function ProfileEditorPage() {
                         size="icon"
                         variant="ghost"
                         onClick={() => handleRemoveSocialLink(link.id)}
-                        className="h-8 w-8 text-red-500 hover:bg-red-500/10 rounded-lg shrink-0"
+                        className="h-9 w-9 text-red-500 hover:bg-red-500/10 rounded-xl shrink-0"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
 
@@ -457,7 +420,7 @@ export default function ProfileEditorPage() {
                       value={link.url}
                       dir="ltr"
                       onChange={(e) => handleUpdateSocialLink(link.id, "url", e.target.value)}
-                      className="h-8 text-xs rounded-lg font-mono bg-card"
+                      className="h-9 text-xs rounded-xl font-mono bg-card"
                     />
                   </div>
                 ))
@@ -471,7 +434,7 @@ export default function ProfileEditorPage() {
               type="button"
               onClick={handleSave}
               disabled={isSaving}
-              className="w-full h-12 text-sm font-bold gap-2 rounded-xl shadow-md bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
+              className="w-full h-12 text-sm font-bold gap-2 rounded-xl shadow-md bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white cursor-pointer"
             >
               {isSaving ? (
                 <>
