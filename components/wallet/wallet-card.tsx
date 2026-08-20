@@ -44,8 +44,7 @@ export function WalletCard({ data, qrUrl, scale = 1 }: WalletCardProps) {
   }, [targetQrUrl])
 
   const memberName = data.fullName?.trim() || "عضو GDG"
-  const isEn = data.nameLanguage === "en"
-  const nameLabel = isEn ? "Name" : "الاسم"
+  const nameLabel = "الاسم"
   const roleTitle = data.isAdmin || theme.isAdmin ? "إداري نادي قوقل للطلبة المطورين" : theme.roleTitle
   const memberLine = `${nameLabel}: ${memberName}`
 
