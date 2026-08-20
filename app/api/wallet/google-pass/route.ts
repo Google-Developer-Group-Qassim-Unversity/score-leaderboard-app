@@ -5,6 +5,7 @@ export async function POST(req: NextRequest) {
   try {
     const authHeader = req.headers.get("authorization")
     const backendUrl = config.backendApiUrl || "http://localhost:7001"
+    const body = await req.json().catch(() => null)
 
     const backendRes = await fetch(`${backendUrl}/wallet/google-pass`, {
       method: "POST",
@@ -12,11 +13,13 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
         ...(authHeader ? { Authorization: authHeader } : {}),
       },
+      body: body ? JSON.stringify(body) : undefined,
       cache: "no-store",
     })
 
     if (!backendRes.ok) {
       const errorData = await backendRes.text()
+      console.error("Backend /wallet/google-pass error:", errorData)
       return NextResponse.json(
         { error: "Backend failed to generate signed Google Wallet pass", details: errorData },
         { status: backendRes.status }

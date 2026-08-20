@@ -56,6 +56,7 @@ export function WalletPassModal({ isOpen, onClose, data }: WalletPassModalProps)
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        body: JSON.stringify(data),
       })
 
       if (!res.ok) {
@@ -104,6 +105,7 @@ export function WalletPassModal({ isOpen, onClose, data }: WalletPassModalProps)
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        body: JSON.stringify(data),
       })
 
       if (!res.ok) {
