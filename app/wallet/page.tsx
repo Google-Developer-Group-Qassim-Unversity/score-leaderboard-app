@@ -199,7 +199,7 @@ export default function WalletPage() {
         {/* ================= WORKSPACE: LIVE PREVIEW & FULL FORM ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Card Live Preview (Sticky on desktop) */}
-          <div className="lg:col-span-6 flex flex-col items-center justify-center p-6 sm:p-10 rounded-3xl bg-muted/30 border border-border/80 sticky top-20 shadow-xs">
+          <div className="lg:col-span-6 flex flex-col items-center justify-center p-6 sm:p-10 rounded-3xl bg-muted/30 border border-border/80 lg:sticky lg:top-20 shadow-xs">
             <div className="text-xs font-bold text-muted-foreground mb-6 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>معاينة حية للبطاقة</span>
