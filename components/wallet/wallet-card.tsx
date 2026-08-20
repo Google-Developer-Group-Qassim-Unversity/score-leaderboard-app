@@ -16,9 +16,9 @@ const DISPLAY_WIDTH = 340
 const DISPLAY_HEIGHT = (DISPLAY_WIDTH / FIGMA_WIDTH) * FIGMA_HEIGHT
 
 function themeAssets(themeId: string) {
-  if (themeId === "gdg-gold-admin") return { artwork: "/wallet-figma/header-admin.svg" }
-  if (themeId === "gdg-red") return { artwork: "/wallet-figma/header-female.svg" }
-  return { artwork: "/wallet-figma/header-male.svg" }
+  if (themeId === "gdg-gold-admin") return { artwork: "/wallet-figma/header-admin.svg", artworkHeight: 220 }
+  if (themeId === "gdg-red") return { artwork: "/wallet-figma/header-female.svg", artworkHeight: 220 }
+  return { artwork: "/wallet-figma/header-male.svg", artworkHeight: 204, divider: "#3e88f8" }
 }
 
 export function WalletCard({ data, qrUrl, scale = 1 }: WalletCardProps) {
@@ -55,7 +55,14 @@ export function WalletCard({ data, qrUrl, scale = 1 }: WalletCardProps) {
         className="absolute left-0 top-0 origin-top-left overflow-hidden rounded-[24px] bg-white shadow-xl"
         style={{ width: FIGMA_WIDTH, height: FIGMA_HEIGHT, transform: `scale(${(DISPLAY_WIDTH / FIGMA_WIDTH) * scale})` }}
       >
-        <img alt="" aria-hidden="true" className="absolute left-0 top-[100px] h-[204px] w-[535px]" src={assets.artwork} />
+        <img
+          alt=""
+          aria-hidden="true"
+          className="absolute left-0 top-[100px] w-[535px]"
+          style={{ height: assets.artworkHeight }}
+          src={assets.artwork}
+        />
+        {assets.divider && <div className="absolute left-0 top-[304px] h-[23px] w-[535px]" style={{ background: assets.divider }} />}
 
         <div className="absolute left-[-25px] top-[33px] h-[44px] w-[103px] overflow-hidden">
           <img alt="GDG Qassim" className="absolute left-[42px] top-[1px] h-[44px] w-[249px] max-w-none" src="/wallet-figma/gdg-q-logo.png" />
