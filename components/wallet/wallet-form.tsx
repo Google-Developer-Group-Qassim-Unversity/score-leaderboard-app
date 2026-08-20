@@ -1,11 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { WALLET_THEMES, WalletCardData, DEFAULT_THEME_ID } from "@/lib/wallet-themes"
+import { useSearchParams } from "next/navigation"
+import { WALLET_THEMES, WalletCardData, DEFAULT_THEME_ID, UserStatus, EducationLevel } from "@/lib/wallet-themes"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Sparkles, Loader2, Check, ShieldCheck, Globe, Languages } from "lucide-react"
+import { Sparkles, Loader2, Check, GraduationCap, School, ShieldCheck, Languages, UserCheck } from "lucide-react"
 
 interface WalletFormProps {
   data: WalletCardData
@@ -15,6 +16,9 @@ interface WalletFormProps {
 }
 
 export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: WalletFormProps) {
+  const searchParams = useSearchParams()
+  const isAdminParam = searchParams?.get("admin") === "true"
+
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
   const handleFieldChange = (field: keyof WalletCardData, value: any) => {
@@ -27,10 +31,31 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
     }
   }
 
+  const handleStatusSelect = (status: UserStatus) => {
+    onChange({
+      ...data,
+      userStatus: status,
+      educationLevel: status === "student" ? (data.educationLevel || "university") : "",
+      institution: status === "student" ? (data.institution || "جامعة القصيم") : (data.institution || "جامعة القصيم"),
+      major: data.major || "",
+      studyYearOrLevel: status === "graduate" ? "خريج" : (data.studyYearOrLevel || "المستوى 7"),
+    })
+  }
+
+  const handleEducationLevelSelect = (level: EducationLevel) => {
+    onChange({
+      ...data,
+      educationLevel: level,
+      institution: level === "university" ? "جامعة القصيم" : "",
+      major: level === "university" ? (data.major || "علوم حاسب") : "",
+      studyYearOrLevel: level === "university" ? "المستوى 7" : "ثالث ثانوي",
+    })
+  }
+
   const validate = () => {
     const newErrors: { [key: string]: string } = {}
     if (!data.fullName?.trim()) {
-      newErrors.fullName = "الاسم غير مسجل في الحساب"
+      newErrors.fullName = "الرجاء إدخال الاسم المفضل على البطاقة"
     }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -43,43 +68,69 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
     }
   }
 
-  // Filter themes based on admin status
+  const popularMajors = [
+    "علوم حاسب",
+    "هندسة برمجيات",
+    "ذكاء اصطناعي",
+    "أمن سيبراني",
+    "تقنية معلومات",
+    "نظم معلومات",
+  ]
+
+  const studyLevels = [
+    "المستوى 1",
+    "المستوى 2",
+    "المستوى 3",
+    "المستوى 4",
+    "المستوى 5",
+    "المستوى 6",
+    "المستوى 7",
+    "المستوى 8",
+    "المستوى 9",
+    "المستوى 10",
+  ]
+
+  const highSchoolGrades = ["أول ثانوي", "ثاني ثانوي", "ثالث ثانوي"]
+
+  // Show themes: blue & red, plus gold if admin or ?admin=true
   const themes = Object.values(WALLET_THEMES).filter(
-    (t) => !t.isAdmin || data.isAdmin
+    (t) => !t.isAdmin || data.isAdmin || isAdminParam
   )
 
   const currentLang = data.nameLanguage || "ar"
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" dir="rtl">
-      {/* 1. Official Member Name (Single Name from DB) */}
-      <div className="space-y-2">
-        <Label htmlFor="fullName" className="text-xs font-bold text-foreground flex items-center justify-between">
-          <span>اسم العضو المسجل بالنادي</span>
-          {data.uniId && <span className="text-[11px] font-mono text-muted-foreground">الرقم الجامعي: {data.uniId}</span>}
-        </Label>
+      {/* 1. Name on Card (Fully editable with hint) */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="fullName" className="text-xs font-bold text-foreground">
+            الاسم على البطاقة <span className="text-red-500">*</span>
+          </Label>
+          <span className="text-[11px] text-muted-foreground">يمكنك كتابة اسمك كما تفضله أن يظهر</span>
+        </div>
         <Input
           id="fullName"
           value={data.fullName || ""}
           onChange={(e) => handleFieldChange("fullName", e.target.value)}
-          placeholder="اسم العضو"
-          className="h-11 text-xs rounded-xl bg-muted/40 font-bold"
+          placeholder="مثال: بسام الحبيب أو بسام إبراهيم"
+          className="h-11 text-xs rounded-xl bg-card font-bold"
           dir="auto"
         />
         {errors.fullName && <p className="text-[11px] text-red-500">{errors.fullName}</p>}
       </div>
 
-      {/* 2. Language Preference Selector */}
-      <div className="space-y-2.5 p-4 rounded-2xl bg-muted/40 border border-border/80">
+      {/* 2. Name Language Preference */}
+      <div className="space-y-2 p-3.5 rounded-2xl bg-muted/40 border border-border/80">
         <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-          <Languages className="w-4 h-4 text-primary" />
+          <Languages className="w-3.5 h-3.5 text-primary" />
           <span>لغة عرض الاسم على البطاقة</span>
         </Label>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2.5">
           <button
             type="button"
             onClick={() => handleFieldChange("nameLanguage", "ar")}
-            className={`h-11 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
+            className={`h-10 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
               currentLang === "ar"
                 ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/20"
                 : "border-border hover:bg-accent text-muted-foreground bg-card"
@@ -92,7 +143,7 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
           <button
             type="button"
             onClick={() => handleFieldChange("nameLanguage", "en")}
-            className={`h-11 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
+            className={`h-10 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
               currentLang === "en"
                 ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/20"
                 : "border-border hover:bg-accent text-muted-foreground bg-card"
@@ -104,7 +155,177 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
         </div>
       </div>
 
-      {/* 3. Theme Selection */}
+      {/* 3. Academic Stages & Status (Student / Graduate) */}
+      <div className="space-y-4 pt-2 border-t border-border/60">
+        <div className="space-y-2">
+          <Label className="text-xs font-bold text-foreground block">
+            المرحلة والحالة الدراسية الحالية
+          </Label>
+          <div className="grid grid-cols-2 gap-2.5">
+            <button
+              type="button"
+              onClick={() => handleStatusSelect("student")}
+              className={`p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1.5 ${
+                data.userStatus === "student"
+                  ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/20 font-bold"
+                  : "border-border hover:bg-accent text-muted-foreground bg-card font-medium"
+              }`}
+            >
+              <GraduationCap className="w-5 h-5" />
+              <span className="text-xs">طالب حالي</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleStatusSelect("graduate")}
+              className={`p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1.5 ${
+                data.userStatus === "graduate"
+                  ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/20 font-bold"
+                  : "border-border hover:bg-accent text-muted-foreground bg-card font-medium"
+              }`}
+            >
+              <School className="w-5 h-5" />
+              <span className="text-xs">خريج</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Education Level (University / High School) if student */}
+        {data.userStatus === "student" && (
+          <div className="space-y-2 bg-muted/30 p-3.5 rounded-2xl border border-border/70 animate-in fade-in-50 duration-200">
+            <Label className="text-xs font-bold text-foreground block">
+              نوع المرحلة التعليمية
+            </Label>
+            <div className="grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={() => handleEducationLevelSelect("university")}
+                className={`py-2 px-3 rounded-xl border text-xs transition-all ${
+                  data.educationLevel === "university"
+                    ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
+                    : "border-border bg-card text-muted-foreground hover:bg-accent"
+                }`}
+              >
+                🎓 طالب جامعي
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleEducationLevelSelect("highschool")}
+                className={`py-2 px-3 rounded-xl border text-xs transition-all ${
+                  data.educationLevel === "highschool"
+                    ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
+                    : "border-border bg-card text-muted-foreground hover:bg-accent"
+                }`}
+              >
+                🏫 طالب ثانوي
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Academic Details (University / Major / Study Level) */}
+        {(data.userStatus === "student" && data.educationLevel === "university") || data.userStatus === "graduate" ? (
+          <div className="space-y-3.5 bg-muted/20 p-4 rounded-2xl border border-border/80 animate-in fade-in-50 duration-200">
+            {/* Institution / University */}
+            <div className="space-y-1.5">
+              <Label htmlFor="institution" className="text-xs font-bold text-foreground">الجامعة / الكلية</Label>
+              <Input
+                id="institution"
+                value={data.institution || ""}
+                onChange={(e) => handleFieldChange("institution", e.target.value)}
+                placeholder="جامعة القصيم"
+                className="h-10 text-xs rounded-xl bg-card font-medium"
+              />
+            </div>
+
+            {/* Major */}
+            <div className="space-y-2">
+              <Label htmlFor="major" className="text-xs font-bold text-foreground">التخصص الأكاديمي</Label>
+              <div className="flex flex-wrap gap-1.5">
+                {popularMajors.map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => handleFieldChange("major", m)}
+                    className={`text-[11px] px-2.5 py-1 rounded-lg border transition-all ${
+                      data.major === m
+                        ? "bg-primary text-primary-foreground border-primary font-bold shadow-xs"
+                        : "bg-card text-muted-foreground border-border hover:bg-accent"
+                    }`}
+                  >
+                    {m}
+                  </button>
+                ))}
+              </div>
+              <Input
+                id="major"
+                value={data.major || ""}
+                onChange={(e) => handleFieldChange("major", e.target.value)}
+                placeholder="أو اكتب اسم التخصص هنا..."
+                className="h-10 text-xs rounded-xl bg-card font-medium"
+              />
+            </div>
+
+            {/* Study Level (for students) */}
+            {data.userStatus === "student" && (
+              <div className="space-y-2">
+                <Label className="text-xs font-bold text-foreground">المستوى الدراسي الحالي</Label>
+                <div className="grid grid-cols-5 gap-1.5">
+                  {studyLevels.map((lvl) => (
+                    <button
+                      key={lvl}
+                      type="button"
+                      onClick={() => handleFieldChange("studyYearOrLevel", lvl)}
+                      className={`text-[11px] py-1.5 px-1 rounded-lg border text-center transition-all ${
+                        data.studyYearOrLevel === lvl
+                          ? "bg-primary text-primary-foreground border-primary font-bold shadow-xs"
+                          : "bg-card text-muted-foreground border-border hover:bg-accent"
+                      }`}
+                    >
+                      {lvl.replace("المستوى ", "م ")}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : data.userStatus === "student" && data.educationLevel === "highschool" ? (
+          <div className="space-y-3 bg-muted/20 p-4 rounded-2xl border border-border/80 animate-in fade-in-50 duration-200">
+            <div className="space-y-1.5">
+              <Label htmlFor="schoolName" className="text-xs font-bold text-foreground">اسم المدرسة (اختياري)</Label>
+              <Input
+                id="schoolName"
+                value={data.institution || ""}
+                onChange={(e) => handleFieldChange("institution", e.target.value)}
+                placeholder="مثال: ثانوية مجمع الأمير سلطان"
+                className="h-10 text-xs rounded-xl bg-card font-medium"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-bold text-foreground">المرحلة الدراسية</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {highSchoolGrades.map((grade) => (
+                  <button
+                    key={grade}
+                    type="button"
+                    onClick={() => handleFieldChange("studyYearOrLevel", grade)}
+                    className={`py-2 text-xs rounded-xl border text-center transition-all ${
+                      data.studyYearOrLevel === grade
+                        ? "bg-primary text-primary-foreground border-primary font-bold shadow-xs"
+                        : "bg-card text-muted-foreground border-border hover:bg-accent"
+                    }`}
+                  >
+                    {grade}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </div>
+
+      {/* 4. Theme Selection */}
       <div className="space-y-3 pt-2 border-t border-border/60">
         <Label className="text-xs font-bold text-foreground block">اختر نوع وتصميم البطاقة</Label>
         
@@ -155,16 +376,16 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
         )}
       </div>
 
-      {/* 4. Bio Description (Optional) */}
+      {/* 5. Bio Description (Optional) */}
       <div className="space-y-1.5 pt-2 border-t border-border/60">
         <Label htmlFor="bio" className="text-xs font-bold text-foreground">
           نبذة شخصية للملف العام (Bio) <span className="text-muted-foreground font-normal">(اختياري)</span>
         </Label>
         <textarea
           id="bio"
-          rows={3}
+          rows={2}
           value={data.bio || ""}
-          placeholder="اكتب نبذة مختصرة عن اهتماماتك التقنية أو مهاراتك لتظهر في صفحتك الشخصية..."
+          placeholder="اكتب نبذة مختصرة عن اهتماماتك التقنية أو مهاراتك..."
           onChange={(e) => handleFieldChange("bio", e.target.value)}
           className="w-full p-3 rounded-xl border border-input bg-card text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary"
         />
