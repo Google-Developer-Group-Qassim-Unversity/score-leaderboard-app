@@ -1,9 +1,12 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
+import QRCode from "qrcode"
 import { DEFAULT_THEME_ID, WALLET_THEMES, WalletCardData } from "@/lib/wallet-themes"
 
 interface WalletCardProps {
   data: WalletCardData
+  qrUrl?: string
   scale?: number
 }
 
@@ -18,9 +21,27 @@ function themeAssets(themeId: string) {
   return { artwork: "/wallet-figma/header-male.svg" }
 }
 
-export function WalletCard({ data, scale = 1 }: WalletCardProps) {
+export function WalletCard({ data, qrUrl, scale = 1 }: WalletCardProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const [qrReady, setQrReady] = useState(false)
   const theme = WALLET_THEMES[data.themeId] || WALLET_THEMES[DEFAULT_THEME_ID]
   const assets = themeAssets(theme.id)
+  const targetQrUrl = qrUrl || (data.uuid ? `https://gdg-q.com/p/${data.uuid}` : "https://gdg-q.com")
+
+  useEffect(() => {
+    if (!canvasRef.current) return
+
+    setQrReady(false)
+    QRCode.toCanvas(canvasRef.current, targetQrUrl, {
+      width: 183,
+      margin: 0,
+      errorCorrectionLevel: "M",
+      color: { dark: "#000000", light: "#ffffff" },
+    }, (error) => {
+      if (error) console.error("QR code generation failed", error)
+      else setQrReady(true)
+    })
+  }, [targetQrUrl])
 
   const memberName = data.fullName?.trim() || "عضو GDG"
   const isEn = data.nameLanguage === "en"
@@ -46,6 +67,12 @@ export function WalletCard({ data, scale = 1 }: WalletCardProps) {
           <p className="w-full text-[20px] font-medium leading-none text-black" dir="auto">{roleTitle}</p>
           <p className="w-full text-[20px] font-normal leading-none text-black" dir="auto">{memberLine}</p>
         </section>
+
+        {/* Apple Wallet renders the barcode centered in the lower part of the pass. */}
+        <div className="absolute left-[172px] top-[516px] grid h-[191px] w-[191px] place-items-center bg-white">
+          <canvas ref={canvasRef} className="block h-[183px] w-[183px]" />
+          {!qrReady && <div className="absolute inset-0 grid place-items-center bg-white/80 text-xs text-slate-500">Loading…</div>}
+        </div>
       </div>
     </div>
   )
