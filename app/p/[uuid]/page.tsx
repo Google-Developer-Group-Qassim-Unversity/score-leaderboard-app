@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import { useUser } from "@clerk/nextjs"
 import {
   WalletCardData,
   ProfileSocialLink,
@@ -15,6 +16,7 @@ import {
   Phone,
   GraduationCap,
   Sparkles,
+  Edit3,
   Linkedin,
   Github,
   Twitter,
@@ -27,6 +29,7 @@ import {
 export default function PublicProfilePage() {
   const params = useParams()
   const uuid = params?.uuid as string
+  const { isSignedIn } = useUser()
 
   const [card, setCard] = useState<WalletCardData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -272,18 +275,27 @@ export default function PublicProfilePage() {
           </div>
         </div>
 
-        {/* ================= GDG OFFICIAL FOOTER CTA ================= */}
+        {/* ================= GDG OFFICIAL DYNAMIC FOOTER CTA ================= */}
         <div className="pt-4 pb-2 text-center space-y-3 border-t border-border/60">
           <p className="text-xs sm:text-sm font-semibold text-muted-foreground leading-relaxed">
             بطاقة عضوية رقمية معتمدة من نادي قوقل للطلبة المطورين بجامعة القصيم.
           </p>
           <div>
-            <Link href="/wallet">
-              <Button className="h-11 px-6 rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-all gap-2 cursor-pointer">
-                <Sparkles className="w-4 h-4" />
-                <span>انضم إلى النادي وأنشئ بطاقتك وملفك الشخصي</span>
-              </Button>
-            </Link>
+            {isSignedIn ? (
+              <Link href="/p/editor">
+                <Button className="h-11 px-6 rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-all gap-2 cursor-pointer">
+                  <Edit3 className="w-4 h-4" />
+                  <span>تعديل ملفك الشخصي وروابطك</span>
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/wallet">
+                <Button className="h-11 px-6 rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-all gap-2 cursor-pointer">
+                  <Sparkles className="w-4 h-4" />
+                  <span>انضم إلى النادي وأنشئ بطاقتك وملفك الشخصي</span>
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
