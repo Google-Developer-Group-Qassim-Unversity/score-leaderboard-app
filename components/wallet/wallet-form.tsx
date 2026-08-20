@@ -35,10 +35,10 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
     onChange({
       ...data,
       userStatus: status,
-      educationLevel: status === "student" ? (data.educationLevel || "university") : "",
-      institution: status === "student" ? (data.institution || "جامعة القصيم") : (data.institution || "جامعة القصيم"),
+      educationLevel: status === "student" ? data.educationLevel || "" : "",
+      institution: data.institution || "",
       major: data.major || "",
-      studyYearOrLevel: status === "graduate" ? "خريج" : (data.studyYearOrLevel || "المستوى 7"),
+      studyYearOrLevel: status === "graduate" ? "" : data.studyYearOrLevel || "",
     })
   }
 
@@ -46,9 +46,9 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
     onChange({
       ...data,
       educationLevel: level,
-      institution: level === "university" ? "جامعة القصيم" : "",
-      major: level === "university" ? (data.major || "علوم حاسب") : "",
-      studyYearOrLevel: level === "university" ? "المستوى 7" : "ثالث ثانوي",
+      institution: "",
+      major: "",
+      studyYearOrLevel: "",
     })
   }
 
