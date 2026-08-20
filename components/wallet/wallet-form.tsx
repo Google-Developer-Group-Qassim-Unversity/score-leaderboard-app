@@ -6,7 +6,7 @@ import { WALLET_THEMES, WalletCardData, DEFAULT_THEME_ID, UserStatus, EducationL
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Sparkles, Loader2, Check, GraduationCap, School, ShieldCheck, Languages, UserCheck } from "lucide-react"
+import { Sparkles, Loader2, Check, GraduationCap, School, ShieldCheck } from "lucide-react"
 
 interface WalletFormProps {
   data: WalletCardData
@@ -97,8 +97,6 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
     (t) => !t.isAdmin || data.isAdmin || isAdminParam
   )
 
-  const currentLang = data.nameLanguage || "ar"
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6" dir="rtl">
       {/* 1. Name on Card (Fully editable with hint) */}
@@ -120,42 +118,7 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
         {errors.fullName && <p className="text-[11px] text-red-500">{errors.fullName}</p>}
       </div>
 
-      {/* 2. Name Language Preference */}
-      <div className="space-y-2 p-3.5 rounded-2xl bg-muted/40 border border-border/80">
-        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-          <Languages className="w-3.5 h-3.5 text-primary" />
-          <span>لغة عرض الاسم على البطاقة</span>
-        </Label>
-        <div className="grid grid-cols-2 gap-2.5">
-          <button
-            type="button"
-            onClick={() => handleFieldChange("nameLanguage", "ar")}
-            className={`h-10 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
-              currentLang === "ar"
-                ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/20"
-                : "border-border hover:bg-accent text-muted-foreground bg-card"
-            }`}
-          >
-            <span>العربية (الاسم)</span>
-            {currentLang === "ar" && <Check className="w-3.5 h-3.5 mr-auto stroke-[3]" />}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleFieldChange("nameLanguage", "en")}
-            className={`h-10 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
-              currentLang === "en"
-                ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/20"
-                : "border-border hover:bg-accent text-muted-foreground bg-card"
-            }`}
-          >
-            <span>English (Name)</span>
-            {currentLang === "en" && <Check className="w-3.5 h-3.5 mr-auto stroke-[3]" />}
-          </button>
-        </div>
-      </div>
-
-      {/* 3. Academic Stages & Status (Student / Graduate) */}
+      {/* 2. Academic Stages & Status (Student / Graduate) */}
       <div className="space-y-4 pt-2 border-t border-border/60">
         <div className="space-y-2">
           <Label className="text-xs font-bold text-foreground block">
