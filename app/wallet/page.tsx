@@ -16,7 +16,7 @@ export default function WalletPage() {
   const { getToken } = useAuth()
 
   const [cardData, setCardData] = useState<WalletCardData>({
-    fullName: "بسام الحبيب",
+    fullName: "",
     nameLanguage: "ar",
     isAdmin: false,
     countryCode: "+966",
@@ -25,9 +25,9 @@ export default function WalletPage() {
     themeId: DEFAULT_THEME_ID,
     userStatus: "student",
     educationLevel: "university",
-    institution: "جامعة القصيم",
-    major: "علوم حاسب",
-    studyYearOrLevel: "المستوى 7",
+    institution: "",
+    major: "",
+    studyYearOrLevel: "",
     bio: "",
   })
 
@@ -93,6 +93,8 @@ export default function WalletPage() {
           },
           body: JSON.stringify({
             custom_name: cardData.fullName,
+            email: cardData.email.trim() || undefined,
+            phone_number: cardData.phone.trim() || undefined,
             theme_id: cardData.themeId,
             name_language: cardData.nameLanguage,
             user_status: cardData.userStatus,
@@ -118,6 +120,8 @@ export default function WalletPage() {
           ...cardData,
           uuid: updatedProfile.uuid,
           fullName: result.name || cardData.fullName,
+          email: result.email || cardData.email,
+          phone: result.phone_number || cardData.phone,
           themeId: updatedProfile.theme_id,
           nameLanguage: updatedProfile.name_language,
           userStatus: updatedProfile.user_status,

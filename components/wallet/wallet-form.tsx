@@ -118,7 +118,36 @@ export function WalletForm({ data, onChange, onSubmit, isSubmitting = false }: W
         {errors.fullName && <p className="text-[11px] text-red-500">{errors.fullName}</p>}
       </div>
 
-      {/* 2. Academic Stages & Status (Student / Graduate) */}
+      {/* 2. Contact information */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label htmlFor="phone" className="text-xs font-bold text-foreground">رقم الجوال</Label>
+          <Input
+            id="phone"
+            type="tel"
+            inputMode="tel"
+            value={data.phone || ""}
+            onChange={(e) => handleFieldChange("phone", e.target.value)}
+            placeholder="05XXXXXXXX"
+            className="h-11 rounded-xl bg-card text-xs font-medium"
+            dir="ltr"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="email" className="text-xs font-bold text-foreground">البريد الإلكتروني</Label>
+          <Input
+            id="email"
+            type="email"
+            value={data.email || ""}
+            onChange={(e) => handleFieldChange("email", e.target.value)}
+            placeholder="name@example.com"
+            className="h-11 rounded-xl bg-card text-xs font-medium"
+            dir="ltr"
+          />
+        </div>
+      </div>
+
+      {/* 3. Academic Stages & Status (Student / Graduate) */}
       <div className="space-y-4 pt-2 border-t border-border/60">
         <div className="space-y-2">
           <Label className="text-xs font-bold text-foreground block">
