@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server"
 import { config } from "@/lib/config"
+import { WalletCardData } from "@/lib/wallet-themes"
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __GDG_WALLET_CARDS__: Map<string, WalletCardData> | undefined
+}
 
 export async function GET(
   req: Request,
@@ -16,6 +22,14 @@ export async function GET(
     })
 
     if (!res.ok) {
+      const fallbackCard = globalThis.__GDG_WALLET_CARDS__?.get(uuid)
+      if (fallbackCard) {
+        return NextResponse.json({
+          success: true,
+          card: fallbackCard,
+          profileUrl: `/p/${uuid}`,
+        })
+      }
       return NextResponse.json(
         { error: "البطاقة أو الملف الشخصي غير موجود" },
         { status: res.status }
@@ -35,9 +49,9 @@ export async function GET(
         socialLinks: data.social_links || [],
         email: data.email || "",
         phone: data.phone || "",
-        institution: data.uni_college || "جامعة القصيم",
-        major: data.uni_college || "جامعة القصيم",
-        studyYearOrLevel: data.uni_level ? `المستوى ${data.uni_level}` : "",
+        institution: data.institution || data.uni_college || "جامعة القصيم",
+        major: data.major || data.uni_college || "علوم حاسب",
+        studyYearOrLevel: data.study_year_or_level || (data.uni_level ? `المستوى ${data.uni_level}` : ""),
         visibility: data.visibility || {
           showPhone: false,
           showEmail: false,
@@ -50,6 +64,14 @@ export async function GET(
     })
   } catch (error: any) {
     console.error("Error fetching wallet by uuid:", error)
+    const fallbackCard = globalThis.__GDG_WALLET_CARDS__?.get(params.uuid)
+    if (fallbackCard) {
+      return NextResponse.json({
+        success: true,
+        card: fallbackCard,
+        profileUrl: `/p/${params.uuid}`,
+      })
+    }
     return NextResponse.json(
       { error: "Failed to fetch profile", detail: error?.message },
       { status: 500 }
