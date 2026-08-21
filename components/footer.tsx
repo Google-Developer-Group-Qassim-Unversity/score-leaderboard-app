@@ -321,6 +321,15 @@ export function Footer() {
         {/* Copyright */}
         <div className="pt-8 border-t">
           <div className="flex flex-col items-center justify-center gap-3 text-center">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <Link href="/privacy" className="hover:text-foreground transition-colors">
+                {t('footer.privacy')}
+              </Link>
+              <span aria-hidden="true">·</span>
+              <Link href="/terms" className="hover:text-foreground transition-colors">
+                {t('footer.terms')}
+              </Link>
+            </div>
             <span className="text-sm text-muted-foreground">{t('footer.copyright')}</span>
           </div>
         </div>

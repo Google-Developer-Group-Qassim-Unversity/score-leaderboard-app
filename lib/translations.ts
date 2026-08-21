@@ -309,6 +309,8 @@ export const resources = {
       "footer.social.email": "Contact Us",
       "footer.social.gdgSite": "Official GDG Site",
       "footer.copyright": "© GDG-Q 2026",
+      "footer.privacy": "Privacy Policy",
+      "footer.terms": "Terms of Service",
 
       // Feedback
       "feedback.card.title": "Your Feedback Matters",
@@ -777,6 +779,8 @@ export const resources = {
       "footer.social.email": "تواصل معنا",
       "footer.social.gdgSite": "موقع GDG الرسمي",
       "footer.copyright": "© GDG-Q 2026",
+      "footer.privacy": "سياسة الخصوصية",
+      "footer.terms": "شروط الخدمة",
 
       // Feedback
       "feedback.card.title": "رأيك يهمنا",
