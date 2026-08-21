@@ -16,6 +16,7 @@ import {
 import { updateClerkMetadata } from '@/lib/actions'
 import { useUpdateProfile } from '@/hooks/mutations/use-update-profile'
 import type { UpdateMemberData } from '@/lib/api/types'
+import { ApiError } from '@/lib/api/errors'
 import { cn } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
@@ -38,14 +39,16 @@ const QU_COLLEGES = [
   "أخرى"
 ] as const
 
-const UNI_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
+// 11 is a sentinel for "graduated" - not a real academic level
+const GRADUATED_LEVEL = 11
+const UNI_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, GRADUATED_LEVEL] as const
 
 interface FormData {
   uni_id: string
   fullArabicName: string
   saudiPhone: string
   gender: 'Male' | 'Female'
-  uniLevel: number
+  uniLevel: number | null
   uniCollege: string
   uniCollegeOther: string
   personalEmail: string
@@ -56,7 +59,7 @@ const DEFAULT_FORM: FormData = {
   fullArabicName: '',
   saudiPhone: '',
   gender: 'Male',
-  uniLevel: 1,
+  uniLevel: null,
   uniCollege: '',
   uniCollegeOther: '',
   personalEmail: '',
@@ -79,6 +82,13 @@ export function ProfileForm() {
     return JSON.stringify(formData) !== JSON.stringify(initialData)
   }, [formData, initialData])
 
+  // Signed in with a real uni_id/password account (Clerk's primary email is the
+  // synthetic <uni_id>@qu.edu.sa address) vs. a Google account (a real personal email).
+  // Mirrors the same check used at onboarding time in score-leaderboard-authentication.
+  const primaryEmail = user?.primaryEmailAddress?.emailAddress
+  const isQuAccount = !!primaryEmail && /^\d{9}@qu\.edu\.sa$/i.test(primaryEmail)
+  const isEmailLocked = !!primaryEmail && !isQuAccount
+
   React.useEffect(() => {
     if (!isLoaded || !user) return
 
@@ -91,7 +101,7 @@ export function ProfileForm() {
       fullArabicName: (metadata?.fullArabicName as string) || '',
       saudiPhone: (metadata?.saudiPhone as string) || '',
       gender: (metadata?.gender as FormData['gender']) || 'Male',
-      uniLevel: (metadata?.uniLevel as number) || 1,
+      uniLevel: (metadata?.uniLevel as number | undefined) ?? null,
       uniCollege: isOther ? 'أخرى' : college,
       uniCollegeOther: isOther ? college : '',
       personalEmail: (metadata?.personalEmail as string) || '',
@@ -103,7 +113,7 @@ export function ProfileForm() {
     setIsLoading(false)
   }, [isLoaded, user])
 
-  const handleChange = (field: keyof FormData, value: string | number) => {
+  const handleChange = (field: keyof FormData, value: string | number | null) => {
     setFormData(prev => ({ ...prev, [field]: value }))
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }))
@@ -123,20 +133,19 @@ export function ProfileForm() {
       newErrors.saudiPhone = t('profileForm.errors.phoneInvalid')
     }
 
-    if (!formData.uniCollege) {
-      newErrors.uniCollege = t('profileForm.errors.collegeRequired')
-    }
-
+    // Academic level/college are optional - not everyone is a current QU student.
     if (formData.uniCollege === 'أخرى' && !formData.uniCollegeOther.trim()) {
       newErrors.uniCollegeOther = t('profileForm.errors.collegeOtherRequired')
     }
 
-    if (!formData.personalEmail) {
-      newErrors.personalEmail = t('profileForm.errors.emailRequired')
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.personalEmail)) {
-      newErrors.personalEmail = t('profileForm.errors.emailInvalid')
-    } else if (formData.personalEmail.endsWith('@qu.edu.sa')) {
-      newErrors.personalEmail = t('profileForm.errors.emailUniversity')
+    if (!isEmailLocked) {
+      if (!formData.personalEmail) {
+        newErrors.personalEmail = t('profileForm.errors.emailRequired')
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.personalEmail)) {
+        newErrors.personalEmail = t('profileForm.errors.emailInvalid')
+      } else if (formData.personalEmail.endsWith('@qu.edu.sa')) {
+        newErrors.personalEmail = t('profileForm.errors.emailUniversity')
+      }
     }
 
     setErrors(newErrors)
@@ -150,7 +159,7 @@ export function ProfileForm() {
     setIsSaving(true)
 
     try {
-      const college = formData.uniCollege === 'أخرى' ? formData.uniCollegeOther : formData.uniCollege
+      const college = (formData.uniCollege === 'أخرى' ? formData.uniCollegeOther : formData.uniCollege) || null
 
       const clerkData = {
         uni_id: formData.uni_id,
@@ -185,6 +194,12 @@ export function ProfileForm() {
         await updateProfile.mutateAsync(backendData)
       } catch (apiError) {
         console.error('Backend API error:', apiError)
+        if (apiError instanceof ApiError && apiError.status === 409) {
+          // The email change didn't actually apply - keep the form dirty/editable
+          // so the member can fix it, instead of claiming success.
+          toast.error(t('profileForm.toast.emailConflict'))
+          return
+        }
         toast.warning(t('profileForm.toast.clerkUpdatedBackendFailed'))
       }
 
@@ -210,18 +225,24 @@ export function ProfileForm() {
     <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-md">
       <div className="space-y-2">
         <label className="text-sm font-medium" dir="rtl">{t('profileForm.uniId')}</label>
-        <div className="relative">
-          <Input
-            value={formData.uni_id}
-            disabled
-            className="bg-muted/60 cursor-not-allowed text-muted-foreground border-dashed opacity-70 pr-16"
-            dir="ltr"
-          />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-muted-foreground bg-background px-2 py-0.5 rounded border">
-            <Lock className="h-3 w-3" />
-            <span>{t('profileForm.locked')}</span>
+        {formData.uni_id ? (
+          <div className="relative">
+            <Input
+              value={formData.uni_id}
+              disabled
+              className="bg-muted/60 cursor-not-allowed text-muted-foreground border-dashed opacity-70 pr-16"
+              dir="ltr"
+            />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-muted-foreground bg-background px-2 py-0.5 rounded border">
+              <Lock className="h-3 w-3" />
+              <span>{t('profileForm.locked')}</span>
+            </div>
           </div>
-        </div>
+        ) : (
+          <p className="text-sm text-muted-foreground" dir="rtl">
+            {t('profileForm.uniId.notLinked')}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -287,17 +308,19 @@ export function ProfileForm() {
       <div className="space-y-2">
         <label className="text-sm font-medium" dir="rtl">{t('profileForm.level')}</label>
         <Select
-          value={String(formData.uniLevel)}
-          onValueChange={(v) => handleChange('uniLevel', Number(v))}
+          value={formData.uniLevel !== null ? String(formData.uniLevel) : ''}
+          onValueChange={(v) => handleChange('uniLevel', v ? Number(v) : null)}
           disabled={isSaving}
           dir="rtl"
         >
           <SelectTrigger className="w-full">
-            <SelectValue />
+            <SelectValue placeholder={t('profileForm.level.placeholder')} />
           </SelectTrigger>
           <SelectContent>
             {UNI_LEVELS.map((level) => (
-              <SelectItem key={level} value={String(level)}>{level}</SelectItem>
+              <SelectItem key={level} value={String(level)}>
+                {level === GRADUATED_LEVEL ? t('profileForm.level.graduated') : level}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -347,17 +370,32 @@ export function ProfileForm() {
 
       <div className="space-y-2">
         <label className="text-sm font-medium" dir="rtl">{t('profileForm.email')}</label>
-        <Input
-          type="email"
-          value={formData.personalEmail}
-          onChange={(e) => handleChange('personalEmail', e.target.value)}
-          placeholder="example@example.com"
-          dir="ltr"
-          disabled={isSaving}
-          className={cn(errors.personalEmail && 'border-destructive')}
-        />
+        {isEmailLocked ? (
+          <div className="relative">
+            <Input
+              value={formData.personalEmail}
+              disabled
+              className="bg-muted/60 cursor-not-allowed text-muted-foreground border-dashed opacity-70 pr-16"
+              dir="ltr"
+            />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-muted-foreground bg-background px-2 py-0.5 rounded border">
+              <Lock className="h-3 w-3" />
+              <span>{t('profileForm.locked')}</span>
+            </div>
+          </div>
+        ) : (
+          <Input
+            type="email"
+            value={formData.personalEmail}
+            onChange={(e) => handleChange('personalEmail', e.target.value)}
+            placeholder="example@example.com"
+            dir="ltr"
+            disabled={isSaving}
+            className={cn(errors.personalEmail && 'border-destructive')}
+          />
+        )}
         <p className="text-xs text-muted-foreground" dir="rtl">
-          {t('profileForm.email.hint')}
+          {isEmailLocked ? t('profileForm.email.lockedHint') : t('profileForm.email.hint')}
         </p>
         {errors.personalEmail && (
           <p className="text-xs text-destructive">{errors.personalEmail}</p>

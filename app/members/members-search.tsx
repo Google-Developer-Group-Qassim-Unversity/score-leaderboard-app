@@ -16,7 +16,7 @@ interface Member {
   totalPoints: number
   rank: number
   departmentId: string
-  uni_id?: string // Add uni_id to the interface
+  uni_id?: string | null // Add uni_id to the interface
 }
 
 interface MembersSearchProps {
