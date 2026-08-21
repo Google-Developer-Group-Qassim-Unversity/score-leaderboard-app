@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { updateClerkMetadata } from '@/lib/actions'
+import { updateClerkMetadata, promoteEmailToPrimary } from '@/lib/actions'
 import { useUpdateProfile } from '@/hooks/mutations/use-update-profile'
 import type { UpdateMemberData } from '@/lib/api/types'
 import { ApiError } from '@/lib/api/errors'
@@ -89,6 +89,24 @@ export function ProfileForm() {
   const isQuAccount = !!primaryEmail && /^\d{9}@qu\.edu\.sa$/i.test(primaryEmail)
   const isEmailLocked = !!primaryEmail && !isQuAccount
 
+  // Still on the synthetic uni_id primary even though a Google sign-in may
+  // have already linked the real personal email as a verified secondary
+  // (Clerk's native account linking doesn't promote it to primary on its
+  // own). Computed entirely from data useUser() already has loaded - no
+  // network call - so this is non-null only in the one-time window right
+  // after linking, not on every ordinary page load.
+  const linkedGoogleEmailId = React.useMemo(() => {
+    if (!user || !isQuAccount) return null
+    const googleAccount = user.externalAccounts.find((acc) => acc.provider === 'google')
+    if (!googleAccount?.emailAddress) return null
+    const match = user.emailAddresses.find(
+      (e) =>
+        e.emailAddress.toLowerCase() === googleAccount.emailAddress!.toLowerCase() &&
+        e.verification?.status === 'verified'
+    )
+    return match?.id ?? null
+  }, [user, isQuAccount])
+
   React.useEffect(() => {
     if (!isLoaded || !user) return
 
@@ -112,6 +130,19 @@ export function ProfileForm() {
     setShowOtherCollege(isOther)
     setIsLoading(false)
   }, [isLoaded, user])
+
+  // Only fires the privileged write when there's actually something to
+  // promote (see linkedGoogleEmailId above). Reload so isEmailLocked picks
+  // up the change immediately instead of only on the next page load.
+  React.useEffect(() => {
+    if (!linkedGoogleEmailId) return
+
+    promoteEmailToPrimary(linkedGoogleEmailId).then((result) => {
+      if (result.promoted) {
+        user?.reload()
+      }
+    })
+  }, [linkedGoogleEmailId])
 
   const handleChange = (field: keyof FormData, value: string | number | null) => {
     setFormData(prev => ({ ...prev, [field]: value }))
