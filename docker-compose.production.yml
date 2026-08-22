@@ -18,8 +18,17 @@ services:
         NEXT_PUBLIC_AUTH_FRONTEND_URL: ${NEXT_PUBLIC_AUTH_FRONTEND_URL}
         NEXT_PUBLIC_THIS_APP_URL: ${NEXT_PUBLIC_THIS_APP_URL}
         NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+        NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN}
+        SENTRY_ORG: ${SENTRY_ORG}
+        SENTRY_PROJECT: ${SENTRY_PROJECT}
+      secrets:
+        - sentry_auth_token
     env_file:
       - .env.production
     restart: unless-stopped
     ports:
       - "127.0.0.1:3010:3000"
+
+secrets:
+  sentry_auth_token:
+    environment: SENTRY_AUTH_TOKEN
