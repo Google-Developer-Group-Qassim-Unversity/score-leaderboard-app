@@ -13,6 +13,13 @@ function GoogleFormContent() {
   const { t } = useTranslation()
   const formUrl = searchParams.get("formUrl")
   
+  // These entry IDs are known to only be correct for whichever form they were
+  // captured from - Google Forms assigns fresh, unrelated question IDs to
+  // every form (even ones cloned from the same template), so prefill can
+  // silently no-op on other forms - confirmed empirically across two real
+  // event forms. Backend matching (submissions.py: extract_email_answer)
+  // no longer depends on this ID being right, so a failed prefill just means
+  // the member types their email manually; it doesn't break the sync.
   const UNI_ID_ENTRY_ID = "1527503581"
   const NAME_ENTRY_ID = "990838002"
   const PERSONAL_EMAIL_ENTRY_ID = "310677703"
