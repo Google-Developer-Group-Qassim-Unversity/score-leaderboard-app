@@ -1,11 +1,5 @@
 import { NextResponse } from "next/server"
 import { config } from "@/lib/config"
-import { WalletCardData } from "@/lib/wallet-themes"
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __GDG_WALLET_CARDS__: Map<string, WalletCardData> | undefined
-}
 
 export async function GET(
   req: Request,
@@ -22,14 +16,6 @@ export async function GET(
     })
 
     if (!res.ok) {
-      const fallbackCard = globalThis.__GDG_WALLET_CARDS__?.get(uuid)
-      if (fallbackCard) {
-        return NextResponse.json({
-          success: true,
-          card: fallbackCard,
-          profileUrl: `/p/${uuid}`,
-        })
-      }
       return NextResponse.json(
         { error: "البطاقة أو الملف الشخصي غير موجود" },
         { status: res.status }
@@ -64,14 +50,6 @@ export async function GET(
     })
   } catch (error: any) {
     console.error("Error fetching wallet by uuid:", error)
-    const fallbackCard = globalThis.__GDG_WALLET_CARDS__?.get(params.uuid)
-    if (fallbackCard) {
-      return NextResponse.json({
-        success: true,
-        card: fallbackCard,
-        profileUrl: `/p/${params.uuid}`,
-      })
-    }
     return NextResponse.json(
       { error: "Failed to fetch profile", detail: error?.message },
       { status: 500 }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useUser, useAuth, SignInButton } from "@clerk/nextjs"
+import { useUser, useAuth, useClerk, SignInButton } from "@clerk/nextjs"
 import confetti from "canvas-confetti"
 import { WalletCardData, DEFAULT_THEME_ID } from "@/lib/wallet-themes"
 import { WalletCard } from "@/components/wallet/wallet-card"
@@ -11,9 +11,15 @@ import { Button } from "@/components/ui/button"
 import { Sparkles, CheckCircle2, ShieldCheck, LogIn } from "lucide-react"
 import { toast } from "sonner"
 
+// Draft the user was filling in when they got sent off to sign in / complete
+// onboarding (a full-page redirect on a different domain, which wipes React
+// state) - restored and auto-submitted once they land back here signed in.
+const WALLET_DRAFT_KEY = "gdg-wallet-draft"
+
 export default function WalletPage() {
   const { isSignedIn, isLoaded, user } = useUser()
   const { getToken } = useAuth()
+  const { openSignIn } = useClerk()
 
   const [cardData, setCardData] = useState<WalletCardData>({
     fullName: "",
@@ -34,6 +40,18 @@ export default function WalletPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [createdCard, setCreatedCard] = useState<WalletCardData | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  // Restore an in-progress draft left behind before sign-in/onboarding sent us away
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(WALLET_DRAFT_KEY)
+      if (raw) {
+        setCardData((prev) => ({ ...prev, ...JSON.parse(raw) }))
+      }
+    } catch (err) {
+      console.info("Wallet draft restore note:", err)
+    }
+  }, [])
 
   // Fetch and auto-prefill authenticated member profile from DB
   useEffect(() => {
@@ -83,75 +101,63 @@ export default function WalletPage() {
     loadProfile()
   }, [isLoaded, isSignedIn, getToken, user])
 
-  const handleSubmit = async () => {
+  // If we were sent off to sign in / onboard mid-submit, finish the save
+  // automatically once we're back here signed in - no re-entering the form.
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return
+    const raw = sessionStorage.getItem(WALLET_DRAFT_KEY)
+    if (!raw) return
+    sessionStorage.removeItem(WALLET_DRAFT_KEY)
+    try {
+      const draft = JSON.parse(raw) as WalletCardData
+      toast.info("أهلاً بعودتك! جاري إكمال حفظ بطاقتك...")
+      saveCard(draft)
+    } catch (err) {
+      console.info("Wallet draft auto-submit note:", err)
+    }
+  }, [isLoaded, isSignedIn])
+
+  const saveCard = async (data: WalletCardData) => {
     setIsSubmitting(true)
     try {
-      // 1. Save card in wallet store (/api/wallet)
-      let finalUuid = cardData.uuid || `gdg-${Date.now().toString(36)}`
-      let finalCard: WalletCardData = {
-        ...cardData,
-        uuid: finalUuid,
+      const token = await getToken()
+      const res = await fetch("/api/wallet/me", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          custom_name: data.fullName,
+          email: data.email.trim() || undefined,
+          phone_number: data.phone.trim() || undefined,
+          theme_id: data.themeId,
+          name_language: "ar",
+          user_status: data.userStatus,
+          education_level: data.educationLevel,
+          institution: data.institution,
+          major: data.major,
+          study_year_or_level: data.studyYearOrLevel,
+          bio: data.bio,
+          social_links: data.socialLinks,
+          visibility: data.visibility,
+        }),
+      })
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || "تعذر حفظ بطاقتك، حاول مجدداً")
       }
 
-      try {
-        const saveRes = await fetch("/api/wallet", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(cardData),
-        })
-        if (saveRes.ok) {
-          const saveData = await saveRes.json().catch(() => ({}))
-          if (saveData.card) {
-            finalCard = { ...finalCard, ...saveData.card }
-            finalUuid = finalCard.uuid || finalUuid
-          }
-        }
-      } catch (saveErr) {
-        console.info("Local wallet store note:", saveErr)
-      }
-
-      // 2. If signed in, sync with backend in background without throwing if not in members table
-      if (isSignedIn) {
-        try {
-          const token = await getToken()
-          const res = await fetch("/api/wallet/me", {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-            body: JSON.stringify({
-              custom_name: cardData.fullName,
-              email: cardData.email.trim() || undefined,
-              phone_number: cardData.phone.trim() || undefined,
-              theme_id: cardData.themeId,
-              name_language: "ar",
-              user_status: cardData.userStatus,
-              education_level: cardData.educationLevel,
-              institution: cardData.institution,
-              major: cardData.major,
-              study_year_or_level: cardData.studyYearOrLevel,
-              bio: cardData.bio,
-              social_links: cardData.socialLinks,
-              visibility: cardData.visibility,
-            }),
-          })
-
-          if (res.ok) {
-            const result = await res.json().catch(() => ({}))
-            const updatedProfile = result.profile || {}
-            finalCard = {
-              ...finalCard,
-              uuid: updatedProfile.uuid || finalCard.uuid,
-              fullName: result.name || finalCard.fullName,
-              email: result.email || finalCard.email,
-              phone: result.phone_number || finalCard.phone,
-              themeId: updatedProfile.theme_id || finalCard.themeId,
-            }
-          }
-        } catch (backendSyncErr) {
-          console.info("Backend DB sync note for member:", backendSyncErr)
-        }
+      const result = await res.json()
+      const updatedProfile = result.profile || {}
+      const finalCard: WalletCardData = {
+        ...data,
+        uuid: updatedProfile.uuid || data.uuid,
+        fullName: result.name || data.fullName,
+        email: result.email || data.email,
+        phone: result.phone_number || data.phone,
+        themeId: updatedProfile.theme_id || data.themeId,
       }
 
       setCreatedCard(finalCard)
@@ -171,6 +177,25 @@ export default function WalletPage() {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const handleSubmit = async () => {
+    // A wallet card always represents a real, Clerk-authenticated member row -
+    // there is no anonymous/guest wallet, so sign-in is required before we
+    // create or touch anything. Sign-up requires onboarding too, which is a
+    // full-page redirect to another app, so stash the draft to survive it.
+    if (!isSignedIn) {
+      try {
+        sessionStorage.setItem(WALLET_DRAFT_KEY, JSON.stringify(cardData))
+      } catch (err) {
+        console.info("Wallet draft save note:", err)
+      }
+      toast.info("سجّل الدخول أولاً لإنشاء بطاقتك وربطها بحسابك")
+      openSignIn()
+      return
+    }
+
+    await saveCard(cardData)
   }
 
   return (
