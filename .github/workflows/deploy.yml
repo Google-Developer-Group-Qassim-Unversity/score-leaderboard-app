@@ -11,9 +11,9 @@ jobs:
     - name: Deploy using ssh
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.INFISICAL_VPS_HOST }}
-        username: ${{ secrets.INFISICAL_VPS_USER }}
-        key: ${{ secrets.INFISICAL_GITHUB_SSH_PRIVATE_KEY }}
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
         port: 22
         script: |
           set -e
@@ -75,4 +75,4 @@ jobs:
           docker image prune -f
 
           echo "Deployment Complete ✅."
-          echo "https://gdg-q.albrrak773.com"
+          echo "https://gdg-q.com"
