@@ -109,7 +109,19 @@ export function WalletPassModal({ isOpen, onClose, data }: WalletPassModalProps)
       })
 
       if (!res.ok) {
-        throw new Error("فشل إنشاء بطاقة Google Wallet")
+        const errorPayload = await res.json().catch(() => null)
+        let backendMessage = errorPayload?.detail || errorPayload?.error
+
+        if (typeof errorPayload?.details === "string") {
+          try {
+            const parsedDetails = JSON.parse(errorPayload.details)
+            backendMessage = parsedDetails?.detail || parsedDetails?.error || backendMessage
+          } catch {
+            backendMessage = errorPayload.details || backendMessage
+          }
+        }
+
+        throw new Error(backendMessage || "فشل إنشاء بطاقة Google Wallet")
       }
 
       const result = await res.json()
