@@ -215,7 +215,7 @@ export default function WalletPage() {
               <span>معاينة حية للبطاقة</span>
             </div>
 
-            <div className="transform transition-transform hover:scale-[1.02] duration-300">
+            <div className="w-full max-w-[340px] transform transition-transform hover:scale-[1.02] duration-300">
               <WalletCard data={cardData} />
             </div>
 
