@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, Calendar, Award, TrendingUp, Users, BookOpen } from "lucide-react"
+import type { Metadata } from "next"
 import { fetchMemberById } from "@/lib/api/api"
 import { NotFoundError } from "@/lib/api/errors"
 import { notFound } from "next/navigation"
@@ -11,6 +12,23 @@ export const dynamic = "force-dynamic"
 interface PageProps {
   params: Promise<{ id: string }>
 }
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params
+  try {
+    const { member } = await fetchMemberById(id)
+    return {
+      title: member.member_name,
+      description: `${member.member_name}'s points and event history on the GDG on Campus leaderboard.`,
+      alternates: {
+        canonical: `/members/${id}`,
+      },
+    }
+  } catch {
+    return { title: "Member" }
+  }
+}
+
 export default async function MemberDetailPage({ params }: PageProps) {
   const { id } = await params
 

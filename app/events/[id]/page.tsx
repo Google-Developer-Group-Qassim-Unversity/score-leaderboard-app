@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import type { Metadata } from "next";
 import { fetchEvents, fetchOpenEvents } from "@/lib/api/api";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,6 +72,36 @@ function linkify(text: string) {
         </a>
       );
     });
+}
+
+export async function generateMetadata({
+  params,
+}: EventDetailPageProps): Promise<Metadata> {
+  try {
+    const events = await fetchEvents();
+    const event = events.find((e) => e.id === parseInt(params.id));
+
+    if (!event) {
+      return { title: "Event" };
+    }
+
+    const plainDescription = event.description?.replace(/\s+/g, " ").trim();
+
+    return {
+      title: event.name,
+      description:
+        (plainDescription && plainDescription.slice(0, 160)) ||
+        `Details for ${event.name}, a GDG on Campus event.`,
+      alternates: {
+        canonical: `/events/${event.id}`,
+      },
+      openGraph: event.image_url
+        ? { images: [event.image_url] }
+        : undefined,
+    };
+  } catch {
+    return { title: "Event" };
+  }
 }
 
 export default async function EventDetailPage({

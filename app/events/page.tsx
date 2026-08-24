@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { fetchEvents, fetchOpenEvents } from "@/lib/api/api"
 import { isEventPast } from "@/lib/event-utils"
 import { EventsList } from "@/components/events-list"
@@ -10,6 +11,14 @@ import { EventsSemesterSelector } from "@/components/events-semester-selector"
 import { getSemesters } from "@/lib/semesters"
 
 export const dynamic = "force-dynamic"
+
+export const metadata: Metadata = {
+  title: "Events",
+  description: "Browse upcoming and past GDG on Campus events, workshops, and activities at Qassim University.",
+  alternates: {
+    canonical: "/events",
+  },
+}
 
 interface EventsPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>

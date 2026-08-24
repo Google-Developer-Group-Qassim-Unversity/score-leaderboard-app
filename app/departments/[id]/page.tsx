@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, Award, TrendingUp, Building2, BookOpen } from "lucide-react"
+import type { Metadata } from "next"
 import { fetchDepartmentById } from "@/lib/api/api"
 import { NotFoundError } from "@/lib/api/errors"
 import { notFound } from "next/navigation"
@@ -12,6 +13,22 @@ export const dynamic = "force-dynamic"
 
 interface PageProps {
   params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params
+  try {
+    const { department } = await fetchDepartmentById(id)
+    return {
+      title: department.department_name,
+      description: `${department.department_name}'s points and event history on the GDG on Campus leaderboard.`,
+      alternates: {
+        canonical: `/departments/${id}`,
+      },
+    }
+  } catch {
+    return { title: "Department" }
+  }
 }
 
 export default async function DepartmentDetailPage({ params }: PageProps) {

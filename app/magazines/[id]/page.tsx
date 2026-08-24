@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react"
+import type { Metadata } from "next"
 import { Button } from "@/components/ui/button"
 import { getMagazineById } from "@/lib/magazines"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
@@ -9,6 +10,24 @@ interface MagazineReaderPageProps {
     params: {
         id: string
     }
+}
+
+export async function generateMetadata({ params }: MagazineReaderPageProps): Promise<Metadata> {
+  const magazine = getMagazineById(params.id)
+  if (!magazine) {
+    return { title: "Magazine" }
+  }
+
+  return {
+    title: magazine.title,
+    description: magazine.description || `${magazine.title} - a GDG on Campus technology magazine.`,
+    alternates: {
+      canonical: `/magazines/${magazine.id}`,
+    },
+    openGraph: {
+      images: [magazine.coverImage],
+    },
+  }
 }
 
 export default async function MagazineReaderPage({ params }: MagazineReaderPageProps) {

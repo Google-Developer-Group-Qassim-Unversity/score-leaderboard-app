@@ -4,6 +4,10 @@ import { ArrowLeft, Shield } from "lucide-react"
 
 export const metadata = {
   title: "Privacy Policy",
+  description: "Read the GDG on Campus privacy policy to learn how we collect, use, and protect your data.",
+  alternates: {
+    canonical: "/privacy",
+  },
 }
 
 export default function PrivacyPolicyPage() {
