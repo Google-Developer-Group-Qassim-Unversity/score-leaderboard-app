@@ -84,74 +84,54 @@ export default function WalletPage() {
   }, [isLoaded, isSignedIn, getToken, user])
 
   const handleSubmit = async () => {
+    // A wallet card always represents a real, Clerk-authenticated member row -
+    // there is no anonymous/guest wallet, so sign-in is required before we
+    // create or touch anything.
+    if (!isSignedIn) {
+      toast.info("سجّل الدخول أولاً لإنشاء بطاقتك وربطها بحسابك")
+      return
+    }
+
     setIsSubmitting(true)
     try {
-      // 1. Save card in wallet store (/api/wallet)
-      let finalUuid = cardData.uuid || `gdg-${Date.now().toString(36)}`
-      let finalCard: WalletCardData = {
+      const token = await getToken()
+      const res = await fetch("/api/wallet/me", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          custom_name: cardData.fullName,
+          email: cardData.email.trim() || undefined,
+          phone_number: cardData.phone.trim() || undefined,
+          theme_id: cardData.themeId,
+          name_language: "ar",
+          user_status: cardData.userStatus,
+          education_level: cardData.educationLevel,
+          institution: cardData.institution,
+          major: cardData.major,
+          study_year_or_level: cardData.studyYearOrLevel,
+          bio: cardData.bio,
+          social_links: cardData.socialLinks,
+          visibility: cardData.visibility,
+        }),
+      })
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || "تعذر حفظ بطاقتك، حاول مجدداً")
+      }
+
+      const result = await res.json()
+      const updatedProfile = result.profile || {}
+      const finalCard: WalletCardData = {
         ...cardData,
-        uuid: finalUuid,
-      }
-
-      try {
-        const saveRes = await fetch("/api/wallet", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(cardData),
-        })
-        if (saveRes.ok) {
-          const saveData = await saveRes.json().catch(() => ({}))
-          if (saveData.card) {
-            finalCard = { ...finalCard, ...saveData.card }
-            finalUuid = finalCard.uuid || finalUuid
-          }
-        }
-      } catch (saveErr) {
-        console.info("Local wallet store note:", saveErr)
-      }
-
-      // 2. If signed in, sync with backend in background without throwing if not in members table
-      if (isSignedIn) {
-        try {
-          const token = await getToken()
-          const res = await fetch("/api/wallet/me", {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-            body: JSON.stringify({
-              custom_name: cardData.fullName,
-              email: cardData.email.trim() || undefined,
-              phone_number: cardData.phone.trim() || undefined,
-              theme_id: cardData.themeId,
-              name_language: "ar",
-              user_status: cardData.userStatus,
-              education_level: cardData.educationLevel,
-              institution: cardData.institution,
-              major: cardData.major,
-              study_year_or_level: cardData.studyYearOrLevel,
-              bio: cardData.bio,
-              social_links: cardData.socialLinks,
-              visibility: cardData.visibility,
-            }),
-          })
-
-          if (res.ok) {
-            const result = await res.json().catch(() => ({}))
-            const updatedProfile = result.profile || {}
-            finalCard = {
-              ...finalCard,
-              uuid: updatedProfile.uuid || finalCard.uuid,
-              fullName: result.name || finalCard.fullName,
-              email: result.email || finalCard.email,
-              phone: result.phone_number || finalCard.phone,
-              themeId: updatedProfile.theme_id || finalCard.themeId,
-            }
-          }
-        } catch (backendSyncErr) {
-          console.info("Backend DB sync note for member:", backendSyncErr)
-        }
+        uuid: updatedProfile.uuid || cardData.uuid,
+        fullName: result.name || cardData.fullName,
+        email: result.email || cardData.email,
+        phone: result.phone_number || cardData.phone,
+        themeId: updatedProfile.theme_id || cardData.themeId,
       }
 
       setCreatedCard(finalCard)
