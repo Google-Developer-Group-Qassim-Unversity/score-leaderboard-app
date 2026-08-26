@@ -6,13 +6,14 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { UserPlus, User } from "lucide-react"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
-import { getFullCurrentUrl } from '@/lib/utils'
-import { config } from '@/lib/config'
+import { useCurrentUrl } from '@/hooks/use-current-url'
+import { withRedirectParam } from '@/lib/redirect-config'
 
 export function AuthButton() {
   const { isLoaded, isSignedIn } = useUser()
   const { t, i18n } = useTranslation()
   const isRTL = i18n.language === 'ar'
+  const currentUrl = useCurrentUrl()
 
   if (!isLoaded) {
     return (
@@ -44,12 +45,7 @@ export function AuthButton() {
   }
 
   // Not signed in - show sign up and log in buttons
-  const authUrl = config.authFrontendUrl
-  const currentUrl = getFullCurrentUrl()
-  const redirectParam = currentUrl ? `?redirect_url=${encodeURIComponent(currentUrl)}` : ''
-
-  const signInUrl = `${authUrl}/sign-in${redirectParam}`
-  const signUpUrl = `${authUrl}/sign-up${redirectParam}`
+  const signUpUrl = withRedirectParam('/sign-up', currentUrl)
 
   return (
     <div className="flex gap-2">
@@ -71,6 +67,7 @@ export function AuthButton() {
 export function AuthButtonMobile() {
   const { isLoaded, isSignedIn } = useUser()
   const { t } = useTranslation()
+  const currentUrl = useCurrentUrl()
 
   // Loading state
   if (!isLoaded) {
@@ -85,12 +82,7 @@ export function AuthButtonMobile() {
   }
 
   // Not signed in - show sign up and log in buttons stacked
-  const authUrl = config.authFrontendUrl
-  const currentUrl = getFullCurrentUrl()
-  const redirectParam = currentUrl ? `?redirect_url=${encodeURIComponent(currentUrl)}` : ''
-
-  const signInUrl = `${authUrl}/sign-in${redirectParam}`
-  const signUpUrl = `${authUrl}/sign-up${redirectParam}`
+  const signUpUrl = withRedirectParam('/sign-up', currentUrl)
 
   return (
     <div className="flex flex-col gap-2">

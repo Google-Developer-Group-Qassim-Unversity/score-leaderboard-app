@@ -13,8 +13,8 @@ import { Button } from "@/components/ui/button"
 import { LogIn, UserPlus } from "lucide-react"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
-import { getFullCurrentUrl } from '@/lib/utils'
-import { config } from '@/lib/config'
+import { useCurrentUrl } from '@/hooks/use-current-url'
+import { withRedirectParam } from '@/lib/redirect-config'
 
 interface AuthRequiredDialogProps {
   open: boolean
@@ -30,12 +30,9 @@ export function AuthRequiredDialog({
   description,
 }: AuthRequiredDialogProps) {
   const { t } = useTranslation()
-  const authUrl = config.authFrontendUrl
-  const currentUrl = getFullCurrentUrl()
-  const redirectParam = currentUrl ? `?redirect_url=${encodeURIComponent(currentUrl)}` : ''
-  
-  const signInUrl = `${authUrl}/sign-in${redirectParam}`
-  const signUpUrl = `${authUrl}/sign-up${redirectParam}`
+  const currentUrl = useCurrentUrl()
+  const signInUrl = withRedirectParam('/sign-in', currentUrl)
+  const signUpUrl = withRedirectParam('/sign-up', currentUrl)
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>

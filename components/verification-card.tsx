@@ -1,0 +1,277 @@
+'use client'
+
+import * as React from 'react'
+import { useSignUp, useSignIn } from '@clerk/nextjs'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { AlertCircle, Loader2, RefreshCw, ExternalLink } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import '@/lib/i18n-client'
+import { LanguageSwitcher } from '@/components/language-switcher'
+
+const RESEND_COOLDOWN_SECONDS = 60
+
+interface VerificationCardProps {
+  type: 'sign-up' | 'sign-in'
+  onSuccess: (sessionId: string) => void
+  onBack: () => void
+}
+
+export function VerificationCard({
+  type,
+  onSuccess,
+  onBack,
+}: VerificationCardProps) {
+  const { t } = useTranslation()
+  const { signUp } = useSignUp()
+  const { signIn } = useSignIn()
+  const [verificationCode, setVerificationCode] = React.useState('')
+  const [codeError, setCodeError] = React.useState(false)
+  const [error, setError] = React.useState('')
+  const [loading, setLoading] = React.useState(false)
+  const [resendCooldown, setResendCooldown] = React.useState(RESEND_COOLDOWN_SECONDS)
+  const [resending, setResending] = React.useState(false)
+
+  // Countdown timer for resend button
+  React.useEffect(() => {
+    if (resendCooldown <= 0) return
+
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => prev - 1)
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [resendCooldown])
+
+  // Get email from Clerk based on type
+  const email = type === 'sign-up'
+    ? signUp?.emailAddress
+    : signIn?.identifier
+
+  const title = type === 'sign-up'
+    ? t('auth.verification.title.signUp')
+    : t('auth.verification.title.signIn')
+  const backButtonText = type === 'sign-up'
+    ? t('auth.verification.back.signUp')
+    : t('auth.verification.back.signIn')
+
+  const canResend = resendCooldown <= 0
+
+  const handleResendCode = async () => {
+    if (!canResend || resending) return
+
+    setResending(true)
+    setError('')
+
+    try {
+      if (type === 'sign-up') {
+        if (!signUp) {
+          setError(t('auth.verification.error.noSignUpSession'))
+          return
+        }
+
+        await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+      } else {
+        if (!signIn) {
+          setError(t('auth.verification.error.noSignInSession'))
+          return
+        }
+
+        await signIn.prepareSecondFactor({ strategy: 'email_code' })
+      }
+      // Reset cooldown after successful resend
+      setResendCooldown(RESEND_COOLDOWN_SECONDS)
+    } catch (err: any) {
+      console.error('Resend error:', err)
+      setError(err.errors?.[0]?.message || t('auth.verification.error.resendFailed'))
+    } finally {
+      setResending(false)
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+
+    try {
+      if (verificationCode.length !== 6) {
+        setError(t('validation.verificationCode.invalid'))
+        setLoading(false)
+        return
+      }
+
+      if (type === 'sign-up') {
+        if (!signUp) {
+          setError(t('auth.verification.error.noSignUpSession'))
+          setLoading(false)
+          return
+        }
+
+        const result = await signUp.attemptEmailAddressVerification({
+          code: verificationCode,
+        })
+
+        if (result.status === 'complete' && result.createdSessionId) {
+          onSuccess(result.createdSessionId)
+        } else {
+          console.error('Sign-up verification not complete:', result.status)
+          setError(t('auth.verification.error.verificationFailed'))
+        }
+      } else {
+        if (!signIn) {
+          setError(t('auth.verification.error.noSignInSession'))
+          setLoading(false)
+          return
+        }
+
+        const result = await signIn.attemptSecondFactor({
+          strategy: 'email_code',
+          code: verificationCode,
+        })
+
+        if (result.status === 'complete' && result.createdSessionId) {
+          onSuccess(result.createdSessionId)
+        } else {
+          setError(t('auth.verification.error.attemptFailed'))
+        }
+      }
+    } catch (err: any) {
+      console.error('verification error:', JSON.stringify(err, null, 2))
+      if (err.clerkError) {
+        if (err?.errors[0]?.code.includes('form_code_incorrect')) {
+          setError(err.errors?.[0]?.longMessage)
+          setCodeError(true)
+          return
+        }
+      }
+      setError(t('auth.verification.error.unexpected'))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleBack = () => {
+    setVerificationCode('')
+    setError('')
+    setCodeError(false)
+    onBack()
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 relative">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center">{title}</CardTitle>
+          <CardDescription className="text-center">
+            {t('auth.verification.description', { email })}
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="space-y-2">
+              <Label htmlFor="verificationCode">{t('auth.verification.verificationCode')}</Label>
+              <Input
+                id="verificationCode"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder={t('auth.verification.placeholder')}
+                value={verificationCode}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, '')
+                  setVerificationCode(value)
+                  setCodeError(false)
+                }}
+                disabled={loading}
+                maxLength={6}
+                autoComplete="one-time-code"
+                className={`text-center text-lg tracking-widest font-mono ${codeError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+              />
+              <div className="flex justify-center pt-1">
+                {canResend ? (
+                  <Button
+                    type="button"
+                    variant="link"
+                    size="sm"
+                    onClick={handleResendCode}
+                    disabled={resending}
+                    className="text-sm h-auto p-0"
+                  >
+                    {resending ? (
+                      <>
+                        <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
+                        {t('auth.verification.resending')}
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="mr-1.5 h-3 w-3" />
+                        {t('auth.verification.resend')}
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <span className="text-sm text-muted-foreground">
+                    {t('auth.verification.resendCountdown', { countdown: resendCooldown })}
+                  </span>
+                )}
+              </div>
+              <div className="flex justify-center pt-2">
+                <a
+                  href="https://outlook.office.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <span>{t('auth.verification.goToOutlook')}</span>
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2 mt-4">
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading || verificationCode.length !== 6}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t('auth.verification.verifying')}
+                </>
+              ) : (
+                t('auth.verification.submit')
+              )}
+            </Button>
+
+            <Button
+              type="button"
+              variant="ghost"
+              className="w-full"
+              onClick={handleBack}
+              disabled={loading}
+            >
+              {backButtonText}
+            </Button>
+          </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}

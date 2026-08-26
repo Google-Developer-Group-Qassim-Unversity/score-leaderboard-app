@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useUser, useAuth, SignInButton } from "@clerk/nextjs"
+import { useUser, useAuth } from "@clerk/nextjs"
+import Link from "next/link"
 import confetti from "canvas-confetti"
 import { WalletCardData, DEFAULT_THEME_ID } from "@/lib/wallet-themes"
 import { WalletCard } from "@/components/wallet/wallet-card"
@@ -10,10 +11,13 @@ import { WalletPassModal } from "@/components/wallet/wallet-pass-modal"
 import { Button } from "@/components/ui/button"
 import { Sparkles, CheckCircle2, ShieldCheck, LogIn } from "lucide-react"
 import { toast } from "sonner"
+import { useCurrentUrl } from "@/hooks/use-current-url"
+import { withRedirectParam } from "@/lib/redirect-config"
 
 export default function WalletPage() {
   const { isSignedIn, isLoaded, user } = useUser()
   const { getToken } = useAuth()
+  const currentUrl = useCurrentUrl()
 
   const [cardData, setCardData] = useState<WalletCardData>({
     fullName: "",
@@ -173,15 +177,13 @@ export default function WalletPage() {
 
           {!isSignedIn && (
             <div className="pt-1 flex items-center justify-center">
-              <SignInButton mode="modal">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground border border-border text-xs font-medium transition-colors cursor-pointer"
-                >
-                  <LogIn className="w-3.5 h-3.5 text-primary" />
-                  <span>هل أنت مسجل بالنادي؟ اضغط لتسجيل الدخول وملء البيانات تلقائياً</span>
-                </button>
-              </SignInButton>
+              <Link
+                href={withRedirectParam("/sign-in", currentUrl)}
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground border border-border text-xs font-medium transition-colors cursor-pointer"
+              >
+                <LogIn className="w-3.5 h-3.5 text-primary" />
+                <span>هل أنت مسجل بالنادي؟ اضغط لتسجيل الدخول وملء البيانات تلقائياً</span>
+              </Link>
             </div>
           )}
         </section>

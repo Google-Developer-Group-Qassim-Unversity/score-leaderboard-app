@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useUser, useAuth, SignInButton } from "@clerk/nextjs"
+import { useUser, useAuth } from "@clerk/nextjs"
 import {
   WalletCardData,
   ProfileSocialLink,
@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import { useCurrentUrl } from "@/hooks/use-current-url"
+import { withRedirectParam } from "@/lib/redirect-config"
 import {
   ArrowRight,
   ExternalLink,
@@ -34,6 +36,7 @@ export default function ProfileEditorPage() {
   const router = useRouter()
   const { isLoaded, isSignedIn, user } = useUser()
   const { getToken } = useAuth()
+  const currentUrl = useCurrentUrl()
 
   const [loading, setLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
@@ -222,12 +225,12 @@ export default function ProfileEditorPage() {
             يرجى تسجيل الدخول بحسابك الجامعي المعتمد لإدارة روابطك وإعدادات خصوصية ملفك الشخصي.
           </p>
         </div>
-        <SignInButton mode="modal">
+        <Link href={withRedirectParam("/sign-in", currentUrl)}>
           <Button className="h-11 px-8 rounded-xl font-bold gap-2 shadow-md">
             <LogIn className="w-4 h-4" />
             <span>تسجيل الدخول بحساب العضو 🚀</span>
           </Button>
-        </SignInButton>
+        </Link>
       </div>
     )
   }
