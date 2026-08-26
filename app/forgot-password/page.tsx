@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { Suspense } from 'react'
-import { useSignIn, useAuth } from '@clerk/nextjs'
+import { useSignIn } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -58,7 +58,6 @@ export default function ForgotPasswordPage() {
 function ForgotPasswordContent() {
   const { t } = useTranslation()
   const { isLoaded, signIn, setActive } = useSignIn()
-  const { isSignedIn } = useAuth()
   const router = useRouter()
 
   const [step, setStep] = React.useState<Step>('university-id')
@@ -90,13 +89,6 @@ function ForgotPasswordContent() {
       password: '',
     },
   })
-
-  // Redirect if already signed in
-  React.useEffect(() => {
-    if (isLoaded && isSignedIn) {
-      router.push('/')
-    }
-  }, [isLoaded, isSignedIn, router])
 
   // Countdown timer for resend button
   React.useEffect(() => {

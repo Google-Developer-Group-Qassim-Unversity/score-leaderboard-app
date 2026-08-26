@@ -16,26 +16,40 @@ declare global {
   }
 }
 
-// Routes exempt from the onboarding-completion gate below: the auth pages
-// must stay reachable for signed-out users, and /onboarding itself must be
-// exempt too, otherwise an authenticated-but-not-onboarded user visiting it
-// would be redirected right back to itself in an infinite loop.
-const isAuthRoute = createRouteMatcher([
+// The sign-in/up funnel: reachable while signed out, but if someone's
+// already fully authenticated there's nothing for them to do here - bounce
+// them at the server, before any client JS (let alone Clerk's client SDK)
+// has to load. This is what keeps these pages from ever needing a client-side
+// "isLoaded" loading state for that case.
+const isSignInFlow = createRouteMatcher([
   '/sign-in(.*)',
   '/sign-up(.*)',
   '/forgot-password(.*)',
-  '/onboarding(.*)',
 ])
+
+// /onboarding is exempt from the onboarding-completion gate below for the
+// opposite reason: an authenticated-but-not-onboarded user visiting it must
+// NOT be redirected back to itself (infinite loop). Its own layout already
+// redirects away the other direction, once onboarding is actually complete.
+const isOnboarding = createRouteMatcher(['/onboarding(.*)'])
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId, sessionClaims } = await auth()
+  const onboarded = !!sessionClaims?.metadata?.onboardingComplete
 
-  if (isAuthRoute(req)) {
+  if (isSignInFlow(req)) {
+    if (userId && onboarded) {
+      return NextResponse.redirect(new URL('/', req.url))
+    }
+    return NextResponse.next()
+  }
+
+  if (isOnboarding(req)) {
     return NextResponse.next()
   }
 
   // Check if user is authenticated and has not completed onboarding
-  if (userId && !sessionClaims?.metadata?.onboardingComplete) {
+  if (userId && !onboarded) {
     return NextResponse.redirect(new URL('/onboarding', req.url))
   }
   return NextResponse.next()

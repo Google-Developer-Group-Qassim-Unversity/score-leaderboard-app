@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { Suspense } from 'react'
-import { useSignIn, useAuth } from '@clerk/nextjs'
+import { useSignIn } from '@clerk/nextjs'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -52,7 +52,6 @@ export default function SignInPage() {
 function SignInContent() {
   const { t } = useTranslation()
   const { isLoaded, signIn, setActive } = useSignIn()
-  const { isSignedIn } = useAuth()
   const [error, setError] = React.useState('')
   const [loading, setLoading] = React.useState(false)
   const [googleLoading, setGoogleLoading] = React.useState(false)
@@ -71,17 +70,6 @@ function SignInContent() {
     },
   })
 
-  // Auto-redirect if already signed in
-  React.useEffect(() => {
-    if (isLoaded && isSignedIn) {
-      if (redirectParam) {
-        window.location.href = redirectParam
-      } else {
-        router.push('/')
-      }
-    }
-  }, [isLoaded, isSignedIn, router, redirectParam])
-
   const handleComplete = async (sessionId: string) => {
     if (!setActive) {
       return;
@@ -89,8 +77,14 @@ function SignInContent() {
 
     try {
       await setActive({ session: sessionId })
-      // Let the auto-redirect useEffect handle navigation
-      // This prevents flash by showing loading state during re-render
+      // Middleware already keeps a fully-authenticated visitor off this page
+      // on the next request; navigate there directly rather than waiting on
+      // a separate effect to notice isSignedIn flipped.
+      if (redirectParam) {
+        window.location.href = redirectParam
+      } else {
+        router.push('/')
+      }
     } catch (err) {
       console.error("Error setting active session:", err);
       window.location.reload();
