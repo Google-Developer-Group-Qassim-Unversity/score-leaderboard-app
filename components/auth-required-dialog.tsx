@@ -10,6 +10,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import { LogIn, UserPlus } from "lucide-react"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
@@ -44,16 +45,16 @@ export function AuthRequiredDialog({
         <AlertDialogFooter className="gap-2">
           <AlertDialogCancel>{t('auth.cancel')}</AlertDialogCancel>
           <Button asChild variant="outline" className="gap-2">
-            <a href={signInUrl}>
+            <Link href={signInUrl}>
               <LogIn className="h-4 w-4" />
               {t('auth.signIn')}
-            </a>
+            </Link>
           </Button>
           <Button asChild className="gap-2">
-            <a href={signUpUrl}>
+            <Link href={signUpUrl}>
               <UserPlus className="h-4 w-4" />
               {t('auth.signup')}
-            </a>
+            </Link>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

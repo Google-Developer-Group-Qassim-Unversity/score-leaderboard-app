@@ -3,6 +3,7 @@
 import { UserButton, useUser } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import Link from "next/link"
 import { UserPlus, User } from "lucide-react"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
@@ -55,10 +56,10 @@ export function AuthButton() {
         asChild
         className="gap-2"
       >
-        <a href={signUpUrl} aria-label={t('auth.signupAria')}>
+        <Link href={signUpUrl} aria-label={t('auth.signupAria')}>
           <UserPlus className="h-4 w-4" />
           <span className="hidden sm:inline">{t('auth.joinUs')}</span>
-        </a>
+        </Link>
       </Button>
     </div>
   )
@@ -91,10 +92,10 @@ export function AuthButtonMobile() {
         asChild
         className="w-full gap-3 py-3"
       >
-        <a href={signUpUrl} aria-label={t('auth.signupAria')}>
+        <Link href={signUpUrl} aria-label={t('auth.signupAria')}>
           <UserPlus className="h-5 w-5" />
           <span className="font-semibold text-base">{t('auth.joinUs')}</span>
-        </a>
+        </Link>
       </Button>
     </div>
   )
