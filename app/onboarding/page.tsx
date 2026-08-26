@@ -6,24 +6,19 @@ import { useUser, useAuth } from '@clerk/nextjs'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { AlertCircle, Loader2 } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import { updateUserMetadata, addVerifiedPersonalEmail } from './_actions'
 import { getValidatedRedirectParam } from '@/lib/redirect-config'
 import { UserAccountCard } from '@/components/user-account-card'
 import { createMember, getMemberPoints } from '@/lib/api/onboarding'
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
-import { LanguageSwitcher } from '@/components/language-switcher'
 import { OnboardingForm, type OnboardingFormValues } from '@/components/onboarding-form'
 import { WelcomeBackDialog } from '@/components/welcome-back-dialog'
 
 export default function OnboardingPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    }>
+    <Suspense fallback={null}>
       <OnboardingContent />
     </Suspense>
   )
@@ -155,9 +150,6 @@ function OnboardingContent() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="absolute top-4 right-4">
-        <LanguageSwitcher />
-      </div>
       <Card className="w-full max-w-2xl">
         <CardHeader>
           {/* Clerk User Button for account management */}

@@ -19,7 +19,6 @@ import { getValidatedRedirectParam, withRedirectParam } from '@/lib/redirect-con
 import { AlertCircle, Loader2, UserPlus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
-import { LanguageSwitcher } from '@/components/language-switcher'
 import { GoogleIcon } from '@/components/icons/google-icon'
 
 const createSignUpSchema = (t: (key: string) => string) => z.object({
@@ -40,11 +39,7 @@ type SignUpFormValues = {
 
 export default function SignUpPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    }>
+    <Suspense fallback={null}>
       <SignUpContent />
     </Suspense>
   )
@@ -139,15 +134,6 @@ function SignUpContent() {
     }
   }
 
-  if (!isLoaded) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-        <span className="ml-2">{t('common.loading')}</span>
-      </div>
-    )
-  }
-
   // Show verification view
   if (pendingVerification) {
     return (
@@ -162,9 +148,6 @@ function SignUpContent() {
   // Show sign-up form
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="absolute top-4 right-4">
-        <LanguageSwitcher />
-      </div>
       <Card className="w-full max-w-md border-t-4 border-t-green-600">
         <CardHeader>
           <div className="flex justify-center mb-4">
@@ -200,7 +183,7 @@ function SignUpContent() {
             type="button"
             variant="outline"
             className="w-full mb-4"
-            disabled={loading || googleLoading}
+            disabled={loading || googleLoading || !isLoaded}
             onClick={handleGoogleSignUp}
           >
             {googleLoading ? (
@@ -239,7 +222,7 @@ function SignUpContent() {
                           autoComplete="username"
                           maxLength={9}
                           className="border-0 rounded-r-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                          disabled={loading || googleLoading}
+                          disabled={loading || googleLoading || !isLoaded}
                           {...field}
                         />
                         <span className="inline-flex items-center px-3 h-10 bg-background text-muted-foreground text-sm border-l border-input rounded-r-md">
@@ -262,7 +245,7 @@ function SignUpContent() {
                       <PasswordInput
                         placeholder={t('auth.signUp.passwordPlaceholder')}
                         autoComplete="new-password"
-                        disabled={loading || googleLoading}
+                        disabled={loading || googleLoading || !isLoaded}
                         {...field}
                       />
                     </FormControl>
@@ -274,7 +257,7 @@ function SignUpContent() {
               {/* Clerk CAPTCHA - Only shows when suspicious activity is detected */}
               <div id="clerk-captcha" />
 
-              <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={loading || googleLoading}>
+              <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={loading || googleLoading || !isLoaded}>
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

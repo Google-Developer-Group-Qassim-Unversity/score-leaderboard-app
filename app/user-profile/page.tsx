@@ -7,7 +7,6 @@ import { LogOut, ArrowLeft, ArrowRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
-import { LanguageSwitcher } from '@/components/language-switcher'
 
 export default function UserProfilePage() {
   const { t, i18n } = useTranslation()
@@ -64,9 +63,6 @@ export default function UserProfilePage() {
 
   return (
     <div className="min-h-screen bg-muted/30 flex items-center justify-center py-12 px-4 relative">
-      <div className="absolute top-4 right-4">
-        <LanguageSwitcher />
-      </div>
       <div className="w-full max-w-3xl space-y-6">
         {/* Header */}
         <Card className="border-border/60">

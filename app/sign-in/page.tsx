@@ -26,7 +26,6 @@ import { getValidatedRedirectParam, withRedirectParam } from '@/lib/redirect-con
 import { VerificationCard } from '@/components/verification-card'
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
-import { LanguageSwitcher } from '@/components/language-switcher'
 import { GoogleIcon } from '@/components/icons/google-icon'
 
 const createSignInSchema = (t: (key: string) => string) => z.object({
@@ -43,14 +42,8 @@ type SignInFormValues = {
 }
 
 export default function SignInPage() {
-  const { t } = useTranslation()
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-        <span className="ml-2">{t('common.loading')}</span>
-      </div>
-    }>
+    <Suspense fallback={null}>
       <SignInContent />
     </Suspense>
   )
@@ -182,15 +175,6 @@ function SignInContent() {
     }
   }
 
-  if (!isLoaded || (isLoaded && isSignedIn)) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-        <span className="ml-2">{t('common.loading')}</span>
-      </div>
-    )
-  }
-
   // Show verification view for second factor
   if (needsSecondFactor) {
     return (
@@ -204,9 +188,6 @@ function SignInContent() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="absolute top-4 right-4">
-        <LanguageSwitcher />
-      </div>
       <Card className="w-full max-w-md border-t-4 border-t-blue-600">
         <CardHeader>
           <div className="flex justify-center mb-4">
@@ -240,7 +221,7 @@ function SignInContent() {
             type="button"
             variant="outline"
             className="w-full mb-4"
-            disabled={loading || googleLoading}
+            disabled={loading || googleLoading || !isLoaded}
             onClick={handleGoogleSignIn}
           >
             {googleLoading ? (
@@ -280,7 +261,7 @@ function SignInContent() {
                           maxLength={9}
                           className="border-0 rounded-r-none focus-visible:ring-0 focus-visible:ring-offset-0"
                           {...field}
-                          disabled={loading || googleLoading}
+                          disabled={loading || googleLoading || !isLoaded}
                         />
                         <span className="inline-flex items-center px-3 h-10 bg-background text-muted-foreground text-sm border-l border-input rounded-r-md">
                           {t('auth.signIn.emailSuffix')}
@@ -303,7 +284,7 @@ function SignInContent() {
                         placeholder={t('auth.signIn.passwordPlaceholder')}
                         autoComplete="current-password"
                         {...field}
-                        disabled={loading || googleLoading}
+                        disabled={loading || googleLoading || !isLoaded}
                       />
                     </FormControl>
                     <FormMessage />
@@ -311,7 +292,7 @@ function SignInContent() {
                 )}
               />
 
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={loading || googleLoading}>
+              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={loading || googleLoading || !isLoaded}>
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
