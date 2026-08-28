@@ -2,8 +2,11 @@ import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
 import { StatsPageContent } from "@/components/stats-sections/stats-page-content"
 
 export const metadata = {
-  title: "Season in Review | GDG on Campus",
+  title: "Season in Review",
   description: "A look back at two incredible semesters of achievements, growth, and community",
+  alternates: {
+    canonical: "/stats",
+  },
 }
 
 export default async function StatsPage() {

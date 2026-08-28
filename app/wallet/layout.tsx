@@ -8,14 +8,10 @@ export const metadata: Metadata = {
   },
 }
 
-export default function GoogleFormLayout({
+export default function WalletLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return (
-    <main className="h-[calc(100vh-64px)]">
-      {children}
-    </main>
-  )
+  return <>{children}</>
 }

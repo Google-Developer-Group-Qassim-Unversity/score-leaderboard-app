@@ -1,10 +1,19 @@
 import Link from "next/link"
+import type { Metadata } from "next"
 import { Button } from "@/components/ui/button"
 import { Trophy, Building2, ArrowLeft, Settings, Wrench } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 import { fetchDepartments } from "@/lib/api/api"
 import { DepartmentTypeCard } from "./department-type-card"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
+
+export const metadata: Metadata = {
+  title: "Departments",
+  description: "See how each GDG on Campus department is ranking by points across specialized and administrative teams.",
+  alternates: {
+    canonical: "/departments",
+  },
+}
 
 export default async function DepartmentsLeaderboard() {
   const lang = await getLanguageFromCookies()

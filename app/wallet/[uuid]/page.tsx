@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation"
+import { permanentRedirect } from "next/navigation"
 
 export default function WalletProfileRedirect({ params }: { params: { uuid: string } }) {
-  redirect(`/p/${params.uuid}`)
+  permanentRedirect(`/p/${params.uuid}`)
 }

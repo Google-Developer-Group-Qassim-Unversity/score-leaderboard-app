@@ -11,17 +11,38 @@ import { ClientDashboardWrapper } from "@/components/client-dashboard-wrapper"
 import { ClerkProviderWrapper } from "@/components/clerk-provider-wrapper"
 import { QueryProvider } from "@/components/providers/query-provider"
 import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
+import { config } from "@/lib/config"
+
+const siteDescription =
+  "Google Developer Groups at Qassim University is a student-led community fostering innovation and technical skills through workshops, events, and collaborative projects. Track your points and climb the leaderboard."
 
 export const metadata: Metadata = {
+  metadataBase: new URL(config.thisAppUrl),
   title: {
-    default: "GDG",
-    template: "%s - GDG",
+    default: "GDG on Campus - Qassim University",
+    template: "%s - GDG on Campus",
   },
-  description: "",
+  description: siteDescription,
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: "/favicon.ico",
   },
   manifest: "/site.webmanifest",
+  openGraph: {
+    type: "website",
+    siteName: "GDG on Campus - Qassim University",
+    title: "GDG on Campus - Qassim University",
+    description: siteDescription,
+    images: ["/gdg.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GDG on Campus - Qassim University",
+    description: siteDescription,
+    images: ["/gdg.png"],
+  },
 }
 
 export const viewport: Viewport = {

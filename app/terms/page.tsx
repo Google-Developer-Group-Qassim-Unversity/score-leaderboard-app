@@ -4,6 +4,10 @@ import { ArrowLeft, FileText } from "lucide-react"
 
 export const metadata = {
   title: "Terms of Service",
+  description: "Read the GDG on Campus terms of service governing use of this site and its features.",
+  alternates: {
+    canonical: "/terms",
+  },
 }
 
 export default function TermsOfServicePage() {

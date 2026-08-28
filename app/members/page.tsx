@@ -1,9 +1,18 @@
 import { Users } from "lucide-react"
+import type { Metadata } from "next"
 import { PageHeader } from "@/components/page-header"
 import { fetchMembers } from "@/lib/api/api"
 import { MembersSearch } from "./members-search"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { currentUser } from "@clerk/nextjs/server"
+
+export const metadata: Metadata = {
+  title: "Members Leaderboard",
+  description: "See the GDG on Campus members leaderboard, ranked by points earned across events and activities.",
+  alternates: {
+    canonical: "/members",
+  },
+}
 
 export default async function MembersLeaderboard() {
   const lang = await getLanguageFromCookies()
