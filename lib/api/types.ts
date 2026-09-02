@@ -111,6 +111,8 @@ export interface ApiEventItem {
   end_datetime: string
   status: EventStatus
   image_url: string | null
+  /** Join link for remote events, set by an admin. Null when there is none. */
+  meeting_url: string | null
   created_at: string | null
 }
 
