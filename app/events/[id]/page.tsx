@@ -47,6 +47,10 @@ const getStatusVariant = (status: ApiEventItem["status"]) => {
   }
 };
 
+function isSafeHttpUrl(url: string): boolean {
+  return /^https?:\/\//i.test(url);
+}
+
 function linkify(text: string) {
   const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/g;
 
@@ -315,9 +319,12 @@ export default async function EventDetailPage({
           )}
 
           <Separator />
-            {event.meeting_url && event.location_type === "online" && event.status !== "closed" && (
+            {event.meeting_url &&
+              isSafeHttpUrl(event.meeting_url) &&
+              event.location_type === "online" &&
+              event.status !== "closed" && (
               <Button asChild className="w-full" size="lg">
-                <a href={event.meeting_url} target="_blank" rel="noopener noreferrer">
+                <a href={event.meeting_url} target="_blank" rel="noopener noreferrer nofollow">
                   <Video className="h-5 w-5" />
                   {event.status === "active"
                     ? t("eventDetail.joinMeeting")
