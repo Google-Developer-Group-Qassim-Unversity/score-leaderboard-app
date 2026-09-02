@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { fetchEvents, fetchOpenEvents } from "@/lib/api/api";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -13,6 +14,7 @@ import {
   Globe,
   ChevronLeft,
   Info,
+  Video,
 } from "lucide-react";
 import Link from "next/link";
 import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api/types";
@@ -44,6 +46,10 @@ const getStatusVariant = (status: ApiEventItem["status"]) => {
       return "outline" as const;
   }
 };
+
+function isSafeHttpUrl(url: string): boolean {
+  return /^https?:\/\//i.test(url);
+}
 
 function linkify(text: string) {
   const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/g;
@@ -313,6 +319,19 @@ export default async function EventDetailPage({
           )}
 
           <Separator />
+            {event.meeting_url &&
+              isSafeHttpUrl(event.meeting_url) &&
+              event.location_type === "online" &&
+              event.status !== "closed" && (
+              <Button asChild className="w-full" size="lg">
+                <a href={event.meeting_url} target="_blank" rel="noopener noreferrer nofollow">
+                  <Video className="h-5 w-5" />
+                  {event.status === "active"
+                    ? t("eventDetail.joinMeeting")
+                    : t("eventDetail.meetingLink")}
+                </a>
+              </Button>
+            )}
             {openEvent && (
               <EventSignupButton event={openEvent} className="w-full" />
             )}

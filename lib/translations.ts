@@ -272,6 +272,8 @@ export const resources = {
       "eventDetail.description": "Description",
       "eventDetail.noDescription": "No description provided for this event.",
       "eventDetail.noImage": "No event image",
+      "eventDetail.joinMeeting": "Join Meeting",
+      "eventDetail.meetingLink": "Meeting Link",
 
       // Member Detail Page
       "memberDetail.backToMembers": "Back to Members",
@@ -918,6 +920,8 @@ export const resources = {
       "eventDetail.description": "الوصف",
       "eventDetail.noDescription": "ما فيه وصف لهذي الفعالية.",
       "eventDetail.noImage": "ما فيه صورة للفعالية",
+      "eventDetail.joinMeeting": "ادخل الاجتماع",
+      "eventDetail.meetingLink": "رابط الاجتماع",
 
       // Member Detail Page
       "memberDetail.backToMembers": "العودة للأعضاء",
