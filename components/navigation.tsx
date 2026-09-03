@@ -4,6 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
+import { useUser } from "@clerk/nextjs"
 import { useTranslation } from 'react-i18next'
 import '../lib/i18n-client'
 import {
@@ -83,6 +84,7 @@ export function Navigation() {
   const pathname = usePathname()
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+  const { isSignedIn } = useUser()
   const { i18n } = useTranslation()
   const [currentLang, setCurrentLang] = useState<'en' | 'ar'>('ar')
   const [isLangOpen, setIsLangOpen] = useState(false)
@@ -143,41 +145,44 @@ export function Navigation() {
 
         {/* Auth Button, Language Switcher & Mobile Menu */}
         <div className="flex items-center gap-2">
-          {/* Language Switcher - Hidden on mobile */}
-          <div className="relative hidden md:block" ref={langMenuRef}>
-            <Button
-              onClick={() => setIsLangOpen(!isLangOpen)}
-              variant="ghost"
-              size="icon"
-              className="text-foreground/70 hover:text-foreground hover:bg-accent cursor-pointer"
-            >
-              <Globe className="w-4 h-4" />
-              <span className="sr-only">Toggle language</span>
-            </Button>
+          {/* Language Switcher - Hidden on mobile, and hidden when signed in
+              since the Clerk avatar menu has its own language toggle then */}
+          {!isSignedIn && (
+            <div className="relative hidden md:block" ref={langMenuRef}>
+              <Button
+                onClick={() => setIsLangOpen(!isLangOpen)}
+                variant="ghost"
+                size="icon"
+                className="text-foreground/70 hover:text-foreground hover:bg-accent cursor-pointer"
+              >
+                <Globe className="w-4 h-4" />
+                <span className="sr-only">Toggle language</span>
+              </Button>
 
-            {isLangOpen && (
-              <div className="absolute right-0 top-full mt-1 w-32 rounded-md border bg-popover p-1 text-popover-foreground shadow-md z-[100]">
-                <button
-                  onClick={() => {
-                    handleLanguageChange('en');
-                    setIsLangOpen(false);
-                  }}
-                  className="w-full flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-                >
-                  English
-                </button>
-                <button
-                  onClick={() => {
-                    handleLanguageChange('ar');
-                    setIsLangOpen(false);
-                  }}
-                  className="w-full flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-                >
-                  العربية
-                </button>
-              </div>
-            )}
-          </div>
+              {isLangOpen && (
+                <div className="absolute right-0 top-full mt-1 w-32 rounded-md border bg-popover p-1 text-popover-foreground shadow-md z-[100]">
+                  <button
+                    onClick={() => {
+                      handleLanguageChange('en');
+                      setIsLangOpen(false);
+                    }}
+                    className="w-full flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                  >
+                    English
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleLanguageChange('ar');
+                      setIsLangOpen(false);
+                    }}
+                    className="w-full flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                  >
+                    العربية
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           <AuthButton />
 
@@ -213,28 +218,31 @@ export function Navigation() {
                     ))}
                   </div>
 
-                  {/* Language Switcher in Mobile Menu */}
-                  <div className="mt-4 px-3 flex flex-col gap-2">
-                    <p className="text-xs font-semibold text-foreground/50 px-3 uppercase tracking-wider">
-                      {i18n.language === 'ar' ? 'اللغة' : 'Language'}
-                    </p>
-                    <div className="flex flex-col gap-1">
-                      <Button
-                        onClick={() => handleLanguageChange('en')}
-                        variant={currentLang === 'en' ? "secondary" : "ghost"}
-                        className="w-full justify-start gap-3 py-3 h-auto"
-                      >
-                        <span className="font-medium">English</span>
-                      </Button>
-                      <Button
-                        onClick={() => handleLanguageChange('ar')}
-                        variant={currentLang === 'ar' ? "secondary" : "ghost"}
-                        className="w-full justify-start gap-3 py-3 h-auto"
-                      >
-                        <span className="font-medium">العربية</span>
-                      </Button>
+                  {/* Language Switcher in Mobile Menu - hidden when signed in
+                      since the Clerk avatar menu has its own language toggle then */}
+                  {!isSignedIn && (
+                    <div className="mt-4 px-3 flex flex-col gap-2">
+                      <p className="text-xs font-semibold text-foreground/50 px-3 uppercase tracking-wider">
+                        {i18n.language === 'ar' ? 'اللغة' : 'Language'}
+                      </p>
+                      <div className="flex flex-col gap-1">
+                        <Button
+                          onClick={() => handleLanguageChange('en')}
+                          variant={currentLang === 'en' ? "secondary" : "ghost"}
+                          className="w-full justify-start gap-3 py-3 h-auto"
+                        >
+                          <span className="font-medium">English</span>
+                        </Button>
+                        <Button
+                          onClick={() => handleLanguageChange('ar')}
+                          variant={currentLang === 'ar' ? "secondary" : "ghost"}
+                          className="w-full justify-start gap-3 py-3 h-auto"
+                        >
+                          <span className="font-medium">العربية</span>
+                        </Button>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Auth Section in Mobile Menu */}
                   <div className="mt-4 px-3 pt-4 border-t">

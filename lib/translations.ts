@@ -74,6 +74,7 @@ export const resources = {
       "nav.english": "English",
       "nav.arabic": "Arabic",
       "nav.profile": "Profile",
+      "nav.admin": "Admin Panel",
 
       // Profile Page
       "profile.pageTitle": "Profile Center",
@@ -716,6 +717,7 @@ export const resources = {
       "nav.english": "الإنجليزية",
       "nav.arabic": "العربية",
       "nav.profile": "الملف الشخصي",
+      "nav.admin": "لوحة الادارة",
 
       // Profile Page
       "profile.pageTitle": "الملف الشخصي",
