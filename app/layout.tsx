@@ -13,13 +13,13 @@ import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
 import { config } from "@/lib/config"
 
 const siteDescription =
-  "Google Developer Groups at Qassim University is a student-led community fostering innovation and technical skills through workshops, events, and collaborative projects. Track your points and climb the leaderboard."
+  "GDG Qassim is a student-led community fostering innovation and technical skills through workshops, events, and collaborative projects. Track your points and climb the leaderboard."
 
 export const metadata: Metadata = {
   metadataBase: new URL(config.thisAppUrl),
   title: {
-    default: "GDG on Campus - Qassim University",
-    template: "%s - GDG on Campus",
+    default: "GDG Qassim",
+    template: "%s - GDG Qassim",
   },
   description: siteDescription,
   alternates: {
@@ -31,14 +31,14 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
-    siteName: "GDG on Campus - Qassim University",
-    title: "GDG on Campus - Qassim University",
+    siteName: "GDG Qassim",
+    title: "GDG Qassim",
     description: siteDescription,
     images: ["/gdg.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GDG on Campus - Qassim University",
+    title: "GDG Qassim",
     description: siteDescription,
     images: ["/gdg.png"],
   },

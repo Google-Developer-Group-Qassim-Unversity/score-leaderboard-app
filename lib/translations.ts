@@ -298,7 +298,7 @@ export const resources = {
 
       // Footer
       "footer.about.title": "About GDG Qassim",
-      "footer.about.description": "Google Developer Groups at Qassim University is a student-led community fostering innovation and technical skills through workshops, events, and collaborative projects.",
+      "footer.about.description": "GDG Qassim is a student-led community fostering innovation and technical skills through workshops, events, and collaborative projects.",
       "footer.quickLinks.title": "Quick Links",
       "footer.connect.title": "Connect With Us",
       "footer.developers.title": "Developers",

@@ -98,7 +98,7 @@ function getLogoSvg() {
       </g>
       <!-- Text -->
       <text x="140" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" fill="#1e293b">Google Developer Groups</text>
-      <text x="140" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="700" fill="#2563eb">On Qassim university</text>
+      <text x="140" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="700" fill="#2563eb">Qassim</text>
     </svg>
   `;
 }
