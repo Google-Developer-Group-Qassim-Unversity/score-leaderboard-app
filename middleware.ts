@@ -1,5 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
+import { getValidatedRedirectParam } from '@/lib/redirect-config'
 
 declare global {
   interface CustomJwtSessionClaims {
@@ -39,7 +40,12 @@ export default clerkMiddleware(async (auth, req) => {
 
   if (isSignInFlow(req)) {
     if (userId && onboarded) {
-      return NextResponse.redirect(new URL('/', req.url))
+      // An already-authenticated visitor has nothing to do on this page - bounce
+      // them off. If they were sent here by another app (e.g. the admin app's
+      // cross-app sign-in handoff) with a validated redirect_url, honor it
+      // instead of always landing on this app's own homepage.
+      const redirectParam = getValidatedRedirectParam(req.nextUrl.searchParams)
+      return NextResponse.redirect(redirectParam ?? new URL('/', req.url))
     }
     return NextResponse.next()
   }
