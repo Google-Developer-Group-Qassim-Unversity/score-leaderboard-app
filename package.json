@@ -44,7 +44,6 @@
     "@tanstack/react-query-devtools": "^5.91.3",
     "@types/canvas-confetti": "^1.9.0",
     "@types/qrcode": "^1.5.6",
-    "@vercel/analytics": "latest",
     "adm-zip": "^0.6.0",
     "autoprefixer": "^10.4.20",
     "canvas-confetti": "^1.9.4",
