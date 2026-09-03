@@ -717,7 +717,7 @@ export const resources = {
       "nav.english": "الإنجليزية",
       "nav.arabic": "العربية",
       "nav.profile": "الملف الشخصي",
-      "nav.admin": "لوحة الادارة",
+      "nav.admin": "لوحة الإدارة",
 
       // Profile Page
       "profile.pageTitle": "الملف الشخصي",
