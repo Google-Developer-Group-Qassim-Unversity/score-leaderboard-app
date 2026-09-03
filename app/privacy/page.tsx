@@ -28,14 +28,14 @@ export default function PrivacyPolicyPage() {
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Privacy Policy</h1>
         </div>
-        <p className="text-sm text-slate-500 mb-8">Last updated: August 21, 2026</p>
+        <p className="text-sm text-slate-500 mb-8">Last updated: September 3, 2026</p>
 
         <Card className="border-slate-200">
           <CardContent className="prose prose-slate max-w-none pt-6 space-y-6 text-slate-700 leading-relaxed">
             <section>
               <h2 className="text-lg font-semibold text-slate-900 mb-2">Who we are</h2>
               <p>
-                This site is run by GDG on Campus Qassim University, a community chapter of Google
+                This site is run by GDG Qassim, a community chapter of Google
                 Developer Groups. This policy explains what information we collect through the
                 leaderboard platform and how we use it.
               </p>

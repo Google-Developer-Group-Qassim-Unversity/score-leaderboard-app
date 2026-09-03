@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
   title: "Events",
-  description: "Browse upcoming and past GDG on Campus events, workshops, and activities at Qassim University.",
+  description: "Browse upcoming and past GDG Qassim events, workshops, and activities.",
   alternates: {
     canonical: "/events",
   },

@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Club Structure",
-  description: "Meet the leadership and organizational structure of GDG on Campus at Qassim University.",
+  description: "Meet the leadership and organizational structure of GDG Qassim.",
   alternates: {
     canonical: "/club-structure",
   },
