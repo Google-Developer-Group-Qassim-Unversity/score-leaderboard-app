@@ -4,17 +4,22 @@ import { UserButton, useUser } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
-import { UserPlus, User } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { UserPlus, User, Shield, Globe } from "lucide-react"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
 import { useCurrentUrl } from '@/hooks/use-current-url'
 import { withRedirectParam } from '@/lib/redirect-config'
 
+const ADMIN_APP_URL = process.env.NEXT_PUBLIC_ADMIN_APP_URL ?? 'https://admin.gdg-q.com'
+
 export function AuthButton() {
-  const { isLoaded, isSignedIn } = useUser()
+  const { isLoaded, isSignedIn, user } = useUser()
   const { t, i18n } = useTranslation()
   const isRTL = i18n.language === 'ar'
   const currentUrl = useCurrentUrl()
+  const isAdmin = !!user?.publicMetadata?.is_super_admin
+  const router = useRouter()
 
   if (!isLoaded) {
     return (
@@ -23,6 +28,17 @@ export function AuthButton() {
   }
 
   if (isSignedIn) {
+    const toggleLanguage = () => {
+      const newLang = i18n.language === 'en' ? 'ar' : 'en'
+      // Same pattern as the nav bar's language switcher (components/navigation.tsx):
+      // the cookie drives server-rendered content, so a full reload is required
+      // for it to take effect - changeLanguage() alone only updates client components.
+      document.cookie = `lang=${newLang}; path=/; max-age=31536000; SameSite=Lax`
+      i18n.changeLanguage(newLang)
+      router.refresh()
+      window.location.reload()
+    }
+
     return (
       <UserButton
         appearance={{
@@ -37,6 +53,18 @@ export function AuthButton() {
             label={t('nav.profile')}
             labelIcon={<User className="w-4 h-4" />}
             href="/profile"
+          />
+          {isAdmin && (
+            <UserButton.Link
+              label={t('nav.admin')}
+              labelIcon={<Shield className="w-4 h-4" />}
+              href={ADMIN_APP_URL}
+            />
+          )}
+          <UserButton.Action
+            label={i18n.language === 'en' ? t('nav.arabic') : t('nav.english')}
+            labelIcon={<Globe className="w-4 h-4" />}
+            onClick={toggleLanguage}
           />
           <UserButton.Action label="manageAccount" />
           <UserButton.Action label="signOut" />
