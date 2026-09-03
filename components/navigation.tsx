@@ -84,7 +84,7 @@ export function Navigation() {
   const pathname = usePathname()
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
-  const { isSignedIn } = useUser()
+  const { isLoaded, isSignedIn } = useUser()
   const { i18n } = useTranslation()
   const [currentLang, setCurrentLang] = useState<'en' | 'ar'>('ar')
   const [isLangOpen, setIsLangOpen] = useState(false)
@@ -146,8 +146,10 @@ export function Navigation() {
         {/* Auth Button, Language Switcher & Mobile Menu */}
         <div className="flex items-center gap-2">
           {/* Language Switcher - Hidden on mobile, and hidden when signed in
-              since the Clerk avatar menu has its own language toggle then */}
-          {!isSignedIn && (
+              since the Clerk avatar menu has its own language toggle then.
+              Gated on isLoaded too, so it doesn't flash for signed-in users
+              during the brief window before Clerk resolves isSignedIn. */}
+          {isLoaded && !isSignedIn && (
             <div className="relative hidden md:block" ref={langMenuRef}>
               <Button
                 onClick={() => setIsLangOpen(!isLangOpen)}
@@ -219,8 +221,10 @@ export function Navigation() {
                   </div>
 
                   {/* Language Switcher in Mobile Menu - hidden when signed in
-                      since the Clerk avatar menu has its own language toggle then */}
-                  {!isSignedIn && (
+                      since the Clerk avatar menu has its own language toggle then.
+                      Gated on isLoaded too, so it doesn't flash for signed-in users
+                      during the brief window before Clerk resolves isSignedIn. */}
+                  {isLoaded && !isSignedIn && (
                     <div className="mt-4 px-3 flex flex-col gap-2">
                       <p className="text-xs font-semibold text-foreground/50 px-3 uppercase tracking-wider">
                         {i18n.language === 'ar' ? 'اللغة' : 'Language'}
