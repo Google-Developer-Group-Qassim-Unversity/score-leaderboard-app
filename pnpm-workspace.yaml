@@ -3,3 +3,6 @@ allowBuilds:
   '@sentry/cli': true
   core-js: true
   sharp: false
+minimumReleaseAgeExclude:
+  - '@clerk/localizations@4.16.0'
+  - '@clerk/shared@4.31.0'

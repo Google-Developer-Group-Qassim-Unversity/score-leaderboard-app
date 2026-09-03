@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { useSignUp, useSignIn } from '@clerk/nextjs'
+import { useSignUp, useSignIn } from "@clerk/nextjs/legacy"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -269,5 +269,5 @@ export function VerificationCard({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

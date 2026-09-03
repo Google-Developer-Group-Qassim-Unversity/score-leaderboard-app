@@ -58,7 +58,7 @@ export default async function ProfilePage() {
         </Card>
 
         <Card className="p-0 gap-0 overflow-hidden [&_.cl-rootBox]:w-full [&_.cl-cardBox]:w-full [&_.cl-cardBox]:shadow-none [&_.cl-cardBox]:border-none [&_.cl-cardBox]:rounded-none">
-          <UserProfile routing="virtual" />
+          <UserProfile routing="hash" />
         </Card>
       </div>
 
