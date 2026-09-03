@@ -3,10 +3,10 @@ import { config } from "@/lib/config"
 
 export async function GET(
   req: Request,
-  { params }: { params: { uuid: string } }
+  { params }: { params: Promise<{ uuid: string }> }
 ) {
   try {
-    const { uuid } = params
+    const { uuid } = await params
     const backendUrl = config.backendApiUrl || "http://localhost:7001"
 
     const res = await fetch(`${backendUrl}/wallet/${uuid}`, {
