@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { Suspense } from 'react'
-import { useSignIn } from '@clerk/nextjs'
+import { useSignIn } from "@clerk/nextjs/legacy"
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -400,7 +400,7 @@ function ForgotPasswordContent() {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   // Step 3: New Password

@@ -1,5 +1,6 @@
 import { permanentRedirect } from "next/navigation"
 
-export default function WalletProfileRedirect({ params }: { params: { uuid: string } }) {
-  permanentRedirect(`/p/${params.uuid}`)
+export default async function WalletProfileRedirect({ params }: { params: Promise<{ uuid: string }> }) {
+  const { uuid } = await params
+  permanentRedirect(`/p/${uuid}`)
 }

@@ -18,9 +18,7 @@ export function UserAccountCard() {
                 avatarBox: "h-12 w-12 sm:h-14 sm:w-14 ring-2 ring-offset-2 ring-muted-foreground/20 hover:ring-muted-foreground/40 transition-all cursor-pointer",
                 userButtonPopoverCard: "shadow-xl"
               }
-            }}
-            afterSignOutUrl="/sign-in"
-          />
+            }} />
         </div>
         <div className="flex flex-col min-w-0">
           <span className="text-sm sm:text-base font-semibold truncate">
@@ -35,5 +33,5 @@ export function UserAccountCard() {
         {t('userCard.clickToManage')}
       </div>
     </div>
-  )
+  );
 }

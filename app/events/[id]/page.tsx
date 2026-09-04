@@ -26,9 +26,9 @@ import { isSameDayOrOvernight, getEventDayCount, getEffectiveEndDate } from "@/l
 export const dynamic = "force-dynamic";
 
 interface EventDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 // Valid statuses for display (excludes draft)
@@ -84,8 +84,9 @@ export async function generateMetadata({
   params,
 }: EventDetailPageProps): Promise<Metadata> {
   try {
+    const { id } = await params;
     const events = await fetchEvents();
-    const event = events.find((e) => e.id === parseInt(params.id));
+    const event = events.find((e) => e.id === parseInt(id));
 
     if (!event) {
       return { title: "Event" };
@@ -113,6 +114,7 @@ export async function generateMetadata({
 export default async function EventDetailPage({
   params,
 }: EventDetailPageProps) {
+  const { id } = await params;
   const lang = await getLanguageFromCookies();
   const t = (key: string) => getTranslation(lang, key);
 
@@ -124,7 +126,7 @@ export default async function EventDetailPage({
 
   // Filter to only valid statuses (open, active, closed)
   const validEvents = events.filter((e) => VALID_STATUSES.includes(e.status));
-  const event = validEvents.find((e) => e.id === parseInt(params.id));
+  const event = validEvents.find((e) => e.id === parseInt(id));
 
   if (!event) {
     notFound();

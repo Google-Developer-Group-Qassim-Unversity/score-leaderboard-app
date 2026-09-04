@@ -62,38 +62,38 @@ export default async function RootLayout({
   const rtl = isRTL(lang);
 
   return (
-    <ClerkProviderWrapper>
-      <html lang={lang} dir={rtl ? 'rtl' : 'ltr'} suppressHydrationWarning>
-        <head>
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap"
-            rel="stylesheet"
-          />
-          <Script
-            src="https://www.googletagmanager.com/gtag/js?id=G-Z62ENW3LFQ"
-            strategy="afterInteractive"
-          />
-          <Script id="gtag-init" strategy="afterInteractive">
-            {`
+    <html lang={lang} dir={rtl ? 'rtl' : 'ltr'} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-Z62ENW3LFQ"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-Z62ENW3LFQ');
           `}
-          </Script>
-          <Script
-            defer
-            data-domain="gdg-q.com"
-            src="https://analytics.dragpath.ai/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"
-            strategy="afterInteractive"
-          />
-          <Script id="plausible-init" strategy="afterInteractive">
-            {`window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`}
-          </Script>
-        </head>
-        <body className="font-sans antialiased">
+        </Script>
+        <Script
+          defer
+          data-domain="gdg-q.com"
+          src="https://analytics.dragpath.ai/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"
+          strategy="afterInteractive"
+        />
+        <Script id="plausible-init" strategy="afterInteractive">
+          {`window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`}
+        </Script>
+      </head>
+      <body className="font-sans antialiased">
+        <ClerkProviderWrapper>
           <QueryProvider>
             <ClientDashboardWrapper>
                 <Navigation />
@@ -102,8 +102,8 @@ export default async function RootLayout({
                 <Toaster />
             </ClientDashboardWrapper>
           </QueryProvider>
-        </body>
-      </html>
-    </ClerkProviderWrapper>
+        </ClerkProviderWrapper>
+      </body>
+    </html>
   )
 }

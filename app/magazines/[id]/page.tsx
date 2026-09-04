@@ -7,13 +7,14 @@ import { getMagazineById } from "@/lib/magazines"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 
 interface MagazineReaderPageProps {
-    params: {
+    params: Promise<{
         id: string
-    }
+    }>
 }
 
 export async function generateMetadata({ params }: MagazineReaderPageProps): Promise<Metadata> {
-  const magazine = getMagazineById(params.id)
+  const { id } = await params
+  const magazine = getMagazineById(id)
   if (!magazine) {
     return { title: "Magazine" }
   }
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: MagazineReaderPageProps): Pro
 }
 
 export default async function MagazineReaderPage({ params }: MagazineReaderPageProps) {
-    const { id } = params
+    const { id } = await params
     const magazine = getMagazineById(id)
 
     if (!magazine) {

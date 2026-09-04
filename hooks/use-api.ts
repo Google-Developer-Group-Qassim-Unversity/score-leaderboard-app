@@ -12,18 +12,18 @@ export function useApi() {
 
   return {
     async get<T>(path: string, options?: Omit<RequestOptions, 'token'>): Promise<T> {
-      const token = await getToken() ?? undefined
+      const token = (await getToken()) ?? undefined
       return api.get<T>(path, { ...options, token })
     },
 
     async post<T>(path: string, body?: unknown, options?: Omit<RequestOptions, 'token'>): Promise<T> {
-      const token = await getToken() ?? undefined
+      const token = (await getToken()) ?? undefined
       return api.post<T>(path, body, { ...options, token })
     },
 
     async patch<T>(path: string, body: unknown, options?: Omit<RequestOptions, 'token'>): Promise<T> {
-      const token = await getToken() ?? undefined
+      const token = (await getToken()) ?? undefined
       return api.patch<T>(path, body, { ...options, token })
     },
-  }
+  };
 }
