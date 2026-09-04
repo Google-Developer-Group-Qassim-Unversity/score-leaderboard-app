@@ -20,10 +20,10 @@ function GoogleFormContent() {
   // event forms. Backend matching (submissions.py: extract_email_answer)
   // no longer depends on this ID being right, so a failed prefill just means
   // the member types their email manually; it doesn't break the sync.
-  const UNI_ID_ENTRY_ID = "1527503581"
-  const NAME_ENTRY_ID = "990838002"
-  const PERSONAL_EMAIL_ENTRY_ID = "310677703"
-  const GENDER_ENTRY_ID = "852465832"
+  const UNI_ID_ENTRY_ID = "93677613"
+  const NAME_ENTRY_ID = "252260641"
+  const PERSONAL_EMAIL_ENTRY_ID = "198445310"
+  const GENDER_ENTRY_ID = "2044474363"
 
   if (!formUrl) {
     return (
