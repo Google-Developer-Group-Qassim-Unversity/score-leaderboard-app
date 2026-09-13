@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Users, Crown, Building2, Lightbulb, Cog, Shield, Bot, Trophy, Palette, Calendar, Megaphone, MoveRight, Gamepad2 } from "lucide-react"
+import { Users, Crown, Building2, Lightbulb, Cog, Shield, Bot, Trophy, Palette, Calendar, Megaphone, MoveRight } from "lucide-react"
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
 import { getTranslation } from "@/lib/server-i18n"
 import type { Language } from "@/lib/translations"
@@ -19,14 +19,14 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
       { icon: Lightbulb, color: "bg-red-500", name: t("clubStructurePage.aiShort"), id: "dept-0" },
       { icon: Bot, color: "bg-yellow-500", name: t("clubStructurePage.robotics"), id: "dept-1" },
       { icon: Trophy, color: "bg-blue-500", name: t("clubStructurePage.entrepreneurship"), id: "dept-2" },
-      { icon: Gamepad2, color: "bg-purple-500", name: t("clubStructurePage.esports"), id: "dept-3" },
     ],
     administrative: [
       { icon: Cog, color: "bg-blue-500", name: t("clubStructurePage.development"), id: "admin-dept-0" },
       { icon: Calendar, color: "bg-orange-500", name: t("clubStructurePage.programsShort"), id: "admin-dept-1" },
-      { icon: Users, color: "bg-red-500", name: t("clubStructurePage.organization"), id: "admin-dept-2" },
-      { icon: Palette, color: "bg-green-500", name: t("clubStructurePage.design"), id: "admin-dept-3" },
-      { icon: Megaphone, color: "bg-blue-500", name: t("clubStructurePage.media"), id: "admin-dept-4" },
+      { icon: Palette, color: "bg-green-500", name: t("clubStructurePage.design"), id: "admin-dept-2" },
+      { icon: Megaphone, color: "bg-purple-500", name: t("clubStructurePage.media"), id: "admin-dept-3" },
+      { icon: Shield, color: "bg-red-500", name: t("clubStructurePage.operations"), id: "admin-dept-4" },
+      { icon: Users, color: "bg-green-500", name: t("clubStructurePage.activities"), id: "admin-dept-5" },
     ]
   }
 
@@ -61,7 +61,7 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                   <Lightbulb className="h-4 w-4" />
                   {t('clubStructure.specialized')}
                 </p>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 max-w-fit mx-auto [&>*:nth-child(5)]:col-span-2 md:[&>*:nth-child(5)]:col-span-1">
+                <div className="grid grid-cols-3 gap-4 md:gap-6 max-w-fit mx-auto">
                   {departments.specialized.map((dept, idx) => (
                     <Link key={idx} href={`/club-structure#${dept.id}`} className="flex flex-col items-center gap-2">
                       <div
@@ -81,7 +81,7 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                   <Cog className="h-4 w-4" />
                   {t('clubStructure.administrative')}
                 </p>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 max-w-fit mx-auto [&>*:nth-child(5)]:col-span-2 md:[&>*:nth-child(5)]:col-span-1">
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-4 md:gap-6 max-w-fit mx-auto">
                   {departments.administrative.map((dept, idx) => (
                     <Link key={idx} href={`/club-structure#${dept.id}`} className="flex flex-col items-center gap-2">
                       <div
@@ -122,23 +122,28 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
 
               {/* Leadership Info */}
               <div className="space-y-4">
-                {/* Presidents */}
+                {/* Leaders - القادة */}
                 <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
                   <p className="text-sm text-slate-600 mb-2 font-medium">
                     {t('clubStructure.presidents')}
                   </p>
                   <div className="space-y-1">
-                    <p className="text-slate-900 font-semibold">عزام خالد الخضيري</p>
-                    <p className="text-slate-900 font-semibold">جود سعود الفرم</p>
+                    <p className="text-slate-900 font-semibold">سنا البيطار</p>
+                    <p className="text-slate-900 font-semibold">افنان السليم</p>
                   </div>
                 </div>
 
-                {/* Vice President */}
+                {/* Board of Directors - مجلس الإدارة */}
                 <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
                   <p className="text-sm text-slate-600 mb-2 font-medium">
-                    {t('clubStructure.vicePresident')}
+                    {t('clubStructurePage.boardDirectors')}
                   </p>
-                  <p className="text-slate-900 font-semibold">أحمد الحربي</p>
+                  <div className="space-y-1">
+                    <p className="text-slate-900 font-semibold">عزام الخضيري</p>
+                    <p className="text-slate-900 font-semibold">جود الفرم</p>
+                    <p className="text-slate-900 font-semibold">كيان القفاري</p>
+                    <p className="text-slate-900 font-semibold">عبدالملك المطيري</p>
+                  </div>
                 </div>
               </div>
             </div>
