@@ -162,7 +162,7 @@ export const resources = {
       "clubStructure.title": "Our Club Structure",
       "clubStructure.subtitle": "Meet our leadership team and explore the departments driving our community",
       "clubStructure.leadership": "Club Leadership",
-      "clubStructure.presidents": "Club Presidents",
+      "clubStructure.presidents": "Club Leaders",
       "clubStructure.vicePresident": "Vice President",
       "clubStructure.departmentsTitle": "Departments",
       "clubStructure.departments": "Departments",
@@ -182,13 +182,13 @@ export const resources = {
       "clubStructurePage.deptHeadMale": "Department Head (Male)",
       "clubStructurePage.deptHeadFemale": "Department Head (Female)",
       "clubStructurePage.deptMembers": "Department Members:",
-      "clubStructurePage.presidents": "Club Presidents",
+      "clubStructurePage.presidents": "Club Leaders",
       "clubStructurePage.vicePresident": "Vice President",
 
       // OLD specialized Departments
       "clubStructurePage.robotics": "Robotics",
       "clubStructurePage.ai": "Artificial Intelligence and Data Analysis",
-      "clubStructurePage.entrepreneurship": "Entrepreneurship",
+      "clubStructurePage.entrepreneurship": "Entrepreneurship and Technology",
       "clubStructurePage.esports": "Esports",
 
       // NEW specialized Departments
@@ -197,16 +197,18 @@ export const resources = {
       "clubStructurePage.yellow": "Yellow",
 
       // Administrative Departments
-      "clubStructurePage.development": "Development",
+      "clubStructurePage.development": "Technical Development",
       "clubStructurePage.design": "Design",
-      "clubStructurePage.programs": "Programs and Events Management",
+      "clubStructurePage.programs": "Programs and Logistics Management",
       "clubStructurePage.organization": "Organization and Meetings",
-      "clubStructurePage.media": "Reports and Media",
+      "clubStructurePage.media": "Media and Public Relations",
+      "clubStructurePage.operations": "Operations Management",
+      "clubStructurePage.activities": "General Activities",
       
       "clubStructurePage.deptLeader": "Leader:",
       "clubStructurePage.deptVice": "Vice:",
       "clubStructurePage.aiShort": "AI & Data",
-      "clubStructurePage.programsShort": "Events Management",
+      "clubStructurePage.programsShort": "Programs & Logistics",
       "clubStructurePage.boardDirectors": "Board of Directors",
       "clubStructurePage.innovation": "Innovation Department",
 
@@ -811,7 +813,7 @@ export const resources = {
       "clubStructure.title": "هيكلة المجموعة",
       "clubStructure.subtitle": "تعرف على فريق القيادة واستكشف الأقسام اللي تقود مجتمعنا",
       "clubStructure.leadership": "القيادة",
-      "clubStructure.presidents": "رؤساء النادي",
+      "clubStructure.presidents": "القادة",
       "clubStructure.vicePresident": "نائب الرئيس",
       "clubStructure.departmentsTitle": "الأقسام",
       "clubStructure.departments": "قسم",
@@ -831,13 +833,13 @@ export const resources = {
       "clubStructurePage.deptHeadMale": "رئيس القسم (طلاب)",
       "clubStructurePage.deptHeadFemale": "رئيس القسم (طالبات)",
       "clubStructurePage.deptMembers": "أعضاء القسم:",
-      "clubStructurePage.presidents": "رؤساء النادي",
+      "clubStructurePage.presidents": "القادة",
       "clubStructurePage.vicePresident": "نائب الرئيس",
 
       // OLD specialized Departments
       "clubStructurePage.robotics": "الروبوتات",
       "clubStructurePage.ai": "الذكاء الاصطناعي وتحليل البيانات",
-      "clubStructurePage.entrepreneurship": "ريادة الأعمال",
+      "clubStructurePage.entrepreneurship": "ريادة الأعمال والتقنية",
       "clubStructurePage.esports": "الرياضات الإلكترونية",
 
       // NEW specialized Departments
@@ -846,18 +848,20 @@ export const resources = {
       "clubStructurePage.yellow": "الأصفر",
       
       // administrative Departments
-      "clubStructurePage.development": "التطوير",
-      "clubStructurePage.programs": "إدارة البرامج والفعاليات",
+      "clubStructurePage.development": "التطوير التقني",
+      "clubStructurePage.programs": "إدارة البرامج واللوجستيات",
       "clubStructurePage.organization": "التنظيم والاجتماعات",
       "clubStructurePage.design": "التصميم",
-      "clubStructurePage.media": "التقارير والإعلام",
+      "clubStructurePage.media": "الإعلام والعلاقات العامة",
+      "clubStructurePage.operations": "إدارة التشغيل",
+      "clubStructurePage.activities": "الأنشطة العامة",
 
       "clubStructurePage.deptLeader": "الليدر:",
       "clubStructurePage.deptVice": "النائب:",
       "clubStructurePage.boardDirectors": "مجلس الإدارة",
       "clubStructurePage.innovation": "قسم الابتكار",
       "clubStructurePage.aiShort": "الذكاء الاصطناعي",
-      "clubStructurePage.programsShort": "إدارة الفعاليات",
+      "clubStructurePage.programsShort": "البرامج واللوجستيات",
 
       // Auth
       "auth.login": "تسجيل الدخول",
