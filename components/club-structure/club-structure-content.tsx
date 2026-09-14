@@ -7,15 +7,17 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DepartmentIcon } from "@/components/club-structure/department-icon"
 import type { PublicClubDepartment, PublicClubStructure } from "@/lib/api/types"
-import { getPublicDepartmentIcon, isBoardDepartment } from "@/lib/club-structure"
+import { getPublicDepartmentColor, getPublicDepartmentIcon, isBoardDepartment } from "@/lib/club-structure"
 import "@/lib/i18n-client"
 
-function PeopleList({ people, emptyText }: { people: string[]; emptyText: string }) {
+function PeopleList({ people, emptyText, strong = false }: { people: string[]; emptyText: string; strong?: boolean }) {
   if (!people.length) return <p className="py-2 text-center text-sm text-slate-500">{emptyText}</p>
 
   return people.map((person, index) => (
     <div key={`${person}-${index}`} className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2">
-      <p className="text-center text-sm font-medium text-slate-700">{person}</p>
+      <p className={`text-center text-sm ${strong ? "font-bold text-slate-950" : "font-medium text-slate-700"}`}>
+        {person}
+      </p>
     </div>
   ))
 }
@@ -45,7 +47,7 @@ function DepartmentCard({
         <CardTitle className="flex items-center gap-3 text-lg font-bold text-slate-900">
           <div
             className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${highlighted ? "animate-[scale_0.6s_ease-in-out]" : ""}`}
-            style={{ backgroundColor: department.color }}
+            style={{ backgroundColor: getPublicDepartmentColor(department) }}
           >
             <DepartmentIcon icon={getPublicDepartmentIcon(department)} />
           </div>
@@ -166,7 +168,7 @@ export function ClubStructureContent({ data, loadFailed = false }: { data: Publi
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 pb-6">
-                  <PeopleList people={boardMembers} emptyText={t("clubStructurePage.noAssignments")} />
+                  <PeopleList people={boardMembers} emptyText={t("clubStructurePage.noAssignments")} strong />
                 </CardContent>
               </Card>
             </div>

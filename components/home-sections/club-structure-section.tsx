@@ -5,7 +5,7 @@ import { Users, Crown, Building2, Lightbulb, Cog, MoveRight } from "lucide-react
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
 import { DepartmentIcon } from "@/components/club-structure/department-icon"
 import { fetchPublicClubStructure } from "@/lib/api/api"
-import { getPublicDepartmentIcon, isBoardDepartment } from "@/lib/club-structure"
+import { getPublicDepartmentColor, getPublicDepartmentIcon, isBoardDepartment } from "@/lib/club-structure"
 import { getTranslation } from "@/lib/server-i18n"
 import type { Language } from "@/lib/translations"
 import type { PublicClubStructure } from "@/lib/api/types"
@@ -70,7 +70,7 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                     <Link key={dept.id} href={`/club-structure#dept-${idx}`} className="flex flex-col items-center gap-2">
                       <div
                         className="w-14 h-14 md:w-12 md:h-12 rounded-lg flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200 cursor-pointer"
-                        style={{ backgroundColor: dept.color }}
+                        style={{ backgroundColor: getPublicDepartmentColor(dept) }}
                       >
                         <DepartmentIcon
                           icon={getPublicDepartmentIcon(dept)}
@@ -94,7 +94,7 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                     <Link key={dept.id} href={`/club-structure#admin-dept-${idx}`} className="flex flex-col items-center gap-2">
                       <div
                         className="w-14 h-14 md:w-12 md:h-12 rounded-lg flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200 cursor-pointer"
-                        style={{ backgroundColor: dept.color }}
+                        style={{ backgroundColor: getPublicDepartmentColor(dept) }}
                       >
                         <DepartmentIcon
                           icon={getPublicDepartmentIcon(dept)}
@@ -153,7 +153,7 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                   </p>
                   <div className="space-y-1">
                     {boardMembers.length ? boardMembers.map((name, index) => (
-                      <p key={`${name}-${index}`} className="text-slate-900 font-semibold">{name}</p>
+                      <p key={`${name}-${index}`} className="font-bold text-slate-950">{name}</p>
                     )) : <p className="text-sm text-slate-500">{t("clubStructurePage.noAssignments")}</p>}
                   </div>
                 </div>
