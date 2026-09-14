@@ -21,6 +21,7 @@ import type {
   CurrentMember,
   UpdateMemberData,
   SubmissionType,
+  PublicClubStructure,
 } from './types'
 
 // ============================================================
@@ -73,6 +74,13 @@ export function fetchDepartmentById(id: string, semester?: number): Promise<ApiD
   if (semester != null) params.set('semester', String(semester))
   const qs = params.toString()
   return publicServerApi.get<ApiDepartmentPointsHistory>(`/points/departments/${id}${qs ? `?${qs}` : ''}`)
+}
+
+export function fetchPublicClubStructure(): Promise<PublicClubStructure> {
+  return publicServerApi.get<PublicClubStructure>('/club-structure/public', {
+    revalidate: 86400,
+    tags: ['club-structure'],
+  })
 }
 
 // ============================================================

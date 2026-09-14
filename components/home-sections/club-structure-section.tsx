@@ -1,10 +1,13 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Users, Crown, Building2, Lightbulb, Cog, Shield, Bot, Trophy, Palette, Calendar, Megaphone, MoveRight } from "lucide-react"
+import { Users, Crown, Building2, Lightbulb, Cog, MoveRight } from "lucide-react"
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
+import { DepartmentIcon } from "@/components/club-structure/department-icon"
+import { fetchPublicClubStructure } from "@/lib/api/api"
 import { getTranslation } from "@/lib/server-i18n"
 import type { Language } from "@/lib/translations"
+import type { PublicClubStructure } from "@/lib/api/types"
 
 interface ClubStructureSectionProps {
   lang: Language
@@ -12,23 +15,23 @@ interface ClubStructureSectionProps {
 
 export async function ClubStructureSection({ lang }: ClubStructureSectionProps) {
   const t = (key: string) => getTranslation(lang, key)
-
-  // Department data matching club-structure page
-  const departments = {
-    specialized: [
-      { icon: Lightbulb, color: "bg-red-500", name: t("clubStructurePage.aiShort"), id: "dept-0" },
-      { icon: Bot, color: "bg-yellow-500", name: t("clubStructurePage.robotics"), id: "dept-1" },
-      { icon: Trophy, color: "bg-blue-500", name: t("clubStructurePage.entrepreneurship"), id: "dept-2" },
-    ],
-    administrative: [
-      { icon: Cog, color: "bg-blue-500", name: t("clubStructurePage.development"), id: "admin-dept-0" },
-      { icon: Calendar, color: "bg-orange-500", name: t("clubStructurePage.programsShort"), id: "admin-dept-1" },
-      { icon: Palette, color: "bg-green-500", name: t("clubStructurePage.design"), id: "admin-dept-2" },
-      { icon: Megaphone, color: "bg-purple-500", name: t("clubStructurePage.media"), id: "admin-dept-3" },
-      { icon: Shield, color: "bg-red-500", name: t("clubStructurePage.operations"), id: "admin-dept-4" },
-      { icon: Users, color: "bg-green-500", name: t("clubStructurePage.activities"), id: "admin-dept-5" },
-    ]
+  let structure: PublicClubStructure = { presidents: [], departments: [] }
+  try {
+    structure = await fetchPublicClubStructure()
+  } catch (error) {
+    console.error("Failed to load the club structure summary", error)
   }
+
+  const visibleDepartments = structure.departments.filter((department) => department.leadership_enabled)
+  const departments = {
+    specialized: visibleDepartments.filter((department) => department.type === "practical"),
+    administrative: visibleDepartments.filter((department) => department.type === "administrative"),
+  }
+  const boardMembers = structure.departments
+    .filter((department) => !department.leadership_enabled)
+    .flatMap((department) => department.members)
+  const departmentName = (department: (typeof visibleDepartments)[number]) =>
+    lang === "ar" ? department.ar_name : department.name
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -63,13 +66,14 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                 </p>
                 <div className="grid grid-cols-3 gap-4 md:gap-6 max-w-fit mx-auto">
                   {departments.specialized.map((dept, idx) => (
-                    <Link key={idx} href={`/club-structure#${dept.id}`} className="flex flex-col items-center gap-2">
+                    <Link key={dept.id} href={`/club-structure#dept-${idx}`} className="flex flex-col items-center gap-2">
                       <div
-                        className={`w-14 h-14 md:w-12 md:h-12 ${dept.color} rounded-lg flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200 cursor-pointer`}
+                        className="w-14 h-14 md:w-12 md:h-12 rounded-lg flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200 cursor-pointer"
+                        style={{ backgroundColor: dept.color }}
                       >
-                        <dept.icon className="h-7 w-7 md:h-6 md:w-6 text-white" />
+                        <DepartmentIcon icon={dept.icon} className="h-7 w-7 text-white md:h-6 md:w-6" />
                       </div>
-                      <span className="text-xs text-center text-slate-700 font-medium">{dept.name}</span>
+                      <span className="text-xs text-center text-slate-700 font-medium">{departmentName(dept)}</span>
                     </Link>
                   ))}
                 </div>
@@ -83,13 +87,14 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                 </p>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-4 md:gap-6 max-w-fit mx-auto">
                   {departments.administrative.map((dept, idx) => (
-                    <Link key={idx} href={`/club-structure#${dept.id}`} className="flex flex-col items-center gap-2">
+                    <Link key={dept.id} href={`/club-structure#admin-dept-${idx}`} className="flex flex-col items-center gap-2">
                       <div
-                        className={`w-14 h-14 md:w-12 md:h-12 ${dept.color} rounded-lg flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200 cursor-pointer`}
+                        className="w-14 h-14 md:w-12 md:h-12 rounded-lg flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200 cursor-pointer"
+                        style={{ backgroundColor: dept.color }}
                       >
-                        <dept.icon className="h-7 w-7 md:h-6 md:w-6 text-white" />
+                        <DepartmentIcon icon={dept.icon} className="h-7 w-7 text-white md:h-6 md:w-6" />
                       </div>
-                      <span className="text-xs text-center text-slate-700 font-medium">{dept.name}</span>
+                      <span className="text-xs text-center text-slate-700 font-medium">{departmentName(dept)}</span>
                     </Link>
                   ))}
                 </div>
@@ -128,8 +133,9 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                     {t('clubStructure.presidents')}
                   </p>
                   <div className="space-y-1">
-                    <p className="text-slate-900 font-semibold">سنا البيطار</p>
-                    <p className="text-slate-900 font-semibold">افنان السليم</p>
+                    {structure.presidents.length ? structure.presidents.map((name, index) => (
+                      <p key={`${name}-${index}`} className="text-slate-900 font-semibold">{name}</p>
+                    )) : <p className="text-sm text-slate-500">{t("clubStructurePage.noAssignments")}</p>}
                   </div>
                 </div>
 
@@ -139,10 +145,9 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                     {t('clubStructurePage.boardDirectors')}
                   </p>
                   <div className="space-y-1">
-                    <p className="text-slate-900 font-semibold">عزام الخضيري</p>
-                    <p className="text-slate-900 font-semibold">جود الفرم</p>
-                    <p className="text-slate-900 font-semibold">كيان القفاري</p>
-                    <p className="text-slate-900 font-semibold">عبدالملك المطيري</p>
+                    {boardMembers.length ? boardMembers.map((name, index) => (
+                      <p key={`${name}-${index}`} className="text-slate-900 font-semibold">{name}</p>
+                    )) : <p className="text-sm text-slate-500">{t("clubStructurePage.noAssignments")}</p>}
                   </div>
                 </div>
               </div>
