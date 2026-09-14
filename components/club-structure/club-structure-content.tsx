@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DepartmentIcon } from "@/components/club-structure/department-icon"
 import type { PublicClubDepartment, PublicClubStructure } from "@/lib/api/types"
+import { isBoardDepartment } from "@/lib/club-structure"
 import "@/lib/i18n-client"
 
 function PeopleList({ people, emptyText }: { people: string[]; emptyText: string }) {
@@ -101,13 +102,13 @@ export function ClubStructureContent({ data, loadFailed = false }: { data: Publi
   }, [])
 
   const boardMembers = data.departments
-    .filter((department) => !department.leadership_enabled)
+    .filter(isBoardDepartment)
     .flatMap((department) => department.members)
   const specialized = data.departments.filter(
-    (department) => department.leadership_enabled && department.type === "practical",
+    (department) => !isBoardDepartment(department) && department.type === "practical",
   )
   const administrative = data.departments.filter(
-    (department) => department.leadership_enabled && department.type === "administrative",
+    (department) => !isBoardDepartment(department) && department.type === "administrative",
   )
   const departmentName = (department: PublicClubDepartment) => (rtl ? department.ar_name : department.name)
 

@@ -5,6 +5,7 @@ import { Users, Crown, Building2, Lightbulb, Cog, MoveRight } from "lucide-react
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
 import { DepartmentIcon } from "@/components/club-structure/department-icon"
 import { fetchPublicClubStructure } from "@/lib/api/api"
+import { isBoardDepartment } from "@/lib/club-structure"
 import { getTranslation } from "@/lib/server-i18n"
 import type { Language } from "@/lib/translations"
 import type { PublicClubStructure } from "@/lib/api/types"
@@ -22,13 +23,13 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
     console.error("Failed to load the club structure summary", error)
   }
 
-  const visibleDepartments = structure.departments.filter((department) => department.leadership_enabled)
+  const visibleDepartments = structure.departments.filter((department) => !isBoardDepartment(department))
   const departments = {
     specialized: visibleDepartments.filter((department) => department.type === "practical"),
     administrative: visibleDepartments.filter((department) => department.type === "administrative"),
   }
   const boardMembers = structure.departments
-    .filter((department) => !department.leadership_enabled)
+    .filter(isBoardDepartment)
     .flatMap((department) => department.members)
   const departmentName = (department: (typeof visibleDepartments)[number]) =>
     lang === "ar" ? department.ar_name : department.name
