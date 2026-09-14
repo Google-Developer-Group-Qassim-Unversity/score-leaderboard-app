@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DepartmentIcon } from "@/components/club-structure/department-icon"
 import type { PublicClubDepartment, PublicClubStructure } from "@/lib/api/types"
-import { isBoardDepartment } from "@/lib/club-structure"
+import { getPublicDepartmentIcon, isBoardDepartment } from "@/lib/club-structure"
 import "@/lib/i18n-client"
 
 function PeopleList({ people, emptyText }: { people: string[]; emptyText: string }) {
@@ -47,7 +47,7 @@ function DepartmentCard({
             className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${highlighted ? "animate-[scale_0.6s_ease-in-out]" : ""}`}
             style={{ backgroundColor: department.color }}
           >
-            <DepartmentIcon icon={department.icon} />
+            <DepartmentIcon icon={getPublicDepartmentIcon(department)} />
           </div>
           {title}
         </CardTitle>

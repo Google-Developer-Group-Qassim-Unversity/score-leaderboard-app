@@ -5,7 +5,7 @@ import { Users, Crown, Building2, Lightbulb, Cog, MoveRight } from "lucide-react
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
 import { DepartmentIcon } from "@/components/club-structure/department-icon"
 import { fetchPublicClubStructure } from "@/lib/api/api"
-import { isBoardDepartment } from "@/lib/club-structure"
+import { getPublicDepartmentIcon, isBoardDepartment } from "@/lib/club-structure"
 import { getTranslation } from "@/lib/server-i18n"
 import type { Language } from "@/lib/translations"
 import type { PublicClubStructure } from "@/lib/api/types"
@@ -72,7 +72,10 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                         className="w-14 h-14 md:w-12 md:h-12 rounded-lg flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200 cursor-pointer"
                         style={{ backgroundColor: dept.color }}
                       >
-                        <DepartmentIcon icon={dept.icon} className="h-7 w-7 text-white md:h-6 md:w-6" />
+                        <DepartmentIcon
+                          icon={getPublicDepartmentIcon(dept)}
+                          className="h-7 w-7 text-white md:h-6 md:w-6"
+                        />
                       </div>
                       <span className="text-xs text-center text-slate-700 font-medium">{departmentName(dept)}</span>
                     </Link>
@@ -93,7 +96,10 @@ export async function ClubStructureSection({ lang }: ClubStructureSectionProps) 
                         className="w-14 h-14 md:w-12 md:h-12 rounded-lg flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200 cursor-pointer"
                         style={{ backgroundColor: dept.color }}
                       >
-                        <DepartmentIcon icon={dept.icon} className="h-7 w-7 text-white md:h-6 md:w-6" />
+                        <DepartmentIcon
+                          icon={getPublicDepartmentIcon(dept)}
+                          className="h-7 w-7 text-white md:h-6 md:w-6"
+                        />
                       </div>
                       <span className="text-xs text-center text-slate-700 font-medium">{departmentName(dept)}</span>
                     </Link>
