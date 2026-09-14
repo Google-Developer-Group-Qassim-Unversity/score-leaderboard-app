@@ -78,8 +78,7 @@ export function fetchDepartmentById(id: string, semester?: number): Promise<ApiD
 
 export function fetchPublicClubStructure(): Promise<PublicClubStructure> {
   return publicServerApi.get<PublicClubStructure>('/club-structure/public', {
-    revalidate: 86400,
-    tags: ['club-structure'],
+    revalidate: 0,
   })
 }
 

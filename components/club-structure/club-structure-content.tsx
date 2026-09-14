@@ -7,15 +7,26 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DepartmentIcon } from "@/components/club-structure/department-icon"
 import type { PublicClubDepartment, PublicClubStructure } from "@/lib/api/types"
+import { useClubStructure } from "@/hooks/queries/use-club-structure"
 import { getPublicDepartmentColor, getPublicDepartmentIcon, isBoardDepartment } from "@/lib/club-structure"
 import "@/lib/i18n-client"
 
-function PeopleList({ people, emptyText, strong = false }: { people: string[]; emptyText: string; strong?: boolean }) {
+function PeopleList({
+  people,
+  emptyText,
+  prominent = false,
+}: {
+  people: string[]
+  emptyText: string
+  prominent?: boolean
+}) {
   if (!people.length) return <p className="py-2 text-center text-sm text-slate-500">{emptyText}</p>
 
   return people.map((person, index) => (
     <div key={`${person}-${index}`} className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2">
-      <p className={`text-center text-sm ${strong ? "font-bold text-slate-950" : "font-medium text-slate-700"}`}>
+      <p
+        className={`text-center ${prominent ? "text-lg font-bold text-slate-950" : "text-sm font-medium text-slate-700"}`}
+      >
         {person}
       </p>
     </div>
@@ -58,13 +69,13 @@ function DepartmentCard({
             {department.leader && (
               <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
                 <p className="text-center text-sm font-medium text-slate-600">{leaderLabel}</p>
-                <p className="mt-1 text-center text-base font-semibold text-slate-900">{department.leader}</p>
+                <p className="mt-1 text-center text-lg font-bold text-slate-950">{department.leader}</p>
               </div>
             )}
             {department.deputy && (
               <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
                 <p className="text-center text-sm font-medium text-slate-600">{deputyLabel}</p>
-                <p className="mt-1 text-center text-base font-semibold text-slate-900">{department.deputy}</p>
+                <p className="mt-1 text-center text-lg font-bold text-slate-950">{department.deputy}</p>
               </div>
             )}
           </div>
@@ -81,7 +92,9 @@ function DepartmentCard({
   )
 }
 
-export function ClubStructureContent({ data, loadFailed = false }: { data: PublicClubStructure; loadFailed?: boolean }) {
+export function ClubStructureContent({ data: initialData, loadFailed = false }: { data: PublicClubStructure; loadFailed?: boolean }) {
+  const query = useClubStructure(loadFailed ? undefined : initialData)
+  const data = query.data ?? initialData
   const { t, i18n } = useTranslation()
   const rtl = i18n.language === "ar"
   const [highlightedCard, setHighlightedCard] = useState<string | null>(null)
@@ -127,10 +140,10 @@ export function ClubStructureContent({ data, loadFailed = false }: { data: Publi
           <p className="mx-auto max-w-2xl text-lg text-slate-600">{t("clubStructurePage.subtitle")}</p>
         </div>
 
-        {loadFailed && (
+        {(query.isError || (loadFailed && !query.data)) && (
           <div className="mb-8 rounded-lg border border-red-200 bg-red-50 p-5 text-center">
             <p className="text-sm font-medium text-red-800">{t("clubStructurePage.loadError")}</p>
-            <Button className="mt-3" variant="outline" onClick={() => window.location.reload()}>
+            <Button className="mt-3" variant="outline" disabled={query.isFetching} onClick={() => void query.refetch()}>
               {t("clubStructurePage.tryAgain")}
             </Button>
           </div>
@@ -155,7 +168,11 @@ export function ClubStructureContent({ data, loadFailed = false }: { data: Publi
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 pb-6">
-                  <PeopleList people={data.presidents} emptyText={t("clubStructurePage.noAssignments")} />
+                  <PeopleList
+                    people={data.presidents}
+                    emptyText={t("clubStructurePage.noAssignments")}
+                    prominent
+                  />
                 </CardContent>
               </Card>
               <Card className="rounded-lg border border-slate-200 bg-white shadow-sm">
@@ -168,7 +185,7 @@ export function ClubStructureContent({ data, loadFailed = false }: { data: Publi
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 pb-6">
-                  <PeopleList people={boardMembers} emptyText={t("clubStructurePage.noAssignments")} strong />
+                  <PeopleList people={boardMembers} emptyText={t("clubStructurePage.noAssignments")} prominent />
                 </CardContent>
               </Card>
             </div>
