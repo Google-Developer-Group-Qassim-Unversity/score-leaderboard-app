@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DepartmentIcon } from "@/components/club-structure/department-icon"
 import type { PublicClubDepartment, PublicClubStructure } from "@/lib/api/types"
-import { useClubStructure } from "@/hooks/queries/use-club-structure"
 import { getPublicDepartmentColor, getPublicDepartmentIcon, isBoardDepartment } from "@/lib/club-structure"
 import "@/lib/i18n-client"
 
@@ -92,9 +91,7 @@ function DepartmentCard({
   )
 }
 
-export function ClubStructureContent({ data: initialData, loadFailed = false }: { data: PublicClubStructure; loadFailed?: boolean }) {
-  const query = useClubStructure(loadFailed ? undefined : initialData)
-  const data = query.data ?? initialData
+export function ClubStructureContent({ data, loadFailed = false }: { data: PublicClubStructure; loadFailed?: boolean }) {
   const { t, i18n } = useTranslation()
   const rtl = i18n.language === "ar"
   const [highlightedCard, setHighlightedCard] = useState<string | null>(null)
@@ -140,10 +137,10 @@ export function ClubStructureContent({ data: initialData, loadFailed = false }: 
           <p className="mx-auto max-w-2xl text-lg text-slate-600">{t("clubStructurePage.subtitle")}</p>
         </div>
 
-        {(query.isError || (loadFailed && !query.data)) && (
+        {loadFailed && (
           <div className="mb-8 rounded-lg border border-red-200 bg-red-50 p-5 text-center">
             <p className="text-sm font-medium text-red-800">{t("clubStructurePage.loadError")}</p>
-            <Button className="mt-3" variant="outline" disabled={query.isFetching} onClick={() => void query.refetch()}>
+            <Button className="mt-3" variant="outline" onClick={() => window.location.reload()}>
               {t("clubStructurePage.tryAgain")}
             </Button>
           </div>

@@ -6,7 +6,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Users, Crown, Building2, Lightbulb, Cog, MoveRight } from "lucide-react"
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
 import { DepartmentIcon } from "@/components/club-structure/department-icon"
-import { useClubStructure } from "@/hooks/queries/use-club-structure"
 import { getPublicDepartmentColor, getPublicDepartmentIcon, isBoardDepartment } from "@/lib/club-structure"
 import { resources, type Language } from "@/lib/translations"
 import type { PublicClubStructure } from "@/lib/api/types"
@@ -18,8 +17,7 @@ interface ClubStructureSectionProps {
 
 export function ClubStructureSummary({ lang, initialData }: ClubStructureSectionProps) {
   const t = (key: string) => (resources[lang].translation as Record<string, string>)[key] ?? key
-  const query = useClubStructure(initialData)
-  const structure = query.data ?? { presidents: [], departments: [] }
+  const structure = initialData ?? { presidents: [], departments: [] }
 
   const visibleDepartments = structure.departments.filter((department) => !isBoardDepartment(department))
   const departments = {
