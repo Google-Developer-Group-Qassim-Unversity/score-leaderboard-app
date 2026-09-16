@@ -27,6 +27,25 @@ export interface ApiDepartmentsPointsResponse {
   practical: ApiDepartmentPoints[]
 }
 
+// Public club structure (sanitized display data from the admin app)
+export interface PublicClubDepartment {
+  id: number
+  name: string
+  ar_name: string
+  type: 'administrative' | 'practical'
+  color: string
+  icon: string
+  leadership_enabled: boolean
+  leader: string | null
+  deputy: string | null
+  members: string[]
+}
+
+export interface PublicClubStructure {
+  presidents: string[]
+  departments: PublicClubDepartment[]
+}
+
 
 // Event Model (for points history)
 export interface ApiPointsEvent {

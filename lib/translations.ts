@@ -211,6 +211,11 @@ export const resources = {
       "clubStructurePage.programsShort": "Programs & Logistics",
       "clubStructurePage.boardDirectors": "Board of Directors",
       "clubStructurePage.innovation": "Innovation Department",
+      "clubStructurePage.loadError": "We couldn't load the club structure. Please try again.",
+      "clubStructurePage.tryAgain": "Try again",
+      "clubStructurePage.noAssignments": "No one has been assigned yet",
+      "clubStructurePage.noMembers": "No members have been assigned yet",
+      "clubStructurePage.noDepartments": "No departments are available yet",
 
       // Auth
       "auth.login": "Log In",
@@ -862,6 +867,11 @@ export const resources = {
       "clubStructurePage.innovation": "قسم الابتكار",
       "clubStructurePage.aiShort": "الذكاء الاصطناعي",
       "clubStructurePage.programsShort": "البرامج واللوجستيات",
+      "clubStructurePage.loadError": "ما قدرنا نحمّل هيكلة النادي. حاول مرة ثانية.",
+      "clubStructurePage.tryAgain": "حاول مرة ثانية",
+      "clubStructurePage.noAssignments": "ما تم تعيين أحد إلى الآن",
+      "clubStructurePage.noMembers": "ما تم إضافة أعضاء إلى الآن",
+      "clubStructurePage.noDepartments": "ما فيه أقسام متاحة إلى الآن",
 
       // Auth
       "auth.login": "تسجيل الدخول",
