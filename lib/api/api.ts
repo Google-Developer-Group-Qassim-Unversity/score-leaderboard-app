@@ -8,6 +8,7 @@
  */
 
 import { publicServerApi, serverApi } from './server'
+import { filterDepartmentPoints } from '@/lib/department-points'
 import type {
   ApiMembersPointsResponse,
   ApiMemberPointsHistory,
@@ -67,6 +68,7 @@ export function fetchDepartments(semester?: number): Promise<ApiDepartmentsPoint
   if (semester != null) params.set('semester', String(semester))
   const qs = params.toString()
   return publicServerApi.get<ApiDepartmentsPointsResponse>(`/points/departments/total${qs ? `?${qs}` : ''}`)
+    .then(filterDepartmentPoints)
 }
 
 export function fetchDepartmentById(id: string, semester?: number): Promise<ApiDepartmentPointsHistory> {

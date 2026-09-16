@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useApi } from '../use-api'
+import { filterDepartmentPoints } from '@/lib/department-points'
 import type { ApiDepartmentsPointsResponse, ApiDepartmentPointsHistory } from '@/lib/api/types'
 
 export function useDepartments(semester?: number) {
@@ -12,6 +13,7 @@ export function useDepartments(semester?: number) {
       if (semester != null) params.set('semester', String(semester))
       const qs = params.toString()
       return api.get<ApiDepartmentsPointsResponse>(`/points/departments/total${qs ? `?${qs}` : ''}`)
+        .then(filterDepartmentPoints)
     },
     staleTime: 5 * 60 * 1000,
   })
