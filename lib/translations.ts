@@ -267,7 +267,6 @@ export const resources = {
       "attendance.dialog.description": "You need to sign in or create an account to mark your attendance.",
 
       // Event Detail Page
-      "eventDetail.backToEvents": "Back to Events",
       "eventDetail.status.open": "Open",
       "eventDetail.status.openToJoin": "Open to Join",
       "eventDetail.status.active": "Active",
@@ -282,6 +281,7 @@ export const resources = {
       "eventDetail.noImage": "No event image",
       "eventDetail.joinMeeting": "Join Meeting",
       "eventDetail.meetingLink": "Meeting Link",
+      "eventDetail.addToCalendar": "Add to Google Calendar",
 
       // Member Detail Page
       "memberDetail.backToMembers": "Back to Members",
@@ -923,7 +923,6 @@ export const resources = {
       "attendance.dialog.description": "لازم تسجل دخول أو تسوي حساب عشان تسجل حضورك.",
 
       // Event Detail Page
-      "eventDetail.backToEvents": "العودة للفعاليات",
       "eventDetail.status.open": "مفتوح للتسجيل",
       "eventDetail.status.active": "جاري",
       "eventDetail.status.closed": "منتهي",
@@ -938,6 +937,7 @@ export const resources = {
       "eventDetail.noImage": "ما فيه صورة للفعالية",
       "eventDetail.joinMeeting": "ادخل الاجتماع",
       "eventDetail.meetingLink": "رابط الاجتماع",
+      "eventDetail.addToCalendar": "أضفها للتقويم",
 
       // Member Detail Page
       "memberDetail.backToMembers": "العودة للأعضاء",

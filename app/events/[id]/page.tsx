@@ -12,16 +12,16 @@ import {
   Clock,
   MapPin,
   Globe,
-  ChevronLeft,
   Info,
   Video,
 } from "lucide-react";
-import Link from "next/link";
 import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api/types";
+import { cn } from "@/lib/utils";
+import { PageBreadcrumb } from "@/components/page-breadcrumb";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n";
 import { EventSignupButton } from "@/components/event-signup-button";
-import { isSameDayOrOvernight, getEventDayCount, getEffectiveEndDate } from "@/lib/event-utils";
+import { isSameDayOrOvernight, getEventDayCount, getEffectiveEndDate, buildGoogleCalendarUrl } from "@/lib/event-utils";
 
 export const dynamic = "force-dynamic";
 
@@ -217,18 +217,23 @@ export default async function EventDetailPage({
     }
   };
 
+  // No registration required for this event: safe to offer adding it to Google Calendar
+  const showAddToCalendar = openEvent?.form_type === "none";
+  const showMeetingLink =
+    !!event.meeting_url &&
+    isSafeHttpUrl(event.meeting_url) &&
+    event.status !== "closed";
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      {/* Back Button */}
-      <Link
-        href="/events"
-        className="inline-flex items-center gap-2 text-base font-medium text-foreground hover:text-primary mb-6 transition-all hover:gap-3 group"
-      >
-        <div className="flex items-center justify-center h-8 w-8 rounded-full bg-secondary group-hover:bg-primary/10 transition-colors">
-          <ChevronLeft className="h-5 w-5 ltr:group-hover:-translate-x-0.5 rtl:rotate-180 rtl:group-hover:translate-x-0.5 transition-transform" />
-        </div>
-        <span>{t("eventDetail.backToEvents")}</span>
-      </Link>
+      <PageBreadcrumb
+        className="mb-6"
+        items={[
+          { label: t("nav.home"), href: "/" },
+          { label: t("nav.events"), href: "/events" },
+          { label: event.name },
+        ]}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-start">
         {/* Event Image - Left Side */}
@@ -321,18 +326,40 @@ export default async function EventDetailPage({
           )}
 
           <Separator />
-            {event.meeting_url &&
-              isSafeHttpUrl(event.meeting_url) &&
-              event.location_type === "online" &&
-              event.status !== "closed" && (
-              <Button asChild className="w-full" size="lg">
-                <a href={event.meeting_url} target="_blank" rel="noopener noreferrer nofollow">
-                  <Video className="h-5 w-5" />
-                  {event.status === "active"
-                    ? t("eventDetail.joinMeeting")
-                    : t("eventDetail.meetingLink")}
-                </a>
-              </Button>
+            {(showMeetingLink || showAddToCalendar) && (
+              <div className="flex flex-col sm:flex-row gap-2">
+                {showMeetingLink && (
+                  <Button
+                    asChild
+                    size="lg"
+                    className={cn("w-full", showAddToCalendar && "sm:flex-1")}
+                  >
+                    <a href={event.meeting_url!} target="_blank" rel="noopener noreferrer nofollow">
+                      <Video className="h-5 w-5" />
+                      {event.status === "active"
+                        ? t("eventDetail.joinMeeting")
+                        : t("eventDetail.meetingLink")}
+                    </a>
+                  </Button>
+                )}
+                {showAddToCalendar && (
+                  <Button
+                    asChild
+                    variant="secondary"
+                    size="lg"
+                    className={cn("w-full", showMeetingLink && "sm:w-auto sm:shrink-0")}
+                  >
+                    <a
+                      href={buildGoogleCalendarUrl(event)}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                    >
+                      <CalendarPlus className="h-5 w-5" />
+                      {t("eventDetail.addToCalendar")}
+                    </a>
+                  </Button>
+                )}
+              </div>
             )}
             {openEvent && (
               <EventSignupButton event={openEvent} className="w-full" />
