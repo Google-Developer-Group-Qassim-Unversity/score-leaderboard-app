@@ -12,13 +12,12 @@ import {
   Clock,
   MapPin,
   Globe,
-  ChevronLeft,
   Info,
   Video,
 } from "lucide-react";
-import Link from "next/link";
 import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api/types";
 import { cn } from "@/lib/utils";
+import { PageBreadcrumb } from "@/components/page-breadcrumb";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n";
 import { EventSignupButton } from "@/components/event-signup-button";
@@ -227,16 +226,14 @@ export default async function EventDetailPage({
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      {/* Back Button */}
-      <Link
-        href="/events"
-        className="inline-flex items-center gap-2 text-base font-medium text-foreground hover:text-primary mb-6 transition-all hover:gap-3 group"
-      >
-        <div className="flex items-center justify-center h-8 w-8 rounded-full bg-secondary group-hover:bg-primary/10 transition-colors">
-          <ChevronLeft className="h-5 w-5 ltr:group-hover:-translate-x-0.5 rtl:rotate-180 rtl:group-hover:translate-x-0.5 transition-transform" />
-        </div>
-        <span>{t("eventDetail.backToEvents")}</span>
-      </Link>
+      <PageBreadcrumb
+        className="mb-6"
+        items={[
+          { label: t("nav.home"), href: "/" },
+          { label: t("nav.events"), href: "/events" },
+          { label: event.name },
+        ]}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-start">
         {/* Event Image - Left Side */}

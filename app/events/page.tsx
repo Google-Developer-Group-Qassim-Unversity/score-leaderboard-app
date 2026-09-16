@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { EventsSemesterSelector } from "@/components/events-semester-selector"
 import { getSemesters } from "@/lib/semesters"
+import { PageBreadcrumb } from "@/components/page-breadcrumb"
 
 export const dynamic = "force-dynamic"
 
@@ -59,6 +60,13 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
 
   return (
     <div className={`container mx-auto px-4 py-8 max-w-7xl bg-white ${rtl ? 'rtl' : 'ltr'}`}>
+      <PageBreadcrumb
+        className="mb-6"
+        items={[
+          { label: t('nav.home'), href: '/' },
+          { label: t('nav.events') },
+        ]}
+      />
       <PageHeader
         heading={t('events.heading')}
         subHeading={t('events.subHeading')}

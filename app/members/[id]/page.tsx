@@ -1,11 +1,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, Calendar, Award, TrendingUp, Users, BookOpen } from "lucide-react"
+import { Calendar, Award, TrendingUp, Users, BookOpen } from "lucide-react"
 import type { Metadata } from "next"
 import { fetchMemberById } from "@/lib/api/api"
 import { NotFoundError } from "@/lib/api/errors"
 import { notFound } from "next/navigation"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { isSameDayOrOvernight, getEffectiveEndDate } from "@/lib/event-utils"
+import { PageBreadcrumb } from "@/components/page-breadcrumb"
 
 export const dynamic = "force-dynamic"
 
@@ -49,6 +50,14 @@ export default async function MemberDetailPage({ params }: PageProps) {
   return (
     <div className={`min-h-screen bg-white text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>
       <div className="container max-w-6xl mx-auto px-4 py-8">
+        <PageBreadcrumb
+          className="mb-6"
+          items={[
+            { label: t("nav.home"), href: "/" },
+            { label: t("nav.members"), href: "/members" },
+            { label: memberData.member.member_name },
+          ]}
+        />
         {/* Header */}
         <div className="flex flex-col gap-4 mb-8">
           <div className="flex items-center gap-3">

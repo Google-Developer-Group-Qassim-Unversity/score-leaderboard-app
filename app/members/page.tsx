@@ -5,6 +5,7 @@ import { fetchMembers } from "@/lib/api/api"
 import { MembersSearch } from "./members-search"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { currentUser } from "@clerk/nextjs/server"
+import { PageBreadcrumb } from "@/components/page-breadcrumb"
 
 export const metadata: Metadata = {
   title: "Members Leaderboard",
@@ -64,6 +65,13 @@ export default async function MembersLeaderboard() {
       {/* Content */}
       <div className="">
         <div className="container max-w-6xl mx-auto px-4 py-8 pb-32">
+          <PageBreadcrumb
+            className="mb-6"
+            items={[
+              { label: t('nav.home'), href: '/' },
+              { label: t('nav.members') },
+            ]}
+          />
           {/* Header */}
           <div className="mb-12">
             <PageHeader

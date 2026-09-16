@@ -1,11 +1,10 @@
-import Link from "next/link"
 import type { Metadata } from "next"
-import { Button } from "@/components/ui/button"
-import { Trophy, Building2, ArrowLeft, Settings, Wrench } from "lucide-react"
+import { Building2, Settings, Wrench } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 import { fetchDepartments } from "@/lib/api/api"
 import { DepartmentTypeCard } from "./department-type-card"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
+import { PageBreadcrumb } from "@/components/page-breadcrumb"
 
 export const metadata: Metadata = {
   title: "Departments",
@@ -34,6 +33,13 @@ export default async function DepartmentsLeaderboard() {
       {/* Content */}
       <div className="">
         <div className="container max-w-6xl mx-auto px-4 py-8">
+        <PageBreadcrumb
+          className="mb-6"
+          items={[
+            { label: t('nav.home'), href: '/' },
+            { label: t('nav.departments') },
+          ]}
+        />
         {/* Header */}
         <div className="mb-8">
           <PageHeader 

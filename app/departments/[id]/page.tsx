@@ -1,13 +1,12 @@
-import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, Calendar, Award, TrendingUp, Building2, BookOpen } from "lucide-react"
+import { Calendar, Award, TrendingUp, Building2, BookOpen } from "lucide-react"
 import type { Metadata } from "next"
 import { fetchDepartmentById } from "@/lib/api/api"
 import { NotFoundError } from "@/lib/api/errors"
 import { notFound } from "next/navigation"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { isSameDayOrOvernight, getEffectiveEndDate } from "@/lib/event-utils"
+import { PageBreadcrumb } from "@/components/page-breadcrumb"
 
 export const dynamic = "force-dynamic"
 
@@ -51,6 +50,19 @@ export default async function DepartmentDetailPage({ params }: PageProps) {
   return (
     <div className={`min-h-screen bg-white text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>
       <div className="container max-w-6xl mx-auto px-4 py-8">
+        <PageBreadcrumb
+          className="mb-6"
+          items={[
+            { label: t("nav.home"), href: "/" },
+            { label: t("nav.departments"), href: "/departments" },
+            {
+              label:
+                lang === "ar"
+                  ? departmentData.department.ar_department_name
+                  : departmentData.department.department_name,
+            },
+          ]}
+        />
         {/* Header */}
         <div className="flex flex-col gap-4 mb-8">
           <div className="flex items-center gap-3">

@@ -267,7 +267,6 @@ export const resources = {
       "attendance.dialog.description": "You need to sign in or create an account to mark your attendance.",
 
       // Event Detail Page
-      "eventDetail.backToEvents": "Back to Events",
       "eventDetail.status.open": "Open",
       "eventDetail.status.openToJoin": "Open to Join",
       "eventDetail.status.active": "Active",
@@ -924,7 +923,6 @@ export const resources = {
       "attendance.dialog.description": "لازم تسجل دخول أو تسوي حساب عشان تسجل حضورك.",
 
       // Event Detail Page
-      "eventDetail.backToEvents": "العودة للفعاليات",
       "eventDetail.status.open": "مفتوح للتسجيل",
       "eventDetail.status.active": "جاري",
       "eventDetail.status.closed": "منتهي",
