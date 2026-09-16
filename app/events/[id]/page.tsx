@@ -18,10 +18,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api/types";
+import { cn } from "@/lib/utils";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n";
 import { EventSignupButton } from "@/components/event-signup-button";
-import { isSameDayOrOvernight, getEventDayCount, getEffectiveEndDate } from "@/lib/event-utils";
+import { isSameDayOrOvernight, getEventDayCount, getEffectiveEndDate, buildGoogleCalendarUrl } from "@/lib/event-utils";
 
 export const dynamic = "force-dynamic";
 
@@ -217,6 +218,13 @@ export default async function EventDetailPage({
     }
   };
 
+  // No registration required for this event: safe to offer adding it to Google Calendar
+  const showAddToCalendar = openEvent?.form_type === "none";
+  const showMeetingLink =
+    !!event.meeting_url &&
+    isSafeHttpUrl(event.meeting_url) &&
+    event.status !== "closed";
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Back Button */}
@@ -321,18 +329,40 @@ export default async function EventDetailPage({
           )}
 
           <Separator />
-            {event.meeting_url &&
-              isSafeHttpUrl(event.meeting_url) &&
-              event.location_type === "online" &&
-              event.status !== "closed" && (
-              <Button asChild className="w-full" size="lg">
-                <a href={event.meeting_url} target="_blank" rel="noopener noreferrer nofollow">
-                  <Video className="h-5 w-5" />
-                  {event.status === "active"
-                    ? t("eventDetail.joinMeeting")
-                    : t("eventDetail.meetingLink")}
-                </a>
-              </Button>
+            {(showMeetingLink || showAddToCalendar) && (
+              <div className="flex flex-col sm:flex-row gap-2">
+                {showMeetingLink && (
+                  <Button
+                    asChild
+                    size="lg"
+                    className={cn("w-full", showAddToCalendar && "sm:flex-1")}
+                  >
+                    <a href={event.meeting_url!} target="_blank" rel="noopener noreferrer nofollow">
+                      <Video className="h-5 w-5" />
+                      {event.status === "active"
+                        ? t("eventDetail.joinMeeting")
+                        : t("eventDetail.meetingLink")}
+                    </a>
+                  </Button>
+                )}
+                {showAddToCalendar && (
+                  <Button
+                    asChild
+                    variant="secondary"
+                    size="lg"
+                    className={cn("w-full", showMeetingLink && "sm:w-auto sm:shrink-0")}
+                  >
+                    <a
+                      href={buildGoogleCalendarUrl(event)}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                    >
+                      <CalendarPlus className="h-5 w-5" />
+                      {t("eventDetail.addToCalendar")}
+                    </a>
+                  </Button>
+                )}
+              </div>
             )}
             {openEvent && (
               <EventSignupButton event={openEvent} className="w-full" />

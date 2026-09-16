@@ -119,6 +119,47 @@ export function calculateEventDuration(startDatetime: string, endDatetime: strin
 }
 
 /**
+ * Formats a Date as a UTC basic-format timestamp (YYYYMMDDTHHMMSSZ) for Google Calendar links
+ */
+function toGoogleCalendarUtc(date: Date): string {
+  return date.toISOString().replace(/[-:]|\.\d{3}/g, "")
+}
+
+/**
+ * Builds a Google Calendar "add event" URL (calendar.google.com/render) that pre-fills
+ * the event's title, time, location and description. No auth/API access required.
+ *
+ * When a meeting_url is present, it's put in the location field: Google Calendar
+ * auto-detects meet.google.com links there and renders a "Join with Google Meet"
+ * button on the saved event, not just a plain text location.
+ */
+export function buildGoogleCalendarUrl(event: {
+  name: string
+  description?: string | null
+  location?: string | null
+  meeting_url?: string | null
+  start_datetime: string
+  end_datetime: string
+}): string {
+  const start = new Date(event.start_datetime)
+  const end = new Date(event.end_datetime)
+
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: event.name,
+    dates: `${toGoogleCalendarUtc(start)}/${toGoogleCalendarUtc(end)}`,
+  })
+
+  const details = [event.description, event.meeting_url].filter(Boolean).join("\n\n")
+  if (details) params.set("details", details)
+
+  const location = event.meeting_url || event.location
+  if (location) params.set("location", location)
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`
+}
+
+/**
  * Formats a short version for event cards
  */
 export function formatEventCardDate(startDatetime: string, endDatetime: string): { date: string; time: string; duration: string } {
