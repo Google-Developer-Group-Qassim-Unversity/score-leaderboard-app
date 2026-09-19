@@ -3,14 +3,11 @@
 import { useEffect, useState } from "react"
 import { useUser, useAuth } from "@clerk/nextjs"
 import Link from "next/link"
-import confetti from "canvas-confetti"
 import { WalletCardData, DEFAULT_THEME_ID } from "@/lib/wallet-themes"
 import { WalletCard } from "@/components/wallet/wallet-card"
-import { WalletForm } from "@/components/wallet/wallet-form"
 import { WalletPassModal } from "@/components/wallet/wallet-pass-modal"
 import { Button } from "@/components/ui/button"
-import { Sparkles, CheckCircle2, ShieldCheck, LogIn } from "lucide-react"
-import { toast } from "sonner"
+import { Sparkles, LogIn, Loader2, Palette, UserCog } from "lucide-react"
 import { useCurrentUrl } from "@/hooks/use-current-url"
 import { withRedirectParam } from "@/lib/redirect-config"
 
@@ -19,29 +16,20 @@ export default function WalletPage() {
   const { getToken } = useAuth()
   const currentUrl = useCurrentUrl()
 
-  const [cardData, setCardData] = useState<WalletCardData>({
-    fullName: "",
-    nameLanguage: "ar",
-    isAdmin: false,
-    countryCode: "+966",
-    phone: "",
-    email: "",
-    themeId: DEFAULT_THEME_ID,
-    userStatus: "",
-    educationLevel: "",
-    institution: "",
-    major: "",
-    studyYearOrLevel: "",
-    bio: "",
-  })
-
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [createdCard, setCreatedCard] = useState<WalletCardData | null>(null)
+  const [cardData, setCardData] = useState<WalletCardData | null>(null)
+  const [isRegistered, setIsRegistered] = useState(true)
+  const [isLoadingCard, setIsLoadingCard] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // Fetch and auto-prefill authenticated member profile from DB
+  // The card is always a straight read of the member's own account data -
+  // there is nothing to fill in here, so this only fetches and renders.
   useEffect(() => {
-    if (!isLoaded || !isSignedIn) return
+    if (!isLoaded) return
+
+    if (!isSignedIn) {
+      setIsLoadingCard(false)
+      return
+    }
 
     const loadProfile = async () => {
       try {
@@ -52,114 +40,54 @@ export default function WalletPage() {
           },
         })
 
-        if (!res.ok) return
-
-        const contentType = res.headers.get("content-type") || ""
-        if (!contentType.includes("application/json")) return
+        if (!res.ok) {
+          setIsLoadingCard(false)
+          return
+        }
 
         const data = await res.json()
         const prof = data.profile || {}
 
-        setCardData((prev) => ({
-          ...prev,
-          uuid: prof.uuid || prev.uuid,
-          fullName: data.name || user?.fullName || prev.fullName,
+        if (!prof.uuid) {
+          // Signed in, but no member row yet (shouldn't normally happen -
+          // middleware routes anyone unfinished to /onboarding first).
+          setIsRegistered(false)
+          setIsLoadingCard(false)
+          return
+        }
+
+        setCardData({
+          uuid: prof.uuid,
+          fullName: data.name || user?.fullName || "",
           nameLanguage: "ar",
           isAdmin: Boolean(data.is_admin),
-          uniId: data.uni_id || prev.uniId,
-          email: data.email || user?.primaryEmailAddress?.emailAddress || prev.email,
-          phone: data.phone_number || prev.phone,
-          themeId: prof.theme_id || prev.themeId,
-          userStatus: prof.user_status || "",
-          educationLevel: prof.education_level || "",
+          uniId: data.uni_id,
+          countryCode: "+966",
+          email: data.email || user?.primaryEmailAddress?.emailAddress || "",
+          phone: data.phone_number || "",
+          themeId: prof.theme_id || DEFAULT_THEME_ID,
+          userStatus: prof.user_status || "student",
+          educationLevel: prof.education_level || "university",
           institution: prof.institution || "",
           major: prof.major || "",
           studyYearOrLevel: prof.study_year_or_level || "",
-          bio: prof.bio || prev.bio || "",
-          socialLinks: prof.social_links || prev.socialLinks || [],
-          visibility: prof.visibility || prev.visibility,
-        }))
+          bio: prof.bio || "",
+          socialLinks: prof.social_links || [],
+          visibility: prof.visibility,
+        })
       } catch (err) {
-        console.info("Member profile prefill note:", err)
+        console.error("Failed to load wallet card:", err)
+      } finally {
+        setIsLoadingCard(false)
       }
     }
 
     loadProfile()
   }, [isLoaded, isSignedIn, getToken, user])
 
-  const handleSubmit = async () => {
-    // A wallet card always represents a real, Clerk-authenticated member row -
-    // there is no anonymous/guest wallet, so sign-in is required before we
-    // create or touch anything.
-    if (!isSignedIn) {
-      toast.info("سجّل الدخول أولاً لإنشاء بطاقتك وربطها بحسابك")
-      return
-    }
-
-    setIsSubmitting(true)
-    try {
-      const token = await getToken()
-      const res = await fetch("/api/wallet/me", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({
-          custom_name: cardData.fullName,
-          email: cardData.email.trim() || undefined,
-          phone_number: cardData.phone.trim() || undefined,
-          theme_id: cardData.themeId,
-          name_language: "ar",
-          user_status: cardData.userStatus,
-          education_level: cardData.educationLevel,
-          institution: cardData.institution,
-          major: cardData.major,
-          study_year_or_level: cardData.studyYearOrLevel,
-          bio: cardData.bio,
-          social_links: cardData.socialLinks,
-          visibility: cardData.visibility,
-        }),
-      })
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err.detail || "تعذر حفظ بطاقتك، حاول مجدداً")
-      }
-
-      const result = await res.json()
-      const updatedProfile = result.profile || {}
-      const finalCard: WalletCardData = {
-        ...cardData,
-        uuid: updatedProfile.uuid || cardData.uuid,
-        fullName: result.name || cardData.fullName,
-        email: result.email || cardData.email,
-        phone: result.phone_number || cardData.phone,
-        themeId: updatedProfile.theme_id || cardData.themeId,
-      }
-
-      setCreatedCard(finalCard)
-
-      // Fire celebratory confetti
-      confetti({
-        particleCount: 120,
-        spread: 80,
-        origin: { y: 0.6 },
-      })
-
-      setIsModalOpen(true)
-      toast.success("تم حفظ وتجهيز بطاقتك بنجاح! 🪪✨")
-    } catch (err: any) {
-      console.error(err)
-      toast.error(err.message || "حدث خطأ أثناء حفظ البطاقة. يرجى المحاولة مجدداً.")
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
   return (
     <div className="min-h-[calc(100vh-4rem)] py-12 px-4 sm:px-6 lg:px-8 bg-background" dir="rtl">
-      <div className="max-w-5xl mx-auto space-y-16">
+      <div className="max-w-xl mx-auto space-y-10">
         {/* ================= HERO SECTION ================= */}
         <section className="text-center space-y-5 max-w-3xl mx-auto pt-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20">
@@ -168,72 +96,96 @@ export default function WalletPage() {
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-black text-foreground tracking-tight leading-tight">
-            بطاقتك الآن في جوالك
+            بطاقتك جاهزة لجوالك
           </h1>
 
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-            صمم بطاقتك وأضفها إلى Apple Wallet و Google Wallet مع صفحة بروفايل خاصة بك.
+            بطاقتك جاهزة ببياناتك من حسابك. أضفها إلى Apple Wallet أو Google Wallet بضغطة وحدة.
           </p>
 
-          {!isSignedIn && (
+          {!isSignedIn && isLoaded && (
             <div className="pt-1 flex items-center justify-center">
               <Link
                 href={withRedirectParam("/sign-in", currentUrl)}
                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground border border-border text-xs font-medium transition-colors cursor-pointer"
               >
                 <LogIn className="w-3.5 h-3.5 text-primary" />
-                <span>هل أنت مسجل بالنادي؟ اضغط لتسجيل الدخول وملء البيانات تلقائياً</span>
+                <span>هل أنت عضو بالنادي؟ سجّل الدخول لعرض بطاقتك</span>
               </Link>
             </div>
           )}
         </section>
 
-        {/* ================= WORKSPACE: LIVE PREVIEW & FULL FORM ================= */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Card Live Preview (Sticky on desktop) */}
-          <div className="lg:col-span-6 flex flex-col items-center justify-center p-6 sm:p-10 rounded-3xl bg-muted/30 border border-border/80 lg:sticky lg:top-20 shadow-xs">
-            <div className="text-xs font-bold text-muted-foreground mb-6 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>معاينة حية للبطاقة</span>
-            </div>
-
+        {/* ================= CARD PREVIEW & ACTIONS ================= */}
+        {!isLoaded || isLoadingCard ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : !isSignedIn ? (
+          <div className="flex flex-col items-center gap-6 p-8 sm:p-10 rounded-3xl bg-muted/30 border border-border/80 text-center">
+            <p className="text-sm text-muted-foreground max-w-sm">
+              سجّل دخولك بحساب عضويتك في نادي قوقل للطلبة المطورين لعرض بطاقتك الرقمية وإضافتها إلى محفظة جوالك.
+            </p>
+            <Link href={withRedirectParam("/sign-in", currentUrl)}>
+              <Button className="h-11 px-6 rounded-xl font-bold gap-2 shadow-md">
+                <LogIn className="w-4 h-4" />
+                <span>تسجيل الدخول</span>
+              </Button>
+            </Link>
+          </div>
+        ) : !isRegistered || !cardData ? (
+          <div className="flex flex-col items-center gap-6 p-8 sm:p-10 rounded-3xl bg-muted/30 border border-border/80 text-center">
+            <p className="text-sm text-muted-foreground max-w-sm">
+              لإصدار بطاقتك الرقمية، أكمل تسجيلك في النادي أولاً.
+            </p>
+            <Link href="/onboarding">
+              <Button className="h-11 px-6 rounded-xl font-bold gap-2 shadow-md">
+                <Sparkles className="w-4 h-4" />
+                <span>أكمل بياناتك</span>
+              </Button>
+            </Link>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-8">
             <div className="w-full max-w-[340px] transform transition-transform hover:scale-[1.02] duration-300">
               <WalletCard data={cardData} />
             </div>
 
-            <p className="text-[11px] text-muted-foreground text-center mt-6 max-w-xs">
-              مسح رمز الـ QR يفتح ملفك الشخصي العام المعتمد <span className="font-mono text-foreground font-bold">/p/{cardData.uuid || "id"}</span>
-            </p>
-          </div>
+            <div className="w-full max-w-sm space-y-3">
+              <Button
+                onClick={() => setIsModalOpen(true)}
+                className="w-full h-12 text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl shadow-md transition-all gap-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>أضف البطاقة إلى محفظتك 🪪</span>
+              </Button>
 
-          {/* Form Container (Always visible & interactive) */}
-          <div className="lg:col-span-6 bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-md space-y-6">
-            <div className="border-b pb-4">
-              <h2 className="text-lg font-black text-foreground flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span>بيانات ومعلومات البطاقة</span>
-              </h2>
-              <p className="text-xs text-muted-foreground mt-1">
-                املأ أو عدّل بياناتك كما تحب أن تظهر على البطاقة
-              </p>
+              <div className="flex items-center justify-center gap-4 pt-1 text-xs font-semibold text-muted-foreground">
+                <Link href="/profile" className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+                  <Palette className="w-3.5 h-3.5" />
+                  <span>تغيير لون البطاقة</span>
+                </Link>
+                <span className="text-border">·</span>
+                <Link href="/profile" className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+                  <UserCog className="w-3.5 h-3.5" />
+                  <span>تعديل بياناتك</span>
+                </Link>
+              </div>
             </div>
 
-            <WalletForm
-              data={cardData}
-              onChange={setCardData}
-              onSubmit={handleSubmit}
-              isSubmitting={isSubmitting}
-            />
+            <p className="text-[11px] text-muted-foreground text-center max-w-xs">
+              مسح رمز الـ QR يفتح ملفك الشخصي العام المعتمد <span className="font-mono text-foreground font-bold">/p/{cardData.uuid}</span>
+            </p>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Modal on successful save/creation */}
-      {createdCard && (
+      {/* Add-to-wallet modal - reads the same already-persisted account data as the preview above */}
+      {cardData && (
         <WalletPassModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          data={createdCard}
+          data={cardData}
         />
       )}
     </div>

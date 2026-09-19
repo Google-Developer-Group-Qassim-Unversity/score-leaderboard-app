@@ -2,6 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { UserProfile } from "@clerk/nextjs";
 import { ProfileForm } from "@/components/profile-form";
+import { WalletThemePicker } from "@/components/wallet-theme-picker";
 import { EventsFeed } from "@/components/profile/events-feed";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -57,9 +58,15 @@ export default async function ProfilePage() {
           </CardContent>
         </Card>
 
-        <Card className="p-0 gap-0 overflow-hidden [&_.cl-rootBox]:w-full [&_.cl-cardBox]:w-full [&_.cl-cardBox]:shadow-none [&_.cl-cardBox]:border-none [&_.cl-cardBox]:rounded-none">
-          <UserProfile routing="hash" />
-        </Card>
+        <div className="space-y-6">
+          <Card className="p-0 gap-0 overflow-hidden [&_.cl-rootBox]:w-full [&_.cl-cardBox]:w-full [&_.cl-cardBox]:shadow-none [&_.cl-cardBox]:border-none [&_.cl-cardBox]:rounded-none">
+            <UserProfile routing="hash" />
+          </Card>
+
+          <Card className="py-2 gap-0">
+            <WalletThemePicker />
+          </Card>
+        </div>
       </div>
 
       <div className="hidden lg:block mt-6">
