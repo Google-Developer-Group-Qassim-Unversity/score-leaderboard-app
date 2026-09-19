@@ -1,36 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import { useApi } from '../use-api'
-import { filterDepartmentPoints } from '@/lib/department-points'
-import type { ApiDepartmentsPointsResponse, ApiDepartmentPointsHistory } from '@/lib/api/types'
+import { departmentsQuery, departmentQuery } from '@/lib/queries'
 
 export function useDepartments(semester?: number) {
-  const api = useApi()
-
-  return useQuery({
-    queryKey: ['departments', { semester }],
-    queryFn: () => {
-      const params = new URLSearchParams()
-      if (semester != null) params.set('semester', String(semester))
-      const qs = params.toString()
-      return api.get<ApiDepartmentsPointsResponse>(`/points/departments/total${qs ? `?${qs}` : ''}`)
-        .then(filterDepartmentPoints)
-    },
-    staleTime: 5 * 60 * 1000,
-  })
+  return useQuery(departmentsQuery(semester))
 }
 
 export function useDepartment(id: string, semester?: number) {
-  const api = useApi()
-
-  return useQuery({
-    queryKey: ['departments', id, { semester }],
-    queryFn: () => {
-      const params = new URLSearchParams()
-      if (semester != null) params.set('semester', String(semester))
-      const qs = params.toString()
-      return api.get<ApiDepartmentPointsHistory>(`/points/departments/${id}${qs ? `?${qs}` : ''}`)
-    },
-    staleTime: 60 * 1000,
-    enabled: !!id,
-  })
+  return useQuery({ ...departmentQuery(id, semester), enabled: !!id })
 }

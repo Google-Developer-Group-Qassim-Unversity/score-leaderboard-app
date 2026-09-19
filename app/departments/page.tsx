@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
-import { Building2, Settings, Wrench } from "lucide-react"
-import { PageHeader } from "@/components/page-header"
-import { fetchDepartments } from "@/lib/api/api"
-import { DepartmentTypeCard } from "./department-type-card"
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
+import { getQueryClient } from "@/lib/query-client"
+import { departmentsQuery } from "@/lib/queries"
+import { DepartmentsContent } from "./departments-content"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
 import { PageBreadcrumb } from "@/components/page-breadcrumb"
 
@@ -19,14 +19,8 @@ export default async function DepartmentsLeaderboard() {
   const rtl = isRTL(lang)
   const t = (key: string) => getTranslation(lang, key)
 
-  const apiDepartmentsResponse = await fetchDepartments()
-  
-  // Calculate count from array lengths
-  const departmentsCount = (apiDepartmentsResponse.administrative?.length || 0) + (apiDepartmentsResponse.practical?.length || 0)
-
-  // Get departments (already sorted from API)
-  const administrativeDepartments = apiDepartmentsResponse.administrative || []
-  const practicalDepartments = apiDepartmentsResponse.practical || []
+  const queryClient = getQueryClient()
+  await queryClient.prefetchQuery(departmentsQuery())
 
   return (
     <div className={`min-h-screen bg-white text-slate-800 ${rtl ? 'rtl' : 'ltr'}`}>
@@ -40,36 +34,18 @@ export default async function DepartmentsLeaderboard() {
             { label: t('nav.departments') },
           ]}
         />
-        {/* Header */}
-        <div className="mb-8">
-          <PageHeader 
-            icon={Building2}
-            iconColor="green"
+
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <DepartmentsContent
+            lang={lang}
             heading={t('departments.heading')}
-            subHeading={`${departmentsCount} ${t('departments.subHeading')}`}
+            subHeadingLabel={t('departments.subHeading')}
+            specialized={t('departments.specialized')}
+            specializedDesc={t('departments.specializedDesc')}
+            administrative={t('departments.administrative')}
+            administrativeDesc={t('departments.administrativeDesc')}
           />
-        </div>
-
-        {/* Department Type Leaderboards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Specialized Departments */}
-          <DepartmentTypeCard
-            title={t('departments.specialized')}
-            description={t('departments.specializedDesc')}
-            departments={practicalDepartments}
-            icon={Wrench}
-            gradientColors={{ from: "from-green-500", to: "to-green-600" }}
-          />
-          {/* Administrative Departments */}
-          <DepartmentTypeCard
-            title={t('departments.administrative')}
-            description={t('departments.administrativeDesc')}
-            departments={administrativeDepartments}
-            icon={Settings}
-            gradientColors={{ from: "from-blue-500", to: "to-blue-600" }}
-          />
-
-        </div>
+        </HydrationBoundary>
         </div>
       </div>
     </div>

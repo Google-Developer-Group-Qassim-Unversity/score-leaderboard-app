@@ -1,3 +1,5 @@
+"use client"
+
 import { Trophy, Building2, Wrench, Users, MoveRight } from "lucide-react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -6,30 +8,20 @@ import { LeaderboardCard } from "@/components/leaderboard-card"
 import { SectionHeader } from "@/components/section-header"
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
 import { LeaderboardWrapper } from "@/components/leaderboard-wrapper"
-import { fetchMembers, fetchDepartments } from "@/lib/api/api"
-import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
-import type { ApiMemberPoints, ApiDepartmentPoints } from "@/lib/api/types"
+import { useMembers } from "@/hooks/queries/use-members"
+import { useDepartments } from "@/hooks/queries/use-departments"
+import { getTranslation } from "@/lib/i18n"
+import type { Language } from "@/lib/translations"
 
-export async function LeaderboardSection() {
-  const lang = await getLanguageFromCookies()
+export function LeaderboardSection({ lang }: { lang: Language }) {
   const t = (key: string) => getTranslation(lang, key)
 
-  let topMembers: ApiMemberPoints[] = []
-  let practicalDepartments: ApiDepartmentPoints[] = []
-  let administrativeDepartments: ApiDepartmentPoints[] = []
+  const { data: members } = useMembers()
+  const { data: departments } = useDepartments()
 
-  try {
-    const [apiMembers, apiDepartmentsResponse] = await Promise.all([
-      fetchMembers(),
-      fetchDepartments(),
-    ])
-
-    topMembers = (apiMembers ?? []).slice(0, 5)
-    practicalDepartments = (apiDepartmentsResponse.practical ?? []).slice(0, 3)
-    administrativeDepartments = (apiDepartmentsResponse.administrative ?? []).slice(0, 3)
-  } catch (error) {
-    console.error("Failed to fetch leaderboard data:", error)
-  }
+  const topMembers = (members ?? []).slice(0, 5)
+  const practicalDepartments = (departments?.practical ?? []).slice(0, 3)
+  const administrativeDepartments = (departments?.administrative ?? []).slice(0, 3)
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -53,7 +45,7 @@ export async function LeaderboardSection() {
                     <span className="break-words leading-tight">{t('leaderboard.topMembers')}</span>
                   </CardTitle>
                   <div className="flex items-center gap-2 shrink-0">
-                    <Link href="/members">
+                    <Link href="/members" prefetch>
                       <Button variant="outline" size="default" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                         {t('leaderboard.viewAll')}
                         <MoveRight className="h-3 w-3 sm:h-4 sm:w-4 ms-1.5 rtl:rotate-180" />
@@ -63,20 +55,16 @@ export async function LeaderboardSection() {
                 </div>
               </CardHeader>
               <CardContent className="relative px-3 sm:px-6">
-                <div className="space-y-6 transition-all duration-500">
-                  <div className="w-full max-w-full min-w-0 overflow-hidden">
-                    <div className="space-y-3">
-                      {topMembers.length > 0 ? (
-                        topMembers.map((member, index) => (
-                          <div key={member.member_id} className="w-full max-w-full min-w-0">
-                            <LeaderboardCard id={member.member_id.toString()} name={member.member_name} rank={index + 1} points={member.total_points ?? 0} type="member" />
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-slate-500 text-sm text-center py-4">{t('leaderboard.noMembersData')}</p>
-                      )}
-                    </div>
-                  </div>
+                <div className="space-y-3">
+                  {topMembers.length > 0 ? (
+                    topMembers.map((member, index) => (
+                      <div key={member.member_id} className="w-full max-w-full min-w-0">
+                        <LeaderboardCard id={member.member_id.toString()} name={member.member_name} rank={index + 1} points={member.total_points ?? 0} type="member" />
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-slate-500 text-sm text-center py-4">{t('leaderboard.noMembersData')}</p>
+                  )}
                 </div>
               </CardContent>
             </div>
@@ -94,7 +82,7 @@ export async function LeaderboardSection() {
                     <span className="wrap-break-word leading-tight">{t('leaderboard.topDepartments')}</span>
                   </CardTitle>
                   <div className="flex items-center gap-2 shrink-0">
-                    <Link href="/departments">
+                    <Link href="/departments" prefetch>
                       <Button variant="outline" size="sm" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                         {t('leaderboard.viewAll')}
                         <MoveRight className="h-3 w-3 sm:h-4 sm:w-4 ms-1.5 rtl:rotate-180" />
@@ -105,10 +93,10 @@ export async function LeaderboardSection() {
               </CardHeader>
 
               <CardContent className="relative px-3 sm:px-6">
-                <div className="space-y-6 transition-all duration-500">
+                <div className="space-y-6">
                   {/* Practical Departments */}
                   <div className="w-full max-w-full min-w-0">
-                  <SectionHeader icon={Wrench} title={t('leaderboard.specializedDepts')} color="green"/>
+                    <SectionHeader icon={Wrench} title={t('leaderboard.specializedDepts')} color="green" />
                     <div className="space-y-3 w-full max-w-full">
                       {practicalDepartments.length > 0 ? (
                         practicalDepartments.map((department, index) => (
@@ -124,7 +112,7 @@ export async function LeaderboardSection() {
 
                   {/* Administrative Departments */}
                   <div className="w-full max-w-full min-w-0">
-                    <SectionHeader icon={Building2} title={t('leaderboard.administrativeDepts')} color="blue"/>
+                    <SectionHeader icon={Building2} title={t('leaderboard.administrativeDepts')} color="blue" />
                     <div className="space-y-3 w-full max-w-full">
                       {administrativeDepartments.length > 0 ? (
                         administrativeDepartments.map((department, index) => (

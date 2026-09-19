@@ -15,7 +15,13 @@ export type RequestOptions = {
   tags?: string[]
 }
 
-const DEFAULT_REVALIDATE = 86400
+/**
+ * Shared, public data (leaderboards, events) is cached server-side for this
+ * long. Short enough that a hard load is never meaningfully stale, long enough
+ * that repeat renders don't re-hit the backend. Client-side freshness is a
+ * separate layer — see lib/query-client.ts.
+ */
+const DEFAULT_REVALIDATE = 30
 
 async function handleResponse<T>(response: Response, path: string): Promise<T> {
   if (!response.ok) {
@@ -51,13 +57,19 @@ export const api = {
       headers['Authorization'] = `Bearer ${options.token}`
     }
 
+    // An authenticated response is per-user, so it must never land in the
+    // shared Data Cache under a key another user could hit. Caching it
+    // requires opting in explicitly with a `revalidate` value.
+    const revalidate = options?.revalidate ?? (options?.token ? false : DEFAULT_REVALIDATE)
+
     const response = await fetch(`${getApiBaseUrl()}${path}`, {
       method: 'GET',
       headers,
-      next: options?.revalidate === false 
-        ? { revalidate: 0 } 
-        : { 
-            revalidate: options?.revalidate ?? DEFAULT_REVALIDATE,
+      cache: revalidate === false ? 'no-store' : undefined,
+      next: revalidate === false
+        ? undefined
+        : {
+            revalidate,
             tags: options?.tags,
           },
     }).catch((error) => {

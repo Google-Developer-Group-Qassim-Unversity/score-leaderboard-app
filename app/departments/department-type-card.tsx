@@ -2,9 +2,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LeaderboardCard } from "@/components/leaderboard-card"
 import { LucideIcon } from "lucide-react"
 import { ApiDepartmentPoints } from "@/lib/api/types"
-import { getLanguageFromCookies } from "@/lib/server-i18n"
 
 interface DepartmentTypeCardProps {
+  lang: string
   title: string
   description: string
   departments: ApiDepartmentPoints[]
@@ -15,14 +15,14 @@ interface DepartmentTypeCardProps {
   }
 }
 
-export async function DepartmentTypeCard({
+export function DepartmentTypeCard({
+  lang,
   title,
   description,
   departments,
   icon: Icon,
   gradientColors,
 }: DepartmentTypeCardProps) {
-  const lang = await getLanguageFromCookies()
   return (
     <Card className="bg-white border border-slate-200 rounded-lg">
       <CardHeader className="border-b border-slate-200">
@@ -46,7 +46,7 @@ export async function DepartmentTypeCard({
               type="department"
             />
           ))}
-          
+
           {departments.length === 0 && (
             <div className="text-center py-12">
               <div className="p-4 bg-slate-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">

@@ -1,0 +1,352 @@
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import { fetchEvents, fetchOpenEvents } from "@/lib/api/api";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+  Calendar,
+  CalendarPlus,
+  Clock,
+  MapPin,
+  Globe,
+  Info,
+  Video,
+} from "lucide-react";
+import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api/types";
+import { cn } from "@/lib/utils";
+import { PageBreadcrumb } from "@/components/page-breadcrumb";
+import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
+import { getTranslation } from "@/lib/server-i18n";
+import { EventSignupButton } from "@/components/event-signup-button";
+import { isSameDayOrOvernight, getEventDayCount, getEffectiveEndDate, buildGoogleCalendarUrl } from "@/lib/event-utils";
+import type { Language } from "@/lib/translations";
+
+// Valid statuses for display (excludes draft)
+const VALID_STATUSES: ApiEventItem["status"][] = ["open", "active", "closed"];
+
+const getStatusVariant = (status: ApiEventItem["status"]) => {
+  switch (status) {
+    case "open":
+      return "outline" as const;
+    case "active":
+      return "outline" as const;
+    case "closed":
+      return "outline" as const;
+    default:
+      return "outline" as const;
+  }
+};
+
+function isSafeHttpUrl(url: string): boolean {
+  return /^https?:\/\//i.test(url);
+}
+
+function linkify(text: string) {
+  const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/g;
+
+  const parts = text.split(urlRegex);
+
+  return parts
+    .filter(Boolean)
+    .map((part, i) => {
+      const isUrl =
+        /^https?:\/\//i.test(part) || /^www\./i.test(part);
+
+      if (!isUrl) return <span key={i}>{part}</span>;
+
+      const href = /^https?:\/\//i.test(part) ? part : `https://${part}`;
+
+      return (
+        <a
+          key={i}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          className="text-blue-600 dark:text-blue-400 underline underline-offset-2 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+        >
+          {part}
+        </a>
+      );
+    });
+}
+
+export async function EventDetailContent({ id, lang }: { id: string; lang: Language }) {
+  const t = (key: string) => getTranslation(lang, key);
+
+  // Fetch both regular events and open events (for signup button)
+  const [events, openEvents] = await Promise.all([
+    fetchEvents(),
+    fetchOpenEvents(),
+  ]);
+
+  // Filter to only valid statuses (open, active, closed)
+  const validEvents = events.filter((e) => VALID_STATUSES.includes(e.status));
+  const event = validEvents.find((e) => e.id === parseInt(id));
+
+  if (!event) {
+    notFound();
+  }
+
+  // Check if this event has an open registration form
+  const openEvent = openEvents.find(
+    (e) => e.id === event.id
+  ) as ApiOpenEventItem | undefined;
+
+  // Image URL is now returned as full URL from the API
+  const imageUrl = event.image_url;
+
+  // Get location icon based on location type
+  const LocationIcon = event.location_type === "online" ? Globe : MapPin;
+
+  // Format date with proper localization
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const locale = lang === "ar" ? "ar-SA" : "en-US";
+    return date.toLocaleDateString(locale, {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      numberingSystem: "latn", // Use Western numerals
+    });
+  };
+
+  // Format time with proper localization and Arabic AM/PM
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const locale = lang === "ar" ? "ar-SA" : "en-US";
+    let timeString = date.toLocaleTimeString(locale, {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      numberingSystem: "latn", // Use Western numerals
+    });
+
+    // Replace English AM/PM with Arabic equivalents
+    if (lang === "ar") {
+      timeString = timeString.replace(/AM/gi, "صباحاً").replace(/PM/gi, "مساءً");
+    }
+
+    return timeString;
+  };
+
+  const startDate = formatDate(event.start_datetime);
+  const start = new Date(event.start_datetime);
+  const end = new Date(event.end_datetime);
+  const isSameDay = isSameDayOrOvernight(start, end);
+  const effectiveEndDate = getEffectiveEndDate(start, end);
+  const endDate = isSameDay ? startDate : formatDate(effectiveEndDate.toISOString());
+  const diffDays = getEventDayCount(start, end);
+  const dailyStartTime = formatTime(event.start_datetime);
+  const dailyEndTime = formatTime(event.end_datetime);
+
+  // Get translated status label
+  const getStatusLabel = () => {
+    switch (event.status) {
+      case "open":
+        // Check if form_type is 'none' for events without registration
+        if (openEvent?.form_type === 'none') {
+          return t("eventDetail.status.openToJoin");
+        }
+        return t("eventDetail.status.open");
+      case "active":
+        return t("eventDetail.status.active");
+      case "closed":
+        return t("eventDetail.status.closed");
+      default:
+        return event.status;
+    }
+  };
+
+  // Get translated location type label
+  const getLocationTypeLabel = () => {
+    switch (event.location_type) {
+      case "online":
+        return t("eventDetail.locationType.online");
+      case "on-site":
+        return t("eventDetail.locationType.onsite");
+      case "none":
+        return t("eventDetail.locationType.none");
+      default:
+        return event.location_type;
+    }
+  };
+
+  // No registration required for this event: safe to offer adding it to Google Calendar
+  const showAddToCalendar = openEvent?.form_type === "none";
+  const showMeetingLink =
+    !!event.meeting_url &&
+    isSafeHttpUrl(event.meeting_url) &&
+    event.status !== "closed";
+
+  return (
+    <>
+      <PageBreadcrumb
+        className="mb-6"
+        items={[
+          { label: t("nav.home"), href: "/" },
+          { label: t("nav.events"), href: "/events" },
+          { label: event.name },
+        ]}
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-start">
+        {/* Event Image - Left Side */}
+        <div className="flex justify-center lg:justify-start">
+          {imageUrl ? (
+            <ImageZoom zoomMargin={20}>
+              <Image
+                src={imageUrl}
+                alt={event.name}
+                width={600}
+                height={200}
+                className="rounded-xl border border-border shadow-lg max-w-full lg:max-w-md xl:max-w-lg h-auto max-h-150 object-contain"
+                priority
+              />
+            </ImageZoom>
+          ) : (
+            <div className="flex items-center justify-center w-64 h-64 bg-muted rounded-xl text-muted-foreground">
+              <div className="text-center">
+                <Calendar className="h-16 w-16 mx-auto mb-2 opacity-50" />
+                <span className="text-sm">{t("eventDetail.noImage")}</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Event Info - Right Side */}
+        <div className="space-y-6 min-w-0">
+          {/* Title */}
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold" dir="auto">
+            {event.name}
+          </h1>
+
+          {/* Badges and Signup Button */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Badge
+              variant={getStatusVariant(event.status)}
+              className="text-sm px-3 py-1"
+            >
+              {getStatusLabel()}
+            </Badge>
+          </div>
+
+          {/* Date & Time */}
+          <div className="space-y-3">
+            <div className="flex items-start gap-2 text-muted-foreground">
+              <Calendar className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <div className="flex-1" dir="auto">
+                {isSameDay ? (
+                  <span className="font-medium text-foreground text-base sm:text-lg">
+                    {startDate}
+                  </span>
+                ) : (
+                  <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-1 sm:gap-2">
+                    <span className="font-medium text-foreground text-base sm:text-lg">
+                      {startDate}
+                    </span>
+                    <span className="hidden sm:inline">—</span>
+                    <span className="font-medium text-foreground text-base sm:text-lg">
+                      {endDate}
+                    </span>
+                    {diffDays > 1 && (
+                      <span className="text-sm text-muted-foreground font-normal">
+                        ({diffDays} {t("eventDetail.days")})
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Clock className="h-5 w-5 text-primary shrink-0" />
+              <span className="font-medium text-foreground" dir="auto">
+                {dailyStartTime} - {dailyEndTime}
+              </span>
+              {!isSameDay && (
+                <span className="text-sm text-muted-foreground">({t("eventDetail.daily")})</span>
+              )}
+            </div>
+          </div>
+
+          {/* Location */}
+          {event.location_type !== "none" && (
+            <div className="flex items-start gap-2 text-muted-foreground">
+              <LocationIcon className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <div>
+                <span className="text-sm">{getLocationTypeLabel()}</span>
+                <p className="font-medium text-foreground">{event.location}</p>
+              </div>
+            </div>
+          )}
+
+          <Separator />
+            {(showMeetingLink || showAddToCalendar) && (
+              <div className="flex flex-col sm:flex-row gap-2">
+                {showMeetingLink && (
+                  <Button
+                    asChild
+                    size="lg"
+                    className={cn("w-full", showAddToCalendar && "sm:flex-1")}
+                  >
+                    <a href={event.meeting_url!} target="_blank" rel="noopener noreferrer nofollow">
+                      <Video className="h-5 w-5" />
+                      {event.status === "active"
+                        ? t("eventDetail.joinMeeting")
+                        : t("eventDetail.meetingLink")}
+                    </a>
+                  </Button>
+                )}
+                {showAddToCalendar && (
+                  <Button
+                    asChild
+                    variant="secondary"
+                    size="lg"
+                    className={cn("w-full", showMeetingLink && "sm:w-auto sm:shrink-0")}
+                  >
+                    <a
+                      href={buildGoogleCalendarUrl(event)}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                    >
+                      <CalendarPlus className="h-5 w-5" />
+                      {t("eventDetail.addToCalendar")}
+                    </a>
+                  </Button>
+                )}
+              </div>
+            )}
+            {openEvent && (
+              <EventSignupButton event={openEvent} className="w-full" />
+            )}
+
+          {/* Description Section */}
+          <Card>
+            <CardHeader className="flex flex-row items-center gap-2 py-4">
+              <Info className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xl font-semibold">
+                {t("eventDetail.description")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pb-6">
+              {event.description ? (
+                <p
+                  className="text-muted-foreground leading-relaxed whitespace-pre-wrap"
+                  dir="auto"
+                >
+                  {linkify(event.description)}
+                </p>
+              ) : (
+                <p className="text-muted-foreground italic">
+                  {t("eventDetail.noDescription")}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </>
+  );
+}

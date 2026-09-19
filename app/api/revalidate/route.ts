@@ -25,9 +25,17 @@ export async function POST(req: Request) {
   }
 
   try {
-    revalidateTag("club-structure");
+    // Tags are applied in lib/api/api.ts. Callers may target a single resource
+    // (?tag=members) to avoid flushing everything; with no tag, flush all.
+    const requested = new URL(req.url).searchParams.get("tag");
+    const tags = requested ? [requested] : ["members", "departments", "events", "semesters"];
+
+    for (const tag of tags) {
+      revalidateTag(tag);
+    }
     revalidatePath("/", "layout");
-    return NextResponse.json({ ok: true, revalidated: true, at: Date.now() });
+
+    return NextResponse.json({ ok: true, revalidated: tags, at: Date.now() });
   } catch (error) {
     console.error("Revalidation failed:", error);
     return NextResponse.json({ ok: false, error: "Revalidation failed" }, { status: 500 });

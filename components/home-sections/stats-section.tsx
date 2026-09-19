@@ -1,8 +1,12 @@
+"use client"
+
 import * as React from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Users, Building2, CalendarDays } from "lucide-react"
-import { fetchMembers, fetchDepartments, fetchEvents } from "@/lib/api/api"
-import { getTranslation } from "@/lib/server-i18n"
+import { useMembers } from "@/hooks/queries/use-members"
+import { useDepartments } from "@/hooks/queries/use-departments"
+import { useEvents } from "@/hooks/queries/use-events"
+import { getTranslation } from "@/lib/i18n"
 import type { Language } from "@/lib/translations"
 
 interface StatCardProps {
@@ -44,27 +48,17 @@ interface StatsSectionProps {
   lang: Language
 }
 
-export async function StatsSection({ lang }: StatsSectionProps) {
-  const t = (key: string) => getTranslation(lang, key);
+export function StatsSection({ lang }: StatsSectionProps) {
+  const t = (key: string) => getTranslation(lang, key)
 
-  // Fetch data on the server
-  let membersCount = 0;
-  let departmentsCount = 0;
-  let eventsCount = 0;
+  const { data: members } = useMembers()
+  const { data: departments } = useDepartments()
+  const { data: events } = useEvents()
 
-  try {
-    const [apiMembers, apiDepartmentsResponse, apiEvents] = await Promise.all([
-      fetchMembers(),
-      fetchDepartments(),
-      fetchEvents(),
-    ]);
-
-    membersCount = apiMembers.length ?? 0;
-    departmentsCount = (apiDepartmentsResponse.administrative?.length ?? 0) + (apiDepartmentsResponse.practical?.length ?? 0);
-    eventsCount = apiEvents.length ?? 0;
-  } catch (error) {
-    console.error("Failed to fetch stats:", error);
-  }
+  const membersCount = members?.length ?? 0
+  const departmentsCount =
+    (departments?.administrative?.length ?? 0) + (departments?.practical?.length ?? 0)
+  const eventsCount = events?.length ?? 0
 
   return (
     <section className="container mx-auto px-4 py-8">

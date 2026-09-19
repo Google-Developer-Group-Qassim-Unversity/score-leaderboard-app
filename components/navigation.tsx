@@ -42,6 +42,7 @@ function NavLink({ href, labelKey, icon: Icon, isActive }: { href: string; label
   return (
     <Link
       href={href}
+      prefetch
       className={cn(
         "flex items-center gap-1.5 px-2 lg:px-3 py-2 rounded-md font-semibold transition-colors",
         isRTL && "flex-row-reverse",
@@ -61,6 +62,7 @@ function MobileNavLink({ href, labelKey, icon: Icon, isActive, onClick }: { href
     <Link
       href={href}
       onClick={onClick}
+      prefetch
       className={cn(
         "flex items-center gap-3 px-3 py-3 rounded-md font-semibold transition-colors text-base",
         isActive ? "bg-foreground text-background" : "text-foreground/70 hover:text-foreground hover:bg-accent"
