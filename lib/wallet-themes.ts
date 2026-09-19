@@ -105,7 +105,6 @@ export interface WalletCardData {
   
   // Public Profile / Portfolio Details
   bio?: string
-  avatarUrl?: string
   socialLinks?: ProfileSocialLink[]
   visibility?: ProfileVisibility
   
