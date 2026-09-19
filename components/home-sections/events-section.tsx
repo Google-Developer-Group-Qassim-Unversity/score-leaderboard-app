@@ -1,100 +1,22 @@
-import { Suspense } from "react"
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Calendar, MoveRight } from "lucide-react"
 import { EventCard } from "@/components/event-card"
 import { HomeSectionHeader } from "@/components/home-sections/home-section-header"
-import { fetchOpenEvents } from "@/lib/api/api"
+import { useOpenEvents } from "@/hooks/queries/use-events"
 import { isEventPast } from "@/lib/event-utils"
-import type { ApiOpenEventsResponse } from "@/lib/api/types"
-import { getLanguageFromCookies, getTranslation } from "@/lib/server-i18n"
+import { getTranslation } from "@/lib/i18n"
+import type { Language } from "@/lib/translations"
 
-function EventCardSkeleton() {
-  return (
-    <div className="rounded-lg border border-slate-200 bg-white overflow-hidden h-full flex flex-col">
-      <div className="p-4 space-y-3">
-        <Skeleton className="h-6 w-3/4" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-5/6" />
-      </div>
-      <div className="px-4 flex-1">
-        <Skeleton className="aspect-3/4 w-full rounded-md" />
-      </div>
-      <div className="p-4 flex gap-2">
-        <Skeleton className="h-9 flex-1" />
-        <Skeleton className="h-9 flex-1" />
-      </div>
-    </div>
-  )
-}
-
-function EventsScrollSkeleton() {
-  return (
-    <div className="w-full max-w-full min-w-0 overflow-hidden">
-      <div className="flex gap-6 overflow-x-auto overflow-y-hidden pb-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="min-w-75 w-75 shrink-0">
-            <EventCardSkeleton />
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-async function EventsScroll() {
-  const lang = await getLanguageFromCookies()
+export function EventsSection({ lang }: { lang: Language }) {
   const t = (key: string) => getTranslation(lang, key)
 
-  let openEvents: ApiOpenEventsResponse = []
-  
-  try {
-    openEvents = await fetchOpenEvents()
-  } catch (error) {
-    console.error("Failed to fetch open events:", error)
-    return (
-      <div className="text-center py-12">
-        <p className="text-slate-500 cursor-default">Events currently unavailable</p>
-      </div>
-    )
-  }
+  const { data: openEvents = [], isError } = useOpenEvents()
 
-  const events = openEvents
-    .filter(event => !isEventPast(event))
-    .slice(0, 6)
-
-  if (events.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-slate-500 cursor-default">{t('events.empty')}</p>
-      </div>
-    )
-  }
-
-  return (
-    <div className="w-full max-w-full min-w-0 overflow-hidden">
-      <div 
-        className="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 snap-x snap-mandatory scrollbar-hide"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        {events.map((event) => (
-          <div 
-            key={event.id} 
-            className="min-w-75 w-75 shrink-0 snap-center"
-          >
-            <EventCard event={event} />
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-export async function EventsSection() {
-  const lang = await getLanguageFromCookies()
-  const t = (key: string) => getTranslation(lang, key)
+  const events = openEvents.filter((event) => !isEventPast(event)).slice(0, 6)
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -114,7 +36,7 @@ export async function EventsSection() {
                 </div>
                 <span className="wrap-break-word leading-tight">{t('events.title')}</span>
               </CardTitle>
-              <Link href="/events">
+              <Link href="/events" prefetch>
                 <Button variant="outline" size="default" className="bg-white/80 hover:bg-white border-slate-300 text-slate-700 font-medium shadow-sm hover:shadow-md transition-shadow duration-200 text-xs sm:text-sm px-2 sm:px-3 shrink-0 cursor-pointer">
                   {t('events.viewAll')}
                   <MoveRight className="h-3 w-3 sm:h-4 sm:w-4 ms-1.5 rtl:rotate-180" />
@@ -124,9 +46,28 @@ export async function EventsSection() {
           </CardHeader>
 
           <CardContent className="relative px-3 sm:px-6">
-            <Suspense fallback={<EventsScrollSkeleton />}>
-              <EventsScroll />
-            </Suspense>
+            {isError ? (
+              <div className="text-center py-12">
+                <p className="text-slate-500 cursor-default">Events currently unavailable</p>
+              </div>
+            ) : events.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-slate-500 cursor-default">{t('events.empty')}</p>
+              </div>
+            ) : (
+              <div className="w-full max-w-full min-w-0 overflow-hidden">
+                <div
+                  className="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 snap-x snap-mandatory scrollbar-hide"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {events.map((event) => (
+                    <div key={event.id} className="min-w-75 w-75 shrink-0 snap-center">
+                      <EventCard event={event} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </CardContent>
         </div>
       </Card>

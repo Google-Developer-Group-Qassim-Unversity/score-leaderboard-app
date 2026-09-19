@@ -30,7 +30,7 @@ import type {
 // ============================================================
 
 export function fetchSemesters(): Promise<ApiSemestersResponse> {
-  return publicServerApi.get<ApiSemestersResponse>('/points/semesters', { revalidate: 300 })
+  return publicServerApi.get<ApiSemestersResponse>('/points/semesters', { tags: ['semesters'] })
 }
 
 // ============================================================
@@ -41,14 +41,14 @@ export function fetchMembers(semester?: number): Promise<ApiMembersPointsRespons
   const params = new URLSearchParams()
   if (semester != null) params.set('semester', String(semester))
   const qs = params.toString()
-  return publicServerApi.get<ApiMembersPointsResponse>(`/points/members/total${qs ? `?${qs}` : ''}`)
+  return publicServerApi.get<ApiMembersPointsResponse>(`/points/members/total${qs ? `?${qs}` : ''}`, { tags: ['members'] })
 }
 
 export function fetchMemberById(id: string, semester?: number): Promise<ApiMemberPointsHistory> {
   const params = new URLSearchParams()
   if (semester != null) params.set('semester', String(semester))
   const qs = params.toString()
-  return publicServerApi.get<ApiMemberPointsHistory>(`/points/members/${id}${qs ? `?${qs}` : ''}`)
+  return publicServerApi.get<ApiMemberPointsHistory>(`/points/members/${id}${qs ? `?${qs}` : ''}`, { tags: ['members', `member-${id}`] })
 }
 
 export function fetchCurrentMember(): Promise<CurrentMember> {
@@ -67,7 +67,7 @@ export function fetchDepartments(semester?: number): Promise<ApiDepartmentsPoint
   const params = new URLSearchParams()
   if (semester != null) params.set('semester', String(semester))
   const qs = params.toString()
-  return publicServerApi.get<ApiDepartmentsPointsResponse>(`/points/departments/total${qs ? `?${qs}` : ''}`)
+  return publicServerApi.get<ApiDepartmentsPointsResponse>(`/points/departments/total${qs ? `?${qs}` : ''}`, { tags: ['departments'] })
     .then(filterDepartmentPoints)
 }
 
@@ -75,7 +75,7 @@ export function fetchDepartmentById(id: string, semester?: number): Promise<ApiD
   const params = new URLSearchParams()
   if (semester != null) params.set('semester', String(semester))
   const qs = params.toString()
-  return publicServerApi.get<ApiDepartmentPointsHistory>(`/points/departments/${id}${qs ? `?${qs}` : ''}`)
+  return publicServerApi.get<ApiDepartmentPointsHistory>(`/points/departments/${id}${qs ? `?${qs}` : ''}`, { tags: ['departments', `department-${id}`] })
 }
 
 export function fetchPublicClubStructure(): Promise<PublicClubStructure> {
@@ -92,11 +92,11 @@ export function fetchEvents(semester?: number | null): Promise<ApiEventsResponse
   const params = new URLSearchParams()
   if (semester != null) params.set('semester', String(semester))
   const qs = params.toString()
-  return publicServerApi.get<ApiEventsResponse>(`/events${qs ? `?${qs}` : ''}`)
+  return publicServerApi.get<ApiEventsResponse>(`/events${qs ? `?${qs}` : ''}`, { tags: ['events'] })
 }
 
 export function fetchOpenEvents(): Promise<ApiOpenEventsResponse> {
-  return publicServerApi.get<ApiOpenEventsResponse>('/events/open')
+  return publicServerApi.get<ApiOpenEventsResponse>('/events/open', { tags: ['events'] })
 }
 
 // ============================================================

@@ -1,17 +1,13 @@
 import type { Metadata } from "next"
-import { fetchEvents, fetchOpenEvents } from "@/lib/api/api"
-import { isEventPast } from "@/lib/event-utils"
-import { EventsList } from "@/components/events-list"
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 import { PageHeader } from "@/components/page-header"
-import { SectionHeader } from "@/components/section-header"
-import { CalendarDays, CheckCircle2, History } from "lucide-react"
-import { Separator } from "@/components/ui/separator"
+import { CalendarDays } from "lucide-react"
 import { getLanguageFromCookies, getTranslation, isRTL } from "@/lib/server-i18n"
-import { EventsSemesterSelector } from "@/components/events-semester-selector"
-import { getSemesters } from "@/lib/semesters"
 import { PageBreadcrumb } from "@/components/page-breadcrumb"
-
-export const dynamic = "force-dynamic"
+import { getQueryClient } from "@/lib/query-client"
+import { eventsQuery, openEventsQuery } from "@/lib/queries"
+import { getSemesters } from "@/lib/semesters"
+import { EventsContent } from "./events-content"
 
 export const metadata: Metadata = {
   title: "Events",
@@ -32,31 +28,13 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
 
   const sp = await searchParams
   const semester = sp.semester ? Number(sp.semester) : null
-  const { semesters } = await getSemesters()
 
-  const results = await Promise.allSettled([
-    fetchOpenEvents(),
-    fetchEvents(semester)
+  const queryClient = getQueryClient()
+  const [{ semesters }] = await Promise.all([
+    getSemesters(),
+    queryClient.prefetchQuery(openEventsQuery()),
+    queryClient.prefetchQuery(eventsQuery(semester)),
   ])
-
-  const openEvents = results[0].status === 'fulfilled' ? results[0].value : []
-  const allEvents = results[1].status === 'fulfilled' ? results[1].value : []
-
-  // Filter out 'none' and 'hidden' location type events, and hide past (done) events
-  const filteredOpenEvents = openEvents.filter(event =>
-    event.location_type !== 'none' &&
-    event.location_type !== 'hidden' &&
-    !isEventPast(event)
-  )
-
-  // Filter closed events for history, excluding 'none' and 'hidden' location types
-  const closedEvents = allEvents
-    .filter(event => 
-      event.status === "closed" && 
-      event.location_type !== 'none' && 
-      event.location_type !== 'hidden'
-    )
-    .sort((a, b) => new Date(b.end_datetime).getTime() - new Date(a.end_datetime).getTime())
 
   return (
     <div className={`container mx-auto px-4 py-8 max-w-7xl bg-white ${rtl ? 'rtl' : 'ltr'}`}>
@@ -73,40 +51,16 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
         icon={CalendarDays}
       />
 
-      <div className="mt-8 space-y-12">
-        {/* Open Events Section */}
-        <section className="mb-20">
-          <SectionHeader
-            title={t('events.openEvents')}
-            icon={CheckCircle2}
-            color="green"
-          />
-          <div className="mt-6">
-            <EventsList 
-              events={filteredOpenEvents}
-              emptyMessage={t('events.empty')}
-            />
-          </div>
-        </section>
-
-
-        {/* Event History Section */}
-        <section>
-          <SectionHeader
-            title={t('events.pastEvents')}
-            icon={History}
-            color="blue"
-          />
-          <div className="mt-6">
-            <EventsList 
-              events={closedEvents}
-              emptyMessage={t('events.noPastEvents')}
-              hideSignup={true}
-              headerSlot={<EventsSemesterSelector currentSemester={semester} availableSemesters={semesters} />}
-            />
-          </div>
-        </section>
-      </div>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <EventsContent
+          semester={semester}
+          availableSemesters={semesters}
+          openEventsTitle={t('events.openEvents')}
+          pastEventsTitle={t('events.pastEvents')}
+          emptyMessage={t('events.empty')}
+          noPastEventsMessage={t('events.noPastEvents')}
+        />
+      </HydrationBoundary>
     </div>
   )
 }
