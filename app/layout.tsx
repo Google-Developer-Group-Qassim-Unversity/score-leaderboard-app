@@ -9,6 +9,7 @@ import Script from "next/script"
 import { ClientDashboardWrapper } from "@/components/client-dashboard-wrapper"
 import { ClerkProviderWrapper } from "@/components/clerk-provider-wrapper"
 import { QueryProvider } from "@/components/providers/query-provider"
+import { SentryUserContext } from "@/components/sentry-user-context"
 import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
 import { config } from "@/lib/config"
 
@@ -94,6 +95,7 @@ export default async function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <ClerkProviderWrapper>
+          <SentryUserContext />
           <QueryProvider>
             <ClientDashboardWrapper>
                 <Navigation />
