@@ -11,11 +11,34 @@ import { ApiError } from "@/lib/api/errors"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
 
-type AttendanceStatus = "loading" | "success" | "error" | "missing-token" | "auth-required" | "idle"
+type AttendanceStatus = "loading" | "success" | "error" | "missing-token" | "broken-token" | "auth-required" | "idle"
 
 interface AttendanceResult {
   status: AttendanceStatus
   message: string
+}
+
+/** A JWT is three dot-separated segments. Attendance links are long enough that
+ *  sharing them by hand truncates them, and a truncated token is unreadable -
+ *  catch it here so the student is told the link is incomplete, rather than
+ *  being shown a decoder error from the backend. */
+function isWellFormedToken(token: string): boolean {
+  const parts = token.split(".")
+  return parts.length === 3 && parts.every((part) => part.length > 0)
+}
+
+/** Backend error codes -> translation keys. The backend's `detail` is English
+ *  and written for logs, so it is never rendered. */
+const ERROR_MESSAGE_KEYS: Record<string, string> = {
+  token_malformed: "attendance.brokenLink",
+  token_absent: "attendance.noToken",
+  token_expired: "attendance.expired",
+  token_not_yet_valid: "attendance.notYetValid",
+  token_event_mismatch: "attendance.wrongEvent",
+  token_bad_signature: "attendance.tokenProblem",
+  token_bad_algorithm: "attendance.tokenProblem",
+  token_missing_claim: "attendance.tokenProblem",
+  token_invalid: "attendance.tokenProblem",
 }
 
 function AttendanceContent() {
@@ -35,6 +58,10 @@ function AttendanceContent() {
   const getResultFromMutation = (): AttendanceResult => {
     if (!token) {
       return { status: "missing-token", message: t('attendance.noToken') }
+    }
+
+    if (!isWellFormedToken(token)) {
+      return { status: "broken-token", message: t('attendance.brokenLink') }
     }
 
     if (!isLoaded) {
@@ -58,18 +85,20 @@ function AttendanceContent() {
       let message = t('attendance.connectionError')
       
       if (error instanceof ApiError) {
-        const errorData = error.data as { detail?: string } | undefined
-        if (error.status === 400) {
-          message = errorData?.detail || t('attendance.notEligible')
+        const messageKey = error.code ? ERROR_MESSAGE_KEYS[error.code] : undefined
+        if (messageKey) {
+          message = t(messageKey)
+        } else if (error.status === 400) {
+          message = t('attendance.notEligible')
         } else if (error.status === 404) {
           message = t('attendance.expired')
         } else if (error.status === 500) {
           message = t('attendance.serverError')
         } else {
-          message = errorData?.detail || error.message
+          message = t('attendance.connectionError')
         }
       } else if (error instanceof Error) {
-        message = error.message
+        message = t('attendance.connectionError')
       }
 
       return { status: "error", message }
@@ -80,6 +109,7 @@ function AttendanceContent() {
 
   useEffect(() => {
     if (!token) return
+    if (!isWellFormedToken(token)) return
     if (!isLoaded) return
     if (!isSignedIn) {
       setShowAuthDialog(true)
@@ -102,6 +132,7 @@ function AttendanceContent() {
       case "error":
         return <XCircle className="h-16 w-16 text-red-500" />
       case "missing-token":
+      case "broken-token":
         return <AlertTriangle className="h-16 w-16 text-amber-500" />
       case "auth-required":
         return <Clock className="h-16 w-16 text-blue-500" />
@@ -120,6 +151,8 @@ function AttendanceContent() {
         return t('attendance.failed')
       case "missing-token":
         return t('attendance.invalidLink')
+      case "broken-token":
+        return t('attendance.brokenLinkTitle')
       case "auth-required":
         return t('attendance.signInRequired')
       default:
@@ -134,6 +167,7 @@ function AttendanceContent() {
       case "error":
         return "border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950"
       case "missing-token":
+      case "broken-token":
         return "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950"
       case "auth-required":
         return "border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950"

@@ -39,9 +39,10 @@ async function handleResponse<T>(response: Response, path: string): Promise<T> {
     const message = 
       (errorData as { detail?: string })?.detail ||
       `HTTP ${response.status}: ${response.statusText}`
-    
-    console.error(`[API Error] ${response.status} ${path}:`, message)
-    throw new ApiError(response.status, message, errorData)
+    const code = (errorData as { code?: string })?.code
+
+    console.error(`[API Error] ${response.status} ${path}:`, code ?? message)
+    throw new ApiError(response.status, message, errorData, code)
   }
 
   return response.json()

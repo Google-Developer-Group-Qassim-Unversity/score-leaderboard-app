@@ -2,7 +2,11 @@ export class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
-    public data?: unknown
+    public data?: unknown,
+    /** Stable identifier from the backend (e.g. `token_malformed`).
+     *  Switch on this rather than on `message`: `message` is the backend's
+     *  English `detail`, written for logs, and is not safe to show a user. */
+    public code?: string
   ) {
     super(message)
     this.name = 'ApiError'
