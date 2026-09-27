@@ -493,6 +493,17 @@ export const resources = {
       "common.continue": "Continue",
       "common.cancel": "Cancel",
       "common.confirm": "Confirm",
+      "common.new": "New",
+
+      // Wallet Section (Home)
+      "wallet.section.badge": "New",
+      "wallet.section.title": "Your Membership, in Your Pocket",
+      "wallet.section.subtitle": "Get your digital GDG membership card and add it straight to Apple Wallet or Google Wallet.",
+      "wallet.section.feature.card": "A digital card with your name, ID and status",
+      "wallet.section.feature.checkin": "One QR scan checks you in at events",
+      "wallet.section.feature.walletApp": "Works with Apple Wallet & Google Wallet",
+      "wallet.section.cta": "Get Your Wallet Card",
+      "wallet.section.cta.view": "View Your Card",
 
       // Sign Up Page
       "auth.signUp.badge": "New Account",
@@ -1349,6 +1360,18 @@ export const resources = {
       "onboarding.submitError.generic": "ما قدرنا نكمّل إعداد حسابك. حاول مرة ثانية.",
 
       // Common
+      "common.new": "جديد",
+
+      // Wallet Section (Home)
+      "wallet.section.badge": "جديد",
+      "wallet.section.title": "عضويتك في جيبك",
+      "wallet.section.subtitle": "احصل على بطاقة عضويتك الرقمية وضيفها على طول في محفظة آبل أو قوقل.",
+      "wallet.section.feature.card": "بطاقة رقمية فيها اسمك ورقمك وحالتك",
+      "wallet.section.feature.checkin": "مسحة QR وحدة تسجل حضورك بالفعاليات",
+      "wallet.section.feature.walletApp": "تشتغل مع Apple Wallet و Google Wallet",
+      "wallet.section.cta": "احصل على بطاقتك",
+      "wallet.section.cta.view": "شوف بطاقتك",
+
       "version": "2.0"
     }
   }
