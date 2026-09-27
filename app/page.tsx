@@ -1,5 +1,5 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
-import { HeroSection, StatsSection, EventsSection, LeaderboardSection, MagazinesSection, ClubStructureSection } from "@/components/home-sections"
+import { HeroSection, StatsSection, EventsSection, LeaderboardSection, MagazinesSection, WalletSection, ClubStructureSection } from "@/components/home-sections"
 import { getLanguageFromCookies, isRTL } from "@/lib/server-i18n"
 import { getQueryClient } from "@/lib/query-client"
 import { membersQuery, departmentsQuery, eventsQuery, openEventsQuery } from "@/lib/queries"
@@ -30,6 +30,7 @@ export default async function Dashboard() {
       </div>
       <div className="relative max-w-7xl mx-auto">
         <HeroSection lang={lang} />
+        <WalletSection />
         <HydrationBoundary state={dehydrate(queryClient)}>
           <StatsSection lang={lang} />
           <EventsSection lang={lang} />

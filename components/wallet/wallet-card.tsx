@@ -81,7 +81,7 @@ export function WalletCard({ data, qrUrl, scale = 1 }: WalletCardProps) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full select-none"
+      className="relative w-full mx-auto select-none"
       style={{ maxWidth: `${DISPLAY_WIDTH * scale}px`, aspectRatio: `${FIGMA_WIDTH} / ${FIGMA_HEIGHT}` }}
     >
       <div

@@ -68,6 +68,18 @@ export const WALLET_THEMES: Record<string, WalletTheme> = {
 
 export const DEFAULT_THEME_ID = 'gdg-blue'
 
+// Rendered wherever a member has no card yet (signed out, or signed in but
+// not registered), so the real card layout is always what people see -
+// never a login wall in its place.
+export const PLACEHOLDER_WALLET_CARD: WalletCardData = {
+  fullName: '',
+  countryCode: '+966',
+  phone: '',
+  email: '',
+  themeId: DEFAULT_THEME_ID,
+  userStatus: 'student',
+}
+
 export type UserStatus = 'student' | 'graduate' | ''
 export type EducationLevel = 'university' | 'highschool' | ''
 

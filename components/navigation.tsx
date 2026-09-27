@@ -19,9 +19,11 @@ import {
   CalendarDays,
   LucideIcon,
   Globe,
+  Wallet,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { NewBadge } from "@/components/new-badge"
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { AuthButton, AuthButtonMobile } from "@/components/auth-button"
 
@@ -30,12 +32,13 @@ const navItems = [
   { href: "/members", labelKey: "nav.members", icon: Users },
   { href: "/departments", labelKey: "nav.departments", icon: Building2 },
   { href: "/events", labelKey: "nav.events", icon: CalendarDays },
+  { href: "/wallet", labelKey: "nav.wallet", icon: Wallet, isNew: true },
   { href: "/magazines", labelKey: "nav.magazines", icon: BookOpen },
   { href: "/club-structure", labelKey: "nav.structure", icon: Layout },
   { href: "/how", labelKey: "nav.howItWorks", icon: BadgeHelp },
 ]
 
-function NavLink({ href, labelKey, icon: Icon, isActive }: { href: string; labelKey: string; icon: LucideIcon; isActive: boolean }) {
+function NavLink({ href, labelKey, icon: Icon, isActive, isNew }: { href: string; labelKey: string; icon: LucideIcon; isActive: boolean; isNew?: boolean }) {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
 
@@ -51,11 +54,12 @@ function NavLink({ href, labelKey, icon: Icon, isActive }: { href: string; label
     >
       <Icon className="h-4 w-4 shrink-0" strokeWidth={2.5} />
       <span className="text-[13px] whitespace-nowrap">{t(labelKey)}</span>
+      {isNew && <NewBadge />}
     </Link>
   )
 }
 
-function MobileNavLink({ href, labelKey, icon: Icon, isActive, onClick }: { href: string; labelKey: string; icon: LucideIcon; isActive: boolean; onClick: () => void }) {
+function MobileNavLink({ href, labelKey, icon: Icon, isActive, isNew, onClick }: { href: string; labelKey: string; icon: LucideIcon; isActive: boolean; isNew?: boolean; onClick: () => void }) {
   const { t } = useTranslation();
 
   return (
@@ -70,6 +74,7 @@ function MobileNavLink({ href, labelKey, icon: Icon, isActive, onClick }: { href
     >
       <Icon className="h-5 w-5" strokeWidth={2.5} />
       <span>{t(labelKey)}</span>
+      {isNew && <NewBadge />}
     </Link>
   )
 }
