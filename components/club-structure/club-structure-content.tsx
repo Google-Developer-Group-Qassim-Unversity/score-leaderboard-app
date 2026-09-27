@@ -1,11 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
+import Link from "next/link"
 import { useTranslation } from "react-i18next"
 import { Cog, Crown, Lightbulb, Sparkles, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DepartmentIcon } from "@/components/club-structure/department-icon"
+import { SemesterSelector } from "@/components/semester-selector"
 import type { PublicClubDepartment, PublicClubStructure } from "@/lib/api/types"
 import { getPublicDepartmentColor, getPublicDepartmentIcon, isBoardDepartment } from "@/lib/club-structure"
 import "@/lib/i18n-client"
@@ -91,7 +93,20 @@ function DepartmentCard({
   )
 }
 
-export function ClubStructureContent({ data, loadFailed = false }: { data: PublicClubStructure; loadFailed?: boolean }) {
+export function ClubStructureContent({
+  data,
+  loadFailed = false,
+  semester,
+  currentSemester,
+  availableSemesters,
+}: {
+  data: Pick<PublicClubStructure, "presidents" | "departments">
+  loadFailed?: boolean
+  // Hijri codes: the one shown, the one shown by default, and every public one.
+  semester: number
+  currentSemester: number
+  availableSemesters: number[]
+}) {
   const { t, i18n } = useTranslation()
   const rtl = i18n.language === "ar"
   const [highlightedCard, setHighlightedCard] = useState<string | null>(null)
@@ -135,7 +150,28 @@ export function ClubStructureContent({ data, loadFailed = false }: { data: Publi
             <h1 className="text-3xl font-bold text-slate-900 md:text-4xl">{t("clubStructurePage.title")}</h1>
           </div>
           <p className="mx-auto max-w-2xl text-lg text-slate-600">{t("clubStructurePage.subtitle")}</p>
+          {availableSemesters.length > 1 && (
+            <div className="mt-6 flex justify-center">
+              {/* useSearchParams needs a Suspense boundary on a dynamic page. */}
+              <Suspense>
+                <SemesterSelector
+                  currentSemester={semester}
+                  defaultSemester={currentSemester}
+                  availableSemesters={availableSemesters}
+                />
+              </Suspense>
+            </div>
+          )}
         </div>
+
+        {semester < currentSemester && (
+          <div className="mb-8 flex flex-col items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 p-4 text-center sm:flex-row sm:justify-center">
+            <p className="text-sm font-medium text-amber-900">{t("clubStructurePage.pastSemester")}</p>
+            <Link href="/club-structure" className="text-sm font-semibold text-amber-900 underline underline-offset-4">
+              {t("clubStructurePage.backToCurrent")}
+            </Link>
+          </div>
+        )}
 
         {loadFailed && (
           <div className="mb-8 rounded-lg border border-red-200 bg-red-50 p-5 text-center">

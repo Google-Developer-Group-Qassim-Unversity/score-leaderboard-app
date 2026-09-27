@@ -35,13 +35,21 @@ export interface PublicClubDepartment {
   type: 'administrative' | 'practical'
   color: string
   icon: string
+  show_in_leaderboard: boolean
   leadership_enabled: boolean
   leader: string | null
   deputy: string | null
   members: string[]
 }
 
+export interface PublicClubSemester {
+  code: number
+  gregorian_code: number
+  name: string
+}
+
 export interface PublicClubStructure {
+  semester: PublicClubSemester
   presidents: string[]
   departments: PublicClubDepartment[]
 }
