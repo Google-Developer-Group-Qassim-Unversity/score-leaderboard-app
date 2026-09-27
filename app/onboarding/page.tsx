@@ -6,7 +6,7 @@ import { useUser, useAuth } from '@clerk/nextjs'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, UserPlus } from 'lucide-react'
 import { updateUserMetadata, addVerifiedPersonalEmail } from './_actions'
 import { getValidatedRedirectParam } from '@/lib/redirect-config'
 import { UserAccountCard } from '@/components/user-account-card'
@@ -58,6 +58,33 @@ function OnboardingContent() {
     }
   }
 
+  // Seeds the MemberProfiles-backed half of the wallet card (academic status
+  // + a gender-based default card color) via the same /wallet/me endpoint the
+  // card preview and pass generation already read from. Best-effort: the
+  // member row already exists by the time this runs, but a transient failure
+  // here should never block onboarding - it just leaves the card on defaults
+  // until the member visits /profile.
+  const saveInitialCardProfile = async (data: OnboardingFormValues) => {
+    try {
+      const token = await getToken()
+      await fetch('/api/wallet/me', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          user_status: data.memberStatus === 'graduate' ? 'graduate' : 'student',
+          education_level: data.memberStatus === 'high_school' ? 'highschool' : 'university',
+          institution: data.memberStatus === 'high_school' ? data.highSchoolName : data.uniCollege,
+          theme_id: data.gender === 'Female' ? 'gdg-red' : 'gdg-blue',
+        }),
+      })
+    } catch (err) {
+      console.warn('[onboarding] failed to seed wallet card profile:', err)
+    }
+  }
+
   // Creates a fresh member row in the backend, THEN marks onboarding complete
   // and navigates on. Onboarding is only marked complete once the backend
   // record actually exists - otherwise a user could get stuck with a
@@ -79,6 +106,13 @@ function OnboardingContent() {
       }
       return
     }
+
+    // Best-effort: seed the wallet-card side of the profile (academic status
+    // and a gender-based default card color) now that the member row exists.
+    // Never blocks onboarding - the member can still adjust the color later
+    // from /profile, and a failed request here just leaves the card falling
+    // back to its defaults.
+    void saveInitialCardProfile(data)
 
     // Best-effort: link the typed personal email to this Clerk account as a
     // verified secondary email so a future Google sign-up under that email
@@ -149,16 +183,23 @@ function OnboardingContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-2xl">
+    <div className="min-h-screen flex items-center justify-center bg-muted/30 py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-2xl border-border/80 shadow-xs">
         <CardHeader>
           {/* Clerk User Button for account management */}
           <UserAccountCard />
 
-          <CardTitle className="text-2xl font-bold">{t('onboarding.title')}</CardTitle>
-          <CardDescription>
-            {t('onboarding.description')}
-          </CardDescription>
+          <div className="flex items-center gap-3 pt-1">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <UserPlus className="w-5 h-5" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl font-bold">{t('onboarding.title')}</CardTitle>
+              <CardDescription>
+                {t('onboarding.description')}
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
 
         <CardContent>
