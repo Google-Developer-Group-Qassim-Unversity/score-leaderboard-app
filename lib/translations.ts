@@ -496,10 +496,9 @@ export const resources = {
       "common.new": "New",
 
       // Wallet Section (Home)
-      "wallet.section.badge": "New",
       "wallet.section.title": "Your Membership, in Your Pocket",
-      "wallet.section.subtitle": "Get your digital GDG membership card and add it straight to Apple Wallet or Google Wallet.",
-      "wallet.section.feature.card": "A digital card with your name, ID and status",
+      "wallet.section.subtitle": "Your digital membership card is ready, add it to your phone wallet in seconds.",
+      "wallet.section.feature.card": "A card with your name and the club's look",
       "wallet.section.feature.checkin": "One QR scan checks you in at events",
       "wallet.section.feature.walletApp": "Works with Apple Wallet & Google Wallet",
       "wallet.section.cta": "Get Your Wallet Card",
@@ -1363,10 +1362,9 @@ export const resources = {
       "common.new": "جديد",
 
       // Wallet Section (Home)
-      "wallet.section.badge": "جديد",
       "wallet.section.title": "عضويتك في جيبك",
-      "wallet.section.subtitle": "احصل على بطاقة عضويتك الرقمية وضيفها على طول في محفظة آبل أو قوقل.",
-      "wallet.section.feature.card": "بطاقة رقمية فيها اسمك ورقمك وحالتك",
+      "wallet.section.subtitle": "بطاقة عضويتك الرقمية جاهزة، ضيفها لمحفظة جوالك بثواني.",
+      "wallet.section.feature.card": "بطاقة عليها اسمك وهوية النادي",
       "wallet.section.feature.checkin": "مسحة QR وحدة تسجل حضورك بالفعاليات",
       "wallet.section.feature.walletApp": "تشتغل مع Apple Wallet و Google Wallet",
       "wallet.section.cta": "احصل على بطاقتك",

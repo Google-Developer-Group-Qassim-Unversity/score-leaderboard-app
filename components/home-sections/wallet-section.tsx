@@ -2,10 +2,10 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Wallet, QrCode, Smartphone, MoveRight } from "lucide-react"
 import { WalletCard } from "@/components/wallet/wallet-card"
+import { NewBadge } from "@/components/new-badge"
 import { PLACEHOLDER_WALLET_CARD } from "@/lib/wallet-themes"
 import { useWalletCard } from "@/hooks/use-wallet-card"
 import { useTranslation } from 'react-i18next'
@@ -27,13 +27,13 @@ export function WalletSection() {
       <Card className="bg-linear-to-br from-blue-50 via-white to-white rounded-2xl shadow-lg border border-blue-100 overflow-hidden">
         <CardContent className="p-6 sm:p-10 flex flex-col md:flex-row items-center gap-8 md:gap-12">
           <div className="flex-1 space-y-5 text-center md:text-start">
-            <div className="flex items-center justify-center md:justify-start gap-2">
-              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center shadow-md shrink-0">
-                <Wallet className="h-5 w-5 text-white" />
+            <div className="flex items-center justify-center md:justify-start">
+              <div className="relative">
+                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center shadow-md shrink-0">
+                  <Wallet className="h-5 w-5 text-white" />
+                </div>
+                <NewBadge className="absolute -top-2 -right-2 shadow-sm" />
               </div>
-              <Badge className="bg-amber-100 text-amber-800 border-amber-200 font-bold">
-                {t('wallet.section.badge')}
-              </Badge>
             </div>
 
             <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-slate-900">

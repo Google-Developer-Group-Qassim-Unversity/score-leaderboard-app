@@ -114,7 +114,7 @@ export default function WalletPage() {
           {showSignInPrompt && (
             <div className="w-full flex flex-col items-center gap-3 p-5 rounded-2xl bg-muted/40 border border-border/80 text-center">
               <p className="text-sm text-muted-foreground">
-                سجّل دخولك بحساب عضويتك لتفعيل بطاقتك وإضافتها إلى محفظة جوالك.
+                سجّل دخولك بحساب عضويتك عشان تفعّل بطاقتك وتضيفها لمحفظة جوالك.
               </p>
               <Link href={withRedirectParam("/sign-in", currentUrl)} className="w-full">
                 <Button className="w-full h-11 rounded-xl font-bold gap-2">
@@ -128,7 +128,7 @@ export default function WalletPage() {
           {showRegisterPrompt && (
             <div className="w-full flex flex-col items-center gap-3 p-5 rounded-2xl bg-muted/40 border border-border/80 text-center">
               <p className="text-sm text-muted-foreground">
-                لإصدار بطاقتك الرقمية، أكمل تسجيلك في النادي أولاً.
+                عشان تصدر بطاقتك الرقمية، لازم تكمل تسجيلك في النادي.
               </p>
               <Link href="/onboarding" className="w-full">
                 <Button className="w-full h-11 rounded-xl font-bold">أكمل بياناتك</Button>

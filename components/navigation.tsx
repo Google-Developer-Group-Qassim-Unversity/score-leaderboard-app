@@ -23,7 +23,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { NewBadge } from "@/components/new-badge"
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { AuthButton, AuthButtonMobile } from "@/components/auth-button"
 
@@ -37,15 +37,6 @@ const navItems = [
   { href: "/club-structure", labelKey: "nav.structure", icon: Layout },
   { href: "/how", labelKey: "nav.howItWorks", icon: BadgeHelp },
 ]
-
-function NewBadge() {
-  const { t } = useTranslation();
-  return (
-    <Badge className="bg-yellow-400 text-slate-900 border-transparent px-1.5 py-0 text-[10px] leading-4 font-bold">
-      {t('common.new')}
-    </Badge>
-  )
-}
 
 function NavLink({ href, labelKey, icon: Icon, isActive, isNew }: { href: string; labelKey: string; icon: LucideIcon; isActive: boolean; isNew?: boolean }) {
   const { t, i18n } = useTranslation();
