@@ -78,8 +78,10 @@ export function fetchDepartmentById(id: string, semester?: number): Promise<ApiD
   return publicServerApi.get<ApiDepartmentPointsHistory>(`/points/departments/${id}${qs ? `?${qs}` : ''}`, { tags: ['departments', `department-${id}`] })
 }
 
-export function fetchPublicClubStructure(): Promise<PublicClubStructure> {
-  return publicServerApi.get<PublicClubStructure>('/club-structure/public', {
+/** The roster for a semester (Hijri code, e.g. 472); the current semester when omitted. */
+export function fetchPublicClubStructure(semester?: number): Promise<PublicClubStructure> {
+  const qs = semester != null ? `?semester=${semester}` : ''
+  return publicServerApi.get<PublicClubStructure>(`/club-structure/public${qs}`, {
     revalidate: 0,
   })
 }

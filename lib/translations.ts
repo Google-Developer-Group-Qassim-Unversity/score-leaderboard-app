@@ -216,6 +216,8 @@ export const resources = {
       "clubStructurePage.noAssignments": "No one has been assigned yet",
       "clubStructurePage.noMembers": "No members have been assigned yet",
       "clubStructurePage.noDepartments": "No departments are available yet",
+      "clubStructurePage.pastSemester": "You're viewing the club structure of a past semester.",
+      "clubStructurePage.backToCurrent": "Back to the current semester",
 
       // Auth
       "auth.login": "Log In",
@@ -877,6 +879,8 @@ export const resources = {
       "clubStructurePage.noAssignments": "ما تم تعيين أحد إلى الآن",
       "clubStructurePage.noMembers": "ما تم إضافة أعضاء إلى الآن",
       "clubStructurePage.noDepartments": "ما فيه أقسام متاحة إلى الآن",
+      "clubStructurePage.pastSemester": "تشوف هيكل النادي في فصل دراسي سابق.",
+      "clubStructurePage.backToCurrent": "ارجع للفصل الحالي",
 
       // Auth
       "auth.login": "تسجيل الدخول",
