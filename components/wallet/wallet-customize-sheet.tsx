@@ -24,15 +24,16 @@ interface WalletCustomizeSheetProps {
   onSaved: (patch: Partial<WalletCardData>) => void
 }
 
-// The gold admin card is assigned server-side from the member's real role -
-// it was never a user choice and isn't offered here.
-const PICKABLE_THEMES = Object.values(WALLET_THEMES).filter((t) => !t.isAdmin)
+const ALL_THEMES = Object.values(WALLET_THEMES)
 
 export function WalletCustomizeSheet({ isOpen, onClose, data, onSaved }: WalletCustomizeSheetProps) {
   const { getToken } = useAuth()
   const [name, setName] = useState(data.fullName)
   const [themeId, setThemeId] = useState(data.themeId)
   const [isSaving, setIsSaving] = useState(false)
+  // The gold admin card is assigned server-side from the member's real role -
+  // only admins are offered it here (the backend also refuses it otherwise).
+  const pickableThemes = data.isAdmin ? ALL_THEMES : ALL_THEMES.filter((t) => !t.isAdmin)
 
   useEffect(() => {
     if (isOpen) {
@@ -74,7 +75,12 @@ export function WalletCustomizeSheet({ isOpen, onClose, data, onSaved }: WalletC
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent side="bottom" className="rounded-t-3xl max-w-lg mx-auto" dir="rtl">
+      <SheetContent
+        side="bottom"
+        className="rounded-t-3xl max-w-lg mx-auto"
+        dir="rtl"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <SheetHeader className="text-right">
           <SheetTitle className="flex items-center gap-2 text-base">
             <Settings2 className="w-4 h-4 text-primary" />
@@ -99,7 +105,7 @@ export function WalletCustomizeSheet({ isOpen, onClose, data, onSaved }: WalletC
           <div className="space-y-2">
             <Label className="text-xs font-bold">لون البطاقة</Label>
             <div className="grid grid-cols-2 gap-2.5">
-              {PICKABLE_THEMES.map((theme) => {
+              {pickableThemes.map((theme) => {
                 const isSelected = themeId === theme.id
                 return (
                   <button
