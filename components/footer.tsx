@@ -20,6 +20,7 @@ import {
   Music2,
   Mail,
   Globe,
+  Instagram,
   Linkedin,
   Github,
   MessageSquare,
@@ -42,19 +43,14 @@ const socialLinks = [
     icon: UserPlus,
   },
   {
-    href: "https://forms.google.com",
-    labelKey: "feedback.card.title",
-    icon: MessageSquare,
+    href: "https://www.instagram.com/gdg_qu",
+    labelKey: "footer.social.instagram",
+    icon: Instagram,
   },
   {
-    href: "https://t.me/+2UZ1nUuGh29iYjM0",
-    labelKey: "footer.social.telegram",
-    icon: Send,
-  },
-  {
-    href: "https://discord.com/invite/FqX2uWJX",
-    labelKey: "footer.social.discord",
-    icon: MessageCircle,
+    href: "https://www.tiktok.com/@gdg.qu",
+    labelKey: "footer.social.tiktok",
+    icon: Music2,
   },
   {
     href: "https://x.com/gdg_qu?s=20",
@@ -67,14 +63,24 @@ const socialLinks = [
     icon: Hash,
   },
   {
-    href: "https://www.tiktok.com/@gdg.qu",
-    labelKey: "footer.social.tiktok",
-    icon: Music2,
+    href: "https://t.me/+2UZ1nUuGh29iYjM0",
+    labelKey: "footer.social.telegram",
+    icon: Send,
+  },
+  {
+    href: "https://discord.com/invite/FqX2uWJX",
+    labelKey: "footer.social.discord",
+    icon: MessageCircle,
   },
   {
     href: "mailto:GDG_QU1@gmail.com",
     labelKey: "footer.social.email",
     icon: Mail,
+  },
+  {
+    href: "https://forms.gle/awLLhKQn4mpxWyGN9",
+    labelKey: "feedback.card.title",
+    icon: MessageSquare,
   },
   {
     href: "https://gdg.community.dev/gdg-on-campus-qassim-university-al-mulida-saudi-arabia/",
