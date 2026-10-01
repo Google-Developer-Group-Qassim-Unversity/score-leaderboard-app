@@ -21,7 +21,7 @@ import { getValidatedRedirectParam, withRedirectParam } from '@/lib/redirect-con
 import { asUniversityEmail } from '@/lib/auth-identifier'
 import '@/lib/i18n-client'
 
-type Step = 'identifier' | 'code' | 'new-account' | 'missing-fields' | 'mfa'
+type Step = 'identifier' | 'password-sign-in' | 'sign-in-code' | 'new-account' | 'sign-up-code' | 'missing-fields' | 'mfa'
 const RESEND_COOLDOWN_SECONDS = 30
 
 export default function SignInPage() {
@@ -101,7 +101,7 @@ function SignInContent() {
     if (finishError) setError(errorMessage(finishError, t('auth.entry.error.unexpected')))
   }
 
-  const sendCode = async (event: React.FormEvent) => {
+  const continueWithId = async (event: React.FormEvent) => {
     event.preventDefault()
     setError('')
     const normalized = asUniversityEmail(universityId)
@@ -111,16 +111,27 @@ function SignInContent() {
     }
     setLoading(true)
     try {
-      // Verification precedes the decision between sign-in and sign-up.
-      const { error: createError } = await signIn.create({ identifier: normalized, signUpIfMissing: true })
-      if (createError) throw createError
-      const { error: sendError } = await signIn.emailCode.sendCode()
-      if (sendError) throw sendError
       setEmail(normalized)
-      setCooldown(RESEND_COOLDOWN_SECONDS)
-      setStep('code')
+      const { error: createError } = await signIn.create({ identifier: normalized })
+      if (createError) {
+        if (isClerkAPIResponseError(createError) && createError.errors.some(item => item.code === 'form_identifier_not_found')) {
+          setStep('new-account')
+          return
+        }
+        throw createError
+      }
+      if (signIn.supportedFirstFactors.some(item => item.strategy === 'password')) {
+        setStep('password-sign-in')
+      } else if (signIn.supportedFirstFactors.some(item => item.strategy === 'email_code')) {
+        const { error: sendError } = await signIn.emailCode.sendCode()
+        if (sendError) throw sendError
+        setCooldown(RESEND_COOLDOWN_SECONDS)
+        setStep('sign-in-code')
+      } else {
+        setError(t('auth.entry.error.unsupportedSignIn'))
+      }
     } catch (reason) {
-      setError(errorMessage(reason, t('auth.entry.error.sendCode')))
+      setError(errorMessage(reason, t('auth.entry.error.unexpected')))
     } finally {
       setLoading(false)
     }
@@ -133,11 +144,46 @@ function SignInContent() {
     try {
       const { error: sendError } = step === 'mfa'
         ? await signIn.mfa.sendEmailCode()
-        : await signIn.emailCode.sendCode()
+        : step === 'sign-up-code'
+          ? await signUp.verifications.sendEmailCode()
+          : await signIn.emailCode.sendCode()
       if (sendError) throw sendError
       setCooldown(RESEND_COOLDOWN_SECONDS)
     } catch (reason) {
       setError(errorMessage(reason, t('auth.entry.error.sendCode')))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const continueAfterSignIn = async () => {
+    if (signIn.status === 'complete') {
+      await finishSignIn()
+    } else if (signIn.status === 'needs_client_trust' || signIn.status === 'needs_second_factor') {
+      if (!signIn.supportedSecondFactors.some(item => item.strategy === 'email_code')) {
+        setError(t('auth.entry.error.unexpected'))
+        return
+      }
+      const { error: mfaError } = await signIn.mfa.sendEmailCode()
+      if (mfaError) throw mfaError
+      setCode('')
+      setCooldown(RESEND_COOLDOWN_SECONDS)
+      setStep('mfa')
+    } else {
+      setError(t('auth.entry.error.unexpected'))
+    }
+  }
+
+  const signInWithPassword = async (event: React.FormEvent) => {
+    event.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const { error: passwordError } = await signIn.password({ password })
+      if (passwordError) throw passwordError
+      await continueAfterSignIn()
+    } catch (reason) {
+      setError(errorMessage(reason, t('auth.signIn.error.invalidCredentials')))
     } finally {
       setLoading(false)
     }
@@ -152,31 +198,18 @@ function SignInContent() {
     }
     setLoading(true)
     try {
-      const { error: verifyError } = step === 'mfa'
-        ? await signIn.mfa.verifyEmailCode({ code })
-        : await signIn.emailCode.verifyCode({ code })
-      if (verifyError) {
-        if (isClerkAPIResponseError(verifyError) && verifyError.errors[0]?.code === 'sign_up_if_missing_transfer') {
-          setCode('')
-          setStep('new-account')
-          return
-        }
-        throw verifyError
-      }
-      if (signIn.status === 'complete') {
-        await finishSignIn()
-      } else if (signIn.status === 'needs_client_trust' || signIn.status === 'needs_second_factor') {
-        if (!signIn.supportedSecondFactors.some(item => item.strategy === 'email_code')) {
-          setError(t('auth.entry.error.unexpected'))
-          return
-        }
-        const { error: mfaError } = await signIn.mfa.sendEmailCode()
-        if (mfaError) throw mfaError
-        setCode('')
-        setCooldown(RESEND_COOLDOWN_SECONDS)
-        setStep('mfa')
+      if (step === 'sign-up-code') {
+        const { error: verifyError } = await signUp.verifications.verifyEmailCode({ code })
+        if (verifyError) throw verifyError
+        if (signUp.status === 'complete') await finishSignUp()
+        else if (signUp.status === 'missing_requirements' && !signUp.unverifiedFields.includes('email_address')) setStep('missing-fields')
+        else setError(t('auth.entry.error.unexpected'))
       } else {
-        setError(t('auth.entry.error.unexpected'))
+        const { error: verifyError } = step === 'mfa'
+          ? await signIn.mfa.verifyEmailCode({ code })
+          : await signIn.emailCode.verifyCode({ code })
+        if (verifyError) throw verifyError
+        await continueAfterSignIn()
       }
     } catch (reason) {
       setError(errorMessage(reason, t('auth.entry.error.verifyCode')))
@@ -194,10 +227,16 @@ function SignInContent() {
     }
     setLoading(true)
     try {
-      const { error: createError } = await signUp.create({ transfer: true, password })
+      const { error: createError } = await signUp.password({ emailAddress: email, password })
       if (createError) throw createError
       if (signUp.status === 'complete') await finishSignUp()
-      else if (signUp.status === 'missing_requirements') setStep('missing-fields')
+      else if (signUp.status === 'missing_requirements' && signUp.unverifiedFields.includes('email_address')) {
+        const { error: sendError } = await signUp.verifications.sendEmailCode()
+        if (sendError) throw sendError
+        setCode('')
+        setCooldown(RESEND_COOLDOWN_SECONDS)
+        setStep('sign-up-code')
+      } else if (signUp.status === 'missing_requirements') setStep('missing-fields')
       else setError(t('auth.entry.error.unexpected'))
     } catch (reason) {
       setError(errorMessage(reason, t('auth.entry.error.unexpected')))
@@ -244,7 +283,7 @@ function SignInContent() {
     }
   }
 
-  const verifying = step === 'code' || step === 'mfa'
+  const verifying = step === 'sign-in-code' || step === 'sign-up-code' || step === 'mfa'
   const busy = loading || googleLoading
 
   return (
@@ -256,9 +295,9 @@ function SignInContent() {
           <CardDescription className="leading-6">
             {verifying
               ? t(step === 'mfa' ? 'auth.entry.mfaDescription' : 'auth.entry.codeDescription')
-              : t(step === 'new-account' ? 'auth.entry.newAccountDescription' : step === 'missing-fields' ? 'auth.entry.missingFieldsDescription' : 'auth.entry.description')}
+              : t(step === 'new-account' ? 'auth.entry.newAccountDescription' : step === 'missing-fields' ? 'auth.entry.missingFieldsDescription' : step === 'password-sign-in' ? 'auth.entry.passwordDescription' : 'auth.entry.description')}
           </CardDescription>
-          {email && (verifying || step === 'new-account') && <p dir="ltr" className="mx-auto max-w-full rounded-md bg-muted px-3 py-1.5 text-sm text-foreground break-all">{email}</p>}
+          {email && (verifying || step === 'new-account' || step === 'password-sign-in') && <p dir="ltr" className="mx-auto max-w-full rounded-md bg-muted px-3 py-1.5 text-sm text-foreground break-all">{email}</p>}
         </CardHeader>
         <CardContent className={step === 'identifier' ? 'px-6 sm:px-8' : 'px-6 pb-8 sm:px-8'}>
           {error && <Alert variant="destructive" className="mb-4"><AlertCircle className="h-4 w-4" /><AlertDescription>{error}</AlertDescription></Alert>}
@@ -269,7 +308,7 @@ function SignInContent() {
               {t('auth.signIn.continueWithGoogle')}
             </Button>
             <div className="relative my-6 flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" /><span>{t('auth.signIn.orContinueWith')}</span><span className="h-px flex-1 bg-border" /></div>
-            <form onSubmit={sendCode} className="space-y-6">
+            <form onSubmit={continueWithId} className="space-y-6">
               <div className="space-y-3">
                 <Label htmlFor="universityId" className="block leading-6">{t('auth.signIn.universityId')}</Label>
                 <div dir="ltr" className="flex h-11 items-center overflow-hidden rounded-md border border-input bg-background shadow-xs transition-shadow focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50">
@@ -299,6 +338,14 @@ function SignInContent() {
               </Button>
             </form>
           </>}
+
+          {step === 'password-sign-in' && <form onSubmit={signInWithPassword} className="space-y-6">
+            <div className="space-y-3">
+              <Label htmlFor="signInPassword" className="block leading-6">{t('auth.signIn.password')}</Label>
+              <PasswordInput id="signInPassword" autoComplete="current-password" className="h-11" value={password} onChange={event => setPassword(event.target.value)} disabled={loading} required />
+            </div>
+            <Button type="submit" className="h-11 w-full" disabled={loading}>{loading && <Loader2 className="h-4 w-4 animate-spin" />}{t('auth.signIn.submit')}</Button>
+          </form>}
 
           {verifying && <form onSubmit={verifyCode} className="space-y-6">
             <div className="space-y-4">
@@ -348,7 +395,7 @@ function SignInContent() {
             <Button type="submit" className="h-11 w-full" disabled={loading}>{loading && <Loader2 className="h-4 w-4 animate-spin" />}{t('auth.entry.createAccount')}</Button>
           </form>}
         </CardContent>
-        {step === 'identifier' && <CardFooter className="justify-center px-6 pb-8 text-sm sm:px-8"><Link href={withRedirectParam('/forgot-password', redirectParam)} className="text-primary hover:underline">{t('auth.signIn.forgotPassword')}</Link></CardFooter>}
+        {(step === 'identifier' || step === 'password-sign-in') && <CardFooter className="justify-center px-6 pb-8 text-sm sm:px-8"><Link href={withRedirectParam('/forgot-password', redirectParam)} className="text-primary hover:underline">{t('auth.signIn.forgotPassword')}</Link></CardFooter>}
       </Card>
     </div>
   )
