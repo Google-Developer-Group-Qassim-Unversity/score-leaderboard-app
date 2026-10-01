@@ -73,8 +73,7 @@ export function AuthButton() {
     )
   }
 
-  // Not signed in - show sign up and log in buttons
-  const signUpUrl = withRedirectParam('/sign-up', currentUrl)
+  const signInUrl = withRedirectParam('/sign-in', currentUrl)
 
   return (
     <div className="flex gap-2">
@@ -84,7 +83,7 @@ export function AuthButton() {
         asChild
         className="gap-2"
       >
-        <Link href={signUpUrl} aria-label={t('auth.signupAria')}>
+        <Link href={signInUrl} aria-label={t('auth.joinUs')}>
           <UserPlus className="h-4 w-4" />
           <span className="hidden sm:inline">{t('auth.joinUs')}</span>
         </Link>
@@ -110,8 +109,7 @@ export function AuthButtonMobile() {
     return null
   }
 
-  // Not signed in - show sign up and log in buttons stacked
-  const signUpUrl = withRedirectParam('/sign-up', currentUrl)
+  const signInUrl = withRedirectParam('/sign-in', currentUrl)
 
   return (
     <div className="flex flex-col gap-2">
@@ -120,7 +118,7 @@ export function AuthButtonMobile() {
         asChild
         className="w-full gap-3 py-3"
       >
-        <Link href={signUpUrl} aria-label={t('auth.signupAria')}>
+        <Link href={signInUrl} aria-label={t('auth.joinUs')}>
           <UserPlus className="h-5 w-5" />
           <span className="font-semibold text-base">{t('auth.joinUs')}</span>
         </Link>

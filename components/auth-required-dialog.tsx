@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { LogIn, UserPlus } from "lucide-react"
+import { LogIn } from "lucide-react"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
 import { useCurrentUrl } from '@/hooks/use-current-url'
@@ -33,7 +33,6 @@ export function AuthRequiredDialog({
   const { t } = useTranslation()
   const currentUrl = useCurrentUrl()
   const signInUrl = withRedirectParam('/sign-in', currentUrl)
-  const signUpUrl = withRedirectParam('/sign-up', currentUrl)
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -44,16 +43,10 @@ export function AuthRequiredDialog({
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2">
           <AlertDialogCancel>{t('auth.cancel')}</AlertDialogCancel>
-          <Button asChild variant="outline" className="gap-2">
+          <Button asChild className="gap-2">
             <Link href={signInUrl}>
               <LogIn className="h-4 w-4" />
               {t('auth.signIn')}
-            </Link>
-          </Button>
-          <Button asChild className="gap-2">
-            <Link href={signUpUrl}>
-              <UserPlus className="h-4 w-4" />
-              {t('auth.signup')}
             </Link>
           </Button>
         </AlertDialogFooter>

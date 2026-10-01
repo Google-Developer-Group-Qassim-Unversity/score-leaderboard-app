@@ -2,8 +2,10 @@
 
 import * as React from 'react'
 import { Suspense } from 'react'
-import { useSignIn } from "@clerk/nextjs/legacy"
-import { useRouter } from 'next/navigation'
+import { useSignIn } from '@clerk/nextjs'
+import { isClerkAPIResponseError } from '@clerk/nextjs/errors'
+import { REGEXP_ONLY_DIGITS } from 'input-otp'
+import { useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -11,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { PasswordInput } from '@/components/ui/password-input'
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
@@ -25,15 +28,13 @@ import { AlertCircle, Loader2, RefreshCw, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
+import { getValidatedRedirectParam, withRedirectParam } from '@/lib/redirect-config'
+import { asUniversityEmail } from '@/lib/auth-identifier'
 
 const RESEND_COOLDOWN_SECONDS = 60
 
-// Step 1: University ID schema factory
-const createUniversityIdSchema = (t: any) => z.object({
-  universityId: z.string()
-    .min(9, t('validation.universityId.mustBe9Digits'))
-    .max(9, t('validation.universityId.mustBe9Digits'))
-    .regex(/^\d{9}$/, t('validation.universityId.exactly9Digits')),
+const createIdentifierSchema = (t: (key: string) => string) => z.object({
+  identifier: z.string().refine(value => asUniversityEmail(value) !== null, t('validation.universityId.exactly9Digits')),
 })
 
 // Step 3: New password schema factory
@@ -42,10 +43,10 @@ const createNewPasswordSchema = (t: any) => z.object({
     .min(8, t('validation.password.minLength')),
 })
 
-type UniversityIdFormValues = z.infer<ReturnType<typeof createUniversityIdSchema>>
+type IdentifierFormValues = z.infer<ReturnType<typeof createIdentifierSchema>>
 type NewPasswordFormValues = z.infer<ReturnType<typeof createNewPasswordSchema>>
 
-type Step = 'university-id' | 'verification' | 'new-password'
+type Step = 'identifier' | 'verification' | 'new-password'
 
 export default function ForgotPasswordPage() {
   return (
@@ -57,10 +58,11 @@ export default function ForgotPasswordPage() {
 
 function ForgotPasswordContent() {
   const { t } = useTranslation()
-  const { isLoaded, signIn, setActive } = useSignIn()
-  const router = useRouter()
+  const { signIn } = useSignIn()
+  const searchParams = useSearchParams()
+  const redirectParam = getValidatedRedirectParam(searchParams)
 
-  const [step, setStep] = React.useState<Step>('university-id')
+  const [step, setStep] = React.useState<Step>('identifier')
   const [email, setEmail] = React.useState('')
   const [error, setError] = React.useState('')
   const [loading, setLoading] = React.useState(false)
@@ -72,14 +74,14 @@ function ForgotPasswordContent() {
   const [resending, setResending] = React.useState(false)
 
   // Create schemas with current translation function
-  const universityIdSchema = React.useMemo(() => createUniversityIdSchema(t), [t])
+  const identifierSchema = React.useMemo(() => createIdentifierSchema(t), [t])
   const newPasswordSchema = React.useMemo(() => createNewPasswordSchema(t), [t])
 
   // Forms
-  const universityIdForm = useForm<UniversityIdFormValues>({
-    resolver: zodResolver(universityIdSchema),
+  const identifierForm = useForm<IdentifierFormValues>({
+    resolver: zodResolver(identifierSchema),
     defaultValues: {
-      universityId: '',
+      identifier: '',
     },
   })
 
@@ -104,28 +106,30 @@ function ForgotPasswordContent() {
   const canResend = resendCooldown <= 0
 
   // Step 1: Send password reset code
-  const onSubmitUniversityId = async (data: UniversityIdFormValues) => {
+  const onSubmitIdentifier = async (data: IdentifierFormValues) => {
     setError('')
-    if (!isLoaded) return
+    const emailAddress = asUniversityEmail(data.identifier)
+    if (!emailAddress) {
+      setError(t('validation.universityId.exactly9Digits'))
+      return
+    }
     setLoading(true)
-
-    const emailAddress = `${data.universityId}@qu.edu.sa`
     setEmail(emailAddress)
 
     try {
-      await signIn.create({
-        strategy: 'reset_password_email_code',
-        identifier: emailAddress,
-      })
+      const { error: createError } = await signIn.create({ identifier: emailAddress })
+      if (createError) throw createError
+      const { error: sendError } = await signIn.resetPasswordEmailCode.sendCode()
+      if (sendError) throw sendError
 
       setResendCooldown(RESEND_COOLDOWN_SECONDS)
       setStep('verification')
     } catch (err: any) {
       console.error('Reset password error:', err)
-      if (err.errors?.[0]?.code === 'form_identifier_not_found') {
+      if (isClerkAPIResponseError(err) && err.errors[0]?.code === 'form_identifier_not_found') {
         setError(t('auth.forgotPassword.step1.error.noAccount'))
       } else {
-        setError(err.errors?.[0]?.longMessage || t('auth.forgotPassword.step1.error.unexpected'))
+        setError(isClerkAPIResponseError(err) ? err.errors[0]?.longMessage || t('auth.forgotPassword.step1.error.unexpected') : t('auth.forgotPassword.step1.error.unexpected'))
       }
     } finally {
       setLoading(false)
@@ -134,20 +138,18 @@ function ForgotPasswordContent() {
 
   // Resend verification code
   const handleResendCode = async () => {
-    if (!canResend || resending || !isLoaded) return
+    if (!canResend || resending) return
 
     setResending(true)
     setError('')
 
     try {
-      await signIn.create({
-        strategy: 'reset_password_email_code',
-        identifier: email,
-      })
+      const { error: sendError } = await signIn.resetPasswordEmailCode.sendCode()
+      if (sendError) throw sendError
       setResendCooldown(RESEND_COOLDOWN_SECONDS)
     } catch (err: any) {
       console.error('Resend error:', err)
-      setError(err.errors?.[0]?.message || t('auth.forgotPassword.step2.error.resendFailed'))
+      setError(isClerkAPIResponseError(err) ? err.errors[0]?.message || t('auth.forgotPassword.step2.error.resendFailed') : t('auth.forgotPassword.step2.error.resendFailed'))
     } finally {
       setResending(false)
     }
@@ -163,46 +165,46 @@ function ForgotPasswordContent() {
       return
     }
 
-    // Just move to the next step - actual verification happens when setting password
-    setStep('new-password')
+    setLoading(true)
+    try {
+      const { error: verifyError } = await signIn.resetPasswordEmailCode.verifyCode({ code: verificationCode })
+      if (verifyError) throw verifyError
+      if (signIn.status === 'needs_new_password') setStep('new-password')
+      else setError(t('auth.forgotPassword.step3.error.resetFailed'))
+    } catch (err) {
+      setCodeError(true)
+      setError(isClerkAPIResponseError(err) ? err.errors[0]?.longMessage || t('auth.forgotPassword.step2.error.unexpected') : t('auth.forgotPassword.step2.error.unexpected'))
+    } finally {
+      setLoading(false)
+    }
   }
 
   // Step 3: Reset password with code
   const onSubmitNewPassword = async (data: NewPasswordFormValues) => {
     setError('')
-    if (!isLoaded) return
     setLoading(true)
 
     try {
-      const result = await signIn.attemptFirstFactor({
-        strategy: 'reset_password_email_code',
-        code: verificationCode,
-        password: data.password,
-      })
+      const { error: submitError } = await signIn.resetPasswordEmailCode.submitPassword({ password: data.password })
+      if (submitError) throw submitError
 
-      if (result.status === 'needs_second_factor') {
+      if (signIn.status === 'needs_second_factor') {
         setError(t('auth.forgotPassword.step2.error.2faRequired'))
-      } else if (result.status === 'complete') {
-        // Password reset successful - set active session and redirect
-        if (setActive && result.createdSessionId) {
-          await setActive({ session: result.createdSessionId })
-          router.push('/')
-        }
+      } else if (signIn.status === 'complete') {
+        const { error: finishError } = await signIn.finalize({
+          navigate: ({ session, decorateUrl }) => {
+            if (session?.currentTask) return
+            window.location.assign(decorateUrl(redirectParam || '/'))
+          },
+        })
+        if (finishError) throw finishError
       } else {
-        console.log('Unexpected result:', result)
+        console.log('Unexpected password reset status:', signIn.status)
         setError(t('auth.forgotPassword.step3.error.resetFailed'))
       }
     } catch (err: any) {
       console.error('Password reset error:', JSON.stringify(err, null, 2))
-      if (err.clerkError) {
-        if (err?.errors[0]?.code.includes('form_code_incorrect')) {
-          setError(err.errors?.[0]?.longMessage)
-          setCodeError(true)
-          setStep('verification')
-          return
-        }
-      }
-      setError(err.errors?.[0]?.longMessage || t('auth.forgotPassword.step3.error.unexpected'))
+      setError(isClerkAPIResponseError(err) ? err.errors[0]?.longMessage || t('auth.forgotPassword.step3.error.unexpected') : t('auth.forgotPassword.step3.error.unexpected'))
     } finally {
       setLoading(false)
     }
@@ -211,16 +213,16 @@ function ForgotPasswordContent() {
   // Handle back navigation
   const handleBack = () => {
     setError('')
-    if (step === 'verification') {
+    if (step !== 'identifier') {
+      signIn.reset()
       setVerificationCode('')
-      setStep('university-id')
-    } else if (step === 'new-password') {
-      setStep('verification')
+      setResendCooldown(0)
+      setStep('identifier')
     }
   }
 
-  // Step 1: University ID Input
-  if (step === 'university-id') {
+  // Step 1: University ID
+  if (step === 'identifier') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 relative">
         <Card className="w-full max-w-md">
@@ -239,37 +241,28 @@ function ForgotPasswordContent() {
               </Alert>
             )}
 
-            <Form {...universityIdForm}>
-              <form onSubmit={universityIdForm.handleSubmit(onSubmitUniversityId)} className="space-y-4">
+            <Form {...identifierForm}>
+              <form onSubmit={identifierForm.handleSubmit(onSubmitIdentifier)} className="space-y-4">
                 <FormField
-                  control={universityIdForm.control}
-                  name="universityId"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel>{t('auth.forgotPassword.step1.universityId')}</FormLabel>
-                      <FormControl>
-                        <div className={`flex items-center rounded-md border ${fieldState.error ? 'border-destructive' : 'border-input'} focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}>
-                          <Input
-                            type="text"
-                            inputMode="numeric"
-                            placeholder={t('auth.forgotPassword.step1.placeholder')}
-                            autoComplete="username"
-                            maxLength={9}
-                            className="border-0 rounded-r-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                            {...field}
-                            disabled={loading || !isLoaded}
-                          />
-                          <span className="inline-flex items-center px-3 h-10 bg-background text-muted-foreground text-sm border-l border-input rounded-r-md">
-                            @qu.edu.sa
-                          </span>
-                        </div>
-                      </FormControl>
+                  control={identifierForm.control}
+                  name="identifier"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel className="block leading-6">{t('auth.forgotPassword.step1.universityId')}</FormLabel>
+                      <div dir="ltr" className="flex h-11 items-center overflow-hidden rounded-md border border-input bg-background shadow-xs focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50">
+                        <FormControl>
+                          <Input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={9} dir="ltr" className="h-full min-w-0 flex-1 rounded-none border-0 text-left tracking-wide shadow-none focus-visible:ring-0" placeholder={t('auth.signIn.universityIdPlaceholder')} autoComplete="username" {...field} onChange={event => {
+                            if (/^\d{0,9}$/.test(event.target.value)) field.onChange(event.target.value)
+                          }} disabled={loading} />
+                        </FormControl>
+                        <span className="flex h-full shrink-0 items-center border-s border-input px-3 text-sm text-muted-foreground">@qu.edu.sa</span>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                <Button type="submit" className="w-full" disabled={loading || !isLoaded}>
+                <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -286,7 +279,7 @@ function ForgotPasswordContent() {
           <CardFooter className="flex flex-col space-y-2">
             <div className="text-sm text-center text-muted-foreground">
               {t('auth.forgotPassword.step1.footer.text')}{' '}
-              <Link href="/sign-in" className="text-primary hover:underline">
+              <Link href={withRedirectParam('/sign-in', redirectParam)} className="text-primary hover:underline">
                 {t('auth.forgotPassword.step1.footer.link')}
               </Link>
             </div>
@@ -317,25 +310,35 @@ function ForgotPasswordContent() {
             )}
 
             <form onSubmit={onSubmitVerification} className="space-y-8">
-              <div className="space-y-2">
-                <Label htmlFor="verificationCode">{t('auth.forgotPassword.step2.verificationCode')}</Label>
-                <Input
+              <div className="space-y-4">
+                <Label htmlFor="verificationCode" className="block leading-6">{t('auth.forgotPassword.step2.verificationCode')}</Label>
+                <InputOTP
                   id="verificationCode"
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  placeholder={t('auth.forgotPassword.step2.placeholder')}
+                  aria-label={t('auth.forgotPassword.step2.verificationCode')}
+                  maxLength={6}
+                  pattern={REGEXP_ONLY_DIGITS}
+                  autoComplete="one-time-code"
                   value={verificationCode}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '')
+                  onChange={value => {
                     setVerificationCode(value)
                     setCodeError(false)
                   }}
                   disabled={loading}
-                  maxLength={6}
-                  autoComplete="one-time-code"
-                  className={`text-center text-lg tracking-widest font-mono ${codeError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
-                />
+                  dir="ltr"
+                  containerClassName="justify-center"
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} className={codeError ? 'border-destructive' : ''} />
+                    <InputOTPSlot index={1} className={codeError ? 'border-destructive' : ''} />
+                    <InputOTPSlot index={2} className={codeError ? 'border-destructive' : ''} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator />
+                  <InputOTPGroup>
+                    <InputOTPSlot index={3} className={codeError ? 'border-destructive' : ''} />
+                    <InputOTPSlot index={4} className={codeError ? 'border-destructive' : ''} />
+                    <InputOTPSlot index={5} className={codeError ? 'border-destructive' : ''} />
+                  </InputOTPGroup>
+                </InputOTP>
                 <div className="flex justify-center pt-1">
                   {canResend ? (
                     <Button

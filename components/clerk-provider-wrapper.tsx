@@ -25,6 +25,8 @@ export function ClerkProviderWrapper({ children }: { children: React.ReactNode }
   return (
     <ClerkProvider
       afterSignOutUrl="/sign-in"
+      signInUrl="/sign-in"
+      signUpUrl="/sign-in"
       localization={isArabic ? arSAFixed : undefined}
       appearance={{
         cssLayerName: 'clerk',
