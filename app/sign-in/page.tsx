@@ -8,12 +8,12 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import { REGEXP_ONLY_DIGITS } from 'input-otp'
-import { AlertCircle, ExternalLink, Loader2, RefreshCw } from 'lucide-react'
+import { AlertCircle, Loader2, RefreshCw } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { Label } from '@/components/ui/label'
 import { PasswordInput } from '@/components/ui/password-input'
 import { GoogleIcon } from '@/components/icons/google-icon'
@@ -21,7 +21,7 @@ import { getValidatedRedirectParam, withRedirectParam } from '@/lib/redirect-con
 import { asUniversityEmail } from '@/lib/auth-identifier'
 import '@/lib/i18n-client'
 
-type Step = 'identifier' | 'code' | 'password-sign-in' | 'new-account' | 'missing-fields' | 'mfa'
+type Step = 'identifier' | 'code' | 'new-account' | 'missing-fields' | 'mfa'
 const RESEND_COOLDOWN_SECONDS = 30
 
 export default function SignInPage() {
@@ -206,32 +206,6 @@ function SignInContent() {
     }
   }
 
-  const signInWithPassword = async (event: React.FormEvent) => {
-    event.preventDefault()
-    setError('')
-    setLoading(true)
-    try {
-      const { error: passwordError } = await signIn.password({ emailAddress: email, password })
-      if (passwordError) throw passwordError
-      if (signIn.status === 'complete') await finishSignIn()
-      else if (signIn.status === 'needs_client_trust' || signIn.status === 'needs_second_factor') {
-        if (!signIn.supportedSecondFactors.some(item => item.strategy === 'email_code')) {
-          setError(t('auth.entry.error.unexpected'))
-          return
-        }
-        const { error: mfaError } = await signIn.mfa.sendEmailCode()
-        if (mfaError) throw mfaError
-        setCode('')
-        setCooldown(RESEND_COOLDOWN_SECONDS)
-        setStep('mfa')
-      } else setError(t('auth.entry.error.unexpected'))
-    } catch (reason) {
-      setError(errorMessage(reason, t('auth.signIn.error.invalidCredentials')))
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const completeMissingFields = async (event: React.FormEvent) => {
     event.preventDefault()
     setError('')
@@ -270,16 +244,6 @@ function SignInContent() {
     }
   }
 
-  const reset = () => {
-    signIn.reset()
-    signUp.reset()
-    setStep('identifier')
-    setCode('')
-    setPassword('')
-    setCooldown(0)
-    setError('')
-  }
-
   const verifying = step === 'code' || step === 'mfa'
   const busy = loading || googleLoading
 
@@ -292,9 +256,9 @@ function SignInContent() {
           <CardDescription className="leading-6">
             {verifying
               ? t(step === 'mfa' ? 'auth.entry.mfaDescription' : 'auth.entry.codeDescription')
-              : t(step === 'new-account' ? 'auth.entry.newAccountDescription' : step === 'missing-fields' ? 'auth.entry.missingFieldsDescription' : step === 'password-sign-in' ? 'auth.entry.passwordDescription' : 'auth.entry.description')}
+              : t(step === 'new-account' ? 'auth.entry.newAccountDescription' : step === 'missing-fields' ? 'auth.entry.missingFieldsDescription' : 'auth.entry.description')}
           </CardDescription>
-          {email && (verifying || step === 'password-sign-in' || step === 'new-account') && <p dir="ltr" className="mx-auto max-w-full rounded-md bg-muted px-3 py-1.5 text-sm text-foreground break-all">{email}</p>}
+          {email && (verifying || step === 'new-account') && <p dir="ltr" className="mx-auto max-w-full rounded-md bg-muted px-3 py-1.5 text-sm text-foreground break-all">{email}</p>}
         </CardHeader>
         <CardContent className={step === 'identifier' ? 'px-6 sm:px-8' : 'px-6 pb-8 sm:px-8'}>
           {error && <Alert variant="destructive" className="mb-4"><AlertCircle className="h-4 w-4" /><AlertDescription>{error}</AlertDescription></Alert>}
@@ -328,7 +292,6 @@ function SignInContent() {
                   />
                   <span className="flex h-full shrink-0 items-center border-s border-input px-3 text-sm text-muted-foreground">@qu.edu.sa</span>
                 </div>
-                <p className="text-xs leading-5 text-muted-foreground">{t('auth.entry.universityHint')}</p>
               </div>
               <div id="clerk-captcha" />
               <Button type="submit" className="h-11 w-full bg-blue-600 hover:bg-blue-700" disabled={busy}>
@@ -356,35 +319,17 @@ function SignInContent() {
                   <InputOTPSlot index={0} />
                   <InputOTPSlot index={1} />
                   <InputOTPSlot index={2} />
-                </InputOTPGroup>
-                <InputOTPSeparator />
-                <InputOTPGroup>
                   <InputOTPSlot index={3} />
                   <InputOTPSlot index={4} />
                   <InputOTPSlot index={5} />
                 </InputOTPGroup>
               </InputOTP>
-              {step === 'code' && <p className="text-center text-xs leading-5 text-muted-foreground">{t('auth.entry.codeHelp')}</p>}
             </div>
             <div className="space-y-2">
               <Button type="submit" className="h-11 w-full" disabled={loading || code.length !== 6}>{loading && <Loader2 className="h-4 w-4 animate-spin" />}{t('auth.verification.submit')}</Button>
               <Button type="button" variant="link" className="w-full" onClick={resendCode} disabled={loading || cooldown > 0}>
                 <RefreshCw className="h-4 w-4" />{cooldown > 0 ? t('auth.verification.resendCountdown', { countdown: cooldown }) : t('auth.verification.resend')}
               </Button>
-              {step === 'code' && <Button type="button" variant="outline" className="w-full" onClick={() => { setPassword(''); setError(''); setStep('password-sign-in') }} disabled={loading}>{t('auth.entry.usePassword')}</Button>}
-              <Button type="button" variant="ghost" className="w-full" onClick={reset} disabled={loading}>{t('auth.entry.startOver')}</Button>
-            </div>
-            {step === 'code' && <a href="https://outlook.office.com" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-primary"><ExternalLink className="size-3.5" />{t('auth.entry.openOutlook')}</a>}
-          </form>}
-
-          {step === 'password-sign-in' && <form onSubmit={signInWithPassword} className="space-y-6">
-            <div className="space-y-3">
-              <Label htmlFor="signInPassword" className="block leading-6">{t('auth.signIn.password')}</Label>
-              <PasswordInput id="signInPassword" autoComplete="current-password" className="h-11" value={password} onChange={event => setPassword(event.target.value)} disabled={loading} required />
-            </div>
-            <div className="space-y-2">
-              <Button type="submit" className="h-11 w-full" disabled={loading}>{loading && <Loader2 className="h-4 w-4 animate-spin" />}{t('auth.signIn.submit')}</Button>
-              <Button type="button" variant="ghost" className="w-full" onClick={reset} disabled={loading}>{t('auth.entry.startOver')}</Button>
             </div>
           </form>}
 
@@ -392,7 +337,6 @@ function SignInContent() {
             <div className="space-y-3"><Label htmlFor="password" className="block leading-6">{t('auth.entry.password')}</Label><PasswordInput id="password" autoComplete="new-password" className="h-11" value={password} onChange={event => setPassword(event.target.value)} disabled={loading} required /></div>
             <div id="clerk-captcha" />
             <Button type="submit" className="h-11 w-full" disabled={loading}>{loading && <Loader2 className="h-4 w-4 animate-spin" />}{t('auth.entry.createAccount')}</Button>
-            <Button type="button" variant="ghost" className="w-full" onClick={reset} disabled={loading}>{t('auth.entry.startOver')}</Button>
           </form>}
 
           {step === 'missing-fields' && <form onSubmit={completeMissingFields} className="space-y-6">
