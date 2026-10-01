@@ -9,16 +9,18 @@ import { UserPlus, User, Shield, Globe } from "lucide-react"
 import { useTranslation } from 'react-i18next'
 import '@/lib/i18n-client'
 import { useCurrentUrl } from '@/hooks/use-current-url'
+import { useIsStaff } from '@/hooks/use-is-staff'
 import { withRedirectParam } from '@/lib/redirect-config'
 
 const ADMIN_APP_URL = process.env.NEXT_PUBLIC_ADMIN_APP_URL ?? 'https://admin.gdg-q.com'
 
 export function AuthButton() {
-  const { isLoaded, isSignedIn, user } = useUser()
+  const { isLoaded, isSignedIn } = useUser()
   const { t, i18n } = useTranslation()
   const isRTL = i18n.language === 'ar'
   const currentUrl = useCurrentUrl()
-  const isAdmin = !!user?.publicMetadata?.is_super_admin
+  // Staff (on this semester's roster, or a super admin) get the admin app link. Never from Clerk metadata.
+  const isAdmin = useIsStaff()
   const router = useRouter()
 
   if (!isLoaded) {
