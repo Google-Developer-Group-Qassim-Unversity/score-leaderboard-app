@@ -2,323 +2,400 @@
 
 import * as React from 'react'
 import { Suspense } from 'react'
-import { useSignIn } from "@clerk/nextjs/legacy"
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { PasswordInput } from '@/components/ui/password-input'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { AlertCircle, Loader2 } from 'lucide-react'
+import { useSignIn, useSignUp } from '@clerk/nextjs'
+import { isClerkAPIResponseError } from '@clerk/nextjs/errors'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { getValidatedRedirectParam, withRedirectParam } from '@/lib/redirect-config'
-import { VerificationCard } from '@/components/verification-card'
 import { useTranslation } from 'react-i18next'
-import '@/lib/i18n-client'
+import { REGEXP_ONLY_DIGITS } from 'input-otp'
+import { AlertCircle, Loader2, RefreshCw } from 'lucide-react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
+import { Label } from '@/components/ui/label'
+import { PasswordInput } from '@/components/ui/password-input'
 import { GoogleIcon } from '@/components/icons/google-icon'
+import { getValidatedRedirectParam, withRedirectParam } from '@/lib/redirect-config'
+import { asUniversityEmail } from '@/lib/auth-identifier'
+import '@/lib/i18n-client'
 
-const createSignInSchema = (t: (key: string) => string) => z.object({
-  universityId: z.string()
-    .min(9, t('validation.universityId.mustBe9Digits'))
-    .max(9, t('validation.universityId.mustBe9Digits'))
-    .regex(/^\d{9}$/, t('validation.universityId.exactly9Digits')),
-  password: z.string().min(1, t('validation.password.required')),
-})
-
-type SignInFormValues = {
-  universityId: string
-  password: string
-}
+type Step = 'identifier' | 'password-sign-in' | 'sign-in-code' | 'new-account' | 'sign-up-code' | 'missing-fields' | 'mfa'
+const RESEND_COOLDOWN_SECONDS = 30
 
 export default function SignInPage() {
-  return (
-    <Suspense fallback={null}>
-      <SignInContent />
-    </Suspense>
-  )
+  return <Suspense fallback={null}><SignInContent /></Suspense>
 }
 
 function SignInContent() {
   const { t } = useTranslation()
-  const { isLoaded, signIn, setActive } = useSignIn()
+  const { signIn } = useSignIn()
+  const { signUp } = useSignUp()
+  const searchParams = useSearchParams()
+  const redirectParam = getValidatedRedirectParam(searchParams)
+  const [step, setStep] = React.useState<Step>('identifier')
+  const [universityId, setUniversityId] = React.useState('')
+  const [email, setEmail] = React.useState('')
+  const [code, setCode] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const [firstName, setFirstName] = React.useState('')
+  const [lastName, setLastName] = React.useState('')
+  const [username, setUsername] = React.useState('')
+  const [legalAccepted, setLegalAccepted] = React.useState(false)
   const [error, setError] = React.useState('')
   const [loading, setLoading] = React.useState(false)
   const [googleLoading, setGoogleLoading] = React.useState(false)
-  const [needsSecondFactor, setNeedsSecondFactor] = React.useState(false)
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const redirectParam = getValidatedRedirectParam(searchParams)
+  const [cooldown, setCooldown] = React.useState(0)
+  const resumedMfa = React.useRef(false)
 
-  const signInSchema = React.useMemo(() => createSignInSchema(t), [t])
+  React.useEffect(() => {
+    if (cooldown <= 0) return
+    const timer = window.setTimeout(() => setCooldown(cooldown - 1), 1000)
+    return () => window.clearTimeout(timer)
+  }, [cooldown])
 
-  const form = useForm<SignInFormValues>({
-    resolver: zodResolver(signInSchema),
-    defaultValues: {
-      universityId: '',
-      password: '',
-    },
-  })
-
-  const handleComplete = async (sessionId: string) => {
-    if (!setActive) {
-      return;
+  React.useEffect(() => {
+    if (step !== 'identifier' || resumedMfa.current) return
+    if (signIn.status !== 'needs_client_trust' && signIn.status !== 'needs_second_factor') return
+    resumedMfa.current = true
+    if (!signIn.supportedSecondFactors.some(item => item.strategy === 'email_code')) {
+      setError(t('auth.entry.error.unexpected'))
+      return
     }
-
-    try {
-      await setActive({ session: sessionId })
-      // Middleware already keeps a fully-authenticated visitor off this page
-      // on the next request; navigate there directly rather than waiting on
-      // a separate effect to notice isSignedIn flipped.
-      if (redirectParam) {
-        window.location.href = redirectParam
-      } else {
-        router.push('/')
+    setEmail(signIn.identifier || '')
+    void signIn.mfa.sendEmailCode().then(({ error: mfaError }) => {
+      if (mfaError) {
+        setError(t('auth.entry.error.sendCode'))
+        return
       }
-    } catch (err) {
-      console.error("Error setting active session:", err);
-      window.location.reload();
+      setCooldown(RESEND_COOLDOWN_SECONDS)
+      setStep('mfa')
+    })
+  }, [signIn, step, t])
+
+  const errorMessage = (reason: unknown, fallback: string) => {
+    if (isClerkAPIResponseError(reason)) {
+      return reason.errors[0]?.longMessage || reason.errors[0]?.message || fallback
     }
+    return fallback
   }
 
-  const onSubmit = async (data: SignInFormValues) => {
+  const finishSignIn = async () => {
+    const { error: finishError } = await signIn.finalize({
+      navigate: ({ session, decorateUrl }) => {
+        if (session?.currentTask) return
+        window.location.assign(decorateUrl(redirectParam || '/'))
+      },
+    })
+    if (finishError) setError(errorMessage(finishError, t('auth.entry.error.unexpected')))
+  }
+
+  const finishSignUp = async () => {
+    const { error: finishError } = await signUp.finalize({
+      navigate: ({ session, decorateUrl }) => {
+        if (session?.currentTask) return
+        window.location.assign(decorateUrl(withRedirectParam('/onboarding', redirectParam)))
+      },
+    })
+    if (finishError) setError(errorMessage(finishError, t('auth.entry.error.unexpected')))
+  }
+
+  const continueWithId = async (event: React.FormEvent) => {
+    event.preventDefault()
     setError('')
-    if (!isLoaded) return
+    const normalized = asUniversityEmail(universityId)
+    if (!normalized) {
+      setError(t('validation.universityId.exactly9Digits'))
+      return
+    }
     setLoading(true)
-
-    const emailAddress = `${data.universityId}@qu.edu.sa`
-
     try {
-      const result = await signIn.create({
-        identifier: emailAddress,
-        password: data.password,
-      })
-
-      if (result.status === 'complete') {
-        if (!result.createdSessionId) {
-            console.error("Session complete but no ID returned")
-            setError(t('auth.signIn.error.sessionError'))
-            return
-        }
-        await handleComplete(result.createdSessionId)
-      } else if (
-        result.status === 'needs_second_factor' ||
-        // Clerk's newer "Device Trust" feature returns this status for new-device
-        // sign-ins; it's not yet in the installed @clerk SDK's type definitions.
-        (result.status as string) === 'needs_client_trust'
-      ) {
-        const emailAddressId = result.supportedSecondFactors?.find(
-          (factor) => factor.strategy === 'email_code'
-        )?.emailAddressId
-
-        if (!emailAddressId) {
-          setError(t('auth.signIn.error.verificationCode'))
+      setEmail(normalized)
+      const { error: createError } = await signIn.create({ identifier: normalized })
+      if (createError) {
+        if (isClerkAPIResponseError(createError) && createError.errors.some(item => item.code === 'form_identifier_not_found')) {
+          setStep('new-account')
           return
         }
-
-        await signIn.prepareSecondFactor({
-          strategy: 'email_code',
-          emailAddressId: emailAddressId,
-        })
-        setNeedsSecondFactor(true)
-      } else {
-        setError(t('auth.signIn.error.signInFailed'))
+        throw createError
       }
-    } catch (err: any) {
-      console.error('Sign-in error:', err)
-      if (err.errors?.[0]?.code === 'form_password_incorrect' ||
-          err.errors?.[0]?.code === 'form_identifier_not_found') {
-        setError(t('auth.signIn.error.invalidCredentials'))
+      if (signIn.supportedFirstFactors.some(item => item.strategy === 'password')) {
+        setStep('password-sign-in')
+      } else if (signIn.supportedFirstFactors.some(item => item.strategy === 'email_code')) {
+        const { error: sendError } = await signIn.emailCode.sendCode()
+        if (sendError) throw sendError
+        setCooldown(RESEND_COOLDOWN_SECONDS)
+        setStep('sign-in-code')
       } else {
-        setError(err.errors?.[0]?.longMessage || t('auth.signIn.error.unexpected'))
+        setError(t('auth.entry.error.unsupportedSignIn'))
       }
+    } catch (reason) {
+      setError(errorMessage(reason, t('auth.entry.error.unexpected')))
     } finally {
       setLoading(false)
     }
   }
 
-  // Handle successful verification (2FA)
-  const handleVerificationSuccess = async (sessionId: string) => {
-    await handleComplete(sessionId)
+  const resendCode = async () => {
+    if (cooldown > 0 || loading) return
+    setError('')
+    setLoading(true)
+    try {
+      const { error: sendError } = step === 'mfa'
+        ? await signIn.mfa.sendEmailCode()
+        : step === 'sign-up-code'
+          ? await signUp.verifications.sendEmailCode()
+          : await signIn.emailCode.sendCode()
+      if (sendError) throw sendError
+      setCooldown(RESEND_COOLDOWN_SECONDS)
+    } catch (reason) {
+      setError(errorMessage(reason, t('auth.entry.error.sendCode')))
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const handleGoogleSignIn = async () => {
-    if (!isLoaded) return
+  const continueAfterSignIn = async () => {
+    if (signIn.status === 'complete') {
+      await finishSignIn()
+    } else if (signIn.status === 'needs_client_trust' || signIn.status === 'needs_second_factor') {
+      if (!signIn.supportedSecondFactors.some(item => item.strategy === 'email_code')) {
+        setError(t('auth.entry.error.unexpected'))
+        return
+      }
+      const { error: mfaError } = await signIn.mfa.sendEmailCode()
+      if (mfaError) throw mfaError
+      setCode('')
+      setCooldown(RESEND_COOLDOWN_SECONDS)
+      setStep('mfa')
+    } else {
+      setError(t('auth.entry.error.unexpected'))
+    }
+  }
+
+  const signInWithPassword = async (event: React.FormEvent) => {
+    event.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const { error: passwordError } = await signIn.password({ password })
+      if (passwordError) throw passwordError
+      await continueAfterSignIn()
+    } catch (reason) {
+      setError(errorMessage(reason, t('auth.signIn.error.invalidCredentials')))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const verifyCode = async (event: React.FormEvent) => {
+    event.preventDefault()
+    setError('')
+    if (!/^\d{6}$/.test(code)) {
+      setError(t('validation.verificationCode.invalid'))
+      return
+    }
+    setLoading(true)
+    try {
+      if (step === 'sign-up-code') {
+        const { error: verifyError } = await signUp.verifications.verifyEmailCode({ code })
+        if (verifyError) throw verifyError
+        if (signUp.status === 'complete') await finishSignUp()
+        else if (signUp.status === 'missing_requirements' && !signUp.unverifiedFields.includes('email_address')) setStep('missing-fields')
+        else setError(t('auth.entry.error.unexpected'))
+      } else {
+        const { error: verifyError } = step === 'mfa'
+          ? await signIn.mfa.verifyEmailCode({ code })
+          : await signIn.emailCode.verifyCode({ code })
+        if (verifyError) throw verifyError
+        await continueAfterSignIn()
+      }
+    } catch (reason) {
+      setError(errorMessage(reason, t('auth.entry.error.verifyCode')))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const createAccount = async (event: React.FormEvent) => {
+    event.preventDefault()
+    setError('')
+    if (password.length < 8) {
+      setError(t('validation.password.minLength'))
+      return
+    }
+    setLoading(true)
+    try {
+      const { error: createError } = await signUp.password({ emailAddress: email, password })
+      if (createError) throw createError
+      if (signUp.status === 'complete') await finishSignUp()
+      else if (signUp.status === 'missing_requirements' && signUp.unverifiedFields.includes('email_address')) {
+        const { error: sendError } = await signUp.verifications.sendEmailCode()
+        if (sendError) throw sendError
+        setCode('')
+        setCooldown(RESEND_COOLDOWN_SECONDS)
+        setStep('sign-up-code')
+      } else if (signUp.status === 'missing_requirements') setStep('missing-fields')
+      else setError(t('auth.entry.error.unexpected'))
+    } catch (reason) {
+      setError(errorMessage(reason, t('auth.entry.error.unexpected')))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const completeMissingFields = async (event: React.FormEvent) => {
+    event.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const { error: updateError } = await signUp.update({
+        ...(signUp.missingFields.includes('first_name') ? { firstName: firstName.trim() } : {}),
+        ...(signUp.missingFields.includes('last_name') ? { lastName: lastName.trim() } : {}),
+        ...(signUp.missingFields.includes('username') ? { username: username.trim() } : {}),
+        ...(signUp.missingFields.includes('legal_accepted') ? { legalAccepted } : {}),
+      })
+      if (updateError) throw updateError
+      if (signUp.status === 'complete') await finishSignUp()
+      else setError(t('auth.entry.error.unexpected'))
+    } catch (reason) {
+      setError(errorMessage(reason, t('auth.entry.error.unexpected')))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const startGoogle = async () => {
     setError('')
     setGoogleLoading(true)
     try {
-      await signIn.authenticateWithRedirect({
+      const { error: ssoError } = await signIn.sso({
         strategy: 'oauth_google',
-        redirectUrl: withRedirectParam('/sign-in/sso-callback', redirectParam),
-        redirectUrlComplete: withRedirectParam('/onboarding', redirectParam),
+        redirectCallbackUrl: withRedirectParam('/sign-in/sso-callback', redirectParam),
+        redirectUrl: withRedirectParam('/onboarding', redirectParam),
       })
-    } catch (err) {
-      console.error('Google sign-in error:', err)
-      setError(t('auth.signIn.error.googleUnexpected'))
+      if (ssoError) throw ssoError
+    } catch (reason) {
+      setError(errorMessage(reason, t('auth.signIn.error.googleUnexpected')))
+    } finally {
       setGoogleLoading(false)
     }
   }
 
-  // Show verification view for second factor
-  if (needsSecondFactor) {
-    return (
-      <VerificationCard
-        type="sign-in"
-        onSuccess={handleVerificationSuccess}
-        onBack={() => setNeedsSecondFactor(false)}
-      />
-    )
-  }
+  const verifying = step === 'sign-in-code' || step === 'sign-up-code' || step === 'mfa'
+  const busy = loading || googleLoading
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md border-t-4 border-t-blue-600">
-        <CardHeader>
-          <div className="flex justify-center mb-4">
-            <img
-              src="/GDG.svg"
-              alt="GDG Logo"
-              width={100}
-              height={100}
-            />
-          </div>
-          <div className="flex justify-center mb-2">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-              {t('auth.signIn.badge')}
-            </span>
-          </div>
-          <CardTitle className="text-2xl font-bold text-center">{t('auth.signIn.title')}</CardTitle>
-          <CardDescription className="text-center">
-            {t('auth.signIn.description')}
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-gray-50 px-4 py-10 dark:bg-gray-900 sm:px-6">
+      <Card className="w-full max-w-[440px] gap-7 overflow-hidden border-border/70 py-0 shadow-lg">
+        <CardHeader className="gap-3 px-6 pt-8 text-center sm:px-8">
+          <div className="mb-1 flex justify-center"><img src="/GDG.svg" alt="GDG Logo" width={76} height={76} /></div>
+          <CardTitle className="text-2xl leading-snug font-bold">{t(step === 'new-account' || step === 'missing-fields' ? 'auth.entry.newAccountTitle' : 'auth.entry.title')}</CardTitle>
+          <CardDescription className="leading-6">
+            {verifying
+              ? t(step === 'mfa' ? 'auth.entry.mfaDescription' : 'auth.entry.codeDescription')
+              : t(step === 'new-account' ? 'auth.entry.newAccountDescription' : step === 'missing-fields' ? 'auth.entry.missingFieldsDescription' : step === 'password-sign-in' ? 'auth.entry.passwordDescription' : 'auth.entry.description')}
           </CardDescription>
+          {email && (verifying || step === 'new-account' || step === 'password-sign-in') && <p dir="ltr" className="mx-auto max-w-full rounded-md bg-muted px-3 py-1.5 text-sm text-foreground break-all">{email}</p>}
         </CardHeader>
+        <CardContent className={step === 'identifier' ? 'px-6 sm:px-8' : 'px-6 pb-8 sm:px-8'}>
+          {error && <Alert variant="destructive" className="mb-4"><AlertCircle className="h-4 w-4" /><AlertDescription>{error}</AlertDescription></Alert>}
 
-        <CardContent>
-          {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full mb-4"
-            disabled={loading || googleLoading || !isLoaded}
-            onClick={handleGoogleSignIn}
-          >
-            {googleLoading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <GoogleIcon className="mr-2 h-4 w-4" />
-            )}
-            {t('auth.signIn.continueWithGoogle')}
-          </Button>
-
-          <div className="relative mb-4">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                {t('auth.signIn.orContinueWith')}
-              </span>
-            </div>
-          </div>
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" autoComplete="on">
-              <FormField
-                control={form.control}
-                name="universityId"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>{t('auth.signIn.universityId')}</FormLabel>
-                    <FormControl>
-                      <div className={`flex items-center rounded-md border ${fieldState.error ? 'border-destructive' : 'border-input'} focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}>
-                        <Input
-                          type="text"
-                          inputMode="numeric"
-                          placeholder={t('auth.signIn.universityIdPlaceholder')}
-                          autoComplete="username"
-                          maxLength={9}
-                          className="border-0 rounded-r-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                          {...field}
-                          disabled={loading || googleLoading || !isLoaded}
-                        />
-                        <span className="inline-flex items-center px-3 h-10 bg-background text-muted-foreground text-sm border-l border-input rounded-r-md">
-                          {t('auth.signIn.emailSuffix')}
-                        </span>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('auth.signIn.password')}</FormLabel>
-                    <FormControl>
-                      <PasswordInput
-                        placeholder={t('auth.signIn.passwordPlaceholder')}
-                        autoComplete="current-password"
-                        {...field}
-                        disabled={loading || googleLoading || !isLoaded}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={loading || googleLoading || !isLoaded}>
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {t('auth.signIn.signingIn')}
-                  </>
-                ) : (
-                  t('auth.signIn.submit')
-                )}
+          {step === 'identifier' && <>
+            <Button type="button" variant="outline" className="h-11 w-full" disabled={busy} onClick={startGoogle}>
+              {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon className="h-4 w-4" />}
+              {t('auth.signIn.continueWithGoogle')}
+            </Button>
+            <div className="relative my-6 flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" /><span>{t('auth.signIn.orContinueWith')}</span><span className="h-px flex-1 bg-border" /></div>
+            <form onSubmit={continueWithId} className="space-y-6">
+              <div className="space-y-3">
+                <Label htmlFor="universityId" className="block leading-6">{t('auth.signIn.universityId')}</Label>
+                <div dir="ltr" className="flex h-11 items-center overflow-hidden rounded-md border border-input bg-background shadow-xs transition-shadow focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50">
+                  <Input
+                    id="universityId"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={9}
+                    autoComplete="username"
+                    dir="ltr"
+                    className="h-full min-w-0 flex-1 rounded-none border-0 text-left tracking-wide shadow-none focus-visible:ring-0"
+                    value={universityId}
+                    onChange={event => {
+                      if (/^\d{0,9}$/.test(event.target.value)) setUniversityId(event.target.value)
+                    }}
+                    placeholder={t('auth.signIn.universityIdPlaceholder')}
+                    disabled={busy}
+                    required
+                  />
+                  <span className="flex h-full shrink-0 items-center border-s border-input px-3 text-sm text-muted-foreground">@qu.edu.sa</span>
+                </div>
+              </div>
+              <div id="clerk-captcha" />
+              <Button type="submit" className="h-11 w-full bg-blue-600 hover:bg-blue-700" disabled={busy}>
+                {loading && <Loader2 className="h-4 w-4 animate-spin" />}{t('auth.entry.continue')}
               </Button>
             </form>
-          </Form>
-        </CardContent>
+          </>}
 
-        <CardFooter className="flex flex-col space-y-2">
-          <div className="text-sm text-center text-muted-foreground">
-            {t('auth.signIn.footer.text')}{' '}
-            <Link
-              href={withRedirectParam('/sign-up', redirectParam)}
-              className="text-primary hover:underline"
-            >
-              {t('auth.signIn.footer.link')}
-            </Link>
-          </div>
-          <div className="text-sm text-center">
-            <Link
-              href="/forgot-password"
-              className="text-primary hover:underline"
-            >
-              {t('auth.signIn.forgotPassword')}
-            </Link>
-          </div>
-        </CardFooter>
+          {step === 'password-sign-in' && <form onSubmit={signInWithPassword} className="space-y-6">
+            <div className="space-y-3">
+              <Label htmlFor="signInPassword" className="block leading-6">{t('auth.signIn.password')}</Label>
+              <PasswordInput id="signInPassword" autoComplete="current-password" className="h-11" value={password} onChange={event => setPassword(event.target.value)} disabled={loading} required />
+            </div>
+            <Button type="submit" className="h-11 w-full" disabled={loading}>{loading && <Loader2 className="h-4 w-4 animate-spin" />}{t('auth.signIn.submit')}</Button>
+          </form>}
+
+          {verifying && <form onSubmit={verifyCode} className="space-y-6">
+            <div className="space-y-4">
+              <Label htmlFor="verificationCode" className="block leading-6">{t('auth.verification.verificationCode')}</Label>
+              <InputOTP
+                id="verificationCode"
+                aria-label={t('auth.verification.verificationCode')}
+                maxLength={6}
+                pattern={REGEXP_ONLY_DIGITS}
+                autoComplete="one-time-code"
+                value={code}
+                onChange={setCode}
+                disabled={loading}
+                dir="ltr"
+                containerClassName="justify-center"
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+            </div>
+            <div className="space-y-2">
+              <Button type="submit" className="h-11 w-full" disabled={loading || code.length !== 6}>{loading && <Loader2 className="h-4 w-4 animate-spin" />}{t('auth.verification.submit')}</Button>
+              <Button type="button" variant="link" className="w-full" onClick={resendCode} disabled={loading || cooldown > 0}>
+                <RefreshCw className="h-4 w-4" />{cooldown > 0 ? t('auth.verification.resendCountdown', { countdown: cooldown }) : t('auth.verification.resend')}
+              </Button>
+            </div>
+          </form>}
+
+          {step === 'new-account' && <form onSubmit={createAccount} className="space-y-6">
+            <div className="space-y-3"><Label htmlFor="password" className="block leading-6">{t('auth.entry.password')}</Label><PasswordInput id="password" autoComplete="new-password" className="h-11" value={password} onChange={event => setPassword(event.target.value)} disabled={loading} required /></div>
+            <div id="clerk-captcha" />
+            <Button type="submit" className="h-11 w-full" disabled={loading}>{loading && <Loader2 className="h-4 w-4 animate-spin" />}{t('auth.entry.createAccount')}</Button>
+          </form>}
+
+          {step === 'missing-fields' && <form onSubmit={completeMissingFields} className="space-y-6">
+            {signUp.missingFields.includes('first_name') && <div className="space-y-3"><Label htmlFor="firstName" className="block leading-6">{t('auth.entry.firstName')}</Label><Input id="firstName" className="h-11" value={firstName} onChange={event => setFirstName(event.target.value)} required /></div>}
+            {signUp.missingFields.includes('last_name') && <div className="space-y-3"><Label htmlFor="lastName" className="block leading-6">{t('auth.entry.lastName')}</Label><Input id="lastName" className="h-11" value={lastName} onChange={event => setLastName(event.target.value)} required /></div>}
+            {signUp.missingFields.includes('username') && <div className="space-y-3"><Label htmlFor="username" className="block leading-6">{t('auth.entry.username')}</Label><Input id="username" className="h-11" value={username} onChange={event => setUsername(event.target.value)} required /></div>}
+            {signUp.missingFields.includes('legal_accepted') && <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={legalAccepted} onChange={event => setLegalAccepted(event.target.checked)} required />{t('auth.entry.acceptTerms')}</label>}
+            <div id="clerk-captcha" />
+            <Button type="submit" className="h-11 w-full" disabled={loading}>{loading && <Loader2 className="h-4 w-4 animate-spin" />}{t('auth.entry.createAccount')}</Button>
+          </form>}
+        </CardContent>
+        {(step === 'identifier' || step === 'password-sign-in') && <CardFooter className="justify-center px-6 pb-8 text-sm sm:px-8"><Link href={withRedirectParam('/forgot-password', redirectParam)} className="text-primary hover:underline">{t('auth.signIn.forgotPassword')}</Link></CardFooter>}
       </Card>
     </div>
   )
