@@ -64,6 +64,8 @@ export interface ApiPointsEvent {
   points: number
   action_name: string
   ar_action_name: string | null
+  /** True when every log of the event is a bonus action - no useful event page exists */
+  bonus_only?: boolean
 }
 
 // Member Event History Response
