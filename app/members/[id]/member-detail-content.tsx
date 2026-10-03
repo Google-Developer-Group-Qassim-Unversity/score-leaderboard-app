@@ -3,6 +3,7 @@ import { Calendar, Award, TrendingUp, Users, BookOpen } from "lucide-react"
 import { fetchMemberById } from "@/lib/api/api"
 import { NotFoundError } from "@/lib/api/errors"
 import { notFound } from "next/navigation"
+import Link from "next/link"
 import { getTranslation } from "@/lib/server-i18n"
 import { isSameDayOrOvernight, getEffectiveEndDate } from "@/lib/event-utils"
 import { PageBreadcrumb } from "@/components/page-breadcrumb"
@@ -20,6 +21,9 @@ export async function MemberDetailContent({ id, lang }: { id: string; lang: Lang
     }
     throw error
   }
+
+  const eventRow =
+    "flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
 
   return (
     <>
@@ -84,42 +88,51 @@ export async function MemberDetailContent({ id, lang }: { id: string; lang: Lang
             <CardContent>
               {memberData.events.length > 0 ? (
                 <div className="space-y-3">
-                  {memberData.events.map((event, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-                          <BookOpen className="h-5 w-5 text-orange-600" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-900 dark:text-white">{event.event_name}</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {lang === 'ar' && event.ar_action_name ? event.ar_action_name : event.action_name}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {(() => {
-                              const startDate = new Date(event.start_datetime)
-                              const endDate = new Date(event.end_datetime)
-                              const isSameDay = isSameDayOrOvernight(startDate, endDate)
-                              const effectiveEndDate = getEffectiveEndDate(startDate, endDate)
+                  {memberData.events.map((event, index) => {
+                    const inner = (
+                      <>
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                            <BookOpen className="h-5 w-5 text-orange-600" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-900 dark:text-white">{event.event_name}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              {lang === 'ar' && event.ar_action_name ? event.ar_action_name : event.action_name}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {(() => {
+                                const startDate = new Date(event.start_datetime)
+                                const endDate = new Date(event.end_datetime)
+                                const isSameDay = isSameDayOrOvernight(startDate, endDate)
+                                const effectiveEndDate = getEffectiveEndDate(startDate, endDate)
 
-                              if (isSameDay) {
-                                return startDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
-                              } else {
-                                return `${startDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })} - ${effectiveEndDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
-                              }
-                            })()}
-                          </p>
+                                if (isSameDay) {
+                                  return startDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+                                } else {
+                                  return `${startDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })} - ${effectiveEndDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
+                                }
+                              })()}
+                            </p>
+                          </div>
                         </div>
+                        <div className="text-right">
+                          <p className="font-bold text-green-600 text-lg">+{event.points}</p>
+                          <p className="text-xs text-gray-500">{t("memberDetail.points")}</p>
+                        </div>
+                      </>
+                    )
+
+                    return event.bonus_only ? (
+                      <div key={index} className={eventRow.replace("cursor-pointer", "")}>
+                        {inner}
                       </div>
-                      <div className="text-right">
-                        <p className="font-bold text-green-600 text-lg">+{event.points}</p>
-                        <p className="text-xs text-gray-500">{t("memberDetail.points")}</p>
-                      </div>
-                    </div>
-                  ))}
+                    ) : (
+                      <Link key={index} href={`/events/${event.event_id}`} className={eventRow}>
+                        {inner}
+                      </Link>
+                    )
+                  })}
                 </div>
               ) : (
                 <div className="text-center py-12">
