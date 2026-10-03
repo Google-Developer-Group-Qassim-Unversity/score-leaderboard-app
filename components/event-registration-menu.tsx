@@ -40,7 +40,7 @@ interface EventRegistrationMenuProps {
 }
 
 export function EventRegistrationMenu({ event }: EventRegistrationMenuProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const router = useRouter()
   const cancelMutation = useCancelSignup()
 
@@ -111,8 +111,8 @@ export function EventRegistrationMenu({ event }: EventRegistrationMenuProps) {
       </DropdownMenu>
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
+        <AlertDialogContent dir={i18n.language === "ar" ? "rtl" : "ltr"}>
+          <AlertDialogHeader className="sm:text-start">
             <AlertDialogTitle>{t("eventSignup.cancelConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
               {t("eventSignup.cancelConfirmDescription")} {event.name}
