@@ -18,6 +18,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { AuthRequiredDialog } from "@/components/auth-required-dialog"
+import { EventRegistrationMenu } from "@/components/event-registration-menu"
 import { Loader2, CheckCircle2, FileText } from "lucide-react"
 import type { ApiOpenEventItem } from "@/lib/api/types"
 import { useTranslation } from 'react-i18next'
@@ -151,13 +152,16 @@ export function EventSignupButton({ event, className }: EventSignupButtonProps) 
       />
       
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <Button 
-          className={`${className} ${getButtonClassName()}`} 
-          onClick={handleButtonClick}
-          disabled={isDisabled}
-        >
-          {getButtonContent()}
-        </Button>
+        <div className={`flex items-center gap-2 ${className ?? ""}`}>
+          <Button
+            className={`flex-1 ${getButtonClassName()}`}
+            onClick={handleButtonClick}
+            disabled={isDisabled}
+          >
+            {getButtonContent()}
+          </Button>
+          {(isCompleted || isPartial) && <EventRegistrationMenu event={event} />}
+        </div>
         <AlertDialogContent >
           <AlertDialogHeader>
             <AlertDialogTitle>{t('eventSignup.confirmTitle')}</AlertDialogTitle>

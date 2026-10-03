@@ -40,6 +40,32 @@
   50% { transform: scale(1.2); }
 }
 
+/* Three-dots wave (components/event-registration-menu.tsx). Bottom dot peaks first,
+   the next one starts growing as it shrinks, then the top one. Each dot runs for half
+   of --dots-duration and starts a quarter after the one below, so the whole wave takes
+   exactly --dots-duration (set from DOTS_ANIMATION_MS). */
+@keyframes dot-wave {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.6); }
+}
+
+.dots-wave > span {
+  animation-duration: calc(var(--dots-duration, 200ms) / 2);
+  animation-timing-function: ease-in-out;
+}
+.dots-wave > span:nth-child(3) { animation-delay: 0ms; }
+.dots-wave > span:nth-child(2) { animation-delay: calc(var(--dots-duration, 200ms) / 4); }
+.dots-wave > span:nth-child(1) { animation-delay: calc(var(--dots-duration, 200ms) / 2); }
+
+@media (hover: hover) and (pointer: fine) {
+  .dots-wave:hover > span { animation-name: dot-wave; }
+}
+.dots-wave[data-playing] > span { animation-name: dot-wave; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dots-wave > span { animation: none !important; }
+}
+
 .animate-blob {
   animation: blob 7s infinite;
 }

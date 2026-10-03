@@ -129,4 +129,28 @@ export const api = {
 
     return handleResponse<T>(response, path)
   },
+
+  async delete<T = void>(path: string, options?: RequestOptions): Promise<T> {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    }
+
+    if (options?.token) {
+      headers['Authorization'] = `Bearer ${options.token}`
+    }
+
+    const response = await fetch(`${getApiBaseUrl()}${path}`, {
+      method: 'DELETE',
+      headers,
+      next: { revalidate: 0 },
+    }).catch((error) => {
+      console.error(`[Network Error] DELETE ${path}:`, error)
+      throw new NetworkError()
+    })
+
+    // 204 No Content has no body to parse
+    if (response.status === 204) return undefined as T
+
+    return handleResponse<T>(response, path)
+  },
 }
