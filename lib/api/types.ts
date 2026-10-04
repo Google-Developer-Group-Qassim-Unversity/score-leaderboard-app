@@ -184,6 +184,7 @@ export interface AttendanceResponse {
 export interface CurrentMember {
   id: number
   name: string
+  public_name: string
   email: string
   phone_number: string | null
   uni_id: string | null
@@ -197,6 +198,7 @@ export interface CurrentMember {
 
 export interface UpdateMemberData {
   name?: string
+  public_name?: string
   email?: string
   phone_number?: string
   gender?: 'Male' | 'Female'

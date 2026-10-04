@@ -55,20 +55,10 @@ const getPodiumStyles = (rank: number, type: "member" | "department") => {
   }
 }
 
-const getDisplayName = (fullName: string): string => {
-  const nameParts = fullName.trim().split(/\s+/)
-  if (nameParts.length <= 2) {
-    return fullName
-  }
-  // Return first name and last name
-  return `${nameParts[0]} ${nameParts[nameParts.length - 1]}`
-}
-
 export function LeaderboardCard({ id, name, rank, points, type }: LeaderboardCardProps) {
   const { t } = useTranslation()
   const styles = getPodiumStyles(rank, type)
   const basePath = type === "member" ? `/members/${id}` : `/departments/${id}`
-  const displayName = type === "member" ? getDisplayName(name) : name
 
   return (
     <Link
@@ -84,7 +74,7 @@ export function LeaderboardCard({ id, name, rank, points, type }: LeaderboardCar
           {rank}
         </Badge>
         <p className="font-semibold text-base sm:text-lg text-slate-800 truncate group-hover:text-blue-600 transition-colors">
-          {displayName}
+          {name}
         </p>
       </div>
       <div className="flex items-center gap-3 sm:gap-4 shrink-0">

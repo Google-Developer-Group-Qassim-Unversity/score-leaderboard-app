@@ -11,6 +11,7 @@ export function useUpdateProfile() {
       api.patch<CurrentMember>('/members/me', data),
     onSuccess: (updatedMember) => {
       queryClient.setQueryData(['currentMember'], updatedMember)
+      void queryClient.invalidateQueries({ queryKey: ['members'] })
     },
   })
 }

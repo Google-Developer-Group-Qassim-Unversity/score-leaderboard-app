@@ -409,6 +409,14 @@ export const resources = {
       // Profile Form
       "profileForm.uniId": "University ID",
       "profileForm.name": "Name",
+      "profileForm.fullName": "Full name (private)",
+      "profileForm.publicName": "Public name",
+      "profileForm.publicName.hint": "Shown on your public profile, leaderboard and club structure. Your wallet card name is separate.",
+      "profileForm.errors.publicNameRequired": "Public name is required",
+      "profileForm.memberMissing": "Your sign-in account has no membership record here. Contact the club team to set up your membership.",
+      "profileForm.memberLoadFailed": "Could not load your membership. Retry before editing your profile.",
+      "profileForm.retry": "Retry",
+      "profileForm.toast.metadataSyncFailed": "Your profile was saved, but sign-in details could not be synced.",
       "profileForm.name.placeholder": "Example: Ibrahim Mohammed Bassam Al-Harbi",
       "profileForm.phone": "Phone Number",
       "profileForm.gender": "Gender",
@@ -660,7 +668,7 @@ export const resources = {
       "onboarding.uniId.autoFilled": "Auto-filled",
       "onboarding.fullName.label": "Full Name",
       "onboarding.fullName.placeholder": "Example: Ibrahim Mohammed Bassam Al-Harbi",
-      "onboarding.fullName.description": "This is the name that'll show on your membership card.",
+      "onboarding.fullName.description": "Used for certificates and administration. Your first and last name appear publicly by default; you can change your public name in your profile.",
       "onboarding.phone.label": "Phone Number",
       "onboarding.phone.placeholder": "05xxxxxxxx",
       "onboarding.phone.description": "A Saudi number, used for event updates and WhatsApp groups.",
@@ -697,6 +705,7 @@ export const resources = {
 
       // Onboarding Validation Messages
       "onboarding.validation.fullName.required": "Full name is required",
+      "onboarding.validation.fullName.max": "Full name must be 50 characters or fewer",
       "onboarding.validation.phone.length": "Phone number must be exactly 10 digits",
       "onboarding.validation.phone.format": "Phone number must start with 05 followed by 8 digits",
       "onboarding.validation.gender.required": "Please select a gender",
@@ -1122,6 +1131,14 @@ export const resources = {
       // Profile Form
       "profileForm.uniId": "الرقم الجامعي",
       "profileForm.name": "الاسم",
+      "profileForm.fullName": "الاسم الكامل (خاص)",
+      "profileForm.publicName": "الاسم العام",
+      "profileForm.publicName.hint": "يظهر في ملفك العام والترتيب وهيكل النادي. اسم بطاقة المحفظة مستقل عنه.",
+      "profileForm.errors.publicNameRequired": "الاسم العام مطلوب",
+      "profileForm.memberMissing": "حساب تسجيل الدخول ليس له سجل عضوية هنا. تواصل مع فريق النادي لإعداد عضويتك.",
+      "profileForm.memberLoadFailed": "تعذر تحميل عضويتك. أعد المحاولة قبل تعديل ملفك.",
+      "profileForm.retry": "إعادة المحاولة",
+      "profileForm.toast.metadataSyncFailed": "تم حفظ ملفك، لكن تعذرت مزامنة بيانات تسجيل الدخول.",
       "profileForm.name.placeholder": "مثال: ابراهيم محمد بسام الحربي",
       "profileForm.phone": "رقم الجوال",
       "profileForm.gender": "الجنس",
@@ -1363,7 +1380,7 @@ export const resources = {
       "onboarding.uniId.autoFilled": "معبّى تلقائياً",
       "onboarding.fullName.label": "الاسم الرباعي",
       "onboarding.fullName.placeholder": "مثال: ابراهيم محمد بسام الحربي",
-      "onboarding.fullName.description": "هذا الاسم اللي بيظهر على بطاقة عضويتك.",
+      "onboarding.fullName.description": "يُستخدم للشهادات والإدارة. يظهر اسمك الأول والأخير للعامة افتراضياً، ويمكنك تغيير الاسم العام من ملفك الشخصي.",
       "onboarding.phone.label": "رقم الجوال",
       "onboarding.phone.placeholder": "05xxxxxxxx",
       "onboarding.phone.description": "نستخدمه لتنبيهك بالفعاليات ومجموعات الواتساب.",
@@ -1400,6 +1417,7 @@ export const resources = {
 
       // Onboarding Validation Messages
       "onboarding.validation.fullName.required": "الاسم الكامل مطلوب",
+      "onboarding.validation.fullName.max": "يجب ألا يتجاوز الاسم الكامل 50 حرفاً",
       "onboarding.validation.phone.length": "رقم الجوال لازم يكون 10 أرقام بالضبط",
       "onboarding.validation.phone.format": "رقم الجوال لازم يبدأ بـ 05 متبوعاً بـ 8 أرقام",
       "onboarding.validation.gender.required": "الجنس مطلوب",

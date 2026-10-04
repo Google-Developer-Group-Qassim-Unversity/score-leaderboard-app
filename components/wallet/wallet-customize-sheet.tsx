@@ -100,6 +100,9 @@ export function WalletCustomizeSheet({ isOpen, onClose, data, onSaved }: WalletC
               dir="auto"
               className="h-11 rounded-xl"
             />
+            <p className="text-[11px] text-muted-foreground">
+              هذا الاسم خاص بالبطاقة. يمكنك تغيير اسمك العام من إعدادات الملف الشخصي.
+            </p>
           </div>
 
           <div className="space-y-2">

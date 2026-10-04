@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { updateClerkMetadata, promoteEmailToPrimary } from '@/lib/actions'
+import { useCurrentMember } from '@/hooks/queries/use-current-member'
 import { useUpdateProfile } from '@/hooks/mutations/use-update-profile'
 import type { UpdateMemberData } from '@/lib/api/types'
 import { ApiError } from '@/lib/api/errors'
@@ -46,6 +47,7 @@ const UNI_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, GRADUATED_LEVEL] as const
 interface FormData {
   uni_id: string
   fullArabicName: string
+  publicName: string
   saudiPhone: string
   gender: 'Male' | 'Female'
   uniLevel: number | null
@@ -57,6 +59,7 @@ interface FormData {
 const DEFAULT_FORM: FormData = {
   uni_id: '',
   fullArabicName: '',
+  publicName: '',
   saudiPhone: '',
   gender: 'Male',
   uniLevel: null,
@@ -68,6 +71,8 @@ const DEFAULT_FORM: FormData = {
 export function ProfileForm() {
   const { user, isLoaded } = useUser()
   const updateProfile = useUpdateProfile()
+  const currentMember = useCurrentMember()
+  const member = currentMember.data
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = React.useState(true)
   const [isSaving, setIsSaving] = React.useState(false)
@@ -108,28 +113,29 @@ export function ProfileForm() {
   }, [user, isQuAccount])
 
   React.useEffect(() => {
-    if (!isLoaded || !user) return
+    if (!isLoaded || !user || currentMember.isPending) return
 
     const metadata = user.publicMetadata as Record<string, unknown>
-    const college = (metadata?.uniCollege as string) || ''
+    const college = member ? (member.uni_college || '') : ((metadata?.uniCollege as string) || '')
     const isOther = !!college && !QU_COLLEGES.includes(college as typeof QU_COLLEGES[number])
 
     const data: FormData = {
       uni_id: (metadata?.uni_id as string) || '',
-      fullArabicName: (metadata?.fullArabicName as string) || '',
-      saudiPhone: (metadata?.saudiPhone as string) || '',
-      gender: (metadata?.gender as FormData['gender']) || 'Male',
-      uniLevel: (metadata?.uniLevel as number | undefined) ?? null,
+      fullArabicName: member?.name ?? ((metadata?.fullArabicName as string) || ''),
+      publicName: member?.public_name ?? '',
+      saudiPhone: member ? (member.phone_number || '') : ((metadata?.saudiPhone as string) || ''),
+      gender: member?.gender ?? ((metadata?.gender as FormData['gender']) || 'Male'),
+      uniLevel: member ? member.uni_level : ((metadata?.uniLevel as number | undefined) ?? null),
       uniCollege: isOther ? 'أخرى' : college,
       uniCollegeOther: isOther ? college : '',
-      personalEmail: (metadata?.personalEmail as string) || '',
+      personalEmail: member?.email ?? ((metadata?.personalEmail as string) || primaryEmail || ''),
     }
 
     setFormData(data)
     setInitialData(data)
     setShowOtherCollege(isOther)
     setIsLoading(false)
-  }, [isLoaded, user])
+  }, [isLoaded, user, member, currentMember.isPending, primaryEmail])
 
   // Only fires the privileged write when there's actually something to
   // promote (see linkedGoogleEmailId above). Reload so isEmailLocked picks
@@ -156,6 +162,10 @@ export function ProfileForm() {
 
     if (!formData.fullArabicName.trim()) {
       newErrors.fullArabicName = t('profileForm.errors.nameRequired')
+    }
+
+    if (!formData.publicName.trim()) {
+      newErrors.publicName = t('profileForm.errors.publicNameRequired')
     }
 
     if (!formData.saudiPhone) {
@@ -185,7 +195,7 @@ export function ProfileForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!isDirty || !validateForm()) return
+    if (!member || !isDirty || !validateForm()) return
 
     setIsSaving(true)
 
@@ -194,7 +204,7 @@ export function ProfileForm() {
 
       const clerkData = {
         uni_id: formData.uni_id,
-        fullArabicName: formData.fullArabicName,
+        fullArabicName: formData.fullArabicName.trim(),
         saudiPhone: formData.saudiPhone,
         gender: formData.gender,
         uniLevel: formData.uniLevel,
@@ -203,7 +213,8 @@ export function ProfileForm() {
       }
 
       const backendData: UpdateMemberData = {
-        name: formData.fullArabicName,
+        name: formData.fullArabicName.trim(),
+        public_name: formData.publicName.trim(),
         email: formData.personalEmail,
         phone_number: formData.saudiPhone,
         gender: formData.gender,
@@ -211,34 +222,40 @@ export function ProfileForm() {
         uni_college: college,
       }
 
-      const clerkResult = await updateClerkMetadata(clerkData)
-
-      if (clerkResult.error) {
-        toast.error(clerkResult.error)
-        setIsSaving(false)
-        return
+      // The member API owns both names. Persist it before syncing sign-in metadata.
+      const updatedMember = await updateProfile.mutateAsync(backendData)
+      const savedData = {
+        ...formData,
+        fullArabicName: updatedMember.name,
+        publicName: updatedMember.public_name,
       }
+      setFormData(savedData)
+      setInitialData(savedData)
 
-      await user?.reload()
-
-      try {
-        await updateProfile.mutateAsync(backendData)
-      } catch (apiError) {
-        console.error('Backend API error:', apiError)
-        if (apiError instanceof ApiError && apiError.status === 409) {
-          // The email change didn't actually apply - keep the form dirty/editable
-          // so the member can fix it, instead of claiming success.
-          toast.error(t('profileForm.toast.emailConflict'))
+      // A public-name-only change does not need a sign-in metadata update.
+      const otherFieldsChanged = initialData && Object.keys(clerkData).some((key) => {
+        const field = key as keyof typeof clerkData
+        if (field === 'uniCollege') {
+          const previousCollege = initialData.uniCollege === 'أخرى'
+            ? initialData.uniCollegeOther : initialData.uniCollege
+          return college !== (previousCollege || null)
+        }
+        return clerkData[field] !== initialData[field]
+      })
+      if (otherFieldsChanged) {
+        const clerkResult = await updateClerkMetadata(clerkData)
+        if (clerkResult.error) {
+          toast.warning(t('profileForm.toast.metadataSyncFailed'))
           return
         }
-        toast.warning(t('profileForm.toast.clerkUpdatedBackendFailed'))
+        await user?.reload()
       }
 
-      setInitialData({ ...formData })
       toast.success(t('profileForm.toast.success'))
     } catch (error) {
       console.error('Error updating profile:', error)
-      toast.error(t('profileForm.toast.error'))
+      toast.error(t(error instanceof ApiError && error.status === 409
+        ? 'profileForm.toast.emailConflict' : 'profileForm.toast.error'))
     } finally {
       setIsSaving(false)
     }
@@ -254,6 +271,16 @@ export function ProfileForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-md">
+      {currentMember.isError && (
+        <div role="alert" className="space-y-2 rounded-md border p-3 text-sm">
+          <p>{t(currentMember.error instanceof ApiError && currentMember.error.status === 404
+            ? 'profileForm.memberMissing' : 'profileForm.memberLoadFailed')}</p>
+          <Button type="button" variant="outline" disabled={currentMember.isFetching}
+            onClick={() => void currentMember.refetch()}>
+            {t('profileForm.retry')}
+          </Button>
+        </div>
+      )}
       <div className="space-y-2">
         <label className="text-sm font-medium" dir="rtl">{t('profileForm.uniId')}</label>
         {formData.uni_id ? (
@@ -277,8 +304,9 @@ export function ProfileForm() {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium" dir="rtl">{t('profileForm.name')}</label>
+        <label className="text-sm font-medium" dir="rtl">{t('profileForm.fullName')}</label>
         <Input
+          maxLength={50}
           value={formData.fullArabicName}
           onChange={(e) => handleChange('fullArabicName', e.target.value)}
           placeholder={t('profileForm.name.placeholder')}
@@ -289,6 +317,21 @@ export function ProfileForm() {
         {errors.fullArabicName && (
           <p className="text-xs text-destructive">{errors.fullArabicName}</p>
         )}
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="public-name" className="text-sm font-medium" dir="rtl">
+          {t('profileForm.publicName')}
+        </label>
+        <Input id="public-name" value={formData.publicName} maxLength={150}
+          onChange={(e) => handleChange('publicName', e.target.value)}
+          disabled={isSaving || !member}
+          className={cn(errors.publicName && 'border-destructive')}
+          aria-describedby="public-name-hint" />
+        <p id="public-name-hint" className="text-xs text-muted-foreground">
+          {t('profileForm.publicName.hint')}
+        </p>
+        {errors.publicName && <p className="text-xs text-destructive">{errors.publicName}</p>}
       </div>
 
       <div className="space-y-2">
@@ -433,7 +476,7 @@ export function ProfileForm() {
         )}
       </div>
 
-      <Button type="submit" className="w-full" disabled={!isDirty || isSaving}>
+      <Button type="submit" className="w-full" disabled={!member || !isDirty || isSaving}>
         {isSaving ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
