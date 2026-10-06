@@ -64,6 +64,10 @@ export interface ApiPointsEvent {
   points: number
   action_name: string
   ar_action_name: string | null
+  /** 'online' / 'on-site' events have leaderboard pages; 'none' entries come from the points pages. */
+  location_type: 'online' | 'on-site' | 'none'
+  /** true when every action in this history row is a bonus action */
+  bonus_row?: boolean
 }
 
 // Member Event History Response
