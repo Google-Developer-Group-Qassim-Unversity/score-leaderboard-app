@@ -25,5 +25,10 @@ export function useApi() {
       const token = (await getToken()) ?? undefined
       return api.patch<T>(path, body, { ...options, token })
     },
+
+    async delete<T = void>(path: string, options?: Omit<RequestOptions, 'token'>): Promise<T> {
+      const token = (await getToken()) ?? undefined
+      return api.delete<T>(path, { ...options, token })
+    },
   };
 }

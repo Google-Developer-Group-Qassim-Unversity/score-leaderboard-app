@@ -246,6 +246,16 @@ export const resources = {
       "eventSignup.confirmAndFillForm": "Confirm Sign Up and Fill Form",
       "eventSignup.confirm": "Confirm Sign Up",
       "eventSignup.successToast": "Successfully signed up for",
+      "eventSignup.moreOptions": "More options",
+      "eventSignup.cancelRegistration": "Cancel Registration",
+      "eventSignup.cancelConfirmTitle": "Cancel Registration?",
+      "eventSignup.cancelConfirmDescription": "Are you sure you want to cancel your registration for this event:",
+      "eventSignup.keepRegistration": "Keep Registration",
+      "eventSignup.confirmCancel": "Yes, Cancel",
+      "eventSignup.cancelling": "Cancelling...",
+      "eventSignup.cancelSuccessToast": "Your registration was cancelled for",
+      "eventSignup.registrationClosed": "Registration for this event is closed, so it can't be cancelled anymore.",
+      "eventSignup.cancelFailed": "Couldn't cancel your registration. Please try again.",
 
       // Event Card
       "eventCard.viewEvent": "View Event",
@@ -959,6 +969,16 @@ export const resources = {
       "eventSignup.confirmAndFillForm": "أكد التسجيل وعبي النموذج",
       "eventSignup.confirm": "أكد التسجيل",
       "eventSignup.successToast": "تم تسجيلك بنجاح في",
+      "eventSignup.moreOptions": "خيارات إضافية",
+      "eventSignup.cancelRegistration": "إلغاء التسجيل",
+      "eventSignup.cancelConfirmTitle": "إلغاء التسجيل؟",
+      "eventSignup.cancelConfirmDescription": "متأكد إنك تبي تلغي تسجيلك في هذي الفعالية:",
+      "eventSignup.keepRegistration": "إبقاء التسجيل",
+      "eventSignup.confirmCancel": "إيه، ألغِ التسجيل",
+      "eventSignup.cancelling": "جاري الإلغاء...",
+      "eventSignup.cancelSuccessToast": "تم إلغاء تسجيلك في",
+      "eventSignup.registrationClosed": "التسجيل في هذي الفعالية مقفل، فما تقدر تلغي تسجيلك الحين.",
+      "eventSignup.cancelFailed": "ما قدرنا نلغي تسجيلك. حاول مرة ثانية.",
 
       // Event Card
       "eventCard.viewEvent": "التفاصيل",
