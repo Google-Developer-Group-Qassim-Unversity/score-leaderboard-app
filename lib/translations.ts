@@ -257,6 +257,12 @@ export const resources = {
       "eventSignup.registrationClosed": "Registration for this event is closed, so it can't be cancelled anymore.",
       "eventSignup.cancelFailed": "Couldn't cancel your registration. Please try again.",
 
+      // Event Level
+      "eventLevel.label": "Level",
+      "eventLevel.beginner": "Beginner",
+      "eventLevel.intermediate": "Intermediate",
+      "eventLevel.advanced": "Advanced",
+
       // Event Card
       "eventCard.viewEvent": "View Event",
       "eventCard.viewDetails": "View Details",
@@ -979,6 +985,12 @@ export const resources = {
       "eventSignup.cancelSuccessToast": "تم إلغاء تسجيلك في",
       "eventSignup.registrationClosed": "التسجيل في هذي الفعالية مقفل، فما تقدر تلغي تسجيلك الحين.",
       "eventSignup.cancelFailed": "ما قدرنا نلغي تسجيلك. حاول مرة ثانية.",
+
+      // Event Level
+      "eventLevel.label": "المستوى",
+      "eventLevel.beginner": "مبتدئ",
+      "eventLevel.intermediate": "متوسط",
+      "eventLevel.advanced": "متقدم",
 
       // Event Card
       "eventCard.viewEvent": "التفاصيل",

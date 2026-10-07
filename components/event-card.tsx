@@ -13,6 +13,7 @@ import {
 import type { ApiEventItem, ApiOpenEventItem } from "@/lib/api/types";
 import { Button } from "./ui/button";
 import { EventSignupButton } from "./event-signup-button";
+import { EventLevel } from "./event-level";
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n-client';
 
@@ -35,6 +36,7 @@ export function EventCard({ event, hideSignup = false }: EventCardProps) {
         <CardDescription className="line-clamp-2 mt-3 min-h-10">
           {event.description}
         </CardDescription>
+        <EventLevel level={event.level} className="mt-2" />
       </CardHeader>
       <CardContent className="flex-1">
         {event.image_url && (

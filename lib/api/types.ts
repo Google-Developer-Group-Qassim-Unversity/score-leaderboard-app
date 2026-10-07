@@ -132,6 +132,9 @@ export type ApiDepartmentDetail = ApiDepartmentPointsHistory
 
 export type EventStatus = "draft" | "open" | "active" | "closed"
 
+/** How much prior knowledge an event assumes. */
+export type EventLevel = "beginner" | "intermediate" | "advanced"
+
 export interface ApiEventItem {
   id: number
   name: string
@@ -141,6 +144,7 @@ export interface ApiEventItem {
   start_datetime: string
   end_datetime: string
   status: EventStatus
+  level: EventLevel
   image_url: string | null
   /** Join link for remote events, set by an admin. Null when there is none. */
   meeting_url: string | null
