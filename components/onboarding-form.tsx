@@ -58,7 +58,9 @@ const createOnboardingSchema = (t: (key: string) => string, personalEmailLocked:
     }),
   fullArabicName: z
     .string()
-    .min(1, t('onboarding.validation.fullName.required')),
+    .trim()
+    .min(1, t('onboarding.validation.fullName.required'))
+    .max(50, t('onboarding.validation.fullName.max')),
   saudiPhone: z
     .string()
     .length(10, t('onboarding.validation.phone.length'))

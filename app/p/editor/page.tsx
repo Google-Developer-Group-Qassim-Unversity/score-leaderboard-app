@@ -41,6 +41,8 @@ export default function ProfileEditorPage() {
   const [loading, setLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [officialName, setOfficialName] = useState("")
+  const [publicName, setPublicName] = useState("")
   const [profileData, setProfileData] = useState<WalletCardData | null>(null)
 
   useEffect(() => {
@@ -73,9 +75,11 @@ export default function ProfileEditorPage() {
           return
         }
 
+        setOfficialName(data.official_name || "")
+        setPublicName(data.public_name || "")
         setProfileData({
           uuid: prof.uuid,
-          fullName: data.name || user?.fullName || "عضو GDG",
+          fullName: data.public_name || "عضو GDG",
           nameLanguage: "ar",
           isAdmin: Boolean(data.is_admin),
           uniId: data.uni_id,
@@ -151,7 +155,11 @@ export default function ProfileEditorPage() {
   }
 
   const handleSave = async () => {
-    if (!profileData) return
+    if (!profileData || isSaving) return
+    if (!officialName.trim() || !publicName.trim()) {
+      toast.error("يرجى إدخال الاسم الكامل والاسم العام")
+      return
+    }
     setIsSaving(true)
     try {
       const token = await getToken()
@@ -162,7 +170,8 @@ export default function ProfileEditorPage() {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
-          custom_name: profileData.fullName,
+          official_name: officialName.trim(),
+          public_name: publicName.trim(),
           theme_id: profileData.themeId,
           user_status: profileData.userStatus,
           education_level: profileData.educationLevel,
@@ -177,9 +186,16 @@ export default function ProfileEditorPage() {
 
       if (!res.ok) {
         const err = await res.json()
-        throw new Error(err.detail || "Failed to update profile")
+        const message = Array.isArray(err.detail)
+          ? err.detail.map((item: { msg: string }) => item.msg).join("، ")
+          : err.detail
+        throw new Error(message || "تعذر حفظ الملف الشخصي")
       }
 
+      const saved = await res.json()
+      setOfficialName(saved.official_name)
+      setPublicName(saved.public_name)
+      router.refresh()
       toast.success("تم حفظ التعديلات وإعدادات الخصوصية بنجاح! ✨")
     } catch (err: any) {
       console.error(err)
@@ -303,6 +319,39 @@ export default function ProfileEditorPage() {
 
         {/* Main Editor Card */}
         <div className="bg-card border border-border/80 rounded-3xl p-5 sm:p-7 shadow-md space-y-6">
+          <div className="space-y-1.5">
+            <Label htmlFor="official-name" className="text-xs font-bold">الاسم الكامل</Label>
+            <Input
+              id="official-name"
+              value={officialName}
+              onChange={(e) => setOfficialName(e.target.value)}
+              maxLength={50}
+              disabled={isSaving}
+              aria-describedby="official-name-description"
+              dir="auto"
+              className="h-11 rounded-xl"
+            />
+            <p id="official-name-description" className="text-[11px] text-muted-foreground">
+              يُستخدم للشهادات والإدارة، ويظهر لك وللموظفين المخوّلين فقط.
+            </p>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="public-name" className="text-xs font-bold">الاسم العام</Label>
+            <Input
+              id="public-name"
+              value={publicName}
+              onChange={(e) => setPublicName(e.target.value)}
+              maxLength={150}
+              disabled={isSaving}
+              aria-describedby="public-name-description"
+              dir="auto"
+              className="h-11 rounded-xl"
+            />
+            <p id="public-name-description" className="text-[11px] text-muted-foreground">
+              يظهر في لوحة المتصدرين وهيكل النادي وصفحتك العامة. تغيير هذا الاسم لا يغيّر اسم بطاقة المحفظة.
+            </p>
+          </div>
+
           {/* 1. Bio */}
           <div className="space-y-1.5">
             <Label htmlFor="bio" className="text-xs font-bold text-foreground">نبذة شخصية (Bio)</Label>
@@ -436,7 +485,7 @@ export default function ProfileEditorPage() {
             <Button
               type="button"
               onClick={handleSave}
-              disabled={isSaving}
+              disabled={isSaving || !officialName.trim() || !publicName.trim()}
               className="w-full h-12 text-sm font-bold gap-2 rounded-xl shadow-md bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white cursor-pointer"
             >
               {isSaving ? (
