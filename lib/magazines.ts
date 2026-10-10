@@ -36,6 +36,15 @@ export const magazines: Magazine[] = [
     coverImage: "/magazine/picV3.png",
     publishDate: "2026-03-24",
     pages: 10
+  },
+  {
+    id: "gdg-volume-6",
+    title: "مجلة قوقل لشهر سبتمبر 2026",
+    description: "",
+    pdfUrl: "https://heyzine.com/flip-book/5bfd5b6f7d.html",
+    coverImage: "/magazine/picV6.jpg",
+    publishDate: "2026-10-10",
+    pages: 16
   }
 ]
 
